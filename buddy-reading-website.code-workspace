@@ -5,6 +5,10 @@
       "path": "."
     },
     {
+      "name": "Web",
+      "path": "packages/web"
+    },
+    {
       "name": "Web API",
       "path": "packages/web-api"
     },
