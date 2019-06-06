@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "name": "Buddy Reading Website (root)",
+      "path": "."
+    },
+    {
+      "name": "Web API",
+      "path": "packages/web-api"
+    },
+    {
+      "name": "Types",
+      "path": "packages/types"
+    }
+  ],
+  "settings": {
+    "editor.rulers": [120],
+    "editor.tabSize": 2,
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "cSpell.words": ["workspaces"]
+  }
+}

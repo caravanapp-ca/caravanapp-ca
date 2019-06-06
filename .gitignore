@@ -1,0 +1,14 @@
+.npmrc
+
+.DS_Store
+/node_modules
+*.log
+*.cache
+/.eslintcache
+coverage
+dist
+package-lock.json
+
+.nyc_output
+.idea/
+/.changelog

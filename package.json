@@ -1,0 +1,15 @@
+{
+  "name": "@caravan/buddy-reading",
+  "private": true,
+  "scripts": {
+    "test": "lerna run test",
+    "lint": "lerna run lint"
+  },
+  "devDependencies": {
+    "lerna": "^3.13.1",
+    "lerna-changelog": "^0.8.2"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
