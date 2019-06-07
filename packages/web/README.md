@@ -2,6 +2,22 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+Note for Buddy Reading team:
+
+You can run
+
+```sh
+yarn
+```
+
+in place of
+
+```sh
+npm
+```
+
+in the commands below. Remove 'run' where it appears in the npm commands.
+
 In the project directory, you can run:
 
 ### `npm start`
