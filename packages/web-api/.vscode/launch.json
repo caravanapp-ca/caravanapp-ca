@@ -1,12 +1,13 @@
-
 {
   "version": "0.2.0",
-  "configurations": [{
+  "configurations": [
+    {
       "type": "node",
       "request": "attach",
-      "name": "Attach to Process",
-      "port": 5858,
+      "name": "Node: Nodemon",
+      "processId": "${command:PickProcess}",
       "restart": true,
       "protocol": "inspector"
-  }]
+    }
+  ]
 }
