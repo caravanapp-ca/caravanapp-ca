@@ -5,7 +5,7 @@ steps:
   #   args: ["test"]
   - name: gcr.io/cloud-builders/yarn
     args: ["build"]
-  - name: 'gcr.io/$PROJECT_ID/create-artifacts'
+  - name: 'ubuntu'
     args: ['bash', './deploy/create_artifacts.bash']
 artifacts:
   objects:
