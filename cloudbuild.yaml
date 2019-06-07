@@ -1,0 +1,14 @@
+steps:
+  - name: gcr.io/cloud-builders/yarn
+    args: ["install"]
+  - name: gcr.io/cloud-builders/yarn
+    args: ["test"]
+  - name: gcr.io/cloud-builders/yarn
+    args: ["build"]
+  - name: 'gcr.io/$PROJECT_ID/create-artifacts'
+    args: ['bash', './deploy/create_artifacts.bash']
+artifacts:
+  objects:
+    location: 'gs://buddy-reading-prod-storage/artifacts'
+    paths: ['artifact-*.zip']
+timeout: "1600s"
