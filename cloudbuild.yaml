@@ -5,10 +5,6 @@ steps:
   #   args: ["test"]
   - name: gcr.io/cloud-builders/yarn
     args: ['build']
-  - name: 'ubuntu'
-    args: ['bash', './deploy/create_artifacts.bash']
-artifacts:
-  objects:
-    location: 'gs://buddy-reading-prod-storage/artifacts'
-    paths: ['artifact.*\.tar\.gz']
+   - name: "gcr.io/cloud-builders/gcloud"
+    args: ["app", "deploy"]
 timeout: '1600s'

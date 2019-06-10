@@ -2,6 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3001",
   "dependencies": {
     "@caravan/buddy-reading-types": "0.0.1-alpha.0",
     "@types/jest": "^22.2.3",
