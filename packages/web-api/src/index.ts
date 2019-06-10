@@ -14,7 +14,7 @@ import clubRoutes from './routes/clubRoutes';
 (async () => {
   const app = express();
 
-  // await connectToDb();
+  await connectToDb();
 
   const port = process.env.PORT || 3001;
   const env = process.env.NODE_ENV || 'development';
@@ -24,7 +24,7 @@ import clubRoutes from './routes/clubRoutes';
   app.use(bodyParser.urlencoded({ extended: true }));
 
   app.use('/api/test', testRoutes);
-  // app.use('/api/club', clubRoutes);
+  app.use('/api/club', clubRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

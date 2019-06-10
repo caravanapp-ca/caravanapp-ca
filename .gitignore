@@ -12,3 +12,7 @@ package-lock.json
 .nyc_output
 .idea/
 /.changelog
+
+# App Engine
+app.production.yaml
+app.staging.yaml
