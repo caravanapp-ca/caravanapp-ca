@@ -4,9 +4,10 @@
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
-    "lint": "lerna run lint"
+    "lint": "lerna run lint",
+    "start": "cd ./packages/web-api && npm start"
   },
-  "devDependencies": {
+  "dependencies": {
     "lerna": "^3.13.1",
     "lerna-changelog": "^0.8.2"
   },
