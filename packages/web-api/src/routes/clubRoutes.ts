@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/:id', async (req, res, next) => {
   try {
     const club = await Club.findById(req.params.id);
-    res.send(200).json(club);
+    res.json(club);
   } catch (err) {
     console.log(`Failed to get club ${req.params.id}`, err);
     return next(err);
@@ -19,7 +19,7 @@ router.post('/', async (req, res, next) => {
   try {
     const club = new Club(req.body);
     const newClub = await club.save();
-    res.status(200).send(newClub);
+    res.status(201).json(newClub);
   } catch (err) {
     console.log('Failed to create new club', err);
     return next(err);
@@ -33,7 +33,7 @@ router.put('/:id', async (req, res, next) => {
     const doc = await Club.findByIdAndUpdate(req.params.id, editedClub, {
       new: true,
     }).exec();
-    res.status(200).json(doc);
+    res.sendStatus(200);
   } catch (err) {
     console.log(`Failed to modify club ${req.params.id}`, err);
     return next(err);
@@ -44,7 +44,7 @@ router.put('/:id', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
   try {
     const record = await Club.remove({ _id: req.params.id });
-    res.status(200).send(record);
+    res.sendStatus(200);
   } catch (err) {
     console.log(`Failed to delete club ${req.params.id}`, err);
     return next(err);

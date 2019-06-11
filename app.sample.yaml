@@ -15,7 +15,7 @@ resources:
   disk_size_gb: 10
 
 env_variables:
-  MONGO_DB: "mongodb://username:password@10.128.0.4:27017/admin"
+  MONGO_DB: "mongodb://username:password@35.226.113.101:27017/buddy_reading"
 
 handlers:
   - url: /
