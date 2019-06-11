@@ -5,7 +5,9 @@
     "build": "lerna run build",
     "test": "lerna run test",
     "lint": "lerna run lint",
-    "start": "cd ./packages/web-api && npm start"
+    "start": "cd ./packages/web-api && npm start",
+    "deploy:production": "yarn build && gcloud app deploy app.production.yaml",
+    "deploy:staging": "yarn build && gcloud app deploy app.staging.yaml"
   },
   "dependencies": {
     "lerna": "^3.13.1",
