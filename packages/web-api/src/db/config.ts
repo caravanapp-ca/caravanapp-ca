@@ -1,11 +1,11 @@
 import mongoose, { ConnectionOptions } from 'mongoose';
 
 export const dbConnectionString = process.env.MONGO_DB;
-console.log(`DB Connection String Start ${dbConnectionString.substring(0, 4)}`);
 export const options: ConnectionOptions = {
   reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
   reconnectInterval: 1000,
   poolSize: 10, // Maintain up to 10 socket connections
+  useNewUrlParser: true,
 };
 
 export function connect() {
