@@ -1,6 +1,7 @@
 import mongoose, { ConnectionOptions } from 'mongoose';
 
-export const database = process.env.MONGO_DB;
+export const dbConnectionString = process.env.MONGO_DB;
+console.log(`DB Connection String Start ${dbConnectionString.substring(0, 4)}`);
 export const options: ConnectionOptions = {
   reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
   reconnectInterval: 1000,
@@ -8,7 +9,7 @@ export const options: ConnectionOptions = {
 };
 
 export function connect() {
-  return mongoose.connect(database, options);
+  return mongoose.connect(dbConnectionString, options);
 }
 
 export function disconnect() {
