@@ -1,11 +1,13 @@
 .Club-image {
   position: relative;
   border-radius: 4px;
+  flex-grow: 1;
 }
 
 .Club-image img {
   width: 100%;
   vertical-align: top;
+  height: 400px;
 }
 
 .Club-image :not(img) {
@@ -14,7 +16,8 @@
   left: 5%;
   z-index: 1;
   color: white;
-  font-size: 30px;
+  font-size: 20px;
+  font-weight:lighter;
   text-align: left;
   width: 100%;
 }
@@ -25,8 +28,32 @@
   left: 5%;
   z-index: 1;
   color: white;
-  font-size: 40px;
+  font-size: 30px;
   font-weight: bold;
+  text-align: left;
+  width: 100%;
+}
+
+.Club-image h3 {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  z-index: 1;
+  color: white;
+  font-size: 20px;
+  font-weight:lighter;
+  text-align: left;
+  width: 100%;
+}
+
+.Club-image h4 {
+  position: absolute;
+  top: 55%;
+  left: 5%;
+  z-index: 1;
+  color: white;
+  font-size: 20px;
+  font-weight:lighter;
   text-align: left;
   width: 100%;
 }
@@ -39,10 +66,4 @@
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.8);
-}
-
-.Club-image-text {
-  position: absolute;
-  top: 30;
-  left: 10;
 }
