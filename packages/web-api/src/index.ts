@@ -5,9 +5,10 @@ import cors from 'cors';
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 
-import testRoutes from './routes/testRoutes';
-import clubRoutes from './routes/clubRoutes';
 import authRoutes from './routes/authRoutes';
+import clubRoutes from './routes/clubRoutes';
+import userRoutes from './routes/userRoutes';
+import testRoutes from './routes/testRoutes';
 
 import {
   connect as connectToDb,
@@ -29,7 +30,8 @@ import {
 
   app.use('/api/test', testRoutes);
   app.use('/api/club', clubRoutes);
-  app.use('/api/auth', authRoutes)
+  app.use('/api/auth', authRoutes);
+  app.use('/api/user', userRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

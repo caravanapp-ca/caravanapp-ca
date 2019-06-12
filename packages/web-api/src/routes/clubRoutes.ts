@@ -5,11 +5,12 @@ const router = express.Router();
 
 // Get a club
 router.get('/:id', async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const club = await Club.findById(req.params.id);
+    const club = await Club.findById(id);
     res.json(club);
   } catch (err) {
-    console.log(`Failed to get club ${req.params.id}`, err);
+    console.log(`Failed to get club ${id}`, err);
     return next(err);
   }
 });

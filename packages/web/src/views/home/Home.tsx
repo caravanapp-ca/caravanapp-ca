@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import './Home.css';
 import ClubCards from './ClubCards';
+import { UserCard } from './UserCard';
 
 const useStyles = makeStyles(theme => ({
   heroContent: {
@@ -53,6 +54,9 @@ export default function Home() {
           </Container>
         </div>
         <ClubCards/>
+        <UserCard
+          userId="5d0157cdfa76c6140cfe4021"
+        />
       </main>
     </React.Fragment>
   );
