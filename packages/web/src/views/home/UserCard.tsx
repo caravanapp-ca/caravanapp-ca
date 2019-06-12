@@ -15,7 +15,8 @@ export function UserCard(props: UserCardProps) {
       setUser(userReceived);
     };
     getUser();
-  }, []); // The [] ensures only performing the network call on the first render
+  }, [props.userId]);
+  // The [props.userId] ensures only performing the network call when the userId changes (thus only on first render)
   if (!user) {
     return <div>Loading...</div>
   }
