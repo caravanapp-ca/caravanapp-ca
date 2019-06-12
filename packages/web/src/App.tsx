@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router } from "react-router-dom";
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
@@ -14,7 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import Header from './views/home/Header';
-
+import DiscordAuthButton from './components/DiscordAuthButton';
 
 function MadeWithLove() {
   return (
@@ -49,13 +50,13 @@ const useStyles = makeStyles(theme => ({
   },
   cardMedia: {
     paddingTop: '56.25%',
-    content: '\A',
+    content: 'A',
     position: 'absolute',
     width: '100%',
     height: '100%',
     top: 0,
     left: 0,
-    background: 'rgba(0, 0, 0, 0.4)'
+    background: 'rgba(0, 0, 0, 0.4)',
   },
   blurImage: {
     opacity: 0.4,
@@ -76,20 +77,31 @@ export default function Home() {
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <Router>
       <CssBaseline />
       <Header />
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
-            <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="textPrimary"
+              gutterBottom
+            >
               Album layout
             </Typography>
-            <Typography variant="h5" align="center" color="textSecondary" paragraph>
-              Something short and leading about the collection below—its contents, the creator, etc.
-              Make it short and sweet, but not too short so folks don&apos;t simply skip over it
-              entirely.
+            <Typography
+              variant="h5"
+              align="center"
+              color="textSecondary"
+              paragraph
+            >
+              Something short and leading about the collection below—its
+              contents, the creator, etc. Make it short and sweet, but not too
+              short so folks don&apos;t simply skip over it entirely.
             </Typography>
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
@@ -119,7 +131,7 @@ export default function Home() {
                     title="Image title"
                   >
                     <Typography variant="h5" align="left">
-                        Currently reading
+                      Currently reading
                     </Typography>
                   </CardMedia>
                   <CardContent className={classes.cardContent}>
@@ -127,7 +139,8 @@ export default function Home() {
                       Heading
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe the content.
+                      This is a media card. You can use this section to describe
+                      the content.
                     </Typography>
                   </CardContent>
                   <CardActions>
@@ -149,13 +162,18 @@ export default function Home() {
         <Typography variant="h6" align="center" gutterBottom>
           Footer
         </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+        <Typography
+          variant="subtitle1"
+          align="center"
+          color="textSecondary"
+          component="p"
+        >
           Something here to give the footer a purpose!
         </Typography>
         <MadeWithLove />
+        <DiscordAuthButton />
       </footer>
       {/* End footer */}
-    </React.Fragment>
+    </Router>
   );
 }
-
