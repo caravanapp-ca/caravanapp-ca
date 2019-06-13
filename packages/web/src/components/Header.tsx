@@ -6,12 +6,14 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import AddIcon from '@material-ui/icons/Add';
+import AdapterLink from './AdapterLink';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
       textAlign: 'center',
+      backgroundColor: 'white'
     },
     homeButton: {
       marginRight: theme.spacing(2),
@@ -31,7 +33,7 @@ export default function ButtonAppBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar style={{backgroundColor: 'white', color: 'black', borderColor: '#7289da', borderBottom: 10}} position="static">
         <Toolbar>
           <IconButton edge="start" className={classes.homeButton} color="inherit" aria-label="Home">
             <HomeIcon />
@@ -39,7 +41,7 @@ export default function ButtonAppBar() {
           <Typography variant="h6" className={classes.title}>
             Find Buddies
           </Typography>
-          <IconButton edge="start" className={classes.addButton} color="inherit" aria-label="Add">
+          <IconButton edge="start" className={classes.addButton} color="inherit" aria-label="Add" component={AdapterLink} to="/club/create">
             <AddIcon />
           </IconButton>
         </Toolbar>
