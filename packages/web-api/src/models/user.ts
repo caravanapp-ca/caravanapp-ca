@@ -17,7 +17,7 @@ const nestedDiscordDefinition: SameKeysAs<UserDoc['discord']> = {
   email: { type: String },
   flags: { type: Number },
   premium_type: { type: Number },
-}
+};
 
 const definition: SameKeysAs<FilterAutoMongoKeys<UserDoc>> = {
   bio: { type: String },

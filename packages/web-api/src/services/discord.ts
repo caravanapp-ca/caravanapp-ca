@@ -71,7 +71,7 @@ class DiscordClient {
         Authorization: `Basic ${DiscordBase64Credentials}`,
       },
     });
-    return await tokenResponse.json() as OAuth2TokenResponseData;
+    return (await tokenResponse.json()) as OAuth2TokenResponseData;
   }
 
   static async refreshAccessToken(refreshToken: string) {
@@ -89,7 +89,7 @@ class DiscordClient {
         Authorization: `Basic ${DiscordBase64Credentials}`,
       },
     });
-    return await tokenResponse.json() as OAuth2TokenResponseData;
+    return (await tokenResponse.json()) as OAuth2TokenResponseData;
   }
 }
 

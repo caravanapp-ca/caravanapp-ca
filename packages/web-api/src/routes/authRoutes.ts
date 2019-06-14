@@ -68,7 +68,9 @@ router.get('/discord/callback', async (req, res) => {
   let successfulAuthentication = true;
   let tokenResponseData = await DiscordClient.getToken(code);
   if (tokenResponseData.error) {
-    const encodedErrorMessage = encodeURIComponent(tokenResponseData.error_description);
+    const encodedErrorMessage = encodeURIComponent(
+      tokenResponseData.error_description
+    );
     req.session = null;
     res.cookie('token', '');
     res.redirect(`/?error=${encodedErrorMessage}`);

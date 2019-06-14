@@ -13,14 +13,16 @@ function useInitializeUser() {
           const userId = getCookie('userId');
           if (userId) {
             // Getting user data for the first time after login
-            const userDocResponse = await axios.get<UserDoc | null>(`/api/user/${userId}`);
+            const userDocResponse = await axios.get<UserDoc | null>(
+              `/api/user/${userId}`
+            );
             const userDoc = userDocResponse.data;
             if (userDoc) {
               const dehydratedUser = JSON.stringify(userDoc);
               window.localStorage.setItem('user', dehydratedUser);
               setUser(userDoc);
             } else {
-              console.info('Are you having fun messing with cookies? :)')
+              console.info('Are you having fun messing with cookies? :)');
             }
           }
         } else {
@@ -28,7 +30,7 @@ function useInitializeUser() {
           setUser(hydratedUser);
         }
       }
-    }
+    };
     getUser();
   }, [user]);
 

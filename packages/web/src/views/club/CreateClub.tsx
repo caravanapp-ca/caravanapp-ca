@@ -33,23 +33,26 @@ const useStyles = makeStyles(theme => ({
     width: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    display: 'flex'
+    display: 'flex',
   },
-  addButton: {
-  },
+  addButton: {},
 }));
 
 export default function CreateClub() {
   const classes = useStyles();
   const [spacing] = React.useState<GridSpacing>(2);
 
-  const [selectedGroupSizeValue, setSelectedGroupSizeValue] = React.useState('2');
+  const [selectedGroupSizeValue, setSelectedGroupSizeValue] = React.useState(
+    '2'
+  );
 
   function handleGroupSizeChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSelectedGroupSizeValue(event.target.value);
   }
 
-  const [selectedGroupSpeedValue, setSelectedGroupSpeedValue] = React.useState('Slow');
+  const [selectedGroupSpeedValue, setSelectedGroupSpeedValue] = React.useState(
+    'Slow'
+  );
 
   function handleGroupSpeedChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSelectedGroupSpeedValue(event.target.value);
@@ -60,7 +63,7 @@ export default function CreateClub() {
       <CssBaseline />
       <main>
         <Container className={classes.cardGrid} maxWidth="md">
-          <Typography style={{marginBottom: 10}}  variant="h5" component="h2">
+          <Typography style={{ marginBottom: 10 }} variant="h5" component="h2">
             Group name
           </Typography>
           <TextField
@@ -73,7 +76,7 @@ export default function CreateClub() {
               shrink: true,
             }}
           />
-          <Typography style={{marginBottom: 30}} variant="h5" component="h2">
+          <Typography style={{ marginBottom: 30 }} variant="h5" component="h2">
             What books would you like to read?
           </Typography>
           <Grid style={{ marginBottom: 20 }} item xs={12} sm={12}>
@@ -82,7 +85,14 @@ export default function CreateClub() {
                 <Grid key={value} item>
                   <div>
                     <Paper className={classes.paper}>
-                      <IconButton edge="start" className={classes.addButton} color="inherit" aria-label="Add" component={AdapterLink} to="/">
+                      <IconButton
+                        edge="start"
+                        className={classes.addButton}
+                        color="inherit"
+                        aria-label="Add"
+                        component={AdapterLink}
+                        to="/"
+                      >
                         <AddIcon />
                       </IconButton>
                     </Paper>
@@ -91,11 +101,11 @@ export default function CreateClub() {
               ))}
             </Grid>
           </Grid>
-          <Typography style={{marginBottom: 30}} variant="h5" component="h2">
+          <Typography style={{ marginBottom: 30 }} variant="h5" component="h2">
             How many group members do you want?
           </Typography>
-          <MuiThemeProvider theme = { theme }>
-            <div style={{display: 'flex', justifyContent: 'space-around'}}>
+          <MuiThemeProvider theme={theme}>
+            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               <Radio
                 checked={selectedGroupSizeValue === '2'}
                 onChange={handleGroupSizeChange}
@@ -132,20 +142,37 @@ export default function CreateClub() {
                 inputProps={{ 'aria-label': '6' }}
               />
             </div>
-            <div style={{display: 'flex', marginBottom: 20, justifyContent: 'space-around', alignItems: 'center'}}>
-              <Typography variant="h5" component="h2">2</Typography>
-              <Typography variant="h5" component="h2">3</Typography>
-              <Typography variant="h5" component="h2">4</Typography>
-              <Typography variant="h5" component="h2">5</Typography>
-              <Typography variant="h5" component="h2">6</Typography>
+            <div
+              style={{
+                display: 'flex',
+                marginBottom: 20,
+                justifyContent: 'space-around',
+                alignItems: 'center',
+              }}
+            >
+              <Typography variant="h5" component="h2">
+                2
+              </Typography>
+              <Typography variant="h5" component="h2">
+                3
+              </Typography>
+              <Typography variant="h5" component="h2">
+                4
+              </Typography>
+              <Typography variant="h5" component="h2">
+                5
+              </Typography>
+              <Typography variant="h5" component="h2">
+                6
+              </Typography>
             </div>
           </MuiThemeProvider>
-          <Typography style={{marginBottom: 30}} variant="h5" component="h2">
+          <Typography style={{ marginBottom: 30 }} variant="h5" component="h2">
             How fast do you want the group to read?
           </Typography>
-          <div style={{display: 'flex', flexDirection: 'column'}}>
-            <div style={{display: 'flex', justifyContent: 'space-around'}}>
-              <div style={{display: 'flex', justifyContent: 'center'}}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Radio
                   checked={selectedGroupSpeedValue === 'Slow'}
                   onChange={handleGroupSpeedChange}
@@ -153,7 +180,11 @@ export default function CreateClub() {
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'Slow' }}
                 />
-                <Typography style={{marginLeft: 10}} variant="h5" component="h2">
+                <Typography
+                  style={{ marginLeft: 10 }}
+                  variant="h5"
+                  component="h2"
+                >
                   Slow
                 </Typography>
               </div>
@@ -163,7 +194,6 @@ export default function CreateClub() {
                 </Typography>
               </div>
             </div>
-
           </div>
         </Container>
       </main>

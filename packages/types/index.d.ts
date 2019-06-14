@@ -5,7 +5,10 @@ declare module '@caravan/buddy-reading-types' {
   //   [K in keyof T]: K extends keyof U ? never : K
   // }[keyof T];
   // type Subtract<T, U> = { [K in SubtractKeys<T, U>]: T[K] };
-  export type FilterAutoMongoKeys<Base> = Subtract<Base, MongoDocWithTimestamps>;
+  export type FilterAutoMongoKeys<Base> = Subtract<
+    Base,
+    MongoDocWithTimestamps
+  >;
   // TODO: Improve by nesting the SameKeysAs
   export type SameKeysAs<Base> = { [Key in keyof Base]: any };
 

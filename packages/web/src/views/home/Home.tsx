@@ -55,7 +55,7 @@ export default function Home(props: HomeProps) {
     }
   }, []);
 
-  const leftComponent =
+  const leftComponent = (
     <IconButton
       edge="start"
       className={classes.homeButton}
@@ -63,22 +63,36 @@ export default function Home(props: HomeProps) {
       aria-label="Home"
     >
       <HomeIcon />
-    </IconButton>;
+    </IconButton>
+  );
 
-  const centerComponent =
+  const centerComponent = (
     <Typography variant="h6" className={classes.title}>
       Find Groups
-    </Typography>;
+    </Typography>
+  );
 
-  const rightComponent =
-    <IconButton edge="start" className={classes.addButton} color="inherit" aria-label="Add" component={AdapterLink} to="/club/create">
-    <AddIcon />
-    </IconButton>;
+  const rightComponent = (
+    <IconButton
+      edge="start"
+      className={classes.addButton}
+      color="inherit"
+      aria-label="Add"
+      component={AdapterLink}
+      to="/club/create"
+    >
+      <AddIcon />
+    </IconButton>
+  );
 
   return (
     <>
       <CssBaseline />
-      <Header leftComponent={leftComponent} centerComponent={centerComponent} rightComponent={rightComponent}/>
+      <Header
+        leftComponent={leftComponent}
+        centerComponent={centerComponent}
+        rightComponent={rightComponent}
+      />
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>

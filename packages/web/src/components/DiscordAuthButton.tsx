@@ -55,11 +55,7 @@ export default function DiscordAuthButton(props: DiscordAuthButtonProps) {
   }
   return (
     <>
-      <Button
-        variant="contained"
-        className={classes.button}
-        onClick={onClick}
-      >
+      <Button variant="contained" className={classes.button} onClick={onClick}>
         <LockIcon className={classes.leftIcon} />
         Login with Discord
       </Button>

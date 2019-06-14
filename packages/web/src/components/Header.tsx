@@ -34,15 +34,9 @@ export default function ButtonAppBar(props: HeaderProps) {
         position="static"
       >
         <Toolbar>
-          {props.leftComponent ? (
-            props.leftComponent
-          ) : null}
-          {props.centerComponent ? (
-            props.centerComponent
-          ) : null}
-          {props.rightComponent ? (
-            props.rightComponent
-          ) : null}
+          {props.leftComponent ? props.leftComponent : null}
+          {props.centerComponent ? props.centerComponent : null}
+          {props.rightComponent ? props.rightComponent : null}
         </Toolbar>
       </AppBar>
     </div>
