@@ -7,6 +7,7 @@
     "@caravan/buddy-reading-types": "0.0.1-alpha.0",
     "@material-ui/core": "^4.1.0",
     "@material-ui/icons": "^4.1.0",
+    "@material-ui/lab": "^4.0.0-alpha.16",
     "@types/jest": "^22.2.3",
     "@types/node": "^12.0.6",
     "@types/react": "^16.8.19",

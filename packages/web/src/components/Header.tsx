@@ -2,46 +2,47 @@ import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import HomeIcon from '@material-ui/icons/Home';
-import AddIcon from '@material-ui/icons/Add';
+
+interface HeaderProps {
+  leftComponent?: JSX.Element;
+  rightComponent?: JSX.Element;
+  centerComponent?: JSX.Element;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
       textAlign: 'center',
+      backgroundColor: 'white',
     },
-    homeButton: {
-      marginRight: theme.spacing(2),
-    },
-    addButton: {
-      marginLeft: theme.spacing(2),
-      marginRight: theme.spacing(0),
-    },
-    title: {
-      flexGrow: 1,
-    },
-  }),
+  })
 );
 
-export default function ButtonAppBar() {
+export default function ButtonAppBar(props: HeaderProps) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar
+        style={{
+          backgroundColor: 'white',
+          color: 'black',
+          borderColor: '#7289da',
+          borderBottom: 10,
+        }}
+        position="static"
+      >
         <Toolbar>
-          <IconButton edge="start" className={classes.homeButton} color="inherit" aria-label="Home">
-            <HomeIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Find Buddies
-          </Typography>
-          <IconButton edge="start" className={classes.addButton} color="inherit" aria-label="Add">
-            <AddIcon />
-          </IconButton>
+          {props.leftComponent ? (
+            props.leftComponent
+          ) : null}
+          {props.centerComponent ? (
+            props.centerComponent
+          ) : null}
+          {props.rightComponent ? (
+            props.rightComponent
+          ) : null}
         </Toolbar>
       </AppBar>
     </div>

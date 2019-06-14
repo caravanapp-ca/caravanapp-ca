@@ -7,10 +7,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import qs from 'query-string';
 import { UserDoc } from '@caravan/buddy-reading-types';
+import IconButton from '@material-ui/core/IconButton';
+import HomeIcon from '@material-ui/icons/Home';
+import AddIcon from '@material-ui/icons/Add';
+import AdapterLink from '../../components/AdapterLink';
+import Header from '../../components/Header';
 import { deleteCookie } from '../../common/cookies';
+import { DISCORD_OAUTH_STATE } from '../../state';
 import ClubCards from './ClubCards';
 import { UserCard } from './UserCard';
-import { DISCORD_OAUTH_STATE } from '../../state';
 
 interface HomeProps {
   user: UserDoc | null;
@@ -23,6 +28,16 @@ const useStyles = makeStyles(theme => ({
   },
   heroButtons: {
     marginTop: theme.spacing(4),
+  },
+  homeButton: {
+    marginRight: theme.spacing(2),
+  },
+  addButton: {
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(0),
+  },
+  title: {
+    flexGrow: 1,
   },
 }));
 
@@ -40,9 +55,30 @@ export default function Home(props: HomeProps) {
     }
   }, []);
 
+  const leftComponent =
+    <IconButton
+      edge="start"
+      className={classes.homeButton}
+      color="inherit"
+      aria-label="Home"
+    >
+      <HomeIcon />
+    </IconButton>;
+
+  const centerComponent =
+    <Typography variant="h6" className={classes.title}>
+      Find Groups
+    </Typography>;
+
+  const rightComponent =
+    <IconButton edge="start" className={classes.addButton} color="inherit" aria-label="Add" component={AdapterLink} to="/club/create">
+    <AddIcon />
+    </IconButton>;
+
   return (
-    <React.Fragment>
+    <>
       <CssBaseline />
+      <Header leftComponent={leftComponent} centerComponent={centerComponent} rightComponent={rightComponent}/>
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>
@@ -85,6 +121,6 @@ export default function Home(props: HomeProps) {
         <ClubCards />
         <UserCard user={props.user} />
       </main>
-    </React.Fragment>
+    </>
   );
 }
