@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function MemberList() {
+export default function BookList() {
 
   const classes = useStyles();
   const [dense] = React.useState(false);
@@ -17,8 +17,8 @@ export default function MemberList() {
   return (
     <List dense={dense}>
       <ListElementAvatar
-        avatarElement={<Avatar alt="MR. Urner" src={require("./56624593_10219238571019732_3709471302600359936_o.jpg")} />}
-        primaryText='Quinn Turner'
+        avatarElement={<Avatar alt="Cover of The Name of the Wind" src={require("./186074.jpg")} />}
+        primaryText='The Name of the Wind'
       />
     </List>
   );

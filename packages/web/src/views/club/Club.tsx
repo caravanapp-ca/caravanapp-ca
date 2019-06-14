@@ -1,17 +1,23 @@
 import React, { Fragment } from 'react';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import { Paper, Tabs, Tab, Button } from '@material-ui/core';
 
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-});
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    button: {
+      margin: theme.spacing(1),
+    },
+    input: {
+      display: 'none',
+    },
+  }),
+);
 
 export default function Club() {
 
@@ -23,7 +29,7 @@ export default function Club() {
   }
 
   return (
-    <>
+    <div>
       <ClubHero/>
       <Paper className={classes.root}>
         <Tabs
@@ -43,6 +49,9 @@ export default function Club() {
       {value === 1 &&
         <ShelfView/>
       }
-    </>
+      <Button variant="contained" color="primary" className={classes.button}>
+        JOIN CLUB
+      </Button>
+    </div>
   )
 }

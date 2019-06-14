@@ -4,12 +4,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import FolderIcon from '@material-ui/icons/Folder';
+import PersonIcon from '@material-ui/icons/Person';
 
 export interface ListElementAvatarProps {
   avatarElement?: any,
   primaryText?: string,
   secondaryText?: string,
+  button?: boolean,
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -21,12 +22,12 @@ export default function ListElementAvatar(props: ListElementAvatarProps) {
 
   const classes = useStyles();
 
-  const { avatarElement, primaryText, secondaryText } = props;
+  const { avatarElement, primaryText, secondaryText, button } = props;
 
   return (
     <ListItem button>
       <ListItemAvatar>
-        {avatarElement ? avatarElement : <FolderIcon />}
+        {avatarElement ? avatarElement : <Avatar><PersonIcon /></Avatar>}
       </ListItemAvatar>
       <ListItemText
         primary={primaryText? primaryText : 'Group member'}
