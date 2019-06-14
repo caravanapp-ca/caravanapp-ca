@@ -8,8 +8,21 @@ router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const club = await Club.findById(id);
-    res.json(club);
+    if (club) {
+      res.json(club);
+    } else {
+      res.status(404).send(null);
+    }
   } catch (err) {
+    if (err.name) {
+      switch (err.name) {
+        case "CastError":
+          res.status(404).send(null);
+          return;
+        default:
+          break;
+      }
+    }
     console.log(`Failed to get club ${id}`, err);
     return next(err);
   }
