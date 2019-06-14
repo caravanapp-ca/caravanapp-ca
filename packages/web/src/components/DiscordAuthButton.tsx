@@ -1,8 +1,8 @@
-import axios from 'axios';
+import btoa from 'btoa';
 import React from 'react';
-import { LinkProps, Link } from 'react-router-dom';
 import { Button, makeStyles } from '@material-ui/core';
 import LockIcon from '@material-ui/icons/Lock';
+import { DISCORD_OAUTH_STATE } from '../state';
 
 export interface DiscordAuthButtonProps {}
 
@@ -18,23 +18,47 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-// required for react-router-dom < 6.0.0
-// see https://github.com/ReactTraining/react-router/issues/6056#issuecomment-435524678
-const AdapterLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  (props, ref) => <Link innerRef={ref} {...props} />
-);
+/**
+ * @see https://auth0.com/docs/protocols/oauth2/oauth-state
+ * @see https://auth0.com/docs/protocols/oauth2/mitigate-csrf-attacks
+ * @see https://stackoverflow.com/a/52420482/4400318
+ */
+function getOAuth2StateParam() {
+  const discordOAuthState = localStorage.getItem(DISCORD_OAUTH_STATE);
+  if (discordOAuthState) {
+    return discordOAuthState;
+  }
+  const typedArray = new Uint8Array(8);
+  // (window as any).msCrypto for IE 11 support
+  (window.crypto || (window as any).msCrypto).getRandomValues(typedArray);
+  const arr = Array.from // if available
+    ? Array.from(typedArray) // use Array#from
+    : typedArray.map(v => v); // otherwise map()
+  // Base64 encode the JSON so that it can be sent to an OAuth server
+  const oauthState = btoa(JSON.stringify(arr));
+  localStorage.setItem(DISCORD_OAUTH_STATE, oauthState);
+
+  // and to retrieve it...
+  // const str = localStorage.getItem('foo');
+  // const retrievedArr = JSON.parse(oauthState);
+  // const retrievedTypedArray = new Uint8Array(retrievedArr);
+  // console.log(retrievedTypedArray.byteLength);
+
+  return oauthState;
+}
 
 export default function DiscordAuthButton(props: DiscordAuthButtonProps) {
   const classes = useStyles();
-  const req = async () => {
-    await axios.get('/api/auth/discord/login');
+  function onClick() {
+    const oauth2State = getOAuth2StateParam();
+    window.location.href = `http://localhost:3001/api/auth/discord/login?state=${oauth2State}`;
   }
   return (
     <>
       <Button
         variant="contained"
         className={classes.button}
-        onClick={req}
+        onClick={onClick}
       >
         <LockIcon className={classes.leftIcon} />
         Login with Discord

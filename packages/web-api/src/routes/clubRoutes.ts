@@ -45,7 +45,7 @@ router.put('/:id', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
   try {
     const record = await Club.remove({ _id: req.params.id });
-    res.sendStatus(200);
+    res.sendStatus(204);
   } catch (err) {
     console.log(`Failed to delete club ${req.params.id}`, err);
     return next(err);
