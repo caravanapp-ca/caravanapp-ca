@@ -43,10 +43,16 @@ export default function CreateClub() {
   const classes = useStyles();
   const [spacing] = React.useState<GridSpacing>(2);
 
-  const [selectedValue, setSelectedValue] = React.useState('a');
+  const [selectedGroupSizeValue, setSelectedGroupSizeValue] = React.useState('2');
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setSelectedValue(event.target.value);
+  function handleGroupSizeChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setSelectedGroupSizeValue(event.target.value);
+  }
+
+  const [selectedGroupSpeedValue, setSelectedGroupSpeedValue] = React.useState('Slow');
+
+  function handleGroupSpeedChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setSelectedGroupSpeedValue(event.target.value);
   }
 
   return (
@@ -91,42 +97,74 @@ export default function CreateClub() {
           <MuiThemeProvider theme = { theme }>
             <div style={{display: 'flex', justifyContent: 'space-around'}}>
               <Radio
-                checked={selectedValue === '2'}
-                onChange={handleChange}
+                checked={selectedGroupSizeValue === '2'}
+                onChange={handleGroupSizeChange}
                 value="2"
                 name="radio-button-demo"
                 inputProps={{ 'aria-label': '2' }}
               />
               <Radio
-                checked={selectedValue === '3'}
-                onChange={handleChange}
+                checked={selectedGroupSizeValue === '3'}
+                onChange={handleGroupSizeChange}
                 value="3"
                 name="radio-button-demo"
                 inputProps={{ 'aria-label': '3' }}
               />
               <Radio
-                checked={selectedValue === '4'}
-                onChange={handleChange}
+                checked={selectedGroupSizeValue === '4'}
+                onChange={handleGroupSizeChange}
                 value="4"
                 name="radio-button-demo"
                 inputProps={{ 'aria-label': '4' }}
               />
               <Radio
-                checked={selectedValue === '5'}
-                onChange={handleChange}
+                checked={selectedGroupSizeValue === '5'}
+                onChange={handleGroupSizeChange}
                 value="5"
                 name="radio-button-demo"
                 inputProps={{ 'aria-label': '5' }}
               />
               <Radio
-                checked={selectedValue === '6'}
-                onChange={handleChange}
+                checked={selectedGroupSizeValue === '6'}
+                onChange={handleGroupSizeChange}
                 value="6"
                 name="radio-button-demo"
                 inputProps={{ 'aria-label': '6' }}
               />
             </div>
+            <div style={{display: 'flex', marginBottom: 20, justifyContent: 'space-around', alignItems: 'center'}}>
+              <Typography variant="h5" component="h2">2</Typography>
+              <Typography variant="h5" component="h2">3</Typography>
+              <Typography variant="h5" component="h2">4</Typography>
+              <Typography variant="h5" component="h2">5</Typography>
+              <Typography variant="h5" component="h2">6</Typography>
+            </div>
           </MuiThemeProvider>
+          <Typography style={{marginBottom: 30}} variant="h5" component="h2">
+            How fast do you want the group to read?
+          </Typography>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <div style={{display: 'flex', justifyContent: 'space-around'}}>
+              <div style={{display: 'flex', justifyContent: 'center'}}>
+                <Radio
+                  checked={selectedGroupSpeedValue === 'Slow'}
+                  onChange={handleGroupSpeedChange}
+                  value="Slow"
+                  name="radio-button-demo"
+                  inputProps={{ 'aria-label': 'Slow' }}
+                />
+                <Typography style={{marginLeft: 10}} variant="h5" component="h2">
+                  Slow
+                </Typography>
+              </div>
+              <div>
+                <Typography variant="h5" component="h2">
+                  Icon
+                </Typography>
+              </div>
+            </div>
+
+          </div>
         </Container>
       </main>
     </React.Fragment>
