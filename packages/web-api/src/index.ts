@@ -1,8 +1,10 @@
 require('dotenv').config();
 
 import bodyParser from 'body-parser';
-import cors from 'cors';
-import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors'; // Might not need
+import cookieParser from 'cookie-parser';
+import cookieSession from 'cookie-session';
+import express from 'express';
 import path from 'path';
 
 import authRoutes from './routes/authRoutes';
@@ -17,6 +19,10 @@ import {
 
 (async () => {
   const app = express();
+  app.use(cookieParser());
+  app.use(
+    cookieSession({ name: 'session', keys: [process.env.COOKIE_SESSION_KEY] })
+  );
 
   await connectToDb();
 
@@ -26,7 +32,7 @@ import {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(cors());
+  app.use(cors()); // might not need
 
   app.use('/api/test', testRoutes);
   app.use('/api/club', clubRoutes);

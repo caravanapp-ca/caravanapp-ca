@@ -33,7 +33,12 @@ export default function Footer() {
         <Typography variant="h6" align="center" gutterBottom>
           Footer
         </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+        <Typography
+          variant="subtitle1"
+          align="center"
+          color="textSecondary"
+          component="p"
+        >
           Something here to give the footer a purpose!
         </Typography>
         <MadeWithLove />
@@ -41,5 +46,3 @@ export default function Footer() {
     </React.Fragment>
   );
 }
-
-

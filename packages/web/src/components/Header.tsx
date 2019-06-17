@@ -4,9 +4,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
 interface HeaderProps {
-  leftComponent?: any;
-  rightComponent?: any;
-  centerComponent?: any;
+  leftComponent?: JSX.Element;
+  rightComponent?: JSX.Element;
+  centerComponent?: JSX.Element;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,15 +34,9 @@ export default function ButtonAppBar(props: HeaderProps) {
         position="static"
       >
         <Toolbar>
-          {props.leftComponent ? (
-            props.leftComponent
-          ) : null}
-          {props.centerComponent ? (
-            props.centerComponent
-          ) : null}
-          {props.rightComponent ? (
-            props.rightComponent
-          ) : null}
+          {props.leftComponent ? props.leftComponent : null}
+          {props.centerComponent ? props.centerComponent : null}
+          {props.rightComponent ? props.rightComponent : null}
         </Toolbar>
       </AppBar>
     </div>

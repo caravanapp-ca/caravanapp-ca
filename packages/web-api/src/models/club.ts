@@ -1,14 +1,18 @@
 import { model, Schema } from 'mongoose';
+import {
+  ClubDoc,
+  FilterAutoMongoKeys,
+  SameKeysAs,
+} from '@caravan/buddy-reading-types';
 
-const clubSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    bio: { type: String },
-    maxMembers: { type: Number, required: true },
-  },
-  {
-    timestamps: true
-  }
-)
+const definition: SameKeysAs<FilterAutoMongoKeys<ClubDoc>> = {
+  name: { type: String, required: true },
+  bio: { type: String },
+  maxMembers: { type: Number },
+};
 
-export default model("Club", clubSchema);
+const clubSchema = new Schema<ClubDoc>(definition, {
+  timestamps: true,
+});
+
+export default model<ClubDoc>('Club', clubSchema);
