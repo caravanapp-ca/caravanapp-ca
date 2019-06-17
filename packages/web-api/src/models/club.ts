@@ -4,7 +4,6 @@ import {
   ShelfEntryDoc,
   FilterAutoMongoKeys,
   SameKeysAs,
-  ShelfEntryDoc,
   GroupMemberDoc,
 } from '@caravan/buddy-reading-types';
 
