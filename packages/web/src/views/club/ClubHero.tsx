@@ -2,6 +2,7 @@ import React from 'react';
 import { ShelfEntryDoc } from '@caravan/buddy-reading-types';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import './ClubHero.css';
 
 const useStyles = makeStyles(theme => ({}));
 
