@@ -1,4 +1,6 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import { UserDoc } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
   createMuiTheme,
@@ -80,7 +82,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function CreateClub() {
+interface CreateClubRouteParams {
+  id: string;
+}
+
+interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
+  user: UserDoc | null;
+}
+
+export default function CreateClub(props: CreateClubProps) {
   const classes = useStyles();
 
   const leftComponent = (
