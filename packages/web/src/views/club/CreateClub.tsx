@@ -75,6 +75,7 @@ const useStyles = makeStyles(theme => ({
     color: 'white',
     backgroundColor: '#7289da',
   },
+  addButton: {},
 }));
 
 export default function CreateClub() {
