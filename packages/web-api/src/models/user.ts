@@ -5,7 +5,7 @@ import {
   SameKeysAs,
 } from '@caravan/buddy-reading-types';
 
-const nestedDiscordDefinition: SameKeysAs<UserDoc['discord']> = {
+const nestedDiscordDefinition: Required<SameKeysAs<UserDoc['discord']>> = {
   id: { type: String, required: true, unique: true, index: true },
   username: { type: String, required: true, unique: true, index: true },
   discriminator: { type: String, required: true },
