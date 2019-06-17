@@ -163,6 +163,16 @@ export default function CreateClub() {
     setSelectedGroupBioValue(e.target.value);
   }
 
+  interface CreateClub {
+    name: string;
+    ownerId: string;
+  }
+
+  function createClub() {
+    let clubObj = { name: 10, ownerId: 'Size 10 Object' };
+    console.log(clubObj.name);
+  }
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -174,7 +184,7 @@ export default function CreateClub() {
       <main>
         <Container className={classes.formContainer} maxWidth="md">
           <Typography
-            style={{ fontWeight: 'bold', marginBottom: 10 }}
+            style={{ fontWeight: 'bold', marginBottom: 10, marginTop: 40 }}
             variant="h5"
             component="h2"
           >
@@ -193,7 +203,6 @@ export default function CreateClub() {
               shrink: true,
             }}
           />
-
           <Typography
             style={{ fontWeight: 'bold', marginBottom: 20 }}
             variant="h5"
@@ -670,6 +679,7 @@ export default function CreateClub() {
               }
               className={classes.createButton}
               size="small"
+              onClick={createClub}
             >
               Create
             </Button>

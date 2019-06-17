@@ -30,6 +30,7 @@ export default function ButtonAppBar(props: HeaderProps) {
           color: 'black',
           borderBottom: 10,
           borderBottomColor: '#7289da',
+          position: 'fixed',
         }}
         position="static"
       >
