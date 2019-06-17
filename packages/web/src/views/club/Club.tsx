@@ -82,8 +82,16 @@ export default function Club({ match }: RouteComponentProps<ClubRouteParams>) {
               <Tab label="Shelf" />
             </Tabs>
           </Paper>
-          {tabValue === 0 && <GroupView />}
-          {tabValue === 1 && <ShelfView />}
+          {tabValue === 0 &&
+            <GroupView
+              club={club}
+            />
+          }
+          {tabValue === 1 &&
+            <ShelfView
+              shelf={club.shelf}
+            />
+          }
           <Button
             variant="contained"
             color="primary"
