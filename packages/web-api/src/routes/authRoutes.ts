@@ -1,24 +1,24 @@
-import axios from 'axios';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import {
-  DiscordApiUrl,
-  DiscordBase64Credentials,
+  FilterAutoMongoKeys,
+  SessionDoc,
+  UserDoc,
+} from '@caravan/buddy-reading-types';
+import {
   DiscordOAuth2Url,
-  GetDiscordTokenCallbackUri,
-  GetDiscordTokenRefreshCallbackUri,
   DiscordUserResponseData,
   OAuth2TokenResponseData,
   DiscordClient,
 } from '../services/discord';
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
-import {
-  FilterAutoMongoKeys,
-  SessionDoc,
-  UserDoc,
-} from '@caravan/buddy-reading-types';
 
 const router = express.Router();
+
+export function destroySession(req: Request, res: Response) {
+  req.session = null;
+  res.cookie('userId', '');
+}
 
 router.get('/discord/login', (req, res) => {
   const { state } = req.query;
@@ -47,15 +47,14 @@ function convertTokenResponseToModel(
 }
 
 function convertUserResponseToModel(data: DiscordUserResponseData) {
-  const model: FilterAutoMongoKeys<UserDoc> = {
+  const model: Pick<UserDoc, 'discord'> = {
     discord: data,
   };
   return model;
 }
 
 router.get('/logout', async (req, res) => {
-  req.session = null;
-  res.cookie('token', '');
+  destroySession(req, res);
   res.redirect('/');
 });
 
@@ -71,8 +70,7 @@ router.get('/discord/callback', async (req, res) => {
     const encodedErrorMessage = encodeURIComponent(
       tokenResponseData.error_description
     );
-    req.session = null;
-    res.cookie('token', '');
+    destroySession(req, res);
     res.redirect(`/?error=${encodedErrorMessage}`);
     return;
   }
@@ -115,8 +113,7 @@ router.get('/discord/callback', async (req, res) => {
   } catch (err) {
     // to check if it fails here
     const encodedErrorMessage = encodeURIComponent(err);
-    req.session = null;
-    res.cookie('token', '');
+    destroySession(req, res);
     res.redirect(`/?error=${encodedErrorMessage}`);
     return;
   }
@@ -131,13 +128,12 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   if (successfulAuthentication) {
-    // Save the `access_token` to session with cookie-session
-    res.cookie('token', accessToken);
+    req.session.token = accessToken;
+    req.session.userId = userDoc.id;
     res.cookie('userId', userDoc.id);
     res.redirect(`/?state=${state}`);
   } else {
-    req.session = null;
-    res.cookie('token', '');
+    destroySession(req, res);
     res.redirect(`/?error=Could+not+authenticate`);
   }
 });

@@ -27,8 +27,8 @@ const definition: SameKeysAs<FilterAutoMongoKeys<UserDoc>> = {
   readingSpeed: { type: String },
 };
 
-const userSchema = new Schema(definition, {
+const userSchema = new Schema<UserDoc>(definition, {
   timestamps: true,
 });
 
-export default model('User', userSchema);
+export default model<UserDoc>('User', userSchema);

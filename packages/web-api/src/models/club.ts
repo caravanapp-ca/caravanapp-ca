@@ -11,8 +11,8 @@ const definition: SameKeysAs<FilterAutoMongoKeys<ClubDoc>> = {
   maxMembers: { type: Number },
 };
 
-const clubSchema = new Schema(definition, {
+const clubSchema = new Schema<ClubDoc>(definition, {
   timestamps: true,
 });
 
-export default model('Club', clubSchema);
+export default model<ClubDoc>('Club', clubSchema);

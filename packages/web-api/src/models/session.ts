@@ -15,6 +15,6 @@ const definition: SameKeysAs<FilterAutoMongoKeys<SessionDoc>> = {
   userId: { type: String, required: true },
 };
 
-const sessionSchema = new Schema(definition);
+const sessionSchema = new Schema<SessionDoc>(definition);
 
-export default model('Session', sessionSchema);
+export default model<SessionDoc>('Session', sessionSchema);

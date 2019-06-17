@@ -1,10 +1,10 @@
-import { Subtract } from 'utility-types';
+import { Document } from 'mongoose';
 
 declare module '@caravan/buddy-reading-types' {
-  // type SubtractKeys<T, U> = {
-  //   [K in keyof T]: K extends keyof U ? never : K
-  // }[keyof T];
-  // type Subtract<T, U> = { [K in SubtractKeys<T, U>]: T[K] };
+  type SubtractKeys<T, U> = {
+    [K in keyof T]: K extends keyof U ? never : K
+  }[keyof T];
+  type Subtract<T, U> = { [K in SubtractKeys<T, U>]: T[K] };
   export type FilterAutoMongoKeys<Base> = Subtract<
     Base,
     MongoDocWithTimestamps
@@ -12,23 +12,18 @@ declare module '@caravan/buddy-reading-types' {
   // TODO: Improve by nesting the SameKeysAs
   export type SameKeysAs<Base> = { [Key in keyof Base]: any };
 
-  export interface MongoDoc {
-    _id: string;
-    _v: number;
-  }
-
-  export interface MongoDocWithTimestamps extends MongoDoc {
+  export interface MongoDocWithTimestamps extends Document {
     createdAt: Date;
     updatedAt: Date;
   }
 
-  export interface ClubDoc extends MongoDoc {
+  export interface ClubDoc extends Document {
     name: string;
     bio?: string;
     maxMembers?: number;
   }
 
-  export interface SessionDoc extends MongoDoc {
+  export interface SessionDoc extends Document {
     accessToken: string;
     /** Milliseconds since January 1st, 1970 (use Date.now() to get current value) */
     accessTokenExpiresAt: number;
