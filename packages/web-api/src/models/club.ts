@@ -4,6 +4,7 @@ import {
   FilterAutoMongoKeys,
   SameKeysAs,
   ShelfEntryDoc,
+  GroupMemberDoc,
 } from '@caravan/buddy-reading-types';
 
 const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntryDoc>> = {
@@ -17,10 +18,21 @@ const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntryDoc>> = {
   author: { type: String },
   publishedDate: { type: Date },
   coverImageURL: { type: String },
-  genres: { type: [String] },
+  genres: { type: [String], required: true },
 };
 
 const shelfSchema = new Schema(shelfSchemaDefinition, {
+  timestamps: true,
+});
+
+const memberSchemaDefinition: SameKeysAs<
+  FilterAutoMongoKeys<GroupMemberDoc>
+> = {
+  userId: { type: Schema.Types.ObjectId, required: true },
+  role: { type: String, required: true },
+};
+
+const memberSchema = new Schema(memberSchemaDefinition, {
   timestamps: true,
 });
 
@@ -32,7 +44,7 @@ const definition: SameKeysAs<FilterAutoMongoKeys<ClubDoc>> = {
   readingSpeed: { type: String },
   shelf: { type: [shelfSchema], required: true },
   ownerId: { type: String, required: true },
-  members: { type: [String], required: true },
+  members: { type: [memberSchema], required: true },
 };
 
 const clubSchema = new Schema<ClubDoc>(definition, {
