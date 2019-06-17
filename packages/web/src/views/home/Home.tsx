@@ -12,7 +12,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import AddIcon from '@material-ui/icons/Add';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import { deleteCookie } from '../../common/cookies';
 import { DISCORD_OAUTH_STATE } from '../../state';
 import ClubCards from './ClubCards';
