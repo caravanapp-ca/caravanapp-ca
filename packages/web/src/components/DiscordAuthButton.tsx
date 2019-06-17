@@ -51,7 +51,11 @@ export default function DiscordAuthButton(props: DiscordAuthButtonProps) {
   const classes = useStyles();
   function onClick() {
     const oauth2State = getOAuth2StateParam();
-    window.location.href = `http://localhost:3001/api/auth/discord/login?state=${oauth2State}`;
+    const host =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3001'
+        : undefined;
+    window.location.href = `${host}/api/auth/discord/login?state=${oauth2State}`;
   }
   return (
     <>
