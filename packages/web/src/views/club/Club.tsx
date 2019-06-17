@@ -1,12 +1,12 @@
+import axios from 'axios';
 import React, { useEffect } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { Paper, Tabs, Tab, Button, Typography } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { RouteComponentProps } from 'react-router-dom';
-import { ClubDoc, ShelfEntryDoc } from '@caravan/buddy-reading-types';
+import { ClubDoc, ShelfEntryDoc, UserDoc } from '@caravan/buddy-reading-types';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
-import axios from 'axios';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,25 +22,31 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type ClubRouteParams = { id: string };
+interface ClubRouteParams {
+  id: string;
+}
 
-export default function Club({ match }: RouteComponentProps<ClubRouteParams>) {
+interface ClubProps extends RouteComponentProps<ClubRouteParams> {
+  user: UserDoc | null;
+}
+
+export default function Club(props: ClubProps) {
   const classes = useStyles();
   const [tabValue, setTabValue] = React.useState(0);
   const [club, setClub] = React.useState<ClubDoc | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntryDoc | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
-  const clubId = match.params.id;
+  const clubId = props.match.params.id;
 
   function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
     setTabValue(newValue);
   }
 
-  function getCurrentBook(club: ClubDoc){
-    if(club && club.shelf){
+  function getCurrentBook(club: ClubDoc) {
+    if (club && club.shelf) {
       const book = club.shelf.find(book => book.readingState === 'current');
       if (book) {
-        setCurrBook(book)
+        setCurrBook(book);
       }
     }
   }
@@ -48,7 +54,7 @@ export default function Club({ match }: RouteComponentProps<ClubRouteParams>) {
   useEffect(() => {
     const getClub = async () => {
       try {
-        const result = await axios.get<ClubDoc>(`/api/club/${clubId}`); //TODO: type as ClubDoc
+        const result = await axios.get<ClubDoc>(`/api/club/${clubId}`);
         const club = result.data;
         setClub(club);
         getCurrentBook(club);
@@ -65,11 +71,7 @@ export default function Club({ match }: RouteComponentProps<ClubRouteParams>) {
     <>
       {loadedClub && club && (
         <div>
-          {currBook &&
-            <ClubHero
-              currBook={currBook}
-            />
-          }
+          {currBook && <ClubHero currBook={currBook} />}
           <Paper className={classes.root}>
             <Tabs
               value={tabValue}
@@ -82,16 +84,8 @@ export default function Club({ match }: RouteComponentProps<ClubRouteParams>) {
               <Tab label="Shelf" />
             </Tabs>
           </Paper>
-          {tabValue === 0 &&
-            <GroupView
-              club={club}
-            />
-          }
-          {tabValue === 1 &&
-            <ShelfView
-              shelf={club.shelf}
-            />
-          }
+          {tabValue === 0 && <GroupView club={club} />}
+          {tabValue === 1 && <ShelfView shelf={club.shelf} />}
           <Button
             variant="contained"
             color="primary"

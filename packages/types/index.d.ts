@@ -19,8 +19,18 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface ClubDoc extends Document {
     name: string;
+    ownerId: string;
+    shelf: ShelfEntryDoc[];
+    members: GroupMemberDoc[];
     bio?: string;
-    maxMembers?: number;
+    maxMembers: number;
+    vibe?: string;
+    readingSpeed?: string;
+  }
+
+  export interface GroupMemberDoc extends MongoDocWithTimestamps {
+    userId: string;
+    role: string;
   }
 
   export interface SessionDoc extends Document {
@@ -32,6 +42,20 @@ declare module '@caravan/buddy-reading-types' {
     tokenType: 'Bearer';
     client: string;
     userId: string;
+  }
+
+  export interface ShelfEntryDoc extends MongoDocWithTimestamps {
+    amazonId?: string;
+    goodReadsId?: string;
+    isbn?: string;
+    readingState: ReadingState;
+    startedReading?: Date;
+    finishedReading?: Date;
+    title: string;
+    author?: string;
+    publishedDate?: string;
+    coverImageURL?: string;
+    genres: string[];
   }
 
   export interface UserDoc extends MongoDocWithTimestamps {
@@ -54,39 +78,5 @@ declare module '@caravan/buddy-reading-types' {
     readingSpeed?: string;
   }
 
-  export interface GroupMemberDoc extends UserDoc {
-    role: string;
-  }
-
   export type ReadingState = 'notStarted' | 'current' | 'read';
-
-  export interface ShelfEntryDoc {
-    _id: string;
-    amazonId?: string;
-    goodReadsId?: string;
-    isbn?: string;
-    readingState: ReadingState;
-    startedReading?: Date;
-    finishedReading?: Date;
-    title: string;
-    author?: string;
-    publishedDate?: string;
-    coverImageURL?: string;
-    genres?: [string];
-    createdAt: Date;
-    updatedAt: Date;
-    _v: number;
-  }
-
-  export interface ClubDoc {
-    _id: string;
-    ownerId: string;
-    name: string;
-    bio?: string;
-    members: [GroupMemberDoc];
-    maxMembers: number;
-    vibe?: string;
-    readingSpeed?: string;
-    shelf?: [ShelfEntryDoc];
-  }
 }

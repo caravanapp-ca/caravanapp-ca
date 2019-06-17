@@ -1,4 +1,5 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,11 +10,10 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import Radio from '@material-ui/core/Radio';
-
-import AdapterLink from '../../components/AdapterLink';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-
 import purple from '@material-ui/core/colors/purple';
+import { UserDoc } from '@caravan/buddy-reading-types';
+import AdapterLink from '../../components/AdapterLink';
 
 const theme = createMuiTheme({
   palette: {
@@ -38,7 +38,15 @@ const useStyles = makeStyles(theme => ({
   addButton: {},
 }));
 
-export default function CreateClub() {
+interface CreateClubRouteParams {
+  id: string;
+}
+
+interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
+  user: UserDoc | null;
+}
+
+export default function CreateClub(props: CreateClubProps) {
   const classes = useStyles();
   const [spacing] = React.useState<GridSpacing>(2);
 
