@@ -78,6 +78,15 @@ router.get('/discord/callback', async (req, res) => {
   const discordClient = new DiscordClient(accessToken);
   const discordUserData = await discordClient.getUser();
 
+  let userDoc = await UserModel.findOne({ 'discord.id': discordUserData.id });
+  if (userDoc) {
+    // Update the user, but lazy now.
+  } else {
+    const userInstance = convertUserResponseToModel(discordUserData);
+    const userModel = new UserModel(userInstance);
+    userDoc = await userModel.save();
+  }
+
   try {
     const currentSessionModel = await SessionModel.findOne({ accessToken });
     if (currentSessionModel) {
@@ -95,7 +104,7 @@ router.get('/discord/callback', async (req, res) => {
         const modelInstance = convertTokenResponseToModel(
           tokenResponseData,
           'discord',
-          discordUserData.id
+          userDoc.id
         );
         currentSessionModel.update(modelInstance).exec();
       }
@@ -105,7 +114,7 @@ router.get('/discord/callback', async (req, res) => {
       const modelInstance = convertTokenResponseToModel(
         tokenResponseData,
         'discord',
-        discordUserData.id
+        userDoc.id
       );
       const sessionModel = new SessionModel(modelInstance);
       const sessionSaveResult = sessionModel.save();
@@ -116,15 +125,6 @@ router.get('/discord/callback', async (req, res) => {
     destroySession(req, res);
     res.redirect(`/?error=${encodedErrorMessage}`);
     return;
-  }
-
-  let userDoc = await UserModel.findOne({ 'discord.id': discordUserData.id });
-  if (userDoc) {
-    // Update the user, but lazy now.
-  } else {
-    const userInstance = convertUserResponseToModel(discordUserData);
-    const userModel = new UserModel(userInstance);
-    userDoc = await userModel.save();
   }
 
   if (successfulAuthentication) {

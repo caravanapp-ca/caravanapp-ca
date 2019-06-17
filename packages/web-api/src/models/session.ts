@@ -12,7 +12,7 @@ const definition: SameKeysAs<FilterAutoMongoKeys<SessionDoc>> = {
   scope: { type: String, required: true },
   tokenType: { type: String, required: true },
   client: { type: String, required: true },
-  userId: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, required: true },
 };
 
 const sessionSchema = new Schema<SessionDoc>(definition);
