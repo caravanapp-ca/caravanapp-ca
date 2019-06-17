@@ -1,8 +1,7 @@
 import React from 'react';
+import { ShelfEntryDoc } from '@caravan/buddy-reading-types';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import './ClubHero.css';
-import { ShelfEntryDoc } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -24,7 +23,7 @@ export default function ClubHero(props: ClubHeroProps) {
   let authorDateString;
   if (author || dateObj) {
     if (author && dateObj) {
-      authorDateString = author + ', ' + dateObj.getUTCFullYear();
+      authorDateString = `${author}, ${dateObj.getUTCFullYear()}`;
     } else if (author && !dateObj) {
       authorDateString = author;
     } else if (!author && dateObj) {

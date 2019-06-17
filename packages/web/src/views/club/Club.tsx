@@ -10,7 +10,12 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { ClubDoc, ShelfEntryDoc, UserDoc } from '@caravan/buddy-reading-types';
+import {
+  ClubDoc,
+  ShelfEntryDoc,
+  UserDoc,
+  GroupMemberDoc,
+} from '@caravan/buddy-reading-types';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
@@ -46,6 +51,7 @@ export default function Club(props: ClubProps) {
   const [club, setClub] = React.useState<ClubDoc | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntryDoc | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
+  // const [memberInfo, setMemberInfo] = React.useState<MemberInfo | null>(null);
   const clubId = props.match.params.id;
 
   function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
@@ -61,13 +67,33 @@ export default function Club(props: ClubProps) {
     }
   }
 
+  // WIP
+  // function getMembersInfo(club: ClubDoc) {
+  //   const getMembers = async () => {
+  //     let memberInfo = [];
+  //     club.members.forEach(m => {
+  //       try {
+  // TODO: Need to move this axios call to services.
+  //         const result = await axios.get<UserDoc>(`/api/user/${m.id}`);
+  //         const member = result.data;
+  //         memberInfo.push({ member, role: m.role });
+  //       } catch (err) {
+  //         console.error(err);
+  //       }
+  //     });
+  //     setMemberInfo(memberInfo);
+  //   };
+  // }
+
   useEffect(() => {
     const getClub = async () => {
       try {
+        // TODO: Need to move this axios call to services.
         const result = await axios.get<ClubDoc>(`/api/club/${clubId}`);
         const club = result.data;
         setClub(club);
         getCurrentBook(club);
+        // getMemberInfo(club);
         setLoadedClub(true);
       } catch (err) {
         console.error(err);

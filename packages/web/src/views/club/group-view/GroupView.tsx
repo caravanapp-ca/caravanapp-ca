@@ -1,72 +1,78 @@
 import React from 'react';
+import { ClubDoc } from '@caravan/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import FanIcon from '@material-ui/icons/Toys';
-import { ClubDoc } from '@caravan/buddy-reading-types';
 import ListElementAvatar from '../../../components/ListElementAvatar';
-import { SlowReadingSpeedAvatar, ModerateReadingSpeedAvatar, FastReadingSpeedAvatar } from '../../../components/reading-speed-avatars';
-import { ChillGroupVibeAvatar, FirstTimersGroupVibeAvatar, LearningGroupVibeAvatar, NerdyGroupVibeAvatar, PowerGroupVibeAvatar } from '../../../components/group-vibe-avatars';
-import MemberList from './MemberList'
+import {
+  SlowReadingSpeedAvatar,
+  ModerateReadingSpeedAvatar,
+  FastReadingSpeedAvatar,
+} from '../../../components/reading-speed-avatars';
+import {
+  ChillGroupVibeAvatar,
+  FirstTimersGroupVibeAvatar,
+  LearningGroupVibeAvatar,
+  NerdyGroupVibeAvatar,
+  PowerGroupVibeAvatar,
+} from '../../../components/group-vibe-avatars';
+import MemberList from './MemberList';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-  }),
-);
+const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface GroupViewProps {
   club: ClubDoc;
 }
 
 export default function GroupView(props: GroupViewProps) {
+  const classes = useStyles();
+  const { bio, members, maxMembers, vibe, readingSpeed } = props.club;
 
-  const { bio, maxMembers, vibe, readingSpeed } = props.club;
-
-  let readingSpeedAvatar = <SlowReadingSpeedAvatar/>
-  switch(readingSpeed){
+  let readingSpeedAvatar;
+  switch (readingSpeed) {
+    case 'slow':
+      readingSpeedAvatar = <SlowReadingSpeedAvatar />;
+      break;
     case 'moderate':
-      readingSpeedAvatar = <ModerateReadingSpeedAvatar/>
+      readingSpeedAvatar = <ModerateReadingSpeedAvatar />;
       break;
     case 'fast':
-      readingSpeedAvatar = <FastReadingSpeedAvatar/>
+      readingSpeedAvatar = <FastReadingSpeedAvatar />;
       break;
   }
 
-  let groupVibeAvatar = <ChillGroupVibeAvatar/>
-  switch(vibe){
+  let groupVibeAvatar;
+  switch (vibe) {
+    case 'chill':
+      groupVibeAvatar = <ChillGroupVibeAvatar />;
+      break;
     case 'first-timers':
-      groupVibeAvatar = <FirstTimersGroupVibeAvatar/>
+      groupVibeAvatar = <FirstTimersGroupVibeAvatar />;
       break;
     case 'learning':
-      groupVibeAvatar = <LearningGroupVibeAvatar/>
+      groupVibeAvatar = <LearningGroupVibeAvatar />;
       break;
     case 'nerdy':
-      groupVibeAvatar = <NerdyGroupVibeAvatar/>
+      groupVibeAvatar = <NerdyGroupVibeAvatar />;
       break;
     case 'power':
-      groupVibeAvatar = <PowerGroupVibeAvatar/>
+      groupVibeAvatar = <PowerGroupVibeAvatar />;
       break;
   }
-
-  const classes = useStyles();
 
   return (
     <div>
       <Typography>About the Group</Typography>
-      <Typography>
-        {bio}
-      </Typography>
+      {bio && <Typography>{bio}</Typography>}
       <Typography>Members</Typography>
-      <MemberList/>
+      <MemberList members={members} maxMembers={maxMembers} />
       <Typography>Reading Speed</Typography>
       <ListElementAvatar
         avatarElement={readingSpeedAvatar}
         primaryText={readingSpeed}
       />
       <Typography>Vibe</Typography>
-      <ListElementAvatar
-        avatarElement={groupVibeAvatar}
-        primaryText={vibe}
-      />
+      <ListElementAvatar avatarElement={groupVibeAvatar} primaryText={vibe} />
     </div>
-  )
+  );
 }

@@ -24,8 +24,8 @@ declare module '@caravan/buddy-reading-types' {
     members: GroupMemberDoc[];
     bio?: string;
     maxMembers: number;
-    vibe?: string;
-    readingSpeed?: string;
+    vibe?: GroupVibe;
+    readingSpeed?: ReadingSpeed;
   }
 
   export interface GroupMemberDoc extends MongoDocWithTimestamps {
@@ -79,4 +79,13 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
+
+  export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
+
+  export type GroupVibe =
+    | 'chill'
+    | 'power'
+    | 'learning'
+    | 'first-timers'
+    | 'nerdy';
 }
