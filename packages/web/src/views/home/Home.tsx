@@ -12,6 +12,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import AddIcon from '@material-ui/icons/Add';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const useStyles = makeStyles(theme => ({
   heroContent: {
@@ -30,6 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1,
+    fontWeight: 'bold'
   },
 }));
 
@@ -37,12 +39,7 @@ export default function Home() {
   const classes = useStyles();
 
   const leftComponent =
-    <IconButton
-      edge="start"
-      className={classes.homeButton}
-      color="inherit"
-      aria-label="Home"
-    >
+    <IconButton edge="start" className={classes.homeButton} color="inherit" aria-label="Home" component={AdapterLink} to="/">
       <HomeIcon />
     </IconButton>;
 
@@ -53,7 +50,7 @@ export default function Home() {
 
   const rightComponent =
     <IconButton edge="start" className={classes.addButton} color="inherit" aria-label="Add" component={AdapterLink} to="/club/create">
-    <AddIcon />
+      <AddIcon />
     </IconButton>;
 
   return (
@@ -92,6 +89,7 @@ export default function Home() {
         <UserCard
           userId="5d0157cdfa76c6140cfe4021"
         />
+        <Footer />
       </main>
     </React.Fragment>
   );
