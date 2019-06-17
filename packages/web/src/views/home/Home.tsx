@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 }));
 
@@ -57,8 +57,15 @@ export default function Home(props: HomeProps) {
     }
   }, []);
 
-  const leftComponent =
-    <IconButton edge="start" className={classes.homeButton} color="inherit" aria-label="Home" component={AdapterLink} to="/">
+  const leftComponent = (
+    <IconButton
+      edge="start"
+      className={classes.homeButton}
+      color="inherit"
+      aria-label="Home"
+      component={AdapterLink}
+      to="/"
+    >
       <HomeIcon />
     </IconButton>
   );
@@ -69,10 +76,18 @@ export default function Home(props: HomeProps) {
     </Typography>
   );
 
-  const rightComponent =
-    <IconButton edge="start" className={classes.addButton} color="inherit" aria-label="Add" component={AdapterLink} to="/club/create">
+  const rightComponent = (
+    <IconButton
+      edge="start"
+      className={classes.addButton}
+      color="inherit"
+      aria-label="Add"
+      component={AdapterLink}
+      to="/club/create"
+    >
       <AddIcon />
-    </IconButton>;
+    </IconButton>
+  );
 
   return (
     <>
