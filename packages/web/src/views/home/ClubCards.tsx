@@ -58,14 +58,15 @@ const useStyles = makeStyles(theme => ({
   },
   joinButton: {
     fontSize: '20px',
-    fontWeight:'bold',
+    fontWeight: 'bold',
     marginRight: 16,
     marginBottom: 10,
     color: 'white',
-    backgroundColor: '#7289da'
+    backgroundColor: '#7289da',
   },
 }));
 
+// TODO pull cards from DB
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function ClubCards() {
@@ -81,7 +82,10 @@ export default function ClubCards() {
               <Grid item key={card} xs={12} sm={6}>
                 <Card className={classes.card}>
                   <div className="Club-image">
-                    <img src="https://images.gr-assets.com/books/1429638085l/4929.jpg" alt="" />
+                    <img
+                      src="https://images.gr-assets.com/books/1429638085l/4929.jpg"
+                      alt=""
+                    />
                     <h1>Currently reading</h1>
                     <h2>Kafka on the Shore</h2>
                     <h3>Haruki Murakami, 2002</h3>
@@ -93,27 +97,33 @@ export default function ClubCards() {
                     </Typography>
                     <div className={classes.iconRoot}>
                       <div className={classes.membersIcon}>
-                        <PersonIcon style={{marginRight: 10}}/>
+                        <PersonIcon style={{ marginRight: 10 }} />
                         <Typography variant="subtitle1">2/3</Typography>
                       </div>
                       <div className={classes.vibeIcon}>
-                        <GraduationCapIcon style={{marginRight: 10}}/>
+                        <GraduationCapIcon style={{ marginRight: 10 }} />
                         <Typography variant="subtitle1">Learning</Typography>
                       </div>
                       <div className={classes.speedIcon}>
-                        <RunnerIcon style={{marginRight: 10}}/>
+                        <RunnerIcon style={{ marginRight: 10 }} />
                         <Typography variant="subtitle1">Fast</Typography>
                       </div>
                     </div>
                     <Typography>
-                      Hey everyone! This is a group for people looking to read both classic and new age Sci-fi and fantasy novels. We discuss all aspects of the story, and have lots of fun!
+                      Hey everyone! This is a group for people looking to read
+                      both classic and new age Sci-fi and fantasy novels. We
+                      discuss all aspects of the story, and have lots of fun!
                     </Typography>
                   </CardContent>
                   <CardActions className={classes.cardActions}>
                     <Button className={classes.infoButton} size="small">
                       Info
                     </Button>
-                    <Button variant="contained" className={classes.joinButton}  size="small">
+                    <Button
+                      variant="contained"
+                      className={classes.joinButton}
+                      size="small"
+                    >
                       Join
                     </Button>
                   </CardActions>

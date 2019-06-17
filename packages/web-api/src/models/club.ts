@@ -1,47 +1,41 @@
 import { model, Schema } from 'mongoose';
+import {
+  ClubDoc,
+  ShelfEntryDoc,
+  FilterAutoMongoKeys,
+  SameKeysAs,
+} from '@caravan/buddy-reading-types';
 
-const memberSchema = new Schema(
-  {
-    bio: { type: String },
-    name: { type: String },
-    photoUrl: { type: String },
-    readingSpeed: { type: String },
-  },
-  {
-    timestamps: true
-  }
-)
+const shelfDefinition: Required<
+  SameKeysAs<FilterAutoMongoKeys<ShelfEntryDoc>>
+> = {
+  goodReadsId: { type: String },
+  isbn: { type: String },
+  readingState: { type: String, required: true },
+  startedReading: { type: Date },
+  finishedReading: { type: Date },
+  title: { type: String, required: true },
+  author: { type: String },
+  publishedDate: { type: Date },
+  coverImageURL: { type: String },
+  genres: { type: [String] },
+};
 
-const shelfSchema = new Schema(
-  {
-    goodReadsId: { type: String },
-    isbn: { type: String },
-    readingState: { type: String, required: true },
-    startedReading: { type: Date },
-    finishedReading: { type: Date },
-    title: { type: String, required: true },
-    author: { type: String },
-    publishedDate: { type: Date },
-    coverImageURL: { type: String },
-    genres: { type: [String] }
-  },
-  {
-    timestamps: true
-  }
-)
+const shelfSchema = new Schema(shelfDefinition, {
+  timestamps: true,
+});
 
-const clubSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    bio: { type: String },
-    maxMembers: { type: Number, required: true },
-    vibe: { type: String },
-    readingSpeed: { type: String },
-    shelf: {type: [shelfSchema]}
-  },
-  {
-    timestamps: true
-  }
-)
+const definition: SameKeysAs<FilterAutoMongoKeys<ClubDoc>> = {
+  name: { type: String, required: true },
+  bio: { type: String },
+  maxMembers: { type: Number },
+  vibe: { type: String },
+  readingSpeed: { type: String },
+  shelf: { type: [shelfSchema] },
+};
 
-export default model("Club", clubSchema);
+const clubSchema = new Schema(definition, {
+  timestamps: true,
+});
+
+export default model('Club', clubSchema);

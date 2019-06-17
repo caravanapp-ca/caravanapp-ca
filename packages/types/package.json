@@ -32,5 +32,8 @@
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
     "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "utility-types": "^3.7.0"
   }
 }
