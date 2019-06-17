@@ -106,6 +106,7 @@ export default function Home(props: HomeProps) {
               align="center"
               color="textPrimary"
               gutterBottom
+              style={{ marginTop: 20 }}
             >
               Album layout
             </Typography>
