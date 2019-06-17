@@ -13,6 +13,10 @@ declare module '@caravan/buddy-reading-types' {
     _v: number;
   }
 
+  export interface GroupMemberDoc extends UserDoc {
+    role: string;
+  }
+
   export type ReadingState = 'notStarted' | 'current' | 'read';
 
   export interface ShelfEntryDoc {
@@ -31,10 +35,6 @@ declare module '@caravan/buddy-reading-types' {
     createdAt: Date;
     updatedAt: Date;
     _v: number;
-  }
-
-  export interface GroupMemberDoc extends UserDoc {
-    role: string;
   }
 
   export interface ClubDoc {
