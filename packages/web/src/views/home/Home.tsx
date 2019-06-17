@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
+import qs from 'query-string';
+import { UserDoc } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import qs from 'query-string';
-import { UserDoc } from '@caravan/buddy-reading-types';
 import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import AddIcon from '@material-ui/icons/Add';
@@ -38,6 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1,
+    fontWeight: 'bold',
   },
 }));
 
@@ -61,6 +62,8 @@ export default function Home(props: HomeProps) {
       className={classes.homeButton}
       color="inherit"
       aria-label="Home"
+      component={AdapterLink}
+      to="/"
     >
       <HomeIcon />
     </IconButton>

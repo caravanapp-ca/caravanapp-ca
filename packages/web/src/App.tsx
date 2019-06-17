@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Home from './views/home/Home';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
-import Footer from './components/Footer';
+import FindBooks from './views/books/FindBooks';
 import useInitializeUser from './common/useInitializeUser';
 
 export interface AppProps {}
@@ -34,6 +34,7 @@ export function App(props: AppProps) {
           path="/club/create"
           render={props => <CreateClub {...props} user={user} />}
         />
+        <Route exact path="/findbooks" component={FindBooks} />
         <Footer />
       </div>
     </Router>
