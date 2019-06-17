@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { UserDoc } from '@caravan/buddy-reading-types';
+import { User } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
   createMuiTheme,
@@ -87,7 +87,7 @@ interface CreateClubRouteParams {
 }
 
 interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
-  user: UserDoc | null;
+  user: User | null;
 }
 
 export default function CreateClub(props: CreateClubProps) {

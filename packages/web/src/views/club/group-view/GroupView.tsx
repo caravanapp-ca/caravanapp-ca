@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClubDoc } from '@caravan/buddy-reading-types';
+import { Club } from '@caravan/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import FanIcon from '@material-ui/icons/Toys';
@@ -21,7 +21,7 @@ import MemberList from './MemberList';
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface GroupViewProps {
-  club: ClubDoc;
+  club: Club;
 }
 
 export default function GroupView(props: GroupViewProps) {

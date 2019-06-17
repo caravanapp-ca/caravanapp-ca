@@ -11,11 +11,13 @@ import {
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
-  ClubDoc,
-  ShelfEntryDoc,
-  UserDoc,
-  GroupMemberDoc,
+  Club,
+  ShelfEntry,
+  GroupMember,
+  User,
 } from '@caravan/buddy-reading-types';
+import { getClub } from '../../services/club';
+import { getUser } from '../../services/user';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
@@ -42,23 +44,27 @@ interface ClubRouteParams {
 }
 
 interface ClubProps extends RouteComponentProps<ClubRouteParams> {
-  user: UserDoc | null;
+  user: User | null;
+}
+
+interface MemberInfo extends User {
+  role: string;
 }
 
 export default function Club(props: ClubProps) {
   const classes = useStyles();
   const [tabValue, setTabValue] = React.useState(0);
-  const [club, setClub] = React.useState<ClubDoc | null>(null);
-  const [currBook, setCurrBook] = React.useState<ShelfEntryDoc | null>(null);
+  const [club, setClub] = React.useState<Club | null>(null);
+  const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
-  // const [memberInfo, setMemberInfo] = React.useState<MemberInfo | null>(null);
+  const [memberInfo, setMemberInfo] = React.useState<MemberInfo | null>(null);
   const clubId = props.match.params.id;
 
   function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
     setTabValue(newValue);
   }
 
-  function getCurrentBook(club: ClubDoc) {
+  function getCurrentBook(club: Club) {
     if (club && club.shelf) {
       const book = club.shelf.find(book => book.readingState === 'current');
       if (book) {
@@ -67,40 +73,45 @@ export default function Club(props: ClubProps) {
     }
   }
 
-  // WIP
-  // function getMembersInfo(club: ClubDoc) {
-  //   const getMembers = async () => {
-  //     let memberInfo = [];
-  //     club.members.forEach(m => {
-  //       try {
-  // TODO: Need to move this axios call to services.
-  //         const result = await axios.get<UserDoc>(`/api/user/${m.id}`);
-  //         const member = result.data;
-  //         memberInfo.push({ member, role: m.role });
-  //       } catch (err) {
-  //         console.error(err);
-  //       }
-  //     });
-  //     setMemberInfo(memberInfo);
-  //   };
-  // }
+  function getMembersInfo(club: Club) {
+    const getMembers = async () => {
+      let memberInfo: Array<MemberInfo> = [];
+      club.members.forEach(m => {
+        try {
+          getUser(m.id).then(user => {
+            if (user) {
+              // const member: MemberInfo = {
+              //   ...user,
+              //   role: m.role,
+              // };
+              // memberInfo.push(member);
+            }
+          });
+        } catch (err) {
+          console.error(err);
+          throw err;
+        }
+      });
+      // setMemberInfo(memberInfo);
+    };
+  }
 
   useEffect(() => {
-    const getClub = async () => {
+    const getClubFun = async () => {
       try {
-        // TODO: Need to move this axios call to services.
-        const result = await axios.get<ClubDoc>(`/api/club/${clubId}`);
-        const club = result.data;
-        setClub(club);
-        getCurrentBook(club);
-        // getMemberInfo(club);
-        setLoadedClub(true);
+        const club = await getClub(clubId);
+        if (club) {
+          setClub(club);
+          getCurrentBook(club);
+          // getMemberInfo(club);
+          setLoadedClub(true);
+        }
       } catch (err) {
         console.error(err);
         setLoadedClub(true);
       }
     };
-    getClub();
+    getClubFun();
   }, [clubId]);
 
   return (

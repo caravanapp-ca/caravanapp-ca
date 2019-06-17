@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import qs from 'query-string';
-import { UserDoc } from '@caravan/buddy-reading-types';
+import { User } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -18,7 +18,7 @@ import ClubCards from './ClubCards';
 import { UserCard } from './UserCard';
 
 interface HomeProps {
-  user: UserDoc | null;
+  user: User | null;
 }
 
 const useStyles = makeStyles(theme => ({

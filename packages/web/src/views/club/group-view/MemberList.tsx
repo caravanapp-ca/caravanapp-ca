@@ -3,12 +3,12 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { GroupMemberDoc } from '@caravan/buddy-reading-types';
+import { GroupMember } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface MemberListProps {
-  members: GroupMemberDoc[];
+  members: GroupMember[];
   maxMembers: number;
 }
 

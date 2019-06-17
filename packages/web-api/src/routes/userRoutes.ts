@@ -6,18 +6,32 @@ const router = express.Router();
 // Get a user
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
-  try {
-    const user = await User.findById(id);
-    res.json(user);
-  } catch (err) {
-    const { code } = err;
-    switch (code) {
-      case 404:
-        res.status(404).send(`User not found: ${id}`);
-        return;
-      default:
-        console.log(`Failed to get user ${id}`, err);
-        return next(err);
+  if (typeof id === 'string') {
+    try {
+      const user = await User.findById(id);
+      res.json(user);
+    } catch (err) {
+      const { code } = err;
+      switch (code) {
+        case 404:
+          res.status(404).send(`User not found: ${id}`);
+          return;
+        default:
+          console.log(`Failed to get user ${id}`, err);
+          return next(err);
+      }
+    }
+  }
+  // TODO: Review this with Quinn
+  else if (Array.isArray(id)) {
+    try {
+      const users = await User.find({
+        _id: { $in: id },
+      });
+      res.json(users);
+    } catch (err) {
+      console.error(err);
+      return next(err);
     }
   }
 });
@@ -29,7 +43,7 @@ router.post('/', async (req, res, next) => {
     const newUser = await user.save();
     res.status(201).json(newUser);
   } catch (err) {
-    console.log('Failed to create new club', err);
+    console.log('Failed to create new user', err);
     return next(err);
   }
 });

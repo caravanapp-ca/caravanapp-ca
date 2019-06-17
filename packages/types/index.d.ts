@@ -12,12 +12,17 @@ declare module '@caravan/buddy-reading-types' {
   // TODO: Improve by nesting the SameKeysAs
   export type SameKeysAs<Base> = { [Key in keyof Base]: any };
 
-  export interface MongoDocWithTimestamps extends Document {
+  export interface DocumentFields {
+    _id: string;
+    __v?: number;
+  }
+
+  export interface MongoTimestamps {
     createdAt: Date;
     updatedAt: Date;
   }
 
-  export interface ClubDoc extends Document {
+  export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
     shelf: ShelfEntryDoc[];
@@ -26,14 +31,19 @@ declare module '@caravan/buddy-reading-types' {
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
+    createdAt: string;
   }
 
-  export interface GroupMemberDoc extends MongoDocWithTimestamps {
+  export interface ClubDoc extends Document, Club {}
+
+  export interface GroupMember extends DocumentFields, MongoTimestamps {
     userId: string;
     role: string;
   }
 
-  export interface SessionDoc extends Document {
+  export interface GroupMemberDoc extends GroupMember, Document {}
+
+  export interface Session {
     accessToken: string;
     /** Milliseconds since January 1st, 1970 (use Date.now() to get current value) */
     accessTokenExpiresAt: number;
@@ -44,7 +54,9 @@ declare module '@caravan/buddy-reading-types' {
     userId: string;
   }
 
-  export interface ShelfEntryDoc extends MongoDocWithTimestamps {
+  export interface SessionDoc extends Document, Session {}
+
+  export interface ShelfEntry extends MongoTimestamps {
     amazonId?: string;
     goodReadsId?: string;
     isbn?: string;
@@ -58,7 +70,9 @@ declare module '@caravan/buddy-reading-types' {
     genres: string[];
   }
 
-  export interface UserDoc extends MongoDocWithTimestamps {
+  export interface ShelfEntryDoc extends ShelfEntry, Document {}
+
+  export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
     discord: {
       id: string;
@@ -77,6 +91,8 @@ declare module '@caravan/buddy-reading-types' {
     photoUrl?: string;
     readingSpeed?: string;
   }
+
+  export interface UserDoc extends Document, User {}
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
 

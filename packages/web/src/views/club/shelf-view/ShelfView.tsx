@@ -1,10 +1,10 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import BookList from './BookList';
-import { ShelfEntryDoc } from '@caravan/buddy-reading-types';
+import { ShelfEntry } from '@caravan/buddy-reading-types';
 
 interface ShelfViewProps {
-  shelf: ShelfEntryDoc[];
+  shelf: ShelfEntry[];
 }
 
 export default function ShelfView(props: ShelfViewProps) {
