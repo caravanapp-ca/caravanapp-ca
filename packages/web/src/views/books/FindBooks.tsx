@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
   headerTitle: {
     flexGrow: 1,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   moreButton: {
     marginLeft: theme.spacing(2),
@@ -59,46 +59,73 @@ const useStyles = makeStyles(theme => ({
 export default function FindBooks() {
   const classes = useStyles();
 
-  const leftComponent =
-  <IconButton edge="start" className={classes.backButton} color="inherit" aria-label="Back" component={AdapterLink} to="/club/create">
-    <BackIcon />
-  </IconButton>;
+  const leftComponent = (
+    <IconButton
+      edge="start"
+      className={classes.backButton}
+      color="inherit"
+      aria-label="Back"
+      component={AdapterLink}
+      to="/club/create"
+    >
+      <BackIcon />
+    </IconButton>
+  );
 
-  const centerComponent =
+  const centerComponent = (
     <Typography variant="h6" className={classes.headerTitle}>
       Find Books
-    </Typography>;
+    </Typography>
+  );
 
-  const rightComponent =
-    <IconButton edge="start" className={classes.moreButton} color="inherit" aria-label="More" component={AdapterLink} to="/">
+  const rightComponent = (
+    <IconButton
+      edge="start"
+      className={classes.moreButton}
+      color="inherit"
+      aria-label="More"
+      component={AdapterLink}
+      to="/"
+    >
       <ThreeDotsIcon />
-    </IconButton>;
+    </IconButton>
+  );
 
   const [bookSearchValue, setBookSearchValue] = React.useState('');
 
-  function setSearchField(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function setSearchField(
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) {
     setBookSearchValue(e.target.value);
   }
 
-  function bookSearch() {
-
-  }
+  function bookSearch() {}
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <Header leftComponent={leftComponent} centerComponent={centerComponent} rightComponent={rightComponent}/>
+      <Header
+        leftComponent={leftComponent}
+        centerComponent={centerComponent}
+        rightComponent={rightComponent}
+      />
       <main>
         <Container className={classes.searchContainer} maxWidth="md">
           <Paper className={classes.root}>
-            <IconButton className={classes.iconButton} aria-label="Menu" onClick={() => bookSearch }>
+            <IconButton
+              className={classes.iconButton}
+              aria-label="Menu"
+              onClick={bookSearch}
+            >
               <SearchIcon />
             </IconButton>
             <InputBase
               className={classes.input}
               placeholder="Search for Books"
               inputProps={{ 'aria-label': 'Search for Books' }}
-              onChange={(e) => setSearchField(e)}
+              onChange={setSearchField}
             />
           </Paper>
         </Container>

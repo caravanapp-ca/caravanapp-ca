@@ -1,19 +1,18 @@
 import React from 'react';
+import {
+  makeStyles,
+  createMuiTheme,
+  MuiThemeProvider,
+} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Grid, { GridSpacing } from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
 import Radio from '@material-ui/core/Radio';
-import BackIcon from '@material-ui/icons/ArrowBackIos';
-import ThreeDotsIcon from '@material-ui/icons/MoreVert';
-import AdapterLink from '../../components/AdapterLink';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import WalkIcon from '@material-ui/icons/DirectionsWalk';
 import CarIcon from '@material-ui/icons/DirectionsCar';
@@ -22,7 +21,11 @@ import ChillIcon from '@material-ui/icons/Toys';
 import NerdyIcon from '@material-ui/icons/VideogameAsset';
 import LearningIcon from '@material-ui/icons/School';
 import FirstTimerIcon from '@material-ui/icons/Cake';
+import AddIcon from '@material-ui/icons/Add';
+import BackIcon from '@material-ui/icons/ArrowBackIos';
+import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import PowerIcon from '@material-ui/icons/FlashOn';
+import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 
 const theme = createMuiTheme({
@@ -33,8 +36,8 @@ const theme = createMuiTheme({
     },
   },
 });
+
 const useStyles = makeStyles(theme => ({
-  //let { selectedGroupNameValue, selectedGroupBioValue } = React.useState();
   formContainer: {
     paddingTop: theme.spacing(5),
     paddingBottom: theme.spacing(8),
@@ -650,7 +653,7 @@ export default function CreateClub() {
             placeholder="I'm looking for..."
             helperText="300 character limit"
             variant="outlined"
-            onChange={e => handleGroupBioChange(e)}
+            onChange={handleGroupBioChange}
             multiline
             rows="4"
             inputProps={{ maxLength: 300 }}
