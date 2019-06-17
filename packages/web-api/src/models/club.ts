@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
 import {
   ClubDoc,
+  ShelfEntryDoc,
   FilterAutoMongoKeys,
   SameKeysAs,
   ShelfEntryDoc,

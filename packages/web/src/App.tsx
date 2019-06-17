@@ -20,7 +20,11 @@ export function App(props: AppProps) {
       <div>
         <Header />
         <Route exact path="/" component={HomeRedirect} />
-        <Route exact path="/club" component={Home} />
+        <Route
+          exact
+          path="/club"
+          render={props => <Home {...props} user={user} />}
+        />
         <Route
           path="/club/:id"
           render={props => <Club {...props} user={user} />}
