@@ -1,5 +1,6 @@
 import express from 'express';
 import Club from '../models/club';
+import { isAuthenticated } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Create club
-router.post('/', async (req, res, next) => {
+router.post('/', isAuthenticated, async (req, res, next) => {
   try {
     const club = new Club(req.body);
     const newClub = await club.save();
@@ -41,7 +42,7 @@ router.post('/', async (req, res, next) => {
 });
 
 // Modify a club
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', isAuthenticated, async (req, res, next) => {
   const editedClub = req.body;
   try {
     const doc = await Club.findByIdAndUpdate(req.params.id, editedClub, {
@@ -55,10 +56,10 @@ router.put('/:id', async (req, res, next) => {
 });
 
 // Delete a club
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', isAuthenticated, async (req, res, next) => {
   try {
     const record = await Club.remove({ _id: req.params.id });
-    res.sendStatus(200);
+    res.sendStatus(204);
   } catch (err) {
     console.log(`Failed to delete club ${req.params.id}`, err);
     return next(err);

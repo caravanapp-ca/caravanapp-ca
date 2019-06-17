@@ -1,29 +1,20 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { UserDoc } from '@caravan/buddy-reading-types';
+import DiscordAuthButton from '../../components/DiscordAuthButton';
 
 export interface UserCardProps {
-  userId: string;
+  user: UserDoc | null;
 }
 
 export function UserCard(props: UserCardProps) {
-  const [user, setUser] = useState<UserDoc | null>(null);
-  useEffect(() => {
-    async function getUser() {
-      const res = await axios.get(`/api/user/${props.userId}`);
-      const userReceived: UserDoc = res.data;
-      setUser(userReceived);
-    };
-    getUser();
-  }, [props.userId]);
-  // The [props.userId] ensures only performing the network call when the userId changes (thus only on first render)
-  if (!user) {
-    return <div>Loading...</div>
+  if (!props.user) {
+    return <DiscordAuthButton />;
   }
   return (
     <div>
-      {user.name}
-      {user.createdAt}
+      <p>{props.user.name}</p>
+      <p>{props.user.discord.username}</p>
+      <p>{props.user.createdAt}</p>
     </div>
-  )
+  );
 }
