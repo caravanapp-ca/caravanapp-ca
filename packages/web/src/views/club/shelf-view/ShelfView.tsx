@@ -1,8 +1,13 @@
 import React from 'react';
 import { Typography } from '@material-ui/core'
 import BookList from './BookList';
+import { ShelfEntryDoc } from '@caravan/buddy-reading-types';
 
-export default function ShelfView() {
+interface ShelfViewProps {
+  shelf?: [ShelfEntryDoc]
+}
+
+export default function ShelfView(props: ShelfViewProps) {
   return (
     <div>
       <Typography>Currently Reading</Typography>

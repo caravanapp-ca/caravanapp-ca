@@ -1,5 +1,17 @@
 import { model, Schema } from 'mongoose';
 
+const memberSchema = new Schema(
+  {
+    bio: { type: String },
+    name: { type: String },
+    photoUrl: { type: String },
+    readingSpeed: { type: String },
+  },
+  {
+    timestamps: true
+  }
+)
+
 const shelfSchema = new Schema(
   {
     goodReadsId: { type: String },

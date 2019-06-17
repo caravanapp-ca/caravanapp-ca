@@ -4,9 +4,8 @@ import { Typography } from '@material-ui/core';
 import FanIcon from '@material-ui/icons/Toys';
 import { ClubDoc } from '@caravan/buddy-reading-types';
 import ListElementAvatar from '../../../components/ListElementAvatar';
-import SlowReadingSpeedAvatar from '../../../components/reading-speed-avatars/SlowReadingSpeedAvatar';
-import ModerateReadingSpeedAvatar from '../../../components/reading-speed-avatars/ModerateReadingSpeedAvatar';
-import FastReadingSpeedAvatar from '../../../components/reading-speed-avatars/FastReadingSpeedAvatar';
+import { SlowReadingSpeedAvatar, ModerateReadingSpeedAvatar, FastReadingSpeedAvatar } from '../../../components/reading-speed-avatars';
+import { ChillGroupVibeAvatar, FirstTimersGroupVibeAvatar, LearningGroupVibeAvatar, NerdyGroupVibeAvatar, PowerGroupVibeAvatar } from '../../../components/group-vibe-avatars';
 import MemberList from './MemberList'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,13 +21,29 @@ export default function GroupView(props: GroupViewProps) {
 
   const { bio, maxMembers, vibe, readingSpeed } = props.club;
 
-  let avatarElement = <SlowReadingSpeedAvatar/>
+  let readingSpeedAvatar = <SlowReadingSpeedAvatar/>
   switch(readingSpeed){
     case 'moderate':
-      avatarElement = <ModerateReadingSpeedAvatar/>
+      readingSpeedAvatar = <ModerateReadingSpeedAvatar/>
       break;
     case 'fast':
-      avatarElement = <FastReadingSpeedAvatar/>
+      readingSpeedAvatar = <FastReadingSpeedAvatar/>
+      break;
+  }
+
+  let groupVibeAvatar = <ChillGroupVibeAvatar/>
+  switch(vibe){
+    case 'first-timers':
+      groupVibeAvatar = <FirstTimersGroupVibeAvatar/>
+      break;
+    case 'learning':
+      groupVibeAvatar = <LearningGroupVibeAvatar/>
+      break;
+    case 'nerdy':
+      groupVibeAvatar = <NerdyGroupVibeAvatar/>
+      break;
+    case 'power':
+      groupVibeAvatar = <PowerGroupVibeAvatar/>
       break;
   }
 
@@ -44,13 +59,13 @@ export default function GroupView(props: GroupViewProps) {
       <MemberList/>
       <Typography>Reading Speed</Typography>
       <ListElementAvatar
-        avatarElement={avatarElement}
+        avatarElement={readingSpeedAvatar}
         primaryText={readingSpeed}
       />
       <Typography>Vibe</Typography>
       <ListElementAvatar
-        avatarElement={<Avatar><FanIcon /></Avatar>}
-        primaryText='Chill'
+        avatarElement={groupVibeAvatar}
+        primaryText={vibe}
       />
     </div>
   )

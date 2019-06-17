@@ -17,6 +17,7 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface ShelfEntryDoc {
     _id: string;
+    amazonId?: string;
     goodReadsId?: string;
     isbn?: string;
     readingState: ReadingState;
@@ -32,10 +33,16 @@ declare module '@caravan/buddy-reading-types' {
     _v: number;
   }
 
+  export interface GroupMemberDoc extends UserDoc {
+    role: string;
+  }
+
   export interface ClubDoc {
     _id: string;
+    ownerId: string;
     name: string;
     bio?: string;
+    members: [GroupMemberDoc];
     maxMembers: number;
     vibe?: string;
     readingSpeed?: string;
