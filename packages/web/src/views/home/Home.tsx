@@ -12,6 +12,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import AddIcon from '@material-ui/icons/Add';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import { deleteCookie } from '../../common/cookies';
 import { DISCORD_OAUTH_STATE } from '../../state';
 import ClubCards from './ClubCards';
@@ -38,6 +39,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1,
+    fontWeight: 'bold',
   },
 }));
 
@@ -61,6 +63,8 @@ export default function Home(props: HomeProps) {
       className={classes.homeButton}
       color="inherit"
       aria-label="Home"
+      component={AdapterLink}
+      to="/"
     >
       <HomeIcon />
     </IconButton>
