@@ -1,7 +1,14 @@
 import axios from 'axios';
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Paper, Tabs, Tab, Button, Typography } from '@material-ui/core';
+import {
+  Paper,
+  Tabs,
+  Tab,
+  Button,
+  Typography,
+  CircularProgress,
+} from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { ClubDoc, ShelfEntryDoc, UserDoc } from '@caravan/buddy-reading-types';
 import ClubHero from './ClubHero';
@@ -18,6 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     input: {
       display: 'none',
+    },
+    progress: {
+      margin: theme.spacing(2),
     },
   })
 );
@@ -69,6 +79,7 @@ export default function Club(props: ClubProps) {
 
   return (
     <>
+      {!loadedClub && <CircularProgress className={classes.progress} />}
       {loadedClub && club && (
         <div>
           {currBook && <ClubHero currBook={currBook} />}
