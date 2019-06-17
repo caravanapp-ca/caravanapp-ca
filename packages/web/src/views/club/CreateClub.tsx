@@ -173,13 +173,18 @@ export default function CreateClub(props: CreateClubProps) {
     setSelectedGroupBioValue(e.target.value);
   }
 
-  interface CreateClub {
-    name: string;
-    ownerId: string;
-  }
-
   function createClub() {
-    let clubObj = { name: 10, ownerId: 'Size 10 Object' };
+    let clubObj = {
+      name: selectedGroupNameValue,
+      ownerId: 'SOME_USER_ID',
+      shelf: 'SOME_SHELF',
+      members: 'SOME_MEMBERS',
+      bio: 'Once upon a time',
+      maxMembers: 4,
+      vibe: 'Nerdy',
+      readingSpeed: 'Fast',
+    };
+
     console.log(clubObj.name);
   }
 
