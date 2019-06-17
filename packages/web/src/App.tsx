@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Home from './views/home/Home';
 import CreateClub from './views/club/CreateClub';
 import FindBooks from './views/books/FindBooks';
-import Footer from './components/Footer';
 import useInitializeUser from './common/useInitializeUser';
 
 export interface AppProps {}
