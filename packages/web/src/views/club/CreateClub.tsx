@@ -32,9 +32,9 @@ import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
+
 import SearchResultCards from '../books/SearchResultCards';
+import SelectedBookCards from '../books/SelectedBookCards';
 import { createClub } from '../../services/club';
 
 const theme = createMuiTheme({
@@ -226,11 +226,22 @@ export default function CreateClub(props: CreateClubProps) {
     >
   ) {
     setBookSearchValue(e.target.value);
+    if (e.target.value === '') {
+      if (searchResults) {
+        if (searchResults.items.length > 0) {
+          setHideSearchValue(true);
+          setSearchResults(null);
+        }
+      }
+    }
   }
+
+  const [hideSearch, setHideSearchValue] = React.useState(false);
 
   async function bookSearch() {
     console.log(bookSearchValue);
     if (bookSearchValue !== '') {
+      setHideSearchValue(false);
       let baseURL = 'https://www.googleapis.com/books/v1/volumes?q=';
       baseURL += encodeURIComponent(`intitle:${bookSearchValue}`);
 
@@ -244,6 +255,11 @@ export default function CreateClub(props: CreateClubProps) {
       }
     }
   }
+
+  // TODO send method to book search card via props that allows displayed books to be added to selected list
+  // async function onAddBook(book: <GoogleBooks, Books, Item[]>) {
+
+  // }
 
   function createClubOnClick() {
     let clubObj = {
@@ -302,22 +318,12 @@ export default function CreateClub(props: CreateClubProps) {
                 onChange={e => setSearchField(e)}
               />
             </Paper>
-            {searchResults && (
-              <GridList
-                cellHeight={160}
-                className={classes.searchResultsList}
-                cols={1}
-              >
-                {searchResults.items.map(result => (
-                  <GridListTile cols={1} className={classes.searchResult}>
-                    <Typography>{result.volumeInfo.title}</Typography>
-                  </GridListTile>
-                ))}
-              </GridList>
+            {searchResults && !hideSearch && (
+              <SearchResultCards searchResultObject={searchResults.items} />
             )}
           </Container>
 
-          {searchResults && <SearchResultCards />}
+          <SelectedBookCards />
 
           <Typography
             style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}

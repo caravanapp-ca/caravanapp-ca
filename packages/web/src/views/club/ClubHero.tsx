@@ -11,8 +11,6 @@ interface ClubHeroProps {
 }
 
 export default function ClubHero(props: ClubHeroProps) {
-  const classes = useStyles();
-
   const { title, author, publishedDate, genres } = props.currBook;
 
   // This adjusts for casting of Date objects to string when sent from web-api

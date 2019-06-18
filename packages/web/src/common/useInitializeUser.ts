@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { UserDoc } from '@caravan/buddy-reading-types';
 import { getCookie } from './cookies';

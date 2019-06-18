@@ -10,12 +10,7 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  ClubDoc,
-  ShelfEntryDoc,
-  UserDoc,
-  GroupMemberDoc,
-} from '@caravan/buddy-reading-types';
+import { ClubDoc, ShelfEntryDoc, UserDoc } from '@caravan/buddy-reading-types';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
