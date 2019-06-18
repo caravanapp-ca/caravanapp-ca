@@ -1,4 +1,6 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import { UserDoc } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
   createMuiTheme,
@@ -27,6 +29,7 @@ import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import PowerIcon from '@material-ui/icons/FlashOn';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
+import { createClub } from '../../services/club';
 
 const theme = createMuiTheme({
   palette: {
@@ -80,7 +83,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function CreateClub() {
+interface CreateClubRouteParams {
+  id: string;
+}
+
+interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
+  user: UserDoc | null;
+}
+
+export default function CreateClub(props: CreateClubProps) {
   const classes = useStyles();
 
   const leftComponent = (
@@ -163,6 +174,21 @@ export default function CreateClub() {
     setSelectedGroupBioValue(e.target.value);
   }
 
+  function createClubOnClick() {
+    let clubObj = {
+      name: selectedGroupNameValue,
+      ownerId: 'SOME_USER_ID',
+      shelf: 'SOME_SHELF',
+      members: 'SOME_MEMBERS',
+      bio: 'Once upon a time',
+      maxMembers: 4,
+      vibe: 'Nerdy',
+      readingSpeed: 'Fast',
+    };
+    createClub(clubObj);
+    console.log(clubObj.name);
+  }
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -174,7 +200,7 @@ export default function CreateClub() {
       <main>
         <Container className={classes.formContainer} maxWidth="md">
           <Typography
-            style={{ fontWeight: 'bold', marginBottom: 10 }}
+            style={{ fontWeight: 'bold', marginBottom: 10, marginTop: 40 }}
             variant="h5"
             component="h2"
           >
@@ -193,7 +219,6 @@ export default function CreateClub() {
               shrink: true,
             }}
           />
-
           <Typography
             style={{ fontWeight: 'bold', marginBottom: 20 }}
             variant="h5"
@@ -670,6 +695,7 @@ export default function CreateClub() {
               }
               className={classes.createButton}
               size="small"
+              onClick={createClubOnClick}
             >
               Create
             </Button>

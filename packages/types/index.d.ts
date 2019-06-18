@@ -19,8 +19,18 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface ClubDoc extends Document {
     name: string;
+    ownerId: string;
+    shelf: ShelfEntryDoc[];
+    members: GroupMemberDoc[];
     bio?: string;
-    maxMembers?: number;
+    maxMembers: number;
+    vibe?: GroupVibe;
+    readingSpeed?: ReadingSpeed;
+  }
+
+  export interface GroupMemberDoc extends MongoDocWithTimestamps {
+    userId: string;
+    role: string;
   }
 
   export interface SessionDoc extends Document {
@@ -32,6 +42,20 @@ declare module '@caravan/buddy-reading-types' {
     tokenType: 'Bearer';
     client: string;
     userId: string;
+  }
+
+  export interface ShelfEntryDoc extends MongoDocWithTimestamps {
+    amazonId?: string;
+    goodReadsId?: string;
+    isbn?: string;
+    readingState: ReadingState;
+    startedReading?: Date;
+    finishedReading?: Date;
+    title: string;
+    author?: string;
+    publishedDate?: string;
+    coverImageURL?: string;
+    genres: string[];
   }
 
   export interface UserDoc extends MongoDocWithTimestamps {
@@ -53,4 +77,15 @@ declare module '@caravan/buddy-reading-types' {
     photoUrl?: string;
     readingSpeed?: string;
   }
+
+  export type ReadingState = 'notStarted' | 'current' | 'read';
+
+  export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
+
+  export type GroupVibe =
+    | 'chill'
+    | 'power'
+    | 'learning'
+    | 'first-timers'
+    | 'nerdy';
 }
