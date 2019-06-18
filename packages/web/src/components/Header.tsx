@@ -30,13 +30,14 @@ export default function ButtonAppBar(props: HeaderProps) {
           color: 'black',
           borderBottom: 10,
           borderBottomColor: '#7289da',
+          position: 'fixed',
         }}
         position="static"
       >
         <Toolbar>
-          {props.leftComponent ? props.leftComponent : null}
-          {props.centerComponent ? props.centerComponent : null}
-          {props.rightComponent ? props.rightComponent : null}
+          {props.leftComponent}
+          {props.centerComponent}
+          {props.rightComponent}
         </Toolbar>
       </AppBar>
     </div>
