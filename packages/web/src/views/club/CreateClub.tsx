@@ -178,12 +178,10 @@ export default function CreateClub(props: CreateClubProps) {
     let clubObj = {
       name: selectedGroupNameValue,
       ownerId: 'SOME_USER_ID',
-      shelf: 'SOME_SHELF',
-      members: 'SOME_MEMBERS',
-      bio: 'Once upon a time',
-      maxMembers: 4,
-      vibe: 'Nerdy',
-      readingSpeed: 'Fast',
+      bio: selectedGroupBioValue,
+      maxMembers: selectedGroupSizeValue,
+      vibe: selectedGroupVibeValue,
+      readingSpeed: selectedGroupSpeedValue,
     };
     createClub(clubObj);
     console.log(clubObj.name);

@@ -10,10 +10,10 @@ const clubRoute = '/api/club';
 interface CreateClubProps {
   name: string;
   ownerId: string;
-  shelf: ShelfEntryDoc[];
-  members: GroupMemberDoc[];
+  shelf?: ShelfEntryDoc[];
+  members?: GroupMemberDoc[];
   bio: string;
-  maxMembers: number;
+  maxMembers: string;
   vibe: string;
   readingSpeed: string;
 }
