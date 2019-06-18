@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import qs from 'query-string';
-import { User } from '@caravan/buddy-reading-types';
+import { User, Club } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -44,6 +44,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function Home(props: HomeProps) {
   const classes = useStyles();
+  const [clubs, setClubs] = React.useState<Club[]>([]);
+
   // Handle the `state` query to verify login
   useEffect(() => {
     const queries = qs.parse(window.location.search);
@@ -55,6 +57,14 @@ export default function Home(props: HomeProps) {
       localStorage.removeItem(DISCORD_OAUTH_STATE);
     }
   }, []);
+
+  async function getClubs() {
+    // TODO: Need to write getAllClubs service
+    const clubs = await getAllClubs();
+    if (clubs) {
+      setClubs(clubs);
+    }
+  }
 
   const leftComponent = (
     <IconButton
