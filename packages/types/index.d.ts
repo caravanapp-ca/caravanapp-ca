@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types as MongooseTypes } from 'mongoose';
 
 declare module '@caravan/buddy-reading-types' {
   type SubtractKeys<T, U> = {
@@ -25,8 +25,8 @@ declare module '@caravan/buddy-reading-types' {
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
-    shelf: ShelfEntryDoc[];
-    members: GroupMemberDoc[];
+    shelf: ShelfEntry[];
+    members: GroupMember[];
     bio?: string;
     maxMembers: number;
     vibe?: GroupVibe;
@@ -35,7 +35,9 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface ClubDoc extends Document, Club {
     // Override the type to ensure that it's a string not _id?: any;
-    _id: string;
+    _id: MongooseTypes.ObjectId;
+    shelf: ShelfEntryDoc[];
+    members: GroupMemberDoc[];
   }
 
   export interface GroupMember extends DocumentFields, MongoTimestamps {
@@ -45,7 +47,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface GroupMemberDoc extends GroupMember, Document {
     // Override the type to ensure that it's a string not _id?: any;
-    _id: string;
+    _id: MongooseTypes.ObjectId;
+    userId: MongooseTypes.ObjectId;
   }
 
   export interface Session extends DocumentFields {
@@ -65,7 +68,7 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface SessionDoc extends Document, Session {
     // Override the type to ensure that it's a string not _id?: any;
-    _id: string;
+    _id: MongooseTypes.ObjectId;
   }
 
   export interface ShelfEntry extends MongoTimestamps {
@@ -82,7 +85,9 @@ declare module '@caravan/buddy-reading-types' {
     genres: string[];
   }
 
-  export interface ShelfEntryDoc extends ShelfEntry, Document {}
+  export interface ShelfEntryDoc extends ShelfEntry, Document {
+    _id: MongooseTypes.ObjectId;
+  }
 
   export interface User extends DocumentFields, MongoTimestamps {
     userId: string;
@@ -106,8 +111,10 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export interface UserDoc extends Document, User {
-    _id: string;
+    _id: MongooseTypes.ObjectId;
   }
+
+  export type MembershipStatus = 'notMember' | 'member' | 'owner';
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
 

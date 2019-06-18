@@ -5,6 +5,7 @@ import {
   MemberInfo,
   ShelfEntry,
   User,
+  MembershipStatus,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -15,7 +16,7 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { getClub } from '../../services/club';
+import { getClub, modifyMyClubMembership } from '../../services/club';
 import { getUsersById } from '../../services/user';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
@@ -53,6 +54,9 @@ export default function ClubComponent(props: ClubProps) {
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
   const [memberInfo, setMemberInfo] = React.useState<MemberInfo[]>([]);
+  const [memberStatus, setMemberStatus] = React.useState<MembershipStatus>(
+    'notMember'
+  );
   const clubId = props.match.params.id;
 
   function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
@@ -85,6 +89,20 @@ export default function ClubComponent(props: ClubProps) {
     }
   }
 
+  async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
+    if (action === 'add') {
+      const result = await modifyMyClubMembership(clubId, true);
+      if (result === 200) {
+        setMemberStatus('member');
+      }
+    } else if (action === 'remove') {
+      const result = await modifyMyClubMembership(clubId, false);
+      if (result === 200) {
+        setMemberStatus('notMember');
+      }
+    }
+  }
+
   useEffect(() => {
     const getClubFun = async () => {
       try {
@@ -101,7 +119,7 @@ export default function ClubComponent(props: ClubProps) {
       }
     };
     getClubFun();
-  }, [clubId]);
+  }, [clubId, memberStatus]);
 
   return (
     <>
@@ -123,13 +141,25 @@ export default function ClubComponent(props: ClubProps) {
           </Paper>
           {tabValue === 0 && <GroupView club={club} memberInfo={memberInfo} />}
           {tabValue === 1 && <ShelfView shelf={club.shelf} />}
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-          >
-            JOIN CLUB
-          </Button>
+          {memberStatus === 'notMember' && (
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={() => addOrRemoveMeFromClub('add')}
+            >
+              JOIN CLUB
+            </Button>
+          )}
+          {memberStatus === 'member' && (
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+            >
+              OPEN CHAT
+            </Button>
+          )}
         </div>
       )}
       {loadedClub && !club && (
