@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
+import qs from 'query-string';
+import { UserDoc } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import qs from 'query-string';
-import { UserDoc } from '@caravan/buddy-reading-types';
 import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import AddIcon from '@material-ui/icons/Add';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import { deleteCookie } from '../../common/cookies';
 import { DISCORD_OAUTH_STATE } from '../../state';
 import ClubCards from './ClubCards';
@@ -107,6 +106,7 @@ export default function Home(props: HomeProps) {
               align="center"
               color="textPrimary"
               gutterBottom
+              style={{ marginTop: 20 }}
             >
               Album layout
             </Typography>
