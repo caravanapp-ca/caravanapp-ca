@@ -233,7 +233,7 @@ export default function CreateClub(props: CreateClubProps) {
           <TextField
             id="filled-name"
             label="Group Name"
-            style={{ marginBottom: 20 }}
+            style={{ marginBottom: 20, marginTop: 40 }}
             helperText="50 character limit"
             variant="outlined"
             fullWidth
