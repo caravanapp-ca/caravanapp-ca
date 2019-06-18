@@ -9,4 +9,10 @@ export async function getUser(userId: string) {
   return user;
 }
 
-export async function getUsersById(userIds: Array<String>) {}
+export async function getUsersById(userIds: Array<String>) {
+  const res = await axios.post<Array<User> | null>(`${userRoute}/users`, {
+    userIds: userIds,
+  });
+  const users = res.data;
+  return users;
+}

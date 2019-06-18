@@ -1,5 +1,5 @@
 import React from 'react';
-import { Club } from '@caravan/buddy-reading-types';
+import { Club, MemberInfo } from '@caravan/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import FanIcon from '@material-ui/icons/Toys';
@@ -22,11 +22,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface GroupViewProps {
   club: Club;
+  memberInfo: MemberInfo[];
 }
 
 export default function GroupView(props: GroupViewProps) {
   const classes = useStyles();
-  const { bio, members, maxMembers, vibe, readingSpeed } = props.club;
+  const { bio, maxMembers, vibe, readingSpeed } = props.club;
+  const { memberInfo } = props;
 
   let readingSpeedAvatar;
   switch (readingSpeed) {
@@ -65,7 +67,7 @@ export default function GroupView(props: GroupViewProps) {
       <Typography>About the Group</Typography>
       {bio && <Typography>{bio}</Typography>}
       <Typography>Members</Typography>
-      <MemberList members={members} maxMembers={maxMembers} />
+      <MemberList members={memberInfo} maxMembers={maxMembers} />
       <Typography>Reading Speed</Typography>
       <ListElementAvatar
         avatarElement={readingSpeedAvatar}

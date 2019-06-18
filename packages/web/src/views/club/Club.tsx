@@ -1,6 +1,11 @@
-import axios from 'axios';
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import {
+  Club,
+  MemberInfo,
+  ShelfEntry,
+  User,
+} from '@caravan/buddy-reading-types';
 import {
   Paper,
   Tabs,
@@ -10,14 +15,8 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  Club,
-  ShelfEntry,
-  GroupMember,
-  User,
-} from '@caravan/buddy-reading-types';
 import { getClub } from '../../services/club';
-import { getUser } from '../../services/user';
+import { getUsersById } from '../../services/user';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
@@ -47,17 +46,13 @@ interface ClubProps extends RouteComponentProps<ClubRouteParams> {
   user: User | null;
 }
 
-interface MemberInfo extends User {
-  role: string;
-}
-
-export default function Club(props: ClubProps) {
+export default function ClubComponent(props: ClubProps) {
   const classes = useStyles();
   const [tabValue, setTabValue] = React.useState(0);
   const [club, setClub] = React.useState<Club | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
-  const [memberInfo, setMemberInfo] = React.useState<MemberInfo | null>(null);
+  const [memberInfo, setMemberInfo] = React.useState<MemberInfo[]>([]);
   const clubId = props.match.params.id;
 
   function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
@@ -73,27 +68,21 @@ export default function Club(props: ClubProps) {
     }
   }
 
-  function getMembersInfo(club: Club) {
-    const getMembers = async () => {
-      let memberInfo: Array<MemberInfo> = [];
-      club.members.forEach(m => {
-        try {
-          getUser(m.id).then(user => {
-            if (user) {
-              // const member: MemberInfo = {
-              //   ...user,
-              //   role: m.role,
-              // };
-              // memberInfo.push(member);
-            }
-          });
-        } catch (err) {
-          console.error(err);
-          throw err;
-        }
-      });
-      // setMemberInfo(memberInfo);
-    };
+  async function getMembersInfo(club: Club) {
+    if (club && club.members) {
+      const memberIds = club.members.map(m => m._id);
+      const users = await getUsersById(memberIds);
+      if (users) {
+        const membersWithInfo = users.map(u => {
+          const member = club.members.find(m => m._id === u.userId);
+          if (!member) {
+            throw Error('Should not happen');
+          }
+          return { ...u, role: member.role };
+        });
+        setMemberInfo(membersWithInfo);
+      }
+    }
   }
 
   useEffect(() => {
@@ -103,7 +92,7 @@ export default function Club(props: ClubProps) {
         if (club) {
           setClub(club);
           getCurrentBook(club);
-          // getMemberInfo(club);
+          getMembersInfo(club);
           setLoadedClub(true);
         }
       } catch (err) {
@@ -132,7 +121,7 @@ export default function Club(props: ClubProps) {
               <Tab label="Shelf" />
             </Tabs>
           </Paper>
-          {tabValue === 0 && <GroupView club={club} />}
+          {tabValue === 0 && <GroupView club={club} memberInfo={memberInfo} />}
           {tabValue === 1 && <ShelfView shelf={club.shelf} />}
           <Button
             variant="contained"
@@ -145,7 +134,7 @@ export default function Club(props: ClubProps) {
       )}
       {loadedClub && !club && (
         <div>
-          <Typography>Doesn't look like this club exists!</Typography>
+          <Typography>It does not appear that this club exists!</Typography>
         </div>
       )}
     </>

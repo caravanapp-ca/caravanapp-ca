@@ -2,10 +2,11 @@ import { model, Schema } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
+  Session,
   SessionDoc,
 } from '@caravan/buddy-reading-types';
 
-const definition: SameKeysAs<FilterAutoMongoKeys<SessionDoc>> = {
+const definition: SameKeysAs<FilterAutoMongoKeys<Session>> = {
   accessToken: { type: String, required: true },
   accessTokenExpiresAt: { type: Number, required: true },
   refreshToken: { type: String, required: true },

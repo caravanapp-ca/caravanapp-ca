@@ -1,38 +1,43 @@
 import express from 'express';
 import User from '../models/user';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
 // Get a user
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
-  if (typeof id === 'string') {
-    try {
-      const user = await User.findById(id);
-      res.json(user);
-    } catch (err) {
-      const { code } = err;
-      switch (code) {
-        case 404:
-          res.status(404).send(`User not found: ${id}`);
-          return;
-        default:
-          console.log(`Failed to get user ${id}`, err);
-          return next(err);
-      }
+  try {
+    const user = await User.findById(id);
+    res.json(user);
+  } catch (err) {
+    const { code } = err;
+    switch (code) {
+      case 404:
+        res.status(404).send(`User not found: ${id}`);
+        return;
+      default:
+        console.log(`Failed to get user ${id}`, err);
+        return next(err);
     }
   }
-  // TODO: Review this with Quinn
-  else if (Array.isArray(id)) {
+});
+
+router.post('/users', async (req, res, next) => {
+  const { userIds } = req.body;
+  if (Array.isArray(userIds)) {
     try {
+      const userIdsAsObj = userIds.map(uid => mongoose.Types.ObjectId(uid));
       const users = await User.find({
-        _id: { $in: id },
+        _id: { $in: userIdsAsObj },
       });
       res.json(users);
     } catch (err) {
       console.error(err);
       return next(err);
     }
+  } else {
+    res.status(400).send('Error: `userIds` must be an array of user ids.');
   }
 });
 
