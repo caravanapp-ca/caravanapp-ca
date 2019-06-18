@@ -70,11 +70,11 @@ export default function ClubComponent(props: ClubProps) {
 
   async function getMembersInfo(club: Club) {
     if (club && club.members) {
-      const memberIds = club.members.map(m => m._id);
+      const memberIds = club.members.map(m => m.userId);
       const users = await getUsersById(memberIds);
       if (users) {
         const membersWithInfo = users.map(u => {
-          const member = club.members.find(m => m._id === u.userId);
+          const member = club.members.find(m => m.userId === u._id);
           if (!member) {
             throw Error('Should not happen');
           }
