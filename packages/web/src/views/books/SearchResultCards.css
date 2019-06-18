@@ -1,0 +1,10 @@
+.SearchResult {
+  position: 'relative';
+}
+
+.SearchResult img {
+  width: 50px;
+  object-fit: 'contain';
+  overflow: 'hidden';
+  border-radius: 50%;
+}

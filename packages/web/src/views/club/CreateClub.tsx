@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import Grid, { GridSpacing } from '@material-ui/core/Grid';
+import { GridSpacing } from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
@@ -29,6 +29,9 @@ import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import PowerIcon from '@material-ui/icons/FlashOn';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
+import SearchResultCards from '../books/SearchResultCards';
 import { createClub } from '../../services/club';
 
 const theme = createMuiTheme({
@@ -43,7 +46,7 @@ const theme = createMuiTheme({
 const useStyles = makeStyles(theme => ({
   formContainer: {
     paddingTop: theme.spacing(5),
-    paddingBottom: theme.spacing(8),
+    paddingBottom: theme.spacing(5),
   },
   paper: {
     height: 160,
@@ -80,6 +83,24 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 10,
     color: 'white',
     backgroundColor: '#7289da',
+  },
+  searchContainer: {
+    padding: 0,
+    marginBottom: 30,
+  },
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    borderRadius: 10,
+  },
+  input: {
+    marginLeft: 8,
+    flex: 1,
+    paddingRight: 10,
+  },
+  iconButton: {
+    padding: 10,
   },
 }));
 
@@ -174,6 +195,18 @@ export default function CreateClub(props: CreateClubProps) {
     setSelectedGroupBioValue(e.target.value);
   }
 
+  const [bookSearchValue, setBookSearchValue] = React.useState('');
+
+  function setSearchField(
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) {
+    setBookSearchValue(e.target.value);
+  }
+
+  function bookSearch() {}
+
   function createClubOnClick() {
     let clubObj = {
       name: selectedGroupNameValue,
@@ -197,94 +230,52 @@ export default function CreateClub(props: CreateClubProps) {
       />
       <main>
         <Container className={classes.formContainer} maxWidth="md">
-          <Typography
-            style={{ fontWeight: 'bold', marginBottom: 10, marginTop: 40 }}
-            variant="h5"
-            component="h2"
-          >
-            Group name
-          </Typography>
           <TextField
-            id="standard-full-width"
-            style={{ marginBottom: 30 }}
-            placeholder="The Gang"
+            id="filled-name"
+            label="Group Name"
+            style={{ marginBottom: 20 }}
             helperText="50 character limit"
             variant="outlined"
             fullWidth
             inputProps={{ maxLength: 50 }}
             onChange={e => handleGroupNameChange(e)}
-            InputLabelProps={{
-              shrink: true,
-            }}
           />
           <Typography
-            style={{ fontWeight: 'bold', marginBottom: 20 }}
-            variant="h5"
-            component="h2"
+            style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
+            variant="subtitle1"
           >
             What books would you like to read?
           </Typography>
-          <Grid style={{ marginBottom: 30 }} item xs={12} sm={12}>
-            <Grid container justify="space-around" spacing={spacing}>
-              <Grid key={0} item>
-                <div>
-                  <Paper className={classes.paper}>
-                    <IconButton
-                      edge="start"
-                      className={classes.addButton}
-                      color="inherit"
-                      aria-label="Add"
-                      component={AdapterLink}
-                      to="/findbooks"
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Paper>
-                </div>
-              </Grid>
-              <Grid key={1} item>
-                <div>
-                  <Paper className={classes.paper}>
-                    <IconButton
-                      edge="start"
-                      className={classes.addButton}
-                      color="inherit"
-                      aria-label="Add"
-                      component={AdapterLink}
-                      to="/findbooks"
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Paper>
-                </div>
-              </Grid>
-              <Grid key={2} item>
-                <div>
-                  <Paper className={classes.paper}>
-                    <IconButton
-                      edge="start"
-                      className={classes.addButton}
-                      color="inherit"
-                      aria-label="Add"
-                      component={AdapterLink}
-                      to="/findbooks"
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Paper>
-                </div>
-              </Grid>
-            </Grid>
-          </Grid>
+
+          <Container className={classes.searchContainer} maxWidth="md">
+            <Paper elevation={2} className={classes.root}>
+              <IconButton
+                className={classes.iconButton}
+                aria-label="Menu"
+                onClick={() => bookSearch}
+              >
+                <SearchIcon />
+              </IconButton>
+              <InputBase
+                className={classes.input}
+                placeholder="Add a Book"
+                fullWidth
+                inputProps={{ 'aria-label': 'Add a Book' }}
+                onChange={e => setSearchField(e)}
+              />
+            </Paper>
+          </Container>
+
+          <SearchResultCards />
 
           <Typography
-            style={{ fontWeight: 'bold', marginBottom: 20 }}
-            variant="h5"
+            style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
+            variant="subtitle1"
             component="h2"
           >
             How many group members do you want?
           </Typography>
-          <div style={{ marginBottom: 30 }}>
+          <div style={{ marginBottom: 20 }}>
             <MuiThemeProvider theme={theme}>
               <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <Radio
@@ -356,8 +347,8 @@ export default function CreateClub(props: CreateClubProps) {
           </div>
 
           <Typography
-            style={{ fontWeight: 'bold', marginBottom: 20 }}
-            variant="h5"
+            style={{ marginBottom: 30, fontSize: 16, color: '#8B8B8B' }}
+            variant="subtitle1"
             component="h2"
           >
             How fast do you want the group to read?
@@ -476,8 +467,8 @@ export default function CreateClub(props: CreateClubProps) {
           </div>
 
           <Typography
-            style={{ fontWeight: 'bold', marginBottom: 30 }}
-            variant="h5"
+            style={{ marginBottom: 30, fontSize: 16, color: '#8B8B8B' }}
+            variant="subtitle1"
             component="h2"
           >
             What vibe do you want the group to have?
@@ -663,17 +654,10 @@ export default function CreateClub(props: CreateClubProps) {
             </div>
           </div>
 
-          <Typography
-            style={{ fontWeight: 'bold', marginBottom: 30 }}
-            variant="h5"
-            component="h2"
-          >
-            Group Bio
-          </Typography>
           <TextField
             id="multiline-full-width"
             style={{ marginBottom: 20, width: '100%' }}
-            placeholder="I'm looking for..."
+            placeholder="Group Bio"
             helperText="300 character limit"
             variant="outlined"
             onChange={handleGroupBioChange}
