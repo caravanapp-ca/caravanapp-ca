@@ -29,6 +29,7 @@ import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import PowerIcon from '@material-ui/icons/FlashOn';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
+import { createClub } from '../../services/club';
 
 const theme = createMuiTheme({
   palette: {
@@ -173,7 +174,7 @@ export default function CreateClub(props: CreateClubProps) {
     setSelectedGroupBioValue(e.target.value);
   }
 
-  function createClub() {
+  function createClubOnClick() {
     let clubObj = {
       name: selectedGroupNameValue,
       ownerId: 'SOME_USER_ID',
@@ -184,7 +185,7 @@ export default function CreateClub(props: CreateClubProps) {
       vibe: 'Nerdy',
       readingSpeed: 'Fast',
     };
-
+    createClub(clubObj);
     console.log(clubObj.name);
   }
 
@@ -694,7 +695,7 @@ export default function CreateClub(props: CreateClubProps) {
               }
               className={classes.createButton}
               size="small"
-              onClick={createClub}
+              onClick={createClubOnClick}
             >
               Create
             </Button>
