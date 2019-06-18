@@ -1,6 +1,7 @@
+import axios from 'axios';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { UserDoc } from '@caravan/buddy-reading-types';
+import { UserDoc, GoogleBooks } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
   createMuiTheme,
@@ -31,6 +32,8 @@ import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 import SearchResultCards from '../books/SearchResultCards';
 import { createClub } from '../../services/club';
 
@@ -87,6 +90,7 @@ const useStyles = makeStyles(theme => ({
   searchContainer: {
     padding: 0,
     marginBottom: 30,
+    position: 'relative',
   },
   root: {
     display: 'flex',
@@ -101,6 +105,20 @@ const useStyles = makeStyles(theme => ({
   },
   iconButton: {
     padding: 10,
+  },
+  searchResultsList: {
+    width: '100%',
+    borderRadius: 10,
+    position: 'absolute',
+    backgroundColor: 'white',
+    top: '50px',
+    left: 0,
+    zIndex: 1,
+  },
+  searchResult: {
+    padding: 5,
+    marginTop: 0,
+    marginBottom: 0,
   },
 }));
 
@@ -148,6 +166,11 @@ export default function CreateClub(props: CreateClubProps) {
   );
 
   const [spacing] = React.useState<GridSpacing>(2);
+
+  const [
+    searchResults,
+    setSearchResults,
+  ] = React.useState<GoogleBooks.Books | null>(null);
 
   const [selectedGroupSizeValue, setSelectedGroupSizeValue] = React.useState(
     '4'
@@ -205,20 +228,20 @@ export default function CreateClub(props: CreateClubProps) {
     setBookSearchValue(e.target.value);
   }
 
-  function bookSearch() {
+  async function bookSearch() {
     console.log(bookSearchValue);
     if (bookSearchValue !== '') {
       let baseURL = 'https://www.googleapis.com/books/v1/volumes?q=';
       baseURL += encodeURIComponent(`intitle:${bookSearchValue}`);
-      console.log(baseURL);
 
-      fetch(baseURL)
-        .then(response => response.json())
-        .then(responseData => {
-          if (responseData.items) {
-            console.log(responseData.items);
-          }
-        });
+      const res = await axios.get(baseURL);
+      const responseData = res.data as GoogleBooks.Books;
+      setSearchResults(responseData);
+
+      if (responseData) {
+        console.log('Response data');
+        console.log(responseData.items);
+      }
     }
   }
 
@@ -248,7 +271,7 @@ export default function CreateClub(props: CreateClubProps) {
           <TextField
             id="filled-name"
             label="Group Name"
-            style={{ marginBottom: 20 }}
+            style={{ marginBottom: 20, marginTop: 40 }}
             helperText="50 character limit"
             variant="outlined"
             fullWidth
@@ -279,9 +302,22 @@ export default function CreateClub(props: CreateClubProps) {
                 onChange={e => setSearchField(e)}
               />
             </Paper>
+            {searchResults && (
+              <GridList
+                cellHeight={160}
+                className={classes.searchResultsList}
+                cols={1}
+              >
+                {searchResults.items.map(result => (
+                  <GridListTile cols={1} className={classes.searchResult}>
+                    <Typography>{result.volumeInfo.title}</Typography>
+                  </GridListTile>
+                ))}
+              </GridList>
+            )}
           </Container>
 
-          {/* <SearchResultCards /> */}
+          {searchResults && <SearchResultCards />}
 
           <Typography
             style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}

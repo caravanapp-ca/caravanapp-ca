@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import * as GoogleBooks from './books';
 
 declare module '@caravan/buddy-reading-types' {
   type SubtractKeys<T, U> = {
@@ -88,4 +89,6 @@ declare module '@caravan/buddy-reading-types' {
     | 'learning'
     | 'first-timers'
     | 'nerdy';
+
+  export { GoogleBooks };
 }
