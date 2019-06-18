@@ -190,7 +190,22 @@ export default function CreateClub() {
     setBookSearchValue(e.target.value);
   }
 
-  function bookSearch() {}
+  function bookSearch() {
+    console.log(bookSearchValue);
+    if (bookSearchValue !== '') {
+      let baseURL = 'https://www.googleapis.com/books/v1/volumes?q=';
+      baseURL += encodeURIComponent(`intitle:${bookSearchValue}`);
+      console.log(baseURL);
+
+      fetch(baseURL)
+        .then(response => response.json())
+        .then(responseData => {
+          if (responseData.items) {
+            console.log(responseData.items);
+          }
+        });
+    }
+  }
 
   return (
     <React.Fragment>
@@ -225,7 +240,7 @@ export default function CreateClub() {
               <IconButton
                 className={classes.iconButton}
                 aria-label="Menu"
-                onClick={() => bookSearch}
+                onClick={bookSearch}
               >
                 <SearchIcon />
               </IconButton>
@@ -239,7 +254,7 @@ export default function CreateClub() {
             </Paper>
           </Container>
 
-          <SearchResultCards />
+          {/* <SearchResultCards /> */}
 
           <Typography
             style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
