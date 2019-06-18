@@ -3,9 +3,6 @@
   "version": "0.0.1-alpha.0",
   "description": "Web API for Caravan's buddy reading website",
   "main": "dist/index.js",
-  "engines": {
-    "node": ">=10"
-  },
   "scripts": {
     "build": "npm run build:clean && tsc",
     "build:clean": "rimraf ./dist",
