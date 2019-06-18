@@ -1,12 +1,10 @@
 .SearchResult {
   position: 'relative';
-  border-radius: 4px;
-  display: 'flex';
 }
 
 .SearchResult img {
-  width: 118px;
+  width: 50px;
   object-fit: 'contain';
   overflow: 'hidden';
-  border-radius: 10px;
+  border-radius: 50%;
 }

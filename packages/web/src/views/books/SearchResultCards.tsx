@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -8,51 +7,59 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
+import Radio from '@material-ui/core/Radio';
 import './SearchResultCards.css';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
-    paddingBottom: theme.spacing(8),
+    padding: 0,
+    marginBottom: 30,
   },
   card: {
     height: '100%',
     display: 'flex',
     flexDirection: 'row',
+    borderRadius: 10,
   },
   cardContent: {
-    height: '200px',
+    height: '100px',
     flexGrow: 1,
     padding: 10,
   },
   cardActions: {
-    display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'flex-end',
-    padding: '5px',
-  },
-  addButton: {
-    fontSize: '16px',
-    fontWeight: 'bold',
-    marginRight: 10,
-    marginBottom: 10,
-    color: 'white',
-    backgroundColor: '#7289da',
-    borderRadius: 30,
-    paddingLeft: 15,
-    paddingRight: 15,
   },
 }));
 
 // TODO pull cards from DB
-const cards = [1, 2, 3, 4, 5, 6, 7, 8];
+const cards = [1, 2];
 
 export default function SearchResultCards() {
   const classes = useStyles();
+
+  const [firstBook, setFirstBook] = React.useState('1');
+
+  function handleFirstBookChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setFirstBook(event.target.value);
+  }
 
   return (
     <React.Fragment>
       <CssBaseline />
       <main>
+        <Typography
+          style={{
+            marginBottom: 20,
+            fontSize: 14,
+            color: '#4B4B4B',
+            textAlign: 'center',
+            fontWeight: 'bold',
+          }}
+          variant="subtitle2"
+        >
+          Select which book you'll be reading first! The rest will go to your
+          'To Be Read' list.
+        </Typography>
         <Container className={classes.cardGrid} maxWidth="md">
           <Grid container spacing={2}>
             {cards.map(card => (
@@ -66,34 +73,58 @@ export default function SearchResultCards() {
                         width: '100%',
                       }}
                     >
-                      <div className="SearchResult">
+                      <div>
                         <img
+                          style={{
+                            width: '50px',
+                            objectFit: 'contain',
+                            overflow: 'hidden',
+                            borderRadius: '10%',
+                          }}
                           src="https://images.gr-assets.com/books/1429638085l/4929.jpg"
                           alt=""
                         />
                       </div>
                       <div
                         style={{
-                          marginLeft: 30,
+                          marginLeft: 10,
+                          flexDirection: 'column',
+                          width: '100%',
+                          justifyContent: 'center',
                         }}
                       >
-                        <Typography variant="h4">Kafka on the Shore</Typography>
-                        <Typography variant="h5">Haruki Murakami</Typography>
-                        <Typography variant="h5" component="h6">
+                        <Typography
+                          style={{ fontSize: 16, color: '#8B8B8B' }}
+                          variant="h4"
+                        >
+                          Kafka on the Shore
+                        </Typography>
+                        <Typography
+                          style={{ fontSize: 14, color: '#C8C8C8' }}
+                          variant="h5"
+                        >
+                          Haruki Murakami
+                        </Typography>
+                        <Typography
+                          style={{ fontSize: 14, color: '#C8C8C8' }}
+                          variant="h5"
+                          component="h6"
+                        >
                           Fantasy
                         </Typography>
                       </div>
+                      <CardActions className={classes.cardActions}>
+                        <Radio
+                          checked={firstBook === '2'}
+                          onChange={handleFirstBookChange}
+                          value="2"
+                          style={{ color: '#7289da' }}
+                          name="radio-button-demo"
+                          inputProps={{ 'aria-label': '2' }}
+                        />
+                      </CardActions>
                     </div>
                   </CardContent>
-                  <CardActions className={classes.cardActions}>
-                    <Button
-                      variant="contained"
-                      className={classes.addButton}
-                      size="small"
-                    >
-                      Add
-                    </Button>
-                  </CardActions>
                 </Card>
               </Grid>
             ))}
