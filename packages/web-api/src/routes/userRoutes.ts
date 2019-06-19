@@ -38,7 +38,9 @@ router.post('/users', async (req, res, next) => {
       return next(err);
     }
   } else {
-    res.status(400).send('Error: `userIds` must be an array of user ids.');
+    res
+      .status(400)
+      .send('Error: `userIds` must be an array of user id strings');
   }
 });
 
