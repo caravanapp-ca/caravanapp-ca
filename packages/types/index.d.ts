@@ -92,12 +92,17 @@ declare module '@caravan/buddy-reading-types' {
     readingSpeed?: string;
   }
 
-  type MembershipStatus = 'notMember' | 'member' | 'owner';
+  export type MembershipStatus = 'notMember' | 'member' | 'owner';
 
-  type ReadingState = 'notStarted' | 'current' | 'read';
+  export type ReadingState = 'notStarted' | 'current' | 'read';
 
-  type ReadingSpeed = 'slow' | 'moderate' | 'fast';
+  export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
 
-  type GroupVibe = 'chill' | 'power' | 'learning' | 'first-timers' | 'nerdy';
+  export type GroupVibe =
+    | 'chill'
+    | 'power'
+    | 'learning'
+    | 'first-timers'
+    | 'nerdy';
   export { GoogleBooks };
 }

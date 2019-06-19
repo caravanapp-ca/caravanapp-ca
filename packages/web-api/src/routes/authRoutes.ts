@@ -1,9 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
-import {
-  FilterAutoMongoKeys,
-  Session,
-  UserDoc,
-} from '@caravan/buddy-reading-types';
+import { FilterAutoMongoKeys, Session } from '@caravan/buddy-reading-types';
+import { UserDoc } from '../../typings/@caravan/buddy-reading-web-api';
 import { isAuthenticated } from '../middleware/auth';
 import {
   DiscordOAuth2Url,
