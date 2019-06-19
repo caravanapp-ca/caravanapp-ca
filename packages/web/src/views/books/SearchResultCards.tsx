@@ -49,10 +49,13 @@ const useStyles = makeStyles(theme => ({
   },
   cardActions: {
     justifyContent: 'flex-end',
+    width: '40px',
+    padding: '0px',
   },
   addBookButton: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(0),
+    position: 'relative',
+    left: '5px',
+    bottom: '5px',
   },
 }));
 
@@ -87,13 +90,11 @@ export default function SearchResultCards(props: ResultsProps) {
                     <div>
                       <img
                         style={{
-                          height: '90%',
-                          width: '56.25%',
-                          objectFit: 'cover',
+                          width: '50px',
+                          height: '80px',
                           overflow: 'hidden',
                           borderRadius: '10%',
                           border: '1px solid #C8C8C8',
-                          marginBottom: 10,
                         }}
                         src={
                           ('imageLinks' in result.volumeInfo &&
@@ -121,8 +122,8 @@ export default function SearchResultCards(props: ResultsProps) {
                         }}
                         variant="h4"
                       >
-                        {result.volumeInfo.title.length > 60
-                          ? result.volumeInfo.title.substring(0, 60) + '...'
+                        {result.volumeInfo.title.length > 35
+                          ? result.volumeInfo.title.substring(0, 35) + '...'
                           : result.volumeInfo.title}
                       </Typography>
                       <Typography
@@ -134,7 +135,7 @@ export default function SearchResultCards(props: ResultsProps) {
                       >
                         {('authors' in result.volumeInfo &&
                           result.volumeInfo.authors[0]) ||
-                          'Unknown author'}
+                          'Unknown Author'}
                       </Typography>
                       <Typography
                         style={{ fontSize: 14, color: '#C8C8C8' }}
@@ -143,7 +144,7 @@ export default function SearchResultCards(props: ResultsProps) {
                       >
                         {('categories' in result.volumeInfo &&
                           result.volumeInfo.categories) ||
-                          'Unknown genre'}
+                          'Unknown Genre'}
                       </Typography>
                     </div>
                     <CardActions className={classes.cardActions}>

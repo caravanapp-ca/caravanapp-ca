@@ -172,6 +172,12 @@ export default function CreateClub(props: CreateClubProps) {
     setSearchResults,
   ] = React.useState<GoogleBooks.Books | null>(null);
 
+  const [selectedPrivacy, setSelectedPrivacy] = React.useState('1');
+
+  function handlePrivacyChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setSelectedPrivacy(event.target.value);
+  }
+
   const [selectedGroupSizeValue, setSelectedGroupSizeValue] = React.useState(
     '4'
   );
@@ -298,6 +304,51 @@ export default function CreateClub(props: CreateClubProps) {
             style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
             variant="subtitle1"
           >
+            Is your group public or private?
+          </Typography>
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <Radio
+              checked={selectedPrivacy === '1'}
+              onChange={handlePrivacyChange}
+              value="1"
+              style={{ color: '#7289da' }}
+              name="radio-button-demo"
+              inputProps={{ 'aria-label': '1' }}
+            />
+            <Radio
+              checked={selectedPrivacy === '2'}
+              onChange={handlePrivacyChange}
+              value="2"
+              style={{ color: '#7289da' }}
+              name="radio-button-demo"
+              inputProps={{ 'aria-label': '2' }}
+            />
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              marginBottom: 20,
+              justifyContent: 'space-around',
+              alignItems: 'center',
+              color: '#4B4B4B',
+              marginLeft: '5px',
+            }}
+          >
+            <Typography variant="h5" component="h2">
+              Public
+            </Typography>
+            <Typography
+              style={{ marginLeft: '10px' }}
+              variant="h5"
+              component="h2"
+            >
+              Private
+            </Typography>
+          </div>
+          <Typography
+            style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
+            variant="subtitle1"
+          >
             What books would you like to read?
           </Typography>
 
@@ -382,6 +433,7 @@ export default function CreateClub(props: CreateClubProps) {
                   marginBottom: 20,
                   justifyContent: 'space-around',
                   alignItems: 'center',
+                  color: '#4B4B4B',
                 }}
               >
                 <Typography variant="h5" component="h2">
@@ -442,7 +494,7 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': 'Slow' }}
                 />
                 <Typography
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 10, color: '#4B4B4B' }}
                   variant="h5"
                   component="h2"
                 >
@@ -450,7 +502,7 @@ export default function CreateClub(props: CreateClubProps) {
                 </Typography>
               </div>
               <div>
-                <WalkIcon style={{ fontSize: 50 }} />
+                <WalkIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
@@ -476,7 +528,7 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': 'Moderate' }}
                 />
                 <Typography
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 10, color: '#4B4B4B' }}
                   variant="h5"
                   component="h2"
                 >
@@ -484,7 +536,7 @@ export default function CreateClub(props: CreateClubProps) {
                 </Typography>
               </div>
               <div>
-                <BikeIcon style={{ fontSize: 50 }} />
+                <BikeIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
@@ -510,7 +562,7 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': 'Fast' }}
                 />
                 <Typography
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 10, color: '#4B4B4B' }}
                   variant="h5"
                   component="h2"
                 >
@@ -518,7 +570,7 @@ export default function CreateClub(props: CreateClubProps) {
                 </Typography>
               </div>
               <div>
-                <CarIcon style={{ fontSize: 50 }} />
+                <CarIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
           </div>
@@ -562,7 +614,7 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': 'Chill' }}
                 />
                 <Typography
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 10, color: '#4B4B4B' }}
                   variant="h5"
                   component="h2"
                 >
@@ -570,7 +622,7 @@ export default function CreateClub(props: CreateClubProps) {
                 </Typography>
               </div>
               <div>
-                <ChillIcon style={{ fontSize: 50 }} />
+                <ChillIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
@@ -596,7 +648,7 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': 'Nerdy' }}
                 />
                 <Typography
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 10, color: '#4B4B4B' }}
                   variant="h5"
                   component="h2"
                 >
@@ -604,7 +656,7 @@ export default function CreateClub(props: CreateClubProps) {
                 </Typography>
               </div>
               <div>
-                <NerdyIcon style={{ fontSize: 50 }} />
+                <NerdyIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
@@ -630,7 +682,7 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': 'Power' }}
                 />
                 <Typography
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 10, color: '#4B4B4B' }}
                   variant="h5"
                   component="h2"
                 >
@@ -638,7 +690,7 @@ export default function CreateClub(props: CreateClubProps) {
                 </Typography>
               </div>
               <div>
-                <PowerIcon style={{ fontSize: 50 }} />
+                <PowerIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
@@ -664,7 +716,7 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': 'FirstTimer' }}
                 />
                 <Typography
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 10, color: '#4B4B4B' }}
                   variant="h5"
                   component="h2"
                 >
@@ -672,7 +724,7 @@ export default function CreateClub(props: CreateClubProps) {
                 </Typography>
               </div>
               <div>
-                <FirstTimerIcon style={{ fontSize: 50 }} />
+                <FirstTimerIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
@@ -698,7 +750,7 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': 'Learning' }}
                 />
                 <Typography
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 10, color: '#4B4B4B' }}
                   variant="h5"
                   component="h2"
                 >
@@ -706,7 +758,7 @@ export default function CreateClub(props: CreateClubProps) {
                 </Typography>
               </div>
               <div>
-                <LearningIcon style={{ fontSize: 50 }} />
+                <LearningIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
           </div>

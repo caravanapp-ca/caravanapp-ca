@@ -8,6 +8,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 import './SelectedBookCards.css';
 
 const useStyles = makeStyles(theme => ({
@@ -27,7 +29,10 @@ const useStyles = makeStyles(theme => ({
     padding: 10,
   },
   cardActions: {
-    justifyContent: 'flex-end',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    width: '40px',
+    padding: '0px',
   },
 }));
 
@@ -77,7 +82,7 @@ export default function SelectedBookCards() {
                         <img
                           style={{
                             width: '50px',
-                            objectFit: 'contain',
+                            height: '80px',
                             overflow: 'hidden',
                             borderRadius: '10%',
                           }}
@@ -118,10 +123,23 @@ export default function SelectedBookCards() {
                           checked={firstBook === '2'}
                           onChange={handleFirstBookChange}
                           value="2"
-                          style={{ color: '#7289da' }}
+                          style={{
+                            color: '#7289da',
+                            position: 'relative',
+                            bottom: '6px',
+                          }}
                           name="radio-button-demo"
                           inputProps={{ 'aria-label': '2' }}
                         />
+                        <IconButton
+                          aria-label="Delete"
+                          style={{
+                            position: 'relative',
+                            right: '4px',
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </CardActions>
                     </div>
                   </CardContent>
