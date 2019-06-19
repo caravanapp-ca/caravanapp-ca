@@ -1,12 +1,12 @@
 import { model, Schema } from 'mongoose';
 import {
   Club,
-  ClubDoc,
   ShelfEntry,
   FilterAutoMongoKeys,
   SameKeysAs,
   GroupMember,
 } from '@caravan/buddy-reading-types';
+import { ClubDoc } from '../../typings/@caravan/buddy-reading-web-api';
 
 const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
   amazonId: { type: String },
@@ -43,7 +43,8 @@ const definition: SameKeysAs<FilterAutoMongoKeys<Club>> = {
   readingSpeed: { type: String },
   shelf: { type: [shelfSchema], required: true },
   ownerId: { type: String, required: true },
-  members: { type: [memberSchema], required: true },
+  channelSource: { type: String, required: true }, // discord always for now
+  channelId: { type: String, required: true },
 };
 
 const clubSchema = new Schema<ClubDoc>(definition, {

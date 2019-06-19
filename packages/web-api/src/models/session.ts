@@ -3,8 +3,8 @@ import {
   FilterAutoMongoKeys,
   SameKeysAs,
   Session,
-  SessionDoc,
 } from '@caravan/buddy-reading-types';
+import { SessionDoc } from '../../typings/@caravan/buddy-reading-web-api';
 
 const definition: SameKeysAs<FilterAutoMongoKeys<Session>> = {
   accessToken: { type: String, required: true },
