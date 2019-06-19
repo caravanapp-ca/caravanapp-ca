@@ -29,6 +29,9 @@ import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import PowerIcon from '@material-ui/icons/FlashOn';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
 
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
@@ -170,7 +173,15 @@ export default function CreateClub(props: CreateClubProps) {
     setSearchResults,
   ] = React.useState<GoogleBooks.Books | null>(null);
 
-  const [selectedPrivacy, setSelectedPrivacy] = React.useState('1');
+  const [state, setState] = React.useState({
+    checked: false,
+  });
+
+  const handlePrivacyChange = (name: string) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setState({ ...state, [name]: event.target.checked });
+  };
 
   const [selectedGroupSizeValue, setSelectedGroupSizeValue] = React.useState(
     '4'
@@ -213,10 +224,6 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }, [bookSearchQuery]);
 
-  function handlePrivacyChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setSelectedPrivacy(event.target.value);
-  }
-
   async function bookSearch(query: string) {
     if (query) {
       const results = await searchGoogleBooks(query);
@@ -256,6 +263,40 @@ export default function CreateClub(props: CreateClubProps) {
     createClub(clubObj);
     console.log(clubObj.name);
   }
+
+  const AntSwitch = withStyles(theme => ({
+    root: {
+      width: 28,
+      height: 16,
+      padding: 0,
+      display: 'flex',
+    },
+    switchBase: {
+      padding: 2,
+      color: theme.palette.grey[500],
+      '&$checked': {
+        transform: 'translateX(12px)',
+        color: theme.palette.common.white,
+        '& + $track': {
+          opacity: 1,
+          backgroundColor: '#7289da',
+          borderColor: '#7289da',
+        },
+      },
+    },
+    thumb: {
+      width: 12,
+      height: 12,
+      boxShadow: 'none',
+    },
+    track: {
+      border: `1px solid ${theme.palette.grey[500]}`,
+      borderRadius: 16 / 2,
+      opacity: 1,
+      backgroundColor: theme.palette.common.white,
+    },
+    checked: {},
+  }))(Switch);
 
   return (
     <React.Fragment>
@@ -754,48 +795,34 @@ export default function CreateClub(props: CreateClubProps) {
             }}
           />
           <Typography
-            style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
+            style={{ marginBottom: 20, fontSize: 16, color: '#8B8B8B' }}
             variant="subtitle1"
           >
             Is your group public or private?
           </Typography>
-          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <Radio
-              checked={selectedPrivacy === '1'}
-              onChange={handlePrivacyChange}
-              value="1"
-              style={{ color: '#7289da' }}
-              name="radio-button-demo"
-              inputProps={{ 'aria-label': '1' }}
-            />
-            <Radio
-              checked={selectedPrivacy === '2'}
-              onChange={handlePrivacyChange}
-              value="2"
-              style={{ color: '#7289da' }}
-              name="radio-button-demo"
-              inputProps={{ 'aria-label': '2' }}
-            />
-          </div>
           <div
             style={{
               display: 'flex',
-              marginBottom: 20,
               justifyContent: 'space-around',
-              alignItems: 'center',
-              color: '#4B4B4B',
-              marginLeft: '5px',
+              marginBottom: '30px',
             }}
           >
-            <Typography variant="h5" component="h2">
-              Public
-            </Typography>
-            <Typography
-              style={{ marginLeft: '10px' }}
-              variant="h5"
-              component="h2"
-            >
-              Private
+            <Typography component="div">
+              <Grid component="label" container alignItems="center" spacing={1}>
+                <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
+                  Public
+                </Grid>
+                <Grid item>
+                  <AntSwitch
+                    checked={state.checked}
+                    onChange={handlePrivacyChange('checked')}
+                    value="checked"
+                  />
+                </Grid>
+                <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
+                  Private
+                </Grid>
+              </Grid>
             </Typography>
           </div>
           <div className={classes.createButtonSection}>
