@@ -1,6 +1,8 @@
 import express from 'express';
+import { TextChannel, VoiceChannel, GuildChannel } from 'discord.js';
 import Club from '../models/club';
 import { isAuthenticated } from '../middleware/auth';
+import { ReadingDiscordBot } from '../services/discord';
 
 const router = express.Router();
 
@@ -17,7 +19,7 @@ router.get('/:id', async (req, res, next) => {
   } catch (err) {
     if (err.name) {
       switch (err.name) {
-        case "CastError":
+        case 'CastError':
           res.status(404).send(null);
           return;
         default:
@@ -27,6 +29,32 @@ router.get('/:id', async (req, res, next) => {
     console.log(`Failed to get club ${id}`, err);
     return next(err);
   }
+});
+
+router.get('/', isAuthenticated, async (req, res, next) => {
+  const discordId = req.user.discord.id;
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+
+  const relevantChannels: GuildChannel[] = [];
+
+  guild.channels.forEach(channel => {
+    switch (channel.type) {
+      case 'text':
+        const textChannel = channel as TextChannel;
+        if (textChannel.members.has(discordId)) {
+          relevantChannels.push(textChannel);
+        }
+      case 'voice':
+        const voiceChannel = channel as VoiceChannel;
+        if (voiceChannel.members.has(discordId)) {
+          relevantChannels.push(voiceChannel);
+        }
+      default:
+        return;
+    }
+  });
+  res.status(200).json(relevantChannels);
 });
 
 // Create club
