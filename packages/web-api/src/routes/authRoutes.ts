@@ -10,12 +10,6 @@ import {
 } from '../services/discord';
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
-import {
-  ChannelData,
-  TextChannel,
-  PermissionOverwrites,
-  ChannelCreationOverwrites,
-} from 'discord.js';
 
 const router = express.Router();
 
@@ -76,50 +70,6 @@ router.post('/discord/disconnect', isAuthenticated, async (req, res, next) => {
   const { token } = req.session;
   await SessionModel.findOneAndDelete({ accessToken: token });
   destroySession(req, res);
-});
-
-interface CreateChannelInput {
-  channelData: ChannelData;
-  invitedUsers?: string[];
-  privateChannel: boolean;
-}
-
-router.post('/discord/club', isAuthenticated, async (req, res, next) => {
-  const { token } = req.session;
-  const discordClient = ReadingDiscordBot.getInstance();
-  const guild = discordClient.guilds.first();
-
-  const body: CreateChannelInput = req.body;
-  const channelCreationOverwrites = (body.invitedUsers || []).map(user => {
-    return {
-      id: user,
-      allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGES'],
-    } as ChannelCreationOverwrites;
-  });
-
-  if (body.privateChannel) {
-    channelCreationOverwrites.push({
-      id: guild.defaultRole.id,
-      deny: ['VIEW_CHANNEL'],
-    });
-  }
-
-  const newChannel: ChannelData = {
-    type: 'text',
-    name: body.channelData.name,
-    nsfw: body.channelData.nsfw || false,
-    userLimit: body.channelData.userLimit,
-    permissionOverwrites: channelCreationOverwrites,
-  };
-  const channel = (await guild.createChannel(
-    newChannel.name,
-    newChannel
-  )) as TextChannel;
-  guild.addMember(req.user.discord.id, {
-    accessToken: token,
-  });
-
-  res.status(201).send(channel);
 });
 
 router.get('/discord/callback', async (req, res) => {
