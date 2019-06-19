@@ -42,7 +42,7 @@ export default function ListElementAvatar(props: ListElementAvatarProps) {
         primary={primaryText ? primaryText : 'Group member'}
         secondary={secondaryText ? secondaryText : null}
       />
-      {secondaryElement && secondaryElement}
+      {secondaryElement}
     </ListItem>
   );
 }
