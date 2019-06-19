@@ -1,13 +1,11 @@
 import axios from 'axios';
-import { Club, ShelfEntry, GroupMember } from '@caravan/buddy-reading-types';
+import { Club } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
 
 interface CreateClubProps {
   name: string;
-  ownerId: string;
-  shelf?: ShelfEntry[];
-  members?: GroupMember[];
+  shelf?: any;
   bio: string;
   maxMembers: string;
   vibe: string;
@@ -41,9 +39,7 @@ export async function modifyMyClubMembership(
 export async function createClub(props: CreateClubProps) {
   const body = {
     name: props.name,
-    ownerId: props.ownerId,
     shelf: props.shelf,
-    members: props.members,
     bio: props.bio,
     maxMembers: props.maxMembers,
     vibe: props.vibe,

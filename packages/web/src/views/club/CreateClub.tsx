@@ -284,7 +284,7 @@ export default function CreateClub(props: CreateClubProps) {
         coverImageURL:
           'imageLinks' in book.volumeInfo
             ? book.volumeInfo.imageLinks.thumbnail
-            : 'https://www.newel.com/img/inventory/no_image_available_300x300.jpg',
+            : null,
       };
       return res;
     });
@@ -292,7 +292,7 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   function createClubOnClick() {
-    const shelf = getShelf(selectedBooks) as ShelfEntry[];
+    const shelf = getShelf(selectedBooks);
     const clubObj = {
       name: selectedGroupNameValue,
       shelf,
