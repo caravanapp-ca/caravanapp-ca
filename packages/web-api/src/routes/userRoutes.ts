@@ -23,6 +23,7 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+// Get users by array of userIds
 router.post('/users', async (req, res, next) => {
   const { userIds } = req.body;
   if (Array.isArray(userIds)) {
