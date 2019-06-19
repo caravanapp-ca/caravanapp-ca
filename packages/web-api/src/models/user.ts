@@ -1,10 +1,10 @@
 import { model, Schema } from 'mongoose';
 import {
   User,
-  UserDoc,
   FilterAutoMongoKeys,
   SameKeysAs,
 } from '@caravan/buddy-reading-types';
+import { UserDoc } from '../../typings/@caravan/buddy-reading-web-api';
 
 const nestedDiscordDefinition: Required<SameKeysAs<User['discord']>> = {
   id: { type: String, required: true, unique: true, index: true },
@@ -21,7 +21,6 @@ const nestedDiscordDefinition: Required<SameKeysAs<User['discord']>> = {
 };
 
 const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
-  userId: { type: String, required: true },
   bio: { type: String },
   discord: nestedDiscordDefinition,
   name: { type: String },

@@ -1,4 +1,5 @@
 import { Document, Types as MongooseTypes } from 'mongoose';
+import { Omit } from 'utility-types';
 import * as GoogleBooks from './books';
 
 declare module '@caravan/buddy-reading-types' {
@@ -23,33 +24,23 @@ declare module '@caravan/buddy-reading-types' {
     updatedAt: Date | string;
   }
 
+  type ChannelSource = 'discord';
+
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
     shelf: ShelfEntry[];
-    members: GroupMember[];
     bio?: string;
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
-  }
-
-  export interface ClubDoc extends Document, Club {
-    // Override the type to ensure that it's a string not _id?: any;
-    _id: MongooseTypes.ObjectId;
-    shelf: ShelfEntryDoc[];
-    members: GroupMemberDoc[];
+    channelSource: ChannelSource;
+    channelId: string;
   }
 
   export interface GroupMember extends DocumentFields, MongoTimestamps {
     userId: string;
     role: string;
-  }
-
-  export interface GroupMemberDoc extends GroupMember, Document {
-    // Override the type to ensure that it's a string not _id?: any;
-    _id: MongooseTypes.ObjectId;
-    userId: MongooseTypes.ObjectId;
   }
 
   export interface Session extends DocumentFields {
@@ -67,11 +58,6 @@ declare module '@caravan/buddy-reading-types' {
     role: string;
   }
 
-  export interface SessionDoc extends Document, Session {
-    // Override the type to ensure that it's a string not _id?: any;
-    _id: MongooseTypes.ObjectId;
-  }
-
   export interface ShelfEntry extends MongoTimestamps {
     amazonId?: string;
     goodReadsId?: string;
@@ -86,12 +72,7 @@ declare module '@caravan/buddy-reading-types' {
     genres: string[];
   }
 
-  export interface ShelfEntryDoc extends ShelfEntry, Document {
-    _id: MongooseTypes.ObjectId;
-  }
-
   export interface User extends DocumentFields, MongoTimestamps {
-    userId: string;
     bio?: string;
     discord: {
       id: string;
@@ -111,22 +92,12 @@ declare module '@caravan/buddy-reading-types' {
     readingSpeed?: string;
   }
 
-  export interface UserDoc extends Document, User {
-    _id: MongooseTypes.ObjectId;
-  }
+  type MembershipStatus = 'notMember' | 'member' | 'owner';
 
-  export type MembershipStatus = 'notMember' | 'member' | 'owner';
+  type ReadingState = 'notStarted' | 'current' | 'read';
 
-  export type ReadingState = 'notStarted' | 'current' | 'read';
+  type ReadingSpeed = 'slow' | 'moderate' | 'fast';
 
-  export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
-
-  export type GroupVibe =
-    | 'chill'
-    | 'power'
-    | 'learning'
-    | 'first-timers'
-    | 'nerdy';
-
+  type GroupVibe = 'chill' | 'power' | 'learning' | 'first-timers' | 'nerdy';
   export { GoogleBooks };
 }
