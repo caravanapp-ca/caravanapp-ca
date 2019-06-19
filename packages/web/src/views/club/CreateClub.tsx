@@ -213,10 +213,6 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }, [bookSearchQuery]);
 
-  function handlePrivacyChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setSelectedPrivacy(event.target.value);
-  }
-
   async function bookSearch(query: string) {
     if (query) {
       const results = await searchGoogleBooks(query);
@@ -231,8 +227,6 @@ export default function CreateClub(props: CreateClubProps) {
     const newBooks = [...selectedBooks, book];
     setSelectedBooks(newBooks);
     setBookSearchQuery('');
-    console.log('Selected books after add');
-    console.log(newBooks);
   }
 
   async function onDeleteSelectedBook(book: GoogleBooks.Item) {
@@ -240,8 +234,6 @@ export default function CreateClub(props: CreateClubProps) {
       selected => selected.id != book.id
     );
     setSelectedBooks(updatedBooks);
-    console.log('Selected books after delete');
-    console.log(updatedBooks);
   }
 
   function createClubOnClick() {
@@ -762,7 +754,9 @@ export default function CreateClub(props: CreateClubProps) {
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <Radio
               checked={selectedPrivacy === '1'}
-              onChange={handlePrivacyChange}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setSelectedPrivacy(event.target.value)
+              }
               value="1"
               style={{ color: '#7289da' }}
               name="radio-button-demo"
@@ -770,7 +764,9 @@ export default function CreateClub(props: CreateClubProps) {
             />
             <Radio
               checked={selectedPrivacy === '2'}
-              onChange={handlePrivacyChange}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setSelectedPrivacy(event.target.value)
+              }
               value="2"
               style={{ color: '#7289da' }}
               name="radio-button-demo"
@@ -802,7 +798,10 @@ export default function CreateClub(props: CreateClubProps) {
             <Button
               variant="contained"
               disabled={
-                selectedGroupBio === '' || selectedGroupNameValue === ''
+                selectedGroupBio === '' ||
+                selectedGroupNameValue === '' ||
+                firstBookId === '' ||
+                selectedBooks.length === 0
               }
               className={classes.createButton}
               size="small"
