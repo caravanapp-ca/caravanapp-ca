@@ -1,9 +1,9 @@
 import React from 'react'
 import Avatar from '@material-ui/core/Avatar';
-import CakeIcon from '@material-ui/icons/Cake';
+import FirstTimersGroupVibeIcon from '../group-vibe-icons/FirstTimersGroupVibeIcon';
 
 export default function FirstTimersGroupVibeAvatar() {
   return (
-    <Avatar><CakeIcon/></Avatar>
+    <Avatar><FirstTimersGroupVibeIcon/></Avatar>
   )
 }

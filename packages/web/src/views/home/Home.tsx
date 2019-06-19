@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import qs from 'query-string';
-import { User, Club } from '@caravan/buddy-reading-types';
+import {
+  User,
+  Club,
+  ClubWithCurrentlyReading,
+} from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -16,6 +20,7 @@ import { deleteCookie } from '../../common/cookies';
 import { DISCORD_OAUTH_STATE } from '../../state';
 import ClubCards from './ClubCards';
 import { UserCard } from './UserCard';
+import { getAllClubs } from '../../services/club';
 
 interface HomeProps {
   user: User | null;
@@ -45,6 +50,9 @@ const useStyles = makeStyles(theme => ({
 export default function Home(props: HomeProps) {
   const classes = useStyles();
   const [clubs, setClubs] = React.useState<Club[]>([]);
+  const [clubsWCR, setClubsWCR] = React.useState<ClubWithCurrentlyReading[]>(
+    []
+  );
 
   // Handle the `state` query to verify login
   useEffect(() => {
@@ -58,12 +66,34 @@ export default function Home(props: HomeProps) {
     }
   }, []);
 
+  useEffect(() => {
+    getClubs();
+  }, []);
+
   async function getClubs() {
     // TODO: Need to write getAllClubs service
     const clubs = await getAllClubs();
     if (clubs) {
       setClubs(clubs);
+      const clubsWCR = transformClubsToWithCurrentlyReading(clubs);
+      setClubsWCR(clubsWCR);
     }
+  }
+
+  function transformClubsToWithCurrentlyReading(
+    clubs: Club[]
+  ): ClubWithCurrentlyReading[] {
+    const clubsWCR: ClubWithCurrentlyReading[] = clubs.map(club => {
+      const currentlyReading = club.shelf.find(
+        book => book.readingState === 'current'
+      );
+      if (currentlyReading) {
+        return { club, currentlyReading };
+      } else {
+        return { club, currentlyReading: null };
+      }
+    });
+    return clubsWCR;
   }
 
   const leftComponent = (
@@ -145,7 +175,7 @@ export default function Home(props: HomeProps) {
             </div>
           </Container>
         </div>
-        <ClubCards />
+        <ClubCards clubsWCR={clubsWCR} />
         <UserCard user={props.user} />
       </main>
     </>

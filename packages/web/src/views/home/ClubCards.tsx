@@ -1,4 +1,5 @@
 import React from 'react';
+import { ClubWithCurrentlyReading } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -6,11 +7,17 @@ import CardContent from '@material-ui/core/CardContent';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import RunnerIcon from '@material-ui/icons/DirectionsRun';
 import PersonIcon from '@material-ui/icons/PersonOutline';
-import GraduationCapIcon from '@material-ui/icons/School';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {
+  groupVibeIcons,
+  groupVibeLabels,
+} from '../../components/group-vibe-avatars-icons-labels';
+import {
+  readingSpeedIcons,
+  readingSpeedLabels,
+} from '../../components/reading-speed-avatars-icons-labels';
 import './ClubCards.css';
 
 const useStyles = makeStyles(theme => ({
@@ -27,17 +34,13 @@ const useStyles = makeStyles(theme => ({
     height: '200px',
     flexGrow: 1,
   },
-  membersIcon: {
+  iconWithLabel: {
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  vibeIcon: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  speedIcon: {
-    display: 'flex',
-    justifyContent: 'center',
+  iconLabel: {
+    marginLeft: 8,
   },
   iconRoot: {
     textAlign: 'center',
@@ -64,13 +67,55 @@ const useStyles = makeStyles(theme => ({
     color: 'white',
     backgroundColor: '#7289da',
   },
+  clubImageContainer: {
+    position: 'relative',
+    'border-radius': '4px',
+    'flex-grow': 1,
+  },
+  clubImage: {
+    width: '100%',
+    height: '194px',
+    'object-fit': 'cover',
+    filter: 'blur(2px)',
+  },
+  clubImageShade: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    background: 'rgba(0, 0, 0, 0.4)',
+  },
+  imageTextContainer: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+    left: 0,
+    'justify-content': 'flex-end',
+    'align-items': 'flex-end',
+    padding: 16,
+  },
+  imageText: {
+    'font-size': '16px',
+    width: '100%',
+    'text-align': 'left',
+    color: '#ffffff',
+  },
+  imageTitleText: {
+    'font-size': '20px',
+    width: '100%',
+    'text-align': 'left',
+    color: '#ffffff',
+  },
 }));
 
-// TODO pull cards from DB
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+interface ClubCardsProps {
+  clubsWCR: ClubWithCurrentlyReading[];
+}
 
-export default function ClubCards() {
+export default function ClubCards(props: ClubCardsProps) {
   const classes = useStyles();
+  const { clubsWCR } = props;
 
   return (
     <React.Fragment>
@@ -78,58 +123,96 @@ export default function ClubCards() {
       <main>
         <Container className={classes.cardGrid} maxWidth="md">
           <Grid container spacing={4}>
-            {cards.map(card => (
-              <Grid item key={card} xs={12} sm={6}>
-                <Card className={classes.card}>
-                  <div className="Club-image">
-                    <img
-                      src="https://images.gr-assets.com/books/1429638085l/4929.jpg"
-                      alt=""
-                    />
-                    <h1>Currently reading</h1>
-                    <h2>Kafka on the Shore</h2>
-                    <h3>Haruki Murakami, 2002</h3>
-                    <h4>(Fantasy)</h4>
-                  </div>
-                  <CardContent className={classes.cardContent}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Sci-fi & Fantasy Club
-                    </Typography>
-                    <div className={classes.iconRoot}>
-                      <div className={classes.membersIcon}>
-                        <PersonIcon style={{ marginRight: 10 }} />
-                        <Typography variant="subtitle1">2/3</Typography>
-                      </div>
-                      <div className={classes.vibeIcon}>
-                        <GraduationCapIcon style={{ marginRight: 10 }} />
-                        <Typography variant="subtitle1">Learning</Typography>
-                      </div>
-                      <div className={classes.speedIcon}>
-                        <RunnerIcon style={{ marginRight: 10 }} />
-                        <Typography variant="subtitle1">Fast</Typography>
-                      </div>
+            {clubsWCR.map(c => {
+              const { club, currentlyReading } = c;
+              let year;
+              if (currentlyReading && currentlyReading.publishedDate) {
+                year = new Date(
+                  currentlyReading.publishedDate
+                ).getUTCFullYear();
+              }
+              return (
+                <Grid item key={club._id} xs={12} sm={6}>
+                  <Card className={classes.card}>
+                    <div className={classes.clubImageContainer}>
+                      {currentlyReading && (
+                        <>
+                          <img
+                            src={currentlyReading.coverImageURL}
+                            alt={currentlyReading.title}
+                            className={classes.clubImage}
+                          />
+                          <div className={classes.clubImageShade} />
+                          <div className={classes.imageTextContainer}>
+                            <Typography className={classes.imageTitleText}>
+                              {currentlyReading.title}
+                            </Typography>
+                            <Typography className={classes.imageText}>
+                              {currentlyReading.author}
+                              {year && `, ${year}`}
+                            </Typography>
+                            <Typography className={classes.imageText}>
+                              {currentlyReading.genres.join(', ')}
+                            </Typography>
+                          </div>
+                        </>
+                      )}
                     </div>
-                    <Typography>
-                      Hey everyone! This is a group for people looking to read
-                      both classic and new age Sci-fi and fantasy novels. We
-                      discuss all aspects of the story, and have lots of fun!
-                    </Typography>
-                  </CardContent>
-                  <CardActions className={classes.cardActions}>
-                    <Button className={classes.infoButton} size="small">
-                      Info
-                    </Button>
-                    <Button
-                      variant="contained"
-                      className={classes.joinButton}
-                      size="small"
-                    >
-                      Join
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+                    <CardContent className={classes.cardContent}>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        {club.name}
+                      </Typography>
+                      <div className={classes.iconRoot}>
+                        <div className={classes.iconWithLabel}>
+                          <PersonIcon />
+                          <Typography
+                            variant="subtitle1"
+                            className={classes.iconLabel}
+                          >
+                            {`${club.members.length}/${club.maxMembers}`}
+                          </Typography>
+                        </div>
+                        {club.vibe && (
+                          <div className={classes.iconWithLabel}>
+                            {groupVibeIcons(club.vibe, 'icon')}
+                            <Typography
+                              variant="subtitle1"
+                              className={classes.iconLabel}
+                            >
+                              {groupVibeLabels(club.vibe)}
+                            </Typography>
+                          </div>
+                        )}
+                        {club.readingSpeed && (
+                          <div className={classes.iconWithLabel}>
+                            {readingSpeedIcons(club.readingSpeed, 'icon')}
+                            <Typography
+                              variant="subtitle1"
+                              className={classes.iconLabel}
+                            >
+                              {readingSpeedLabels(club.readingSpeed)}
+                            </Typography>
+                          </div>
+                        )}
+                      </div>
+                      <Typography>{club.bio}</Typography>
+                    </CardContent>
+                    <CardActions className={classes.cardActions}>
+                      <Button className={classes.infoButton} size="small">
+                        Info
+                      </Button>
+                      <Button
+                        variant="contained"
+                        className={classes.joinButton}
+                        size="small"
+                      >
+                        Join
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              );
+            })}
           </Grid>
         </Container>
       </main>

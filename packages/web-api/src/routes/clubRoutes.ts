@@ -4,6 +4,18 @@ import { isAuthenticated } from '../middleware/auth';
 
 const router = express.Router();
 
+router.get('/all', async (req, res, next) => {
+  try {
+    const clubs = await Club.find({});
+    if (clubs) {
+      res.status(200).json(clubs);
+    }
+  } catch (err) {
+    console.error('Failed to get all clubs.', err);
+    return next(err);
+  }
+});
+
 // Get a club
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params;

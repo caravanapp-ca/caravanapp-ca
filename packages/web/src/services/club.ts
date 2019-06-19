@@ -3,6 +3,12 @@ import { Club } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
 
+export async function getAllClubs() {
+  const res = await axios.get<Club[]>(`${clubRoute}/all`);
+  const clubs = res.data;
+  return clubs;
+}
+
 export async function getClub(clubId: string) {
   const res = await axios.get<Club | null>(`${clubRoute}/${clubId}`);
   const club = res.data;

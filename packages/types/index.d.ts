@@ -33,6 +33,11 @@ declare module '@caravan/buddy-reading-types' {
     readingSpeed?: ReadingSpeed;
   }
 
+  export interface ClubWithCurrentlyReading {
+    club: Club;
+    currentlyReading: ShelfEntry | null;
+  }
+
   export interface ClubDoc extends Document, Club {
     // Override the type to ensure that it's a string not _id?: any;
     _id: MongooseTypes.ObjectId;
