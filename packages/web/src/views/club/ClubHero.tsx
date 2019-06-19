@@ -4,26 +4,47 @@ import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  bgImage: (props: { backgroundImage: string | undefined }) => ({
-    'background-image': `url(${props.backgroundImage})`,
-    display: 'block',
+  bgImageContainer: {
+    position: 'relative',
+    'border-radius': '4px',
+    height: '194px',
     width: '100%',
-    height: '200px',
-    'object-fit': 'cover',
-    filter: 'blur(8px)',
-    'background-position': 'center',
-    'background-repeat': 'no-repeat',
-    'background-size': 'cover',
-  }),
-  bgShade: {
+  },
+  bgImage: {
+    position: 'absolute',
     width: '100%',
     height: '100%',
-    'background-color': 'rgba(0, 0, 0, 0.4)',
+    top: 0,
+    left: 0,
+    'object-fit': 'cover',
+    'object-position': '50% 50%',
+    filter: 'blur(6px)',
   },
-  headerTextContainer: {
+  bgShade: {
     position: 'absolute',
-    left: '32px',
-    top: '80px',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    background: 'rgba(0, 0, 0, 0.4)',
+  },
+  heroTextContainer: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+    left: 0,
+    padding: theme.spacing(2),
+  },
+  imageText: {
+    width: '100%',
+    'text-align': 'left',
+    color: '#ffffff',
+  },
+  imageTitleText: {
+    'font-size': '20px',
+    width: '100%',
+    'text-align': 'left',
+    color: '#ffffff',
   },
 }));
 
@@ -39,8 +60,7 @@ export default function ClubHero(props: ClubHeroProps) {
     genres,
     coverImageURL,
   } = props.currBook;
-  const styleProps = { backgroundImage: coverImageURL };
-  const classes = useStyles(styleProps);
+  const classes = useStyles();
 
   // This adjusts for casting of Date objects to string when sent from web-api
   let dateObj;
@@ -61,14 +81,25 @@ export default function ClubHero(props: ClubHeroProps) {
 
   return (
     <div>
-      <div className={`${classes.bgImage}`}>
-        <div className={`${classes.bgShade}`} />
-      </div>
-      <div className={`${classes.headerTextContainer}`}>
-        <Typography>Currently Reading</Typography>
-        <Typography>{title}</Typography>
-        {authorDateString && <Typography>{authorDateString}</Typography>}
-        {genres && <Typography>{genres.join(', ')}</Typography>}
+      <div className={classes.bgImageContainer}>
+        <img src={coverImageURL} alt={title} className={classes.bgImage} />
+        <div className={classes.bgShade} />
+        <div className={classes.heroTextContainer}>
+          <Typography className={classes.imageText}>
+            Currently reading:
+          </Typography>
+          <Typography className={classes.imageTitleText}>{title}</Typography>
+          {authorDateString && (
+            <Typography className={classes.imageText}>
+              {authorDateString}
+            </Typography>
+          )}
+          {genres && (
+            <Typography className={classes.imageText}>
+              {genres.join(', ')}
+            </Typography>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -36,6 +36,14 @@ const useStyles = makeStyles((theme: Theme) =>
     progress: {
       margin: theme.spacing(2),
     },
+    contentContainer: {
+      flexGrow: 1,
+      padding: theme.spacing(2),
+    },
+    buttonContainer: {
+      width: '100%',
+      alignItems: 'center',
+    },
   })
 );
 
@@ -139,27 +147,33 @@ export default function ClubComponent(props: ClubProps) {
               <Tab label="Shelf" />
             </Tabs>
           </Paper>
-          {tabValue === 0 && <GroupView club={club} memberInfo={memberInfo} />}
-          {tabValue === 1 && <ShelfView shelf={club.shelf} />}
-          {memberStatus === 'notMember' && (
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={() => addOrRemoveMeFromClub('add')}
-            >
-              JOIN CLUB
-            </Button>
-          )}
-          {memberStatus === 'member' && (
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-            >
-              OPEN CHAT
-            </Button>
-          )}
+          <div className={classes.contentContainer}>
+            {tabValue === 0 && (
+              <GroupView club={club} memberInfo={memberInfo} />
+            )}
+            {tabValue === 1 && <ShelfView shelf={club.shelf} />}
+            <div className={classes.buttonContainer}>
+              {memberStatus === 'notMember' && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={() => addOrRemoveMeFromClub('add')}
+                >
+                  JOIN CLUB
+                </Button>
+              )}
+              {memberStatus === 'member' && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                >
+                  OPEN CHAT
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       )}
       {loadedClub && !club && (

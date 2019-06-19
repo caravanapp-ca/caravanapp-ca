@@ -20,7 +20,7 @@ interface CreateClubProps {
 }
 
 export async function getAllClubs() {
-  const res = await axios.get<Club[]>(`${clubRoute}/all`);
+  const res = await axios.get<Club[]>(clubRoute);
   const clubs = res.data;
   return clubs;
 }

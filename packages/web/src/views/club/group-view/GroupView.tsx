@@ -14,7 +14,13 @@ import {
 } from '../../../components/group-vibe-avatars-icons-labels';
 import MemberList from './MemberList';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    sectionContainer: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface GroupViewProps {
   club: Club;
@@ -42,20 +48,28 @@ export default function GroupView(props: GroupViewProps) {
 
   return (
     <div>
-      <Typography>About the Group</Typography>
-      {bio && <Typography>{bio}</Typography>}
-      <Typography>Members</Typography>
-      <MemberList members={memberInfo} maxMembers={maxMembers} />
-      <Typography>Reading Speed</Typography>
-      <ListElementAvatar
-        avatarElement={readingSpeedAvatar}
-        primaryText={readingSpeedString}
-      />
-      <Typography>Vibe</Typography>
-      <ListElementAvatar
-        avatarElement={groupVibeAvatar}
-        primaryText={groupVibeString}
-      />
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h5'}>About the Group</Typography>
+        {bio && <Typography>{bio}</Typography>}
+      </div>
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h5'}>Members</Typography>
+        <MemberList members={memberInfo} maxMembers={maxMembers} />
+      </div>
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h5'}>Reading Speed</Typography>
+        <ListElementAvatar
+          avatarElement={readingSpeedAvatar}
+          primaryText={readingSpeedString}
+        />
+      </div>
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h5'}>Vibe</Typography>
+        <ListElementAvatar
+          avatarElement={groupVibeAvatar}
+          primaryText={groupVibeString}
+        />
+      </div>
     </div>
   );
 }

@@ -4,7 +4,8 @@ import { isAuthenticated } from '../middleware/auth';
 
 const router = express.Router();
 
-router.get('/all', async (req, res, next) => {
+// TODO: Need to add checks here: Is the club full? Is the club private? => Don't return
+router.get('/', async (req, res, next) => {
   try {
     const clubs = await Club.find({});
     if (clubs) {

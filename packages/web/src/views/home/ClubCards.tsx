@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClubWithCurrentlyReading } from '@caravan/buddy-reading-types';
+import { ClubWithCurrentlyReading } from './Home';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -19,6 +19,7 @@ import {
   readingSpeedLabels,
 } from '../../components/reading-speed-avatars-icons-labels';
 import './ClubCards.css';
+import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -57,6 +58,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     'border-radius': '4px',
     height: '194px',
+    width: '100%',
   },
   clubImage: {
     position: 'absolute',
@@ -81,8 +83,6 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     bottom: 0,
     left: 0,
-    'justify-content': 'flex-end',
-    'align-items': 'flex-end',
     padding: theme.spacing(2),
   },
   imageText: {
@@ -191,7 +191,12 @@ export default function ClubCards(props: ClubCardsProps) {
                       <Typography>{club.bio}</Typography>
                     </CardContent>
                     <CardActions className={classes.cardActions}>
-                      <Button className={classes.button} color="primary">
+                      <Button
+                        className={classes.button}
+                        color="primary"
+                        component={AdapterLink}
+                        to={`club/${club._id}`}
+                      >
                         INFO
                       </Button>
                       <Button

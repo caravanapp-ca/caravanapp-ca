@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react';
 import qs from 'query-string';
-import {
-  User,
-  Club,
-  ClubWithCurrentlyReading,
-} from '@caravan/buddy-reading-types';
+import { User, Club, ShelfEntry } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -24,6 +20,11 @@ import { getAllClubs } from '../../services/club';
 
 interface HomeProps {
   user: User | null;
+}
+
+export interface ClubWithCurrentlyReading {
+  club: Club;
+  currentlyReading: ShelfEntry | null;
 }
 
 const useStyles = makeStyles(theme => ({
