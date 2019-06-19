@@ -72,7 +72,6 @@ export default function Home(props: HomeProps) {
   }, []);
 
   async function getClubs() {
-    // TODO: Need to write getAllClubs service
     const clubs = await getAllClubs();
     if (clubs) {
       setClubs(clubs);
