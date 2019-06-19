@@ -16,7 +16,8 @@ import { GoogleBooks } from '@caravan/buddy-reading-types';
 import './SelectedBookCards.css';
 
 interface ResultsProps {
-  searchResultObject: GoogleBooks.Item[];
+  searchResultObject: GoogleBooks.Item[] | null;
+  onSelected: (book: GoogleBooks.Item) => void;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -65,8 +66,6 @@ const cards = [1, 2];
 export default function SearchResultCards(props: ResultsProps) {
   const classes = useStyles();
 
-  function onAddBook() {}
-
   return (
     <React.Fragment>
       <CssBaseline />
@@ -76,7 +75,7 @@ export default function SearchResultCards(props: ResultsProps) {
           className={classes.searchResultsList}
           cols={1}
         >
-          {props.searchResultObject.map(result => (
+          {(props.searchResultObject || []).map(result => (
             <GridListTile cols={1} className={classes.searchResult}>
               <Card className={classes.card}>
                 <CardContent className={classes.cardContent}>
@@ -153,7 +152,7 @@ export default function SearchResultCards(props: ResultsProps) {
                         className={classes.addBookButton}
                         color="inherit"
                         aria-label="AddBook"
-                        onClick={onAddBook}
+                        onClick={() => props.onSelected(result)}
                       >
                         <AddIcon />
                       </IconButton>

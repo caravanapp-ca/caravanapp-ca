@@ -185,7 +185,6 @@ export default function FindBooks() {
             />
           </Paper>
         </Container>
-        <SelectedBookCards />
         <Button variant="contained" className={classes.doneButton} size="small">
           Done
         </Button>
