@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   Club,
-  MemberInfo,
   ShelfEntry,
   User,
   MembershipStatus,
@@ -61,7 +60,7 @@ export default function ClubComponent(props: ClubProps) {
   const [club, setClub] = React.useState<Club | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
-  const [memberInfo, setMemberInfo] = React.useState<MemberInfo[]>([]);
+  const [memberInfo, setMemberInfo] = React.useState<User[]>([]);
   const [memberStatus, setMemberStatus] = React.useState<MembershipStatus>(
     'notMember'
   );
@@ -82,15 +81,15 @@ export default function ClubComponent(props: ClubProps) {
 
   async function getMembersInfo(club: Club) {
     if (club && club.members) {
-      const memberIds = club.members.map(m => m.userId);
+      const memberIds = club.members.map(m => m.id);
       const users = await getUsersById(memberIds);
       if (users) {
         const membersWithInfo = users.map(u => {
-          const member = club.members.find(m => m.userId === u._id);
+          const member = club.members.find(m => m.id === u._id);
           if (!member) {
             throw Error('Should not happen');
           }
-          return { ...u, role: member.role };
+          return { ...u, roles: member.roles };
         });
         setMemberInfo(membersWithInfo);
       }

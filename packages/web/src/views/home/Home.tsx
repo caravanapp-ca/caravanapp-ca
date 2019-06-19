@@ -50,7 +50,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Home(props: HomeProps) {
   const classes = useStyles();
-  const [clubs, setClubs] = React.useState<Club[]>([]);
   const [clubsWCR, setClubsWCR] = React.useState<ClubWithCurrentlyReading[]>(
     []
   );
@@ -68,17 +67,15 @@ export default function Home(props: HomeProps) {
   }, []);
 
   useEffect(() => {
+    const getClubs = async () => {
+      const clubs = await getAllClubs();
+      if (clubs) {
+        const clubsWCR = transformClubsToWithCurrentlyReading(clubs);
+        setClubsWCR(clubsWCR);
+      }
+    };
     getClubs();
   }, []);
-
-  async function getClubs() {
-    const clubs = await getAllClubs();
-    if (clubs) {
-      setClubs(clubs);
-      const clubsWCR = transformClubsToWithCurrentlyReading(clubs);
-      setClubsWCR(clubsWCR);
-    }
-  }
 
   function transformClubsToWithCurrentlyReading(
     clubs: Club[]

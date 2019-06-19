@@ -57,10 +57,6 @@ declare module '@caravan/buddy-reading-types' {
     userId: string;
   }
 
-  export interface MemberInfo extends User {
-    role: string;
-  }
-
   export interface ShelfEntry extends MongoTimestamps {
     amazonId?: string;
     goodReadsId?: string;
