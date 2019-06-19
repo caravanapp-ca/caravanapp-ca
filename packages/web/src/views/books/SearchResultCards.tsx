@@ -7,19 +7,41 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
 import Radio from '@material-ui/core/Radio';
-import './SearchResultCards.css';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import { GoogleBooks } from '@caravan/buddy-reading-types';
+import './SelectedBookCards.css';
+
+interface ResultsProps {
+  searchResultObject: GoogleBooks.Item[] | null;
+  onSelected: (book: GoogleBooks.Item) => void;
+}
 
 const useStyles = makeStyles(theme => ({
-  cardGrid: {
-    padding: 0,
-    marginBottom: 30,
+  searchResultsList: {
+    width: '100%',
+    borderRadius: 10,
+    borderColor: '#7289da',
+    position: 'absolute',
+    backgroundColor: 'white',
+    top: '47px',
+    left: 0,
+    zIndex: 1,
+    elevation: 3,
+    boxShadow: '0 3px 5px 2px #C8C8C8',
+  },
+  searchResult: {
+    padding: 5,
+    marginTop: 0,
+    marginBottom: 0,
   },
   card: {
     height: '100%',
     display: 'flex',
     flexDirection: 'row',
-    borderRadius: 10,
   },
   cardContent: {
     height: '100px',
@@ -28,108 +50,119 @@ const useStyles = makeStyles(theme => ({
   },
   cardActions: {
     justifyContent: 'flex-end',
+    width: '40px',
+    padding: '0px',
+  },
+  addBookButton: {
+    position: 'relative',
+    left: '5px',
+    bottom: '5px',
   },
 }));
 
 // TODO pull cards from DB
 const cards = [1, 2];
 
-export default function SearchResultCards() {
+export default function SearchResultCards(props: ResultsProps) {
   const classes = useStyles();
-
-  const [firstBook, setFirstBook] = React.useState('1');
-
-  function handleFirstBookChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setFirstBook(event.target.value);
-  }
 
   return (
     <React.Fragment>
       <CssBaseline />
       <main>
-        <Typography
-          style={{
-            marginBottom: 20,
-            fontSize: 14,
-            color: '#4B4B4B',
-            textAlign: 'center',
-            fontWeight: 'bold',
-          }}
-          variant="subtitle2"
+        <GridList
+          cellHeight={100}
+          className={classes.searchResultsList}
+          cols={1}
         >
-          Select which book you'll be reading first! The rest will go to your
-          'To Be Read' list.
-        </Typography>
-        <Container className={classes.cardGrid} maxWidth="md">
-          <Grid container spacing={2}>
-            {cards.map(card => (
-              <Grid item key={card} xs={12} sm={12}>
-                <Card className={classes.card}>
-                  <CardContent className={classes.cardContent}>
+          {(props.searchResultObject || []).map(result => (
+            <GridListTile cols={1} className={classes.searchResult}>
+              <Card className={classes.card}>
+                <CardContent className={classes.cardContent}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      width: '100%',
+                    }}
+                  >
+                    <div>
+                      <img
+                        style={{
+                          width: '50px',
+                          height: '80px',
+                          overflow: 'hidden',
+                          borderRadius: '10%',
+                          border: '1px solid #C8C8C8',
+                        }}
+                        src={
+                          ('imageLinks' in result.volumeInfo &&
+                            result.volumeInfo.imageLinks.thumbnail) ||
+                          'https://www.newel.com/img/inventory/no_image_available_300x300.jpg'
+                        }
+                        alt=""
+                      />
+                    </div>
                     <div
                       style={{
-                        display: 'flex',
-                        flexDirection: 'row',
+                        marginLeft: 10,
+                        flexDirection: 'column',
                         width: '100%',
+                        height: 100,
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start',
+                        display: 'flex',
                       }}
                     >
-                      <div>
-                        <img
-                          style={{
-                            width: '50px',
-                            objectFit: 'contain',
-                            overflow: 'hidden',
-                            borderRadius: '10%',
-                          }}
-                          src="https://images.gr-assets.com/books/1429638085l/4929.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div
+                      <Typography
                         style={{
-                          marginLeft: 10,
-                          flexDirection: 'column',
-                          width: '100%',
-                          justifyContent: 'center',
+                          fontSize: 16,
+                          color: '#8B8B8B',
                         }}
+                        variant="h4"
                       >
-                        <Typography
-                          style={{ fontSize: 16, color: '#8B8B8B' }}
-                          variant="h4"
-                        >
-                          Kafka on the Shore
-                        </Typography>
-                        <Typography
-                          style={{ fontSize: 14, color: '#C8C8C8' }}
-                          variant="h5"
-                        >
-                          Haruki Murakami
-                        </Typography>
-                        <Typography
-                          style={{ fontSize: 14, color: '#C8C8C8' }}
-                          variant="h5"
-                          component="h6"
-                        >
-                          Fantasy
-                        </Typography>
-                      </div>
-                      <CardActions className={classes.cardActions}>
-                        <Radio
-                          checked={firstBook === '2'}
-                          onChange={handleFirstBookChange}
-                          value="2"
-                          style={{ color: '#7289da' }}
-                          name="radio-button-demo"
-                          inputProps={{ 'aria-label': '2' }}
-                        />
-                      </CardActions>
+                        {result.volumeInfo.title.length > 35
+                          ? result.volumeInfo.title.substring(0, 35) + '...'
+                          : result.volumeInfo.title}
+                      </Typography>
+                      <Typography
+                        style={{
+                          fontSize: 14,
+                          color: '#C8C8C8',
+                        }}
+                        variant="h5"
+                      >
+                        {('authors' in result.volumeInfo &&
+                          result.volumeInfo.authors[0]) ||
+                          'Unknown Author'}
+                      </Typography>
+                      <Typography
+                        style={{ fontSize: 14, color: '#C8C8C8' }}
+                        variant="h5"
+                        component="h6"
+                      >
+                        {('categories' in result.volumeInfo &&
+                          result.volumeInfo.categories) ||
+                          'Unknown Genre'}
+                      </Typography>
                     </div>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+                    <CardActions className={classes.cardActions}>
+                      <IconButton
+                        edge="start"
+                        className={classes.addBookButton}
+                        color="inherit"
+                        aria-label="AddBook"
+                        onClick={() => props.onSelected(result)}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </CardActions>
+                  </div>
+                </CardContent>
+              </Card>
+            </GridListTile>
+          ))}
+        </GridList>
       </main>
     </React.Fragment>
   );
