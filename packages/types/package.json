@@ -34,6 +34,7 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
+    "discord.js": "^11.5.1",
     "utility-types": "^3.7.0"
   }
 }

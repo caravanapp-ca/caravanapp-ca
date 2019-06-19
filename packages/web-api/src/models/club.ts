@@ -6,6 +6,7 @@ import {
   SameKeysAs,
   GroupMember,
 } from '@caravan/buddy-reading-types';
+import { Omit } from 'utility-types';
 import { ClubDoc } from '../../typings/@caravan/buddy-reading-web-api';
 
 const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
@@ -35,7 +36,7 @@ const memberSchema = new Schema(memberSchemaDefinition, {
   timestamps: true,
 });
 
-const definition: SameKeysAs<FilterAutoMongoKeys<Club>> = {
+const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   name: { type: String, required: true },
   bio: { type: String },
   maxMembers: { type: Number, required: true },
@@ -45,6 +46,7 @@ const definition: SameKeysAs<FilterAutoMongoKeys<Club>> = {
   ownerId: { type: String, required: true },
   channelSource: { type: String, required: true }, // discord always for now
   channelId: { type: String, required: true },
+  private: { type: String, required: true },
 };
 
 const clubSchema = new Schema<ClubDoc>(definition, {

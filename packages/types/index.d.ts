@@ -1,5 +1,6 @@
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
+import { GuildMember } from 'discord.js';
 
 declare module '@caravan/buddy-reading-types' {
   type SubtractKeys<T, U> = {
@@ -30,11 +31,13 @@ declare module '@caravan/buddy-reading-types' {
     ownerId: string;
     shelf: ShelfEntry[];
     bio?: string;
+    members: GuildMember[];
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
     channelSource: ChannelSource;
     channelId: string;
+    private: boolean;
   }
 
   export interface GroupMember extends DocumentFields, MongoTimestamps {
