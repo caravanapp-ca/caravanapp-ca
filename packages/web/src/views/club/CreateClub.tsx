@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { User, GoogleBooks, ShelfEntry } from '@caravan/buddy-reading-types';
+import {
+  User,
+  GoogleBooks,
+  ShelfEntry,
+  FilterAutoMongoKeys,
+} from '@caravan/buddy-reading-types';
 import {
   makeStyles,
   createMuiTheme,
@@ -258,21 +263,39 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   function getShelf(books: GoogleBooks.Item[]) {
-    // const result = selectedBooks.map(book => {
-    //   const res: ShelfEntry = {
-    //     readingState: 'current',
-    //     title: book.volumeInfo.title,
-    //     genres: ['fantasy'],
-    //   };
-    //   return res;
-    // });
+    const result = selectedBooks.map(book => {
+      let readingState = 'notStarted';
+      if (book.id === firstBookId) {
+        readingState = 'current';
+      }
+      const res: FilterAutoMongoKeys<ShelfEntry> = {
+        readingState: readingState,
+        title: book.volumeInfo.title,
+        genres: book.volumeInfo.categories,
+        author: book.volumeInfo.authors.join(', '),
+        isbn:
+          'industryIdentifiers' in book.volumeInfo
+            ? book.volumeInfo.industryIdentifiers[0].identifier
+            : null,
+        publishedDate:
+          'publishedDate' in book.volumeInfo
+            ? book.volumeInfo.publishedDate
+            : null,
+        coverImageURL:
+          'imageLinks' in book.volumeInfo
+            ? book.volumeInfo.imageLinks.thumbnail
+            : 'https://www.newel.com/img/inventory/no_image_available_300x300.jpg',
+      };
+      return res;
+    });
+    return result;
   }
 
   function createClubOnClick() {
-    getShelf(selectedBooks);
+    const shelf = getShelf(selectedBooks) as ShelfEntry[];
     const clubObj = {
       name: selectedGroupNameValue,
-      ownerId: 'SOME_USER_ID',
+      shelf,
       bio: selectedGroupBio,
       maxMembers: selectedGroupSizeValue,
       vibe: selectedGroupVibeValue,
