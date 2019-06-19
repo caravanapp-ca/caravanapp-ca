@@ -1,4 +1,5 @@
 import express from 'express';
+import { check, validationResult } from 'express-validator/check';
 import Club from '../models/club';
 import { isAuthenticated } from '../middleware/auth';
 
@@ -80,44 +81,53 @@ router.delete('/:id', isAuthenticated, async (req, res, next) => {
 });
 
 // Modify current user's club membership
-router.put('/:id/membership', isAuthenticated, async (req, res, next) => {
-  try {
+router.put(
+  '/:id/membership',
+  isAuthenticated,
+  check('isMember').isBoolean(),
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     const userId = req.user._id;
     const clubId = req.params.id;
     const { isMember } = req.body;
-    if (isMember) {
-      const condition = { _id: clubId, 'members.userId': { $ne: userId } };
-      const update = {
-        $addToSet: {
-          members: {
-            userId,
-            role: 'member',
-            createdAt: new Date(),
-            updatedAt: new Date(),
+    try {
+      if (isMember) {
+        const condition = { _id: clubId, 'members.userId': { $ne: userId } };
+        const update = {
+          $addToSet: {
+            members: {
+              userId,
+              role: 'member',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
           },
-        },
-      };
-      const result = await Club.findOneAndUpdate(condition, update, {
-        new: true,
-      });
-      const userMembership = result.members.find(mem =>
-        mem.userId.equals(userId)
-      );
-      res.status(200).json(userMembership);
-    } else if (!isMember) {
-      const update = {
-        $pull: {
-          members: {
-            userId,
+        };
+        const result = await Club.findOneAndUpdate(condition, update, {
+          new: true,
+        });
+        const userMembership = result.members.find(mem =>
+          mem.userId.equals(userId)
+        );
+        res.status(200).json(userMembership);
+      } else if (!isMember) {
+        const update = {
+          $pull: {
+            members: {
+              userId,
+            },
           },
-        },
-      };
-      const result = await Club.findByIdAndUpdate(clubId, update);
-      res.sendStatus(200);
+        };
+        const result = await Club.findByIdAndUpdate(clubId, update);
+        res.sendStatus(200);
+      }
+    } catch (err) {
+      res.status(400).send(err);
     }
-  } catch (err) {
-    res.status(400).send(err);
   }
-});
+);
 
 export default router;
