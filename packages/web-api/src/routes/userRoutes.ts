@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/user';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -22,6 +23,27 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+// Get users by array of userIds
+router.post('/users', async (req, res, next) => {
+  const { userIds } = req.body;
+  if (Array.isArray(userIds)) {
+    try {
+      const userIdsAsObj = userIds.map(uid => mongoose.Types.ObjectId(uid));
+      const users = await User.find({
+        _id: { $in: userIdsAsObj },
+      });
+      res.json(users);
+    } catch (err) {
+      console.error(err);
+      return next(err);
+    }
+  } else {
+    res
+      .status(400)
+      .send('Error: `userIds` must be an array of user id strings');
+  }
+});
+
 // Create a user
 router.post('/', async (req, res, next) => {
   try {
@@ -29,7 +51,7 @@ router.post('/', async (req, res, next) => {
     const newUser = await user.save();
     res.status(201).json(newUser);
   } catch (err) {
-    console.log('Failed to create new club', err);
+    console.log('Failed to create new user', err);
     return next(err);
   }
 });

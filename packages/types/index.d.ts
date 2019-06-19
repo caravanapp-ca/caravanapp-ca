@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types as MongooseTypes } from 'mongoose';
 import * as GoogleBooks from './books';
 
 declare module '@caravan/buddy-reading-types' {
@@ -7,34 +7,52 @@ declare module '@caravan/buddy-reading-types' {
   }[keyof T];
   type Subtract<T, U> = { [K in SubtractKeys<T, U>]: T[K] };
   export type FilterAutoMongoKeys<Base> = Subtract<
-    Base,
-    MongoDocWithTimestamps
+    Subtract<Base, MongoTimestamps>,
+    DocumentFields
   >;
   // TODO: Improve by nesting the SameKeysAs
   export type SameKeysAs<Base> = { [Key in keyof Base]: any };
 
-  export interface MongoDocWithTimestamps extends Document {
-    createdAt: Date;
-    updatedAt: Date;
+  export interface DocumentFields {
+    _id: string;
+    __v?: number;
   }
 
-  export interface ClubDoc extends Document {
+  export interface MongoTimestamps {
+    createdAt: Date | string;
+    updatedAt: Date | string;
+  }
+
+  export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
-    shelf: ShelfEntryDoc[];
-    members: GroupMemberDoc[];
+    shelf: ShelfEntry[];
+    members: GroupMember[];
     bio?: string;
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
   }
 
-  export interface GroupMemberDoc extends MongoDocWithTimestamps {
+  export interface ClubDoc extends Document, Club {
+    // Override the type to ensure that it's a string not _id?: any;
+    _id: MongooseTypes.ObjectId;
+    shelf: ShelfEntryDoc[];
+    members: GroupMemberDoc[];
+  }
+
+  export interface GroupMember extends DocumentFields, MongoTimestamps {
     userId: string;
     role: string;
   }
 
-  export interface SessionDoc extends Document {
+  export interface GroupMemberDoc extends GroupMember, Document {
+    // Override the type to ensure that it's a string not _id?: any;
+    _id: MongooseTypes.ObjectId;
+    userId: MongooseTypes.ObjectId;
+  }
+
+  export interface Session extends DocumentFields {
     accessToken: string;
     /** Milliseconds since January 1st, 1970 (use Date.now() to get current value) */
     accessTokenExpiresAt: number;
@@ -45,7 +63,16 @@ declare module '@caravan/buddy-reading-types' {
     userId: string;
   }
 
-  export interface ShelfEntryDoc extends MongoDocWithTimestamps {
+  export interface MemberInfo extends User {
+    role: string;
+  }
+
+  export interface SessionDoc extends Document, Session {
+    // Override the type to ensure that it's a string not _id?: any;
+    _id: MongooseTypes.ObjectId;
+  }
+
+  export interface ShelfEntry extends MongoTimestamps {
     amazonId?: string;
     goodReadsId?: string;
     isbn?: string;
@@ -59,7 +86,12 @@ declare module '@caravan/buddy-reading-types' {
     genres: string[];
   }
 
-  export interface UserDoc extends MongoDocWithTimestamps {
+  export interface ShelfEntryDoc extends ShelfEntry, Document {
+    _id: MongooseTypes.ObjectId;
+  }
+
+  export interface User extends DocumentFields, MongoTimestamps {
+    userId: string;
     bio?: string;
     discord: {
       id: string;
@@ -78,6 +110,12 @@ declare module '@caravan/buddy-reading-types' {
     photoUrl?: string;
     readingSpeed?: string;
   }
+
+  export interface UserDoc extends Document, User {
+    _id: MongooseTypes.ObjectId;
+  }
+
+  export type MembershipStatus = 'notMember' | 'member' | 'owner';
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
 

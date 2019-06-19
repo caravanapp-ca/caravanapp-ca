@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { UserDoc, GoogleBooks } from '@caravan/buddy-reading-types';
+import { User, GoogleBooks } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
   createMuiTheme,
@@ -132,7 +132,7 @@ interface CreateClubRouteParams {
 }
 
 interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
-  user: UserDoc | null;
+  user: User | null;
 }
 
 export default function CreateClub(props: CreateClubProps) {
@@ -260,7 +260,7 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   function createClubOnClick() {
-    let clubObj = {
+    const clubObj = {
       name: selectedGroupNameValue,
       ownerId: 'SOME_USER_ID',
       bio: selectedGroupBio,

@@ -1,13 +1,14 @@
 import { model, Schema } from 'mongoose';
 import {
+  Club,
   ClubDoc,
-  ShelfEntryDoc,
+  ShelfEntry,
   FilterAutoMongoKeys,
   SameKeysAs,
-  GroupMemberDoc,
+  GroupMember,
 } from '@caravan/buddy-reading-types';
 
-const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntryDoc>> = {
+const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
   amazonId: { type: String },
   goodReadsId: { type: String },
   isbn: { type: String },
@@ -25,9 +26,7 @@ const shelfSchema = new Schema(shelfSchemaDefinition, {
   timestamps: true,
 });
 
-const memberSchemaDefinition: SameKeysAs<
-  FilterAutoMongoKeys<GroupMemberDoc>
-> = {
+const memberSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<GroupMember>> = {
   userId: { type: Schema.Types.ObjectId, required: true },
   role: { type: String, required: true },
 };
@@ -36,7 +35,7 @@ const memberSchema = new Schema(memberSchemaDefinition, {
   timestamps: true,
 });
 
-const definition: SameKeysAs<FilterAutoMongoKeys<ClubDoc>> = {
+const definition: SameKeysAs<FilterAutoMongoKeys<Club>> = {
   name: { type: String, required: true },
   bio: { type: String },
   maxMembers: { type: Number, required: true },

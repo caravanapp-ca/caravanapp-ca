@@ -1,78 +1,75 @@
 import React from 'react';
-import { ClubDoc } from '@caravan/buddy-reading-types';
+import { Club, MemberInfo } from '@caravan/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import FanIcon from '@material-ui/icons/Toys';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import {
-  SlowReadingSpeedAvatar,
-  ModerateReadingSpeedAvatar,
-  FastReadingSpeedAvatar,
-} from '../../../components/reading-speed-avatars';
+  readingSpeedIcons,
+  readingSpeedLabels,
+} from '../../../components/reading-speed-avatars-icons-labels';
 import {
-  ChillGroupVibeAvatar,
-  FirstTimersGroupVibeAvatar,
-  LearningGroupVibeAvatar,
-  NerdyGroupVibeAvatar,
-  PowerGroupVibeAvatar,
-} from '../../../components/group-vibe-avatars';
+  groupVibeIcons,
+  groupVibeLabels,
+} from '../../../components/group-vibe-avatars-icons-labels';
 import MemberList from './MemberList';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    sectionContainer: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface GroupViewProps {
-  club: ClubDoc;
+  club: Club;
+  memberInfo: MemberInfo[];
 }
 
 export default function GroupView(props: GroupViewProps) {
   const classes = useStyles();
-  const { bio, members, maxMembers, vibe, readingSpeed } = props.club;
+  const { bio, maxMembers, vibe, readingSpeed } = props.club;
+  const { memberInfo } = props;
 
+  let readingSpeedString;
   let readingSpeedAvatar;
-  switch (readingSpeed) {
-    case 'slow':
-      readingSpeedAvatar = <SlowReadingSpeedAvatar />;
-      break;
-    case 'moderate':
-      readingSpeedAvatar = <ModerateReadingSpeedAvatar />;
-      break;
-    case 'fast':
-      readingSpeedAvatar = <FastReadingSpeedAvatar />;
-      break;
+  if (readingSpeed) {
+    readingSpeedString = readingSpeedLabels(readingSpeed);
+    readingSpeedAvatar = readingSpeedIcons(readingSpeed, 'avatar');
   }
 
+  let groupVibeString;
   let groupVibeAvatar;
-  switch (vibe) {
-    case 'chill':
-      groupVibeAvatar = <ChillGroupVibeAvatar />;
-      break;
-    case 'first-timers':
-      groupVibeAvatar = <FirstTimersGroupVibeAvatar />;
-      break;
-    case 'learning':
-      groupVibeAvatar = <LearningGroupVibeAvatar />;
-      break;
-    case 'nerdy':
-      groupVibeAvatar = <NerdyGroupVibeAvatar />;
-      break;
-    case 'power':
-      groupVibeAvatar = <PowerGroupVibeAvatar />;
-      break;
+  if (vibe) {
+    groupVibeString = groupVibeLabels(vibe);
+    groupVibeAvatar = groupVibeIcons(vibe, 'avatar');
   }
 
   return (
     <div>
-      <Typography>About the Group</Typography>
-      {bio && <Typography>{bio}</Typography>}
-      <Typography>Members</Typography>
-      <MemberList members={members} maxMembers={maxMembers} />
-      <Typography>Reading Speed</Typography>
-      <ListElementAvatar
-        avatarElement={readingSpeedAvatar}
-        primaryText={readingSpeed}
-      />
-      <Typography>Vibe</Typography>
-      <ListElementAvatar avatarElement={groupVibeAvatar} primaryText={vibe} />
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h5'}>About the Group</Typography>
+        {bio && <Typography>{bio}</Typography>}
+      </div>
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h5'}>Members</Typography>
+        <MemberList members={memberInfo} maxMembers={maxMembers} />
+      </div>
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h5'}>Reading Speed</Typography>
+        <ListElementAvatar
+          avatarElement={readingSpeedAvatar}
+          primaryText={readingSpeedString}
+        />
+      </div>
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h5'}>Vibe</Typography>
+        <ListElementAvatar
+          avatarElement={groupVibeAvatar}
+          primaryText={groupVibeString}
+        />
+      </div>
     </div>
   );
 }
