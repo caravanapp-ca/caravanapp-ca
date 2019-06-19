@@ -208,7 +208,7 @@ export default function CreateClub(props: CreateClubProps) {
   function bookSearch() {}
 
   function createClubOnClick() {
-    let clubObj = {
+    const clubObj = {
       name: selectedGroupNameValue,
       ownerId: 'SOME_USER_ID',
       bio: selectedGroupBioValue,
