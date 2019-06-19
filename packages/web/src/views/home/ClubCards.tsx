@@ -31,7 +31,6 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
   },
   cardContent: {
-    height: '200px',
     flexGrow: 1,
   },
   iconWithLabel: {
@@ -43,7 +42,6 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 8,
   },
   iconRoot: {
-    textAlign: 'center',
     display: 'flex',
     justifyContent: 'space-between',
     marginBottom: 10,
@@ -51,32 +49,24 @@ const useStyles = makeStyles(theme => ({
   cardActions: {
     display: 'flex',
     justifyContent: 'flex-end',
-    padding: '0px',
   },
-  infoButton: {
-    fontSize: '20px',
-    color: '#7289da',
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  joinButton: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    marginRight: 16,
-    marginBottom: 10,
-    color: 'white',
-    backgroundColor: '#7289da',
+  button: {
+    margin: theme.spacing(1),
   },
   clubImageContainer: {
     position: 'relative',
     'border-radius': '4px',
-    'flex-grow': 1,
+    height: '194px',
   },
   clubImage: {
+    position: 'absolute',
     width: '100%',
-    height: '194px',
+    height: '100%',
+    top: 0,
+    left: 0,
     'object-fit': 'cover',
-    filter: 'blur(2px)',
+    'object-position': '50% 50%',
+    filter: 'blur(4px)',
   },
   clubImageShade: {
     position: 'absolute',
@@ -93,7 +83,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     'justify-content': 'flex-end',
     'align-items': 'flex-end',
-    padding: 16,
+    padding: theme.spacing(2),
   },
   imageText: {
     'font-size': '16px',
@@ -144,6 +134,9 @@ export default function ClubCards(props: ClubCardsProps) {
                           />
                           <div className={classes.clubImageShade} />
                           <div className={classes.imageTextContainer}>
+                            <Typography className={classes.imageText}>
+                              Currently reading:
+                            </Typography>
                             <Typography className={classes.imageTitleText}>
                               {currentlyReading.title}
                             </Typography>
@@ -198,15 +191,15 @@ export default function ClubCards(props: ClubCardsProps) {
                       <Typography>{club.bio}</Typography>
                     </CardContent>
                     <CardActions className={classes.cardActions}>
-                      <Button className={classes.infoButton} size="small">
-                        Info
+                      <Button className={classes.button} color="primary">
+                        INFO
                       </Button>
                       <Button
                         variant="contained"
-                        className={classes.joinButton}
-                        size="small"
+                        className={classes.button}
+                        color="primary"
                       >
-                        Join
+                        JOIN
                       </Button>
                     </CardActions>
                   </Card>
