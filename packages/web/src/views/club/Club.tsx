@@ -1,6 +1,12 @@
-import axios from 'axios';
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import {
+  Club,
+  MemberInfo,
+  ShelfEntry,
+  User,
+  MembershipStatus,
+} from '@caravan/buddy-reading-types';
 import {
   Paper,
   Tabs,
@@ -10,12 +16,8 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  ClubDoc,
-  ShelfEntryDoc,
-  UserDoc,
-  GroupMemberDoc,
-} from '@caravan/buddy-reading-types';
+import { getClub, modifyMyClubMembership } from '../../services/club';
+import { getUsersById } from '../../services/user';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
@@ -34,6 +36,14 @@ const useStyles = makeStyles((theme: Theme) =>
     progress: {
       margin: theme.spacing(2),
     },
+    contentContainer: {
+      flexGrow: 1,
+      padding: theme.spacing(2),
+    },
+    buttonContainer: {
+      width: '100%',
+      alignItems: 'center',
+    },
   })
 );
 
@@ -42,23 +52,26 @@ interface ClubRouteParams {
 }
 
 interface ClubProps extends RouteComponentProps<ClubRouteParams> {
-  user: UserDoc | null;
+  user: User | null;
 }
 
-export default function Club(props: ClubProps) {
+export default function ClubComponent(props: ClubProps) {
   const classes = useStyles();
   const [tabValue, setTabValue] = React.useState(0);
-  const [club, setClub] = React.useState<ClubDoc | null>(null);
-  const [currBook, setCurrBook] = React.useState<ShelfEntryDoc | null>(null);
+  const [club, setClub] = React.useState<Club | null>(null);
+  const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
-  // const [memberInfo, setMemberInfo] = React.useState<MemberInfo | null>(null);
+  const [memberInfo, setMemberInfo] = React.useState<MemberInfo[]>([]);
+  const [memberStatus, setMemberStatus] = React.useState<MembershipStatus>(
+    'notMember'
+  );
   const clubId = props.match.params.id;
 
   function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
     setTabValue(newValue);
   }
 
-  function getCurrentBook(club: ClubDoc) {
+  function getCurrentBook(club: Club) {
     if (club && club.shelf) {
       const book = club.shelf.find(book => book.readingState === 'current');
       if (book) {
@@ -67,41 +80,54 @@ export default function Club(props: ClubProps) {
     }
   }
 
-  // WIP
-  // function getMembersInfo(club: ClubDoc) {
-  //   const getMembers = async () => {
-  //     let memberInfo = [];
-  //     club.members.forEach(m => {
-  //       try {
-  // TODO: Need to move this axios call to services.
-  //         const result = await axios.get<UserDoc>(`/api/user/${m.id}`);
-  //         const member = result.data;
-  //         memberInfo.push({ member, role: m.role });
-  //       } catch (err) {
-  //         console.error(err);
-  //       }
-  //     });
-  //     setMemberInfo(memberInfo);
-  //   };
-  // }
+  async function getMembersInfo(club: Club) {
+    if (club && club.members) {
+      const memberIds = club.members.map(m => m.userId);
+      const users = await getUsersById(memberIds);
+      if (users) {
+        const membersWithInfo = users.map(u => {
+          const member = club.members.find(m => m.userId === u._id);
+          if (!member) {
+            throw Error('Should not happen');
+          }
+          return { ...u, role: member.role };
+        });
+        setMemberInfo(membersWithInfo);
+      }
+    }
+  }
+
+  async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
+    if (action === 'add') {
+      const result = await modifyMyClubMembership(clubId, true);
+      if (result === 200) {
+        setMemberStatus('member');
+      }
+    } else if (action === 'remove') {
+      const result = await modifyMyClubMembership(clubId, false);
+      if (result === 200) {
+        setMemberStatus('notMember');
+      }
+    }
+  }
 
   useEffect(() => {
-    const getClub = async () => {
+    const getClubFun = async () => {
       try {
-        // TODO: Need to move this axios call to services.
-        const result = await axios.get<ClubDoc>(`/api/club/${clubId}`);
-        const club = result.data;
-        setClub(club);
-        getCurrentBook(club);
-        // getMemberInfo(club);
-        setLoadedClub(true);
+        const club = await getClub(clubId);
+        if (club) {
+          setClub(club);
+          getCurrentBook(club);
+          getMembersInfo(club);
+          setLoadedClub(true);
+        }
       } catch (err) {
         console.error(err);
         setLoadedClub(true);
       }
     };
-    getClub();
-  }, [clubId]);
+    getClubFun();
+  }, [clubId, memberStatus]);
 
   return (
     <>
@@ -121,20 +147,38 @@ export default function Club(props: ClubProps) {
               <Tab label="Shelf" />
             </Tabs>
           </Paper>
-          {tabValue === 0 && <GroupView club={club} />}
-          {tabValue === 1 && <ShelfView shelf={club.shelf} />}
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-          >
-            JOIN CLUB
-          </Button>
+          <div className={classes.contentContainer}>
+            {tabValue === 0 && (
+              <GroupView club={club} memberInfo={memberInfo} />
+            )}
+            {tabValue === 1 && <ShelfView shelf={club.shelf} />}
+            <div className={classes.buttonContainer}>
+              {memberStatus === 'notMember' && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={() => addOrRemoveMeFromClub('add')}
+                >
+                  JOIN CLUB
+                </Button>
+              )}
+              {memberStatus === 'member' && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                >
+                  OPEN CHAT
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       )}
       {loadedClub && !club && (
         <div>
-          <Typography>Doesn't look like this club exists!</Typography>
+          <Typography>It does not appear that this club exists!</Typography>
         </div>
       )}
     </>

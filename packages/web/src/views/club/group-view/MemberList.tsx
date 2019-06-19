@@ -1,31 +1,49 @@
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
+import { List, Avatar, IconButton } from '@material-ui/core';
+import StarIcon from '@material-ui/icons/Star';
+import { MemberInfo } from '@caravan/buddy-reading-types';
 import ListElementAvatar from '../../../components/ListElementAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import { GroupMemberDoc } from '@caravan/buddy-reading-types';
+import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface MemberListProps {
-  members: GroupMemberDoc[];
+  members: MemberInfo[];
   maxMembers: number;
 }
 
 export default function MemberList(props: MemberListProps) {
   const classes = useStyles();
+  const { maxMembers, members } = props;
+  const freeSlots = Math.max(maxMembers - members.length, 0);
+
+  let emptySlots = [];
+  for (let i = 0; i < freeSlots; i++) {
+    emptySlots.push(<FreeGroupSlotListElement key={i} />);
+  }
 
   return (
     <List dense={false}>
-      <ListElementAvatar
-        avatarElement={
-          <Avatar
-            alt="MR. Urner"
-            src={require('./56624593_10219238571019732_3709471302600359936_o.jpg')}
-          />
-        }
-        primaryText="Quinn Turner"
-      />
+      {members.map(m => (
+        <ListElementAvatar
+          key={m._id}
+          avatarElement={
+            m.discord.avatar ? (
+              <Avatar alt={m.discord.username} src={m.discord.avatar} />
+            ) : null
+          }
+          primaryText={m.discord.username}
+          secondaryElement={
+            m.role === 'owner' ? (
+              <IconButton edge="end" aria-label="Delete">
+                <StarIcon />
+              </IconButton>
+            ) : null
+          }
+        />
+      ))}
+      {emptySlots.length > 0 && emptySlots}
     </List>
   );
 }

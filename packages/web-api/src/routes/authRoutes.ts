@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import {
   FilterAutoMongoKeys,
-  SessionDoc,
+  Session,
   UserDoc,
 } from '@caravan/buddy-reading-types';
 import { isAuthenticated } from '../middleware/auth';
@@ -41,7 +41,7 @@ function convertTokenResponseToModel(
   client: string,
   userId: string
 ) {
-  const model: FilterAutoMongoKeys<SessionDoc> = {
+  const model: FilterAutoMongoKeys<Session> = {
     accessToken: obj.access_token,
     accessTokenExpiresAt: Date.now() + obj.expires_in * 1000,
     refreshToken: obj.refresh_token,

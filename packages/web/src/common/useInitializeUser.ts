@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { UserDoc } from '@caravan/buddy-reading-types';
+import { User } from '@caravan/buddy-reading-types';
 import { getCookie } from './cookies';
 import { getUser } from '../services/user';
 
 function useInitializeUser() {
-  const [user, setUser] = useState<UserDoc | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [checkedStore, setCheckedStore] = useState(false);
   useEffect(() => {
     const processUser = async () => {
@@ -15,11 +15,11 @@ function useInitializeUser() {
           const userId = getCookie('userId');
           if (userId) {
             // Getting user data for the first time after login
-            const userDoc = await getUser(userId);
-            if (userDoc) {
-              const dehydratedUser = JSON.stringify(userDoc);
+            const user = await getUser(userId);
+            if (user) {
+              const dehydratedUser = JSON.stringify(user);
               window.localStorage.setItem('user', dehydratedUser);
-              setUser(userDoc);
+              setUser(user);
             } else {
               console.info('Are you having fun messing with cookies? :)');
             }
