@@ -18,7 +18,7 @@ export default function ShelfView(props: ShelfViewProps) {
       map[s.readingState].push(s);
     });
     return map;
-  }, props.shelf);
+  }, [props.shelf]);
 
   return (
     <div>

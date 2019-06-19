@@ -2,14 +2,15 @@ import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { List, Avatar, IconButton } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
-import { MemberInfo } from '@caravan/buddy-reading-types';
+import { User } from '@caravan/buddy-reading-types';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface MemberListProps {
-  members: MemberInfo[];
+  ownerId: string;
+  members: User[];
   maxMembers: number;
 }
 
@@ -35,8 +36,8 @@ export default function MemberList(props: MemberListProps) {
           }
           primaryText={m.discord.username}
           secondaryElement={
-            m.role === 'owner' ? (
-              <IconButton edge="end" aria-label="Delete">
+            props.ownerId === m._id ? (
+              <IconButton edge="end" aria-label="Star">
                 <StarIcon />
               </IconButton>
             ) : null

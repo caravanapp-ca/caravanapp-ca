@@ -1,8 +1,7 @@
 import React from 'react';
-import { Club, MemberInfo } from '@caravan/buddy-reading-types';
+import { Club, User } from '@caravan/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import FanIcon from '@material-ui/icons/Toys';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import {
   readingSpeedIcons,
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface GroupViewProps {
   club: Club;
-  memberInfo: MemberInfo[];
+  memberInfo: User[];
 }
 
 export default function GroupView(props: GroupViewProps) {
@@ -54,7 +53,11 @@ export default function GroupView(props: GroupViewProps) {
       </div>
       <div className={classes.sectionContainer}>
         <Typography variant={'h5'}>Members</Typography>
-        <MemberList members={memberInfo} maxMembers={maxMembers} />
+        <MemberList
+          members={memberInfo}
+          maxMembers={maxMembers}
+          ownerId={props.club.ownerId}
+        />
       </div>
       <div className={classes.sectionContainer}>
         <Typography variant={'h5'}>Reading Speed</Typography>
