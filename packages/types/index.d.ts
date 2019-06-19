@@ -1,4 +1,5 @@
 import { Document, Types as MongooseTypes } from 'mongoose';
+import { Omit } from 'utility-types';
 
 declare module '@caravan/buddy-reading-types' {
   type SubtractKeys<T, U> = {
@@ -33,8 +34,9 @@ declare module '@caravan/buddy-reading-types' {
     readingSpeed?: ReadingSpeed;
   }
 
-  export interface ClubDoc extends Document, Club {
-    // Override the type to ensure that it's a string not _id?: any;
+  export interface ClubDoc
+    extends Document,
+      Omit<FilterAutoMongoKeys<Club>, 'shelf' | 'members'> {
     _id: MongooseTypes.ObjectId;
     shelf: ShelfEntryDoc[];
     members: GroupMemberDoc[];
@@ -45,7 +47,9 @@ declare module '@caravan/buddy-reading-types' {
     role: string;
   }
 
-  export interface GroupMemberDoc extends GroupMember, Document {
+  export interface GroupMemberDoc
+    extends Document,
+      Omit<FilterAutoMongoKeys<GroupMember>, 'userId'> {
     // Override the type to ensure that it's a string not _id?: any;
     _id: MongooseTypes.ObjectId;
     userId: MongooseTypes.ObjectId;
@@ -66,7 +70,7 @@ declare module '@caravan/buddy-reading-types' {
     role: string;
   }
 
-  export interface SessionDoc extends Document, Session {
+  export interface SessionDoc extends Document, FilterAutoMongoKeys<Session> {
     // Override the type to ensure that it's a string not _id?: any;
     _id: MongooseTypes.ObjectId;
   }
@@ -85,12 +89,11 @@ declare module '@caravan/buddy-reading-types' {
     genres: string[];
   }
 
-  export interface ShelfEntryDoc extends ShelfEntry, Document {
+  export interface ShelfEntryDoc extends Document, ShelfEntry {
     _id: MongooseTypes.ObjectId;
   }
 
   export interface User extends DocumentFields, MongoTimestamps {
-    userId: string;
     bio?: string;
     discord: {
       id: string;
@@ -110,7 +113,7 @@ declare module '@caravan/buddy-reading-types' {
     readingSpeed?: string;
   }
 
-  export interface UserDoc extends Document, User {
+  export interface UserDoc extends Document, FilterAutoMongoKeys<User> {
     _id: MongooseTypes.ObjectId;
   }
 
