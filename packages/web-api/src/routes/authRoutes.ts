@@ -4,11 +4,12 @@ import {
   Session,
   UserDoc,
 } from '@caravan/buddy-reading-types';
+import { isAuthenticated } from '../middleware/auth';
 import {
   DiscordOAuth2Url,
   DiscordUserResponseData,
   OAuth2TokenResponseData,
-  DiscordClient,
+  ReadingDiscordBot,
 } from '../services/discord';
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
@@ -58,6 +59,17 @@ router.get('/logout', async (req, res) => {
   res.redirect('/');
 });
 
+router.post('/discord/join', isAuthenticated, async (req, res, next) => {
+  const { token } = req.session;
+  const discordClient = ReadingDiscordBot.getInstance();
+  const user = await ReadingDiscordBot.getMe(token);
+  const guild = discordClient.guilds.first();
+  const result = await guild.addMember(user.id, {
+    accessToken: token,
+  });
+  return result;
+});
+
 router.get('/discord/callback', async (req, res) => {
   const { code, error, error_description, state } = req.query;
   if (error) {
@@ -65,7 +77,7 @@ router.get('/discord/callback', async (req, res) => {
     return;
   }
   let successfulAuthentication = true;
-  let tokenResponseData = await DiscordClient.getToken(code);
+  let tokenResponseData = await ReadingDiscordBot.getToken(code);
   if (tokenResponseData.error) {
     const encodedErrorMessage = encodeURIComponent(
       tokenResponseData.error_description
@@ -75,10 +87,11 @@ router.get('/discord/callback', async (req, res) => {
     return;
   }
   let { access_token: accessToken } = tokenResponseData;
-  const discordClient = new DiscordClient(accessToken);
-  const discordUserData = await discordClient.getUser();
+  const discordUserData = await ReadingDiscordBot.getMe(accessToken);
 
-  let userDoc = await UserModel.findOne({ 'discord.id': discordUserData.id });
+  let userDoc = await UserModel.findOne({
+    'discord.id': discordUserData.id,
+  });
   if (userDoc) {
     // Update the user, but lazy now.
   } else {
@@ -97,7 +110,7 @@ router.get('/discord/callback', async (req, res) => {
       if (isExpired) {
         // Begin token refresh
         const refreshToken: string = currentSessionModel.get('refreshToken');
-        tokenResponseData = await DiscordClient.refreshAccessToken(
+        tokenResponseData = await ReadingDiscordBot.refreshAccessToken(
           refreshToken
         );
         accessToken = tokenResponseData.access_token;

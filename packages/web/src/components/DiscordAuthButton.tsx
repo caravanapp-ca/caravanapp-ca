@@ -58,11 +58,9 @@ export default function DiscordAuthButton(props: DiscordAuthButtonProps) {
     window.location.href = `${host}/api/auth/discord/login?state=${oauth2State}`;
   }
   return (
-    <>
-      <Button variant="contained" className={classes.button} onClick={onClick}>
-        <LockIcon className={classes.leftIcon} />
-        Login with Discord
-      </Button>
-    </>
+    <Button variant="contained" className={classes.button} onClick={onClick}>
+      <LockIcon className={classes.leftIcon} />
+      Login with Discord
+    </Button>
   );
 }

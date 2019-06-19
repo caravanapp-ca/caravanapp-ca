@@ -4,16 +4,16 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import Grid, { GridSpacing } from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import AdapterLink from '../../components/AdapterLink';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
+import SearchResultCards from './SearchResultCards';
 
 import Header from '../../components/Header';
 
@@ -27,8 +27,8 @@ const theme = createMuiTheme({
 });
 const useStyles = makeStyles(theme => ({
   searchContainer: {
-    paddingTop: theme.spacing(5),
-    paddingBottom: theme.spacing(8),
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
   },
   backButton: {
     marginRight: theme.spacing(2),
@@ -46,6 +46,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     width: '100%',
+    marginTop: 40,
   },
   input: {
     marginLeft: 8,
@@ -53,6 +54,15 @@ const useStyles = makeStyles(theme => ({
   },
   iconButton: {
     padding: 10,
+  },
+  doneButton: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    color: 'white',
+    backgroundColor: '#7289da',
+    borderRadius: 30,
+    paddingLeft: 25,
+    paddingRight: 25,
   },
 }));
 
@@ -101,7 +111,53 @@ export default function FindBooks() {
     setBookSearchValue(e.target.value);
   }
 
-  function bookSearch() {}
+  function bookSearch() {
+    var search = 'Taj Mahal';
+    var books = searchBooks_(search);
+  }
+
+  function searchBooks_(query: string) {
+    //   var baseUrl = "https://www.goodreads.com/book/show/",
+    //       apiUrl = "https://www.goodreads.com/search/index.xml",
+    //       apiKey = "TkXvHH6Ien5uSEGlMDkIw",
+    //       searchResults: never[] | { title: any; author: any; thumbnail: any; rating: any; url: string; }[] = [],
+    //       payload = {
+    //         q: query,
+    //         key: apiKey
+    //       },
+    //       params = {
+    //         method: "GET",
+    //         payload: payload,
+    //         muteHttpExceptions: true
+    //       };
+
+    //   var response = UrlFetchApp.fetch(apiUrl, params);
+
+    //   // API Connection Successful
+    //   if (response.getResponseCode() === 200) {
+
+    //     // Parse XML Response
+    //     var xml = XmlService.parse(response.getContentText());
+    //     var results = xml.getRootElement().getChildren('search')[0];
+
+    //     // Save the result in JSON format
+    //     results.getChild('results').getChildren().forEach(function(result) {
+    //       result.getChildren('best_book').forEach(function(book) {
+    //         searchResults.push({
+    //           title: book.getChild('title').getText(),
+    //           author: book.getChild('author').getChild('name').getText(),
+    //           thumbnail: book.getChild('image_url').getText(),
+    //           rating: result.getChild("average_rating").getText(),
+    //           url: baseUrl + result.getChild("id").getText()
+    //         });
+    //       });
+    //     });
+
+    //   }
+
+    //   return searchResults;
+    return 'yes';
+  }
 
   return (
     <React.Fragment>
@@ -129,6 +185,10 @@ export default function FindBooks() {
             />
           </Paper>
         </Container>
+        <SearchResultCards />
+        <Button variant="contained" className={classes.doneButton} size="small">
+          Done
+        </Button>
       </main>
     </React.Fragment>
   );

@@ -16,6 +16,7 @@ import {
   connect as connectToDb,
   disconnect as disconnectFromDb,
 } from './db/config';
+import { ReadingDiscordBot } from './services/discord';
 
 (async () => {
   const app = express();
@@ -33,6 +34,9 @@ import {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cors()); // might not need
+
+  // logs in
+  const discordClient = ReadingDiscordBot.getInstance();
 
   app.use('/api/test', testRoutes);
   app.use('/api/club', clubRoutes);
