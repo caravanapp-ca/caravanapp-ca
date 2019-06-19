@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { User, GoogleBooks } from '@caravan/buddy-reading-types';
+import { User, GoogleBooks, ShelfEntry } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
   createMuiTheme,
@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { GridSpacing } from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
@@ -23,13 +22,12 @@ import ChillIcon from '@material-ui/icons/Toys';
 import NerdyIcon from '@material-ui/icons/VideogameAsset';
 import LearningIcon from '@material-ui/icons/School';
 import FirstTimerIcon from '@material-ui/icons/Cake';
-import AddIcon from '@material-ui/icons/Add';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import PowerIcon from '@material-ui/icons/FlashOn';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
+import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -39,8 +37,7 @@ import SearchResultCards from '../books/SearchResultCards';
 import SelectedBookCards from '../books/SelectedBookCards';
 import { createClub } from '../../services/club';
 import { searchGoogleBooks } from '../../services/book';
-import { func } from 'prop-types';
-import { FormControl } from '@material-ui/core';
+import { RSA_NO_PADDING } from 'constants';
 
 const theme = createMuiTheme({
   palette: {
@@ -257,9 +254,22 @@ export default function CreateClub(props: CreateClubProps) {
 
   async function onSelectFirstBook(id: string) {
     setFirstBookId(id);
+    getShelf(selectedBooks);
+  }
+
+  function getShelf(books: GoogleBooks.Item[]) {
+    // const result = selectedBooks.map(book => {
+    //   const res: ShelfEntry = {
+    //     readingState: 'current',
+    //     title: book.volumeInfo.title,
+    //     genres: ['fantasy'],
+    //   };
+    //   return res;
+    // });
   }
 
   function createClubOnClick() {
+    getShelf(selectedBooks);
     const clubObj = {
       name: selectedGroupNameValue,
       ownerId: 'SOME_USER_ID',
