@@ -5,6 +5,9 @@ import {
   GoogleBooks,
   ShelfEntry,
   FilterAutoMongoKeys,
+  Club,
+  ReadingSpeed,
+  GroupVibe,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -177,31 +180,17 @@ export default function CreateClub(props: CreateClubProps) {
     setSearchResults,
   ] = React.useState<GoogleBooks.Books | null>(null);
 
-  const [state, setState] = React.useState({
-    checked: false,
-  });
+  const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
 
-  const handlePrivacyChange = (name: string) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setState({ ...state, [name]: event.target.checked });
-  };
+  const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<
+    ReadingSpeed
+  >('moderate');
 
-  const [selectedGroupSizeValue, setSelectedGroupSizeValue] = React.useState(
-    '4'
+  const [selectedGroupVibe, setSelectedGroupVibe] = React.useState<GroupVibe>(
+    'chill'
   );
 
-  const [selectedGroupSpeedValue, setSelectedGroupSpeedValue] = React.useState(
-    'Moderate'
-  );
-
-  const [selectedGroupVibeValue, setSelectedGroupVibeValue] = React.useState(
-    'Chill'
-  );
-
-  const [selectedGroupNameValue, setSelectedGroupNameValue] = React.useState(
-    ''
-  );
+  const [selectedGroupName, setSelectedGroupName] = React.useState('');
 
   const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
 
@@ -214,6 +203,8 @@ export default function CreateClub(props: CreateClubProps) {
   const [firstBookId, setFirstBookId] = React.useState('');
 
   const [searchHidden, setSearchHidden] = React.useState(false);
+
+  const [privateClub, setPrivateClub] = React.useState(false);
 
   useEffect(() => {
     if (selectedBooks.find(b => b.id !== firstBookId)) {
@@ -292,14 +283,16 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   function createClubOnClick() {
-    const shelf = getShelf(selectedBooks);
-    const clubObj = {
-      name: selectedGroupNameValue,
+    const shelf = getShelf(selectedBooks) as ShelfEntry[];
+    const clubObj: any = {
+      name: selectedGroupName,
       shelf,
       bio: selectedGroupBio,
-      maxMembers: selectedGroupSizeValue,
-      vibe: selectedGroupVibeValue,
-      readingSpeed: selectedGroupSpeedValue,
+      maxMembers: selectedGroupSize,
+      vibe: selectedGroupVibe,
+      readingSpeed: selectedGroupSpeed,
+      channelSource: 'discord',
+      private: privateClub,
     };
     createClub(clubObj);
     console.log(clubObj.name);
@@ -361,7 +354,7 @@ export default function CreateClub(props: CreateClubProps) {
               e: React.ChangeEvent<
                 HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
               >
-            ) => setSelectedGroupNameValue(e.target.value)}
+            ) => setSelectedGroupName(e.target.value)}
           />
           <Typography
             style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
@@ -416,9 +409,9 @@ export default function CreateClub(props: CreateClubProps) {
             <MuiThemeProvider theme={theme}>
               <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <Radio
-                  checked={selectedGroupSizeValue === '2'}
+                  checked={selectedGroupSize === 2}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSizeValue(event.target.value)
+                    setSelectedGroupSize(Number.parseInt(event.target.value))
                   }
                   value="2"
                   style={{ color: '#7289da' }}
@@ -426,9 +419,9 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': '2' }}
                 />
                 <Radio
-                  checked={selectedGroupSizeValue === '3'}
+                  checked={selectedGroupSize === 3}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSizeValue(event.target.value)
+                    setSelectedGroupSize(Number.parseInt(event.target.value))
                   }
                   value="3"
                   style={{ color: '#7289da' }}
@@ -436,9 +429,9 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': '3' }}
                 />
                 <Radio
-                  checked={selectedGroupSizeValue === '4'}
+                  checked={selectedGroupSize === 4}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSizeValue(event.target.value)
+                    setSelectedGroupSize(Number.parseInt(event.target.value))
                   }
                   value="4"
                   style={{ color: '#7289da' }}
@@ -446,9 +439,9 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': '4' }}
                 />
                 <Radio
-                  checked={selectedGroupSizeValue === '5'}
+                  checked={selectedGroupSize === 5}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSizeValue(event.target.value)
+                    setSelectedGroupSize(Number.parseInt(event.target.value))
                   }
                   value="5"
                   style={{ color: '#7289da' }}
@@ -456,9 +449,9 @@ export default function CreateClub(props: CreateClubProps) {
                   inputProps={{ 'aria-label': '5' }}
                 />
                 <Radio
-                  checked={selectedGroupSizeValue === '6'}
+                  checked={selectedGroupSize === 6}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSizeValue(event.target.value)
+                    setSelectedGroupSize(Number.parseInt(event.target.value))
                   }
                   value="6"
                   style={{ color: '#7289da' }}
@@ -525,11 +518,11 @@ export default function CreateClub(props: CreateClubProps) {
                 }}
               >
                 <Radio
-                  checked={selectedGroupSpeedValue === 'Slow'}
+                  checked={selectedGroupSpeed === 'slow'}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSpeedValue(event.target.value)
+                    setSelectedGroupSpeed(event.target.value as ReadingSpeed)
                   }
-                  value="Slow"
+                  value="slow"
                   style={{ color: '#7289da' }}
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'Slow' }}
@@ -561,11 +554,11 @@ export default function CreateClub(props: CreateClubProps) {
                 }}
               >
                 <Radio
-                  checked={selectedGroupSpeedValue === 'Moderate'}
+                  checked={selectedGroupSpeed === 'moderate'}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSpeedValue(event.target.value)
+                    setSelectedGroupSpeed(event.target.value as ReadingSpeed)
                   }
-                  value="Moderate"
+                  value="moderate"
                   style={{ color: '#7289da' }}
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'Moderate' }}
@@ -597,11 +590,11 @@ export default function CreateClub(props: CreateClubProps) {
                 }}
               >
                 <Radio
-                  checked={selectedGroupSpeedValue === 'Fast'}
+                  checked={selectedGroupSpeed === 'fast'}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSpeedValue(event.target.value)
+                    setSelectedGroupSpeed(event.target.value as ReadingSpeed)
                   }
-                  value="Fast"
+                  value="fast"
                   style={{ color: '#7289da' }}
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'Fast' }}
@@ -651,11 +644,11 @@ export default function CreateClub(props: CreateClubProps) {
                 }}
               >
                 <Radio
-                  checked={selectedGroupVibeValue === 'Chill'}
+                  checked={selectedGroupVibe === 'chill'}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibeValue(event.target.value)
+                    setSelectedGroupVibe(event.target.value as GroupVibe)
                   }
-                  value="Chill"
+                  value="chill"
                   style={{ color: '#7289da' }}
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'Chill' }}
@@ -687,11 +680,11 @@ export default function CreateClub(props: CreateClubProps) {
                 }}
               >
                 <Radio
-                  checked={selectedGroupVibeValue === 'Nerdy'}
+                  checked={selectedGroupVibe === 'nerdy'}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibeValue(event.target.value)
+                    setSelectedGroupVibe(event.target.value as GroupVibe)
                   }
-                  value="Nerdy"
+                  value="nerdy"
                   style={{ color: '#7289da' }}
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'Nerdy' }}
@@ -723,11 +716,11 @@ export default function CreateClub(props: CreateClubProps) {
                 }}
               >
                 <Radio
-                  checked={selectedGroupVibeValue === 'Power'}
+                  checked={selectedGroupVibe === 'power'}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibeValue(event.target.value)
+                    setSelectedGroupVibe(event.target.value as GroupVibe)
                   }
-                  value="Power"
+                  value="power"
                   style={{ color: '#7289da' }}
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'Power' }}
@@ -759,11 +752,11 @@ export default function CreateClub(props: CreateClubProps) {
                 }}
               >
                 <Radio
-                  checked={selectedGroupVibeValue === 'FirstTimer'}
+                  checked={selectedGroupVibe === 'first-timers'}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibeValue(event.target.value)
+                    setSelectedGroupVibe(event.target.value as GroupVibe)
                   }
-                  value="FirstTimer"
+                  value="first-timers"
                   style={{ color: '#7289da' }}
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'FirstTimer' }}
@@ -795,11 +788,11 @@ export default function CreateClub(props: CreateClubProps) {
                 }}
               >
                 <Radio
-                  checked={selectedGroupVibeValue === 'Learning'}
+                  checked={selectedGroupVibe === 'learning'}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibeValue(event.target.value)
+                    setSelectedGroupVibe(event.target.value as GroupVibe)
                   }
-                  value="Learning"
+                  value="learning"
                   style={{ color: '#7289da' }}
                   name="radio-button-demo"
                   inputProps={{ 'aria-label': 'Learning' }}
@@ -856,8 +849,8 @@ export default function CreateClub(props: CreateClubProps) {
                 </Grid>
                 <Grid item>
                   <AntSwitch
-                    checked={state.checked}
-                    onChange={handlePrivacyChange('checked')}
+                    checked={privateClub}
+                    onChange={(e, checked) => setPrivateClub(checked)}
                     value="checked"
                   />
                 </Grid>
@@ -872,7 +865,7 @@ export default function CreateClub(props: CreateClubProps) {
               variant="contained"
               disabled={
                 selectedGroupBio === '' ||
-                selectedGroupNameValue === '' ||
+                selectedGroupName === '' ||
                 firstBookId === '' ||
                 selectedBooks.length === 0
               }
