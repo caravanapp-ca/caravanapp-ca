@@ -52,6 +52,10 @@ export default function SelectedBookCards(props: SelectedProps) {
   const classes = useStyles();
 
   function handleFirstBookChange(event: React.ChangeEvent<HTMLInputElement>) {
+    console.log('First book id');
+    console.log(props.firstBookId);
+    console.log('this books id');
+    console.log(event.target.value);
     props.onSelectFirstBook(event.target.value);
   }
 

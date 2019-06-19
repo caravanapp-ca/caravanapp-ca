@@ -39,6 +39,8 @@ import SearchResultCards from '../books/SearchResultCards';
 import SelectedBookCards from '../books/SelectedBookCards';
 import { createClub } from '../../services/club';
 import { searchGoogleBooks } from '../../services/book';
+import { func } from 'prop-types';
+import { FormControl } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
@@ -233,6 +235,12 @@ export default function CreateClub(props: CreateClubProps) {
     return null;
   }
 
+  function handleOnKeyDown(e: React.KeyboardEvent<any>) {
+    if (e.key == 'Enter') {
+      bookSearch(bookSearchQuery);
+    }
+  }
+
   // TODO send method to book search card via props that allows displayed books to be added to selected list
   async function onAddBook(book: GoogleBooks.Item) {
     const newBooks = [...selectedBooks, book];
@@ -245,6 +253,10 @@ export default function CreateClub(props: CreateClubProps) {
       selected => selected.id != book.id
     );
     setSelectedBooks(updatedBooks);
+  }
+
+  async function onSelectFirstBook(id: string) {
+    setFirstBookId(id);
   }
 
   function createClubOnClick() {
@@ -341,6 +353,7 @@ export default function CreateClub(props: CreateClubProps) {
                 value={bookSearchQuery}
                 inputProps={{ 'aria-label': 'Add a Book' }}
                 onChange={e => setBookSearchQuery(e.target.value)}
+                onKeyDown={handleOnKeyDown}
               />
             </Paper>
             {searchResults && !searchHidden && (
@@ -355,7 +368,7 @@ export default function CreateClub(props: CreateClubProps) {
               selectedBooks={selectedBooks}
               firstBookId={firstBookId}
               onDeleted={onDeleteSelectedBook}
-              onSelectFirstBook={setFirstBookId}
+              onSelectFirstBook={onSelectFirstBook}
             />
           )}
 
