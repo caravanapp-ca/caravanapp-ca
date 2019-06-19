@@ -1,10 +1,10 @@
 import React from 'react';
-import { UserDoc } from '@caravan/buddy-reading-types';
+import { User } from '@caravan/buddy-reading-types';
 import DiscordAuthButton from '../../components/DiscordAuthButton';
 import DiscordAuthorizeButton from '../../components/DiscordAuthorizeButton';
 
 export interface UserCardProps {
-  user: UserDoc | null;
+  user: User | null;
 }
 
 export function UserCard(props: UserCardProps) {

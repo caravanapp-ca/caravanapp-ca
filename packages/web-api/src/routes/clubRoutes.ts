@@ -1,8 +1,22 @@
 import express from 'express';
+import { check, validationResult } from 'express-validator/check';
 import Club from '../models/club';
 import { isAuthenticated } from '../middleware/auth';
 
 const router = express.Router();
+
+// TODO: Need to add checks here: Is the club full? Is the club private? => Don't return
+router.get('/', async (req, res, next) => {
+  try {
+    const clubs = await Club.find({});
+    if (clubs) {
+      res.status(200).json(clubs);
+    }
+  } catch (err) {
+    console.error('Failed to get all clubs.', err);
+    return next(err);
+  }
+});
 
 // Get a club
 router.get('/:id', async (req, res, next) => {
@@ -17,7 +31,7 @@ router.get('/:id', async (req, res, next) => {
   } catch (err) {
     if (err.name) {
       switch (err.name) {
-        case "CastError":
+        case 'CastError':
           res.status(404).send(null);
           return;
         default:
@@ -65,5 +79,55 @@ router.delete('/:id', isAuthenticated, async (req, res, next) => {
     return next(err);
   }
 });
+
+// Modify current user's club membership
+router.put(
+  '/:id/membership',
+  isAuthenticated,
+  check('isMember').isBoolean(),
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    const userId = req.user._id;
+    const clubId = req.params.id;
+    const { isMember } = req.body;
+    try {
+      if (isMember) {
+        const condition = { _id: clubId, 'members.userId': { $ne: userId } };
+        const update = {
+          $addToSet: {
+            members: {
+              userId,
+              role: 'member',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          },
+        };
+        const result = await Club.findOneAndUpdate(condition, update, {
+          new: true,
+        });
+        const userMembership = result.members.find(mem =>
+          mem.userId.equals(userId)
+        );
+        res.status(200).json(userMembership);
+      } else if (!isMember) {
+        const update = {
+          $pull: {
+            members: {
+              userId,
+            },
+          },
+        };
+        const result = await Club.findByIdAndUpdate(clubId, update);
+        res.sendStatus(200);
+      }
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  }
+);
 
 export default router;

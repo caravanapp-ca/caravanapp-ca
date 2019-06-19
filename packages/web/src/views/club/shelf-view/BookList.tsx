@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShelfEntry } from '@caravan/buddy-reading-types';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListElementAvatar from '../../../components/ListElementAvatar';
@@ -6,20 +7,22 @@ import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
-export default function BookList() {
+interface BookListProps {
+  data: ShelfEntry[];
+}
+
+export default function BookList(props: BookListProps) {
   const classes = useStyles();
+  const { data } = props;
 
   return (
     <List dense={false}>
-      <ListElementAvatar
-        avatarElement={
-          <Avatar
-            alt="Cover of The Name of the Wind"
-            src={require('./186074.jpg')}
-          />
-        }
-        primaryText="The Name of the Wind"
-      />
+      {data.map(b => (
+        <ListElementAvatar
+          avatarElement={<Avatar alt={b.title} src={b.coverImageURL} />}
+          primaryText={b.title}
+        />
+      ))}
     </List>
   );
 }
