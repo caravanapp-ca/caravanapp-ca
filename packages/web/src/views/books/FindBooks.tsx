@@ -13,7 +13,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
-import SearchResultCards from './SearchResultCards';
+import SelectedBookCards from './SelectedBookCards';
 
 import Header from '../../components/Header';
 
@@ -185,7 +185,6 @@ export default function FindBooks() {
             />
           </Paper>
         </Container>
-        <SearchResultCards />
         <Button variant="contained" className={classes.doneButton} size="small">
           Done
         </Button>

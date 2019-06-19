@@ -1,0 +1,748 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 473,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "n7AHAAAAQAAJ",
+      "etag": "+ODPFeU6Nmw",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/n7AHAAAAQAAJ",
+      "volumeInfo": {
+        "title": "'A reasonable faith', by three 'Friends' [F. Frith, W.E. Turner and W. Pollard] refuted",
+        "authors": ["George Holden Braithwaite"],
+        "publishedDate": "1885",
+        "industryIdentifiers": [
+          {
+            "type": "OTHER",
+            "identifier": "OXFORD:590111250"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 53,
+        "printType": "BOOK",
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "0.2.3.0.full.1",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=n7AHAAAAQAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=n7AHAAAAQAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=n7AHAAAAQAAJ&printsec=frontcover&dq=intitle:f&hl=&cd=1&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=n7AHAAAAQAAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://market.android.com/details?id=book-n7AHAAAAQAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FREE",
+        "isEbook": true,
+        "buyLink": "https://play.google.com/store/books/details?id=n7AHAAAAQAAJ&rdid=book-n7AHAAAAQAAJ&rdot=1&source=gbs_api"
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "ALL_PAGES",
+        "embeddable": true,
+        "publicDomain": true,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false,
+          "downloadLink": "http://books.google.ca/books/download/A_reasonable_faith_by_three_Friends_F_Fr.epub?id=n7AHAAAAQAAJ&hl=&output=epub&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "downloadLink": "http://books.google.ca/books/download/A_reasonable_faith_by_three_Friends_F_Fr.pdf?id=n7AHAAAAQAAJ&hl=&output=pdf&sig=ACfU3U0Tr7u1Z48Z1pmgwxgzppeNn3WDWQ&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=n7AHAAAAQAAJ&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "FULL_PUBLIC_DOMAIN",
+        "quoteSharingAllowed": false
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "WSXuUizl77cC",
+      "etag": "aSTges3HaNQ",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/WSXuUizl77cC",
+      "volumeInfo": {
+        "title": "Adult Entertainment Producer, Paul F Little, Sentenced To 46 Months In Prison On Obscenity Charges",
+        "authors": ["Backgroundnow.com Staff"],
+        "publisher": "www.BackgroundNow.com",
+        "publishedDate": "2008-12-10",
+        "description": "Paul F. Little, 50, was sentenced to 46 months in prison as a result of his conviction on multiple obscenity offenses. U.S. District Court Judge Susan Bucklew for the Middle District of Florida also ordered Little to three years of supervised release following his release from prison, to pay a $7,500 fine and to forfeit the obscene films charged in the indictment as well as all gross profits from the distribution of the films and the Internet domain names Little used as part of his business. Little's adult entertainment company, MaxWorld Entertainment Inc., was also fined $75,000 and ordered to serve five years of probation. Little, of Altadena, Calif., is a nationally-known director, producer and star of pornographic DVDs and video clips. In June 2008, a federal jury convicted Little on charges that he, through MaxWorld Entertainment Inc., distributed obscene films.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781440491214"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1440491216"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 32,
+        "printType": "BOOK",
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.1.0.0.preview.1",
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=WSXuUizl77cC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=WSXuUizl77cC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=WSXuUizl77cC&printsec=frontcover&dq=intitle:f&hl=&cd=2&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=WSXuUizl77cC&dq=intitle:f&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Adult_Entertainment_Producer_Paul_F_Litt.html?hl=&id=WSXuUizl77cC"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=WSXuUizl77cC&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Paul F. Little, 50, was sentenced to 46 months in prison as a result of his conviction on multiple obscenity offenses."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "PRtCOMcFzScC",
+      "etag": "Z6etfwa3sGw",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/PRtCOMcFzScC",
+      "volumeInfo": {
+        "title": "They F*** You Up",
+        "authors": ["Oliver James"],
+        "publisher": "Bloomsbury Publishing",
+        "publishedDate": "2010-12-20",
+        "description": "Do your relationships tend to follow the same destructive pattern? Do you feel trapped by your family's expectations of you? Does your life seem overwhelmingly governed by jealousy or competitiveness or lack of confidence? In this ground-breaking book, clinical psychologist Oliver James shows that it is the way we were cared for in the first six years of life that has a crucial effect on who we are and how we behave. Nurture, in effect, shapes our very nature. James combines the latest scientific research with fascinating interviews to show that understanding your past is the first step to controlling your present.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781408821336"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1408821338"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 384,
+        "printType": "BOOK",
+        "categories": ["Psychology"],
+        "averageRating": 3.0,
+        "ratingsCount": 1,
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "1.9.6.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=PRtCOMcFzScC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=PRtCOMcFzScC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=PRtCOMcFzScC&printsec=frontcover&dq=intitle:f&hl=&cd=3&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=PRtCOMcFzScC&source=gbs_api",
+        "canonicalVolumeLink": "https://market.android.com/details?id=book-PRtCOMcFzScC"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 15.96,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 12.59,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=PRtCOMcFzScC&rdid=book-PRtCOMcFzScC&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 1.596e7,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 1.259e7,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/They_F_You_Up-sample-epub.acsm?id=PRtCOMcFzScC&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/They_F_You_Up-sample-pdf.acsm?id=PRtCOMcFzScC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=PRtCOMcFzScC&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "In this ground-breaking book, clinical psychologist Oliver James shows that it is the way we were cared for in the first six years of life that has a crucial effect on who we are and how we behave."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "EIIEAAAAQAAJ",
+      "etag": "QZ3Xwxxa7a0",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/EIIEAAAAQAAJ",
+      "volumeInfo": {
+        "title": "Peculiar character of the Church of England [ed. by F. Huyshe].",
+        "authors": ["John Jebb (bp. of Limerick.)"],
+        "publishedDate": "1839",
+        "industryIdentifiers": [
+          {
+            "type": "OTHER",
+            "identifier": "OXFORD:590536471"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "printType": "BOOK",
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "full-1.0.0",
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=EIIEAAAAQAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=EIIEAAAAQAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=EIIEAAAAQAAJ&printsec=frontcover&dq=intitle:f&hl=&cd=4&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=EIIEAAAAQAAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://market.android.com/details?id=book-EIIEAAAAQAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FREE",
+        "isEbook": true,
+        "buyLink": "https://play.google.com/store/books/details?id=EIIEAAAAQAAJ&rdid=book-EIIEAAAAQAAJ&rdot=1&source=gbs_api"
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "ALL_PAGES",
+        "embeddable": true,
+        "publicDomain": true,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false,
+          "downloadLink": "http://books.google.ca/books/download/Peculiar_character_of_the_Church_of_Engl.epub?id=EIIEAAAAQAAJ&hl=&output=epub&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "downloadLink": "http://books.google.ca/books/download/Peculiar_character_of_the_Church_of_Engl.pdf?id=EIIEAAAAQAAJ&hl=&output=pdf&sig=ACfU3U2rIeisOR5a1Lc0zPTI1KYja0Sq7A&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=EIIEAAAAQAAJ&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "FULL_PUBLIC_DOMAIN",
+        "quoteSharingAllowed": false
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "dZrslEoAb58C",
+      "etag": "ssYXSSqW5Sg",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/dZrslEoAb58C",
+      "volumeInfo": {
+        "title": "Building Web, Cloud, and Mobile Solutions with F#",
+        "authors": ["Daniel Mohl"],
+        "publisher": "\"O'Reilly Media, Inc.\"",
+        "publishedDate": "2012",
+        "description": "Shows how to use F# to build ASP.NET MVC 4 web applications, services that run on Windows Azure, and end-to-end web stacks with WebSharper and Pit frameworks.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781449333768"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1449333761"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 160,
+        "printType": "BOOK",
+        "categories": ["Computers"],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=dZrslEoAb58C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=dZrslEoAb58C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=dZrslEoAb58C&printsec=frontcover&dq=intitle:f&hl=&cd=5&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=dZrslEoAb58C&dq=intitle:f&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Building_Web_Cloud_and_Mobile_Solutions.html?hl=&id=dZrslEoAb58C"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=dZrslEoAb58C&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Shows how to use F# to build ASP.NET MVC 4 web applications, services that run on Windows Azure, and end-to-end web stacks with WebSharper and Pit frameworks."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "1FxQzsG9DacC",
+      "etag": "jHY9dj51zjA",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/1FxQzsG9DacC",
+      "volumeInfo": {
+        "title": "F-22 Raptors",
+        "authors": ["Derek Zobel"],
+        "publisher": "Bellwether Media",
+        "publishedDate": "2011-01-01",
+        "description": "The F-22 Raptor might be the most advanced fighter plane in the world. Using stealth technology, it can carry out ground attack missions, electronic warfare missions, and dominate the skies. Students will discover the weapons and technology that allow the F-22 Raptor to complete these missions with ease.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781612110776"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1612110770"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 24,
+        "printType": "BOOK",
+        "categories": ["Juvenile Nonfiction"],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "0.1.0.0.preview.1",
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=1FxQzsG9DacC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=1FxQzsG9DacC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=1FxQzsG9DacC&printsec=frontcover&dq=intitle:f&hl=&cd=6&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=1FxQzsG9DacC&source=gbs_api",
+        "canonicalVolumeLink": "https://market.android.com/details?id=book-1FxQzsG9DacC"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 16.34,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=1FxQzsG9DacC&rdid=book-1FxQzsG9DacC&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 1.634e7,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000.0,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/F_22_Raptors-sample-pdf.acsm?id=1FxQzsG9DacC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=1FxQzsG9DacC&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "The F-22 Raptor might be the most advanced fighter plane in the world."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "hDpq4iyiPK4C",
+      "etag": "FvnjzHw6b4M",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/hDpq4iyiPK4C",
+      "volumeInfo": {
+        "title": "The Autobiography of Charles F. Gill",
+        "authors": ["Charles Gill"],
+        "publisher": "Lulu.com",
+        "publishedDate": "2005-05-01",
+        "description": "This is the autobiography of Charles Franklin Gill, Jr. beginning in 1835 when the Gills and Haynes arrived in Richwood, Ohio and played a major role in the establishment and administration of the community. It continues with the arrival of the Foxes and LeMasters from West Virginia and the union of those two families. My story tells of my birth, childhood, moving to Reno, Nevada, college, Vietnam, and later my life in Saratoga, California as a businessman. I have included an extensive appendix containing articles in the Union County History archives and family trees of the Gills, Haynes, Foxes and LeMasters families. Part I is largely historical. I have attempted to make it readable with lots of photos. Part II is my story and I will let it speak for itself. These anecdotes and stories are derived from the sources stated in the appendixes as well as my own life experiences.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781411631083"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1411631080"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 329,
+        "printType": "BOOK",
+        "categories": ["Reference"],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "1.2.3.0.preview.3",
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=hDpq4iyiPK4C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=hDpq4iyiPK4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=hDpq4iyiPK4C&printsec=frontcover&dq=intitle:f&hl=&cd=7&source=gbs_api",
+        "infoLink": "http://books.google.ca/books?id=hDpq4iyiPK4C&dq=intitle:f&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/The_Autobiography_of_Charles_F_Gill.html?hl=&id=hDpq4iyiPK4C"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/The_Autobiography_of_Charles_F_Gill-sample-epub.acsm?id=hDpq4iyiPK4C&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=hDpq4iyiPK4C&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "This is the autobiography of Charles Franklin Gill, Jr. beginning in 1835 when the Gills and Haynes arrived in Richwood, Ohio and played a major role in the establishment and administration of the community."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "AL5bwVYupVgC",
+      "etag": "LdNS9edjQwk",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/AL5bwVYupVgC",
+      "volumeInfo": {
+        "title": "F-35 Joint Strike Fighter (JSF) Program",
+        "subtitle": "Background and Issues for Congress",
+        "authors": ["Ronald O'Rourke"],
+        "publisher": "DIANE Publishing",
+        "publishedDate": "2010-05",
+        "description": "Contents: (1) Intro.: Alternate Engine Program; (2) Background: The F-35 In Brief; Three Versions; Alternate Engine Program; Program Origin and Milestones; Procurement Quantities; Program Mgmt.; Internat. Participation; Cost and Funding; Mfg. Locations; Proposed FY 2010 Budget; Proposed Termination of Alternate Engine; (3) Issues for Congress: Alternate Engine Program; Summary of Arguments; Admin. Perspective; Studies on F-35 Alternate Engine; Recent Developments; Development Status and Readiness for Production; Admin. Perspective; Affordability and Projected Fighter Shortfalls; Implications for Industrial Base; (4) Legislative Activity for FY 2010; Summary of Quantities and Funding; FY 2010 Defense Author. Bill. Illus.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781437924268"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1437924263"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 102,
+        "printType": "BOOK",
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "0.0.1.0.preview.3",
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=AL5bwVYupVgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=AL5bwVYupVgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=AL5bwVYupVgC&printsec=frontcover&dq=intitle:f&hl=&cd=8&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=AL5bwVYupVgC&source=gbs_api",
+        "canonicalVolumeLink": "https://market.android.com/details?id=book-AL5bwVYupVgC"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 14.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=AL5bwVYupVgC&rdid=book-AL5bwVYupVgC&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 1.499e7,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 9990000.0,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "ALL_PAGES",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": true
+        },
+        "pdf": {
+          "isAvailable": true
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=AL5bwVYupVgC&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Contents: (1) Intro."
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "PuFbAAAAQAAJ",
+      "etag": "ZFtVzPCMvxQ",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/PuFbAAAAQAAJ",
+      "volumeInfo": {
+        "title": "A Particular Account of the Emperor of China's Gardens Near Pekin: in a Letter from F. Attiret, a French Missionary, Now Employ'd by that Emperor to Paint the Apartments in Those Gardens, to His Friend at Paris. Translated from the French by Sir Harry Beaumont",
+        "authors": ["Jean Denis Attiret"],
+        "publishedDate": "1752",
+        "industryIdentifiers": [
+          {
+            "type": "OTHER",
+            "identifier": "OXFORD:N11711032"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": true
+        },
+        "pageCount": 50,
+        "printType": "BOOK",
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "full-1.0.0",
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=PuFbAAAAQAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=PuFbAAAAQAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=PuFbAAAAQAAJ&printsec=frontcover&dq=intitle:f&hl=&cd=9&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=PuFbAAAAQAAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://market.android.com/details?id=book-PuFbAAAAQAAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FREE",
+        "isEbook": true,
+        "buyLink": "https://play.google.com/store/books/details?id=PuFbAAAAQAAJ&rdid=book-PuFbAAAAQAAJ&rdot=1&source=gbs_api"
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "ALL_PAGES",
+        "embeddable": true,
+        "publicDomain": true,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false,
+          "downloadLink": "http://books.google.ca/books/download/A_Particular_Account_of_the_Emperor_of_C.epub?id=PuFbAAAAQAAJ&hl=&output=epub&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "downloadLink": "http://books.google.ca/books/download/A_Particular_Account_of_the_Emperor_of_C.pdf?id=PuFbAAAAQAAJ&hl=&output=pdf&sig=ACfU3U0dkaQH9c8EoqZx842TiPJ4MOiIYQ&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=PuFbAAAAQAAJ&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "FULL_PUBLIC_DOMAIN",
+        "quoteSharingAllowed": false
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "r12NAgAAQBAJ",
+      "etag": "JVAimAc6g20",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/r12NAgAAQBAJ",
+      "volumeInfo": {
+        "title": "F for Effort",
+        "subtitle": "More of the Very Best Totally Wrong Test Answers",
+        "authors": ["Richard Benson"],
+        "publisher": "Chronicle Books",
+        "publishedDate": "2014-01-21",
+        "description": "From the author of the national bestseller F in Exams comes a brand new compendium of hilarious and inventive wrong test answers and homework hiccups. Featuring gems from elementary school (\"two halves make a whale\"), middle grades (Q: What does \"germinate\" mean? A: To become a German citizen), and high school (Q: Fossil fuels are usually associated with which major type of rock? A: Classic rock), these 250 examples of creative invention are sure to charm anyone who has had to bluff or blunder their way through a test.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9781452138589"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "1452138583"
+          }
+        ],
+        "readingModes": {
+          "text": true,
+          "image": true
+        },
+        "pageCount": 128,
+        "printType": "BOOK",
+        "categories": ["Humor"],
+        "averageRating": 4.5,
+        "ratingsCount": 8,
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": true,
+        "contentVersion": "0.1.2.0.preview.3",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=r12NAgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=r12NAgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.ca/books?id=r12NAgAAQBAJ&printsec=frontcover&dq=intitle:f&hl=&cd=10&source=gbs_api",
+        "infoLink": "https://play.google.com/store/books/details?id=r12NAgAAQBAJ&source=gbs_api",
+        "canonicalVolumeLink": "https://market.android.com/details?id=book-r12NAgAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "CA",
+        "saleability": "FOR_SALE",
+        "isEbook": true,
+        "listPrice": {
+          "amount": 9.99,
+          "currencyCode": "CAD"
+        },
+        "retailPrice": {
+          "amount": 7.99,
+          "currencyCode": "CAD"
+        },
+        "buyLink": "https://play.google.com/store/books/details?id=r12NAgAAQBAJ&rdid=book-r12NAgAAQBAJ&rdot=1&source=gbs_api",
+        "offers": [
+          {
+            "finskyOfferType": 1,
+            "listPrice": {
+              "amountInMicros": 9990000.0,
+              "currencyCode": "CAD"
+            },
+            "retailPrice": {
+              "amountInMicros": 7990000.0,
+              "currencyCode": "CAD"
+            },
+            "giftable": true
+          }
+        ]
+      },
+      "accessInfo": {
+        "country": "CA",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+        "epub": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/F_for_Effort-sample-epub.acsm?id=r12NAgAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "pdf": {
+          "isAvailable": true,
+          "acsTokenLink": "http://books.google.ca/books/download/F_for_Effort-sample-pdf.acsm?id=r12NAgAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=r12NAgAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "From the author of the national bestseller F in Exams comes a brand new compendium of hilarious and inventive wrong test answers and homework hiccups."
+      }
+    }
+  ]
+}
