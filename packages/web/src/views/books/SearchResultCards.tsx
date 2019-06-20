@@ -75,8 +75,8 @@ export default function SearchResultCards(props: ResultsProps) {
           className={classes.searchResultsList}
           cols={1}
         >
-          {(props.searchResultObject || []).map(result => (
-            <GridListTile cols={1} className={classes.searchResult}>
+          {(props.searchResultObject || []).map((result, index) => (
+            <GridListTile cols={1} className={classes.searchResult} key={`${result.id}_${index}`}>
               <Card className={classes.card}>
                 <CardContent className={classes.cardContent}>
                   <div
