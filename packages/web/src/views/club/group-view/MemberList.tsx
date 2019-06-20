@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { List, Avatar, IconButton } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
-import { User } from '@caravan/buddy-reading-types';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
 
@@ -10,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface MemberListProps {
   ownerId: string;
-  members: User[];
+  members: any[];
   maxMembers: number;
 }
 
@@ -28,15 +27,15 @@ export default function MemberList(props: MemberListProps) {
     <List dense={false}>
       {members.map(m => (
         <ListElementAvatar
-          key={m._id}
+          key={m.userId}
           avatarElement={
-            m.discord.avatar ? (
-              <Avatar alt={m.discord.username} src={m.discord.avatar} />
+            m.photoUrl ? (
+              <Avatar alt={m.name || m.discordUsername} src={m.photoUrl} />
             ) : null
           }
-          primaryText={m.discord.username}
+          primaryText={m.name || m.discordUsername}
           secondaryElement={
-            props.ownerId === m._id ? (
+            props.ownerId === m.userId ? (
               <IconButton edge="end" aria-label="Star">
                 <StarIcon />
               </IconButton>

@@ -13,9 +13,6 @@ export function UserCard(props: UserCardProps) {
   }
   return (
     <div>
-      <p>{props.user.name}</p>
-      <p>{props.user.discord.username}</p>
-      <p>{props.user.createdAt}</p>
       <DiscordAuthorizeButton />
     </div>
   );
