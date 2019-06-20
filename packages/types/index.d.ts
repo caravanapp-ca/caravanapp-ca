@@ -2,6 +2,7 @@ import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
 import { GuildMember } from 'discord.js';
 import * as GoogleBooks from './books';
+import * as Services from './services';
 
 declare module '@caravan/buddy-reading-types' {
   type SubtractKeys<T, U> = {
@@ -24,8 +25,6 @@ declare module '@caravan/buddy-reading-types' {
     createdAt: Date | string;
     updatedAt: Date | string;
   }
-
-  type ChannelSource = 'discord';
 
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
@@ -73,23 +72,14 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
-    discord: {
-      id: string;
-      username: string;
-      discriminator: string;
-      avatar?: string;
-      bot?: boolean;
-      mfa_enabled?: boolean;
-      locale?: string;
-      verified?: boolean;
-      email?: string;
-      flags?: number;
-      premium_type?: number;
-    };
+    discordId: string;
     name?: string;
     photoUrl?: string;
     readingSpeed?: string;
+    isBot: boolean;
   }
+
+  export type ChannelSource = 'discord';
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';
 
@@ -103,5 +93,6 @@ declare module '@caravan/buddy-reading-types' {
     | 'learning'
     | 'first-timers'
     | 'nerdy';
-  export { GoogleBooks };
+
+  export { GoogleBooks, Services };
 }

@@ -20,6 +20,7 @@ import { getUsersById } from '../../services/user';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
+import { Services } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +58,7 @@ interface ClubProps extends RouteComponentProps<ClubRouteParams> {
 export default function ClubComponent(props: ClubProps) {
   const classes = useStyles();
   const [tabValue, setTabValue] = React.useState(0);
-  const [club, setClub] = React.useState<Club | null>(null);
+  const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
   const [memberInfo, setMemberInfo] = React.useState<User[]>([]);

@@ -1,5 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { FilterAutoMongoKeys, Session } from '@caravan/buddy-reading-types';
+import {
+  FilterAutoMongoKeys,
+  Session,
+  User,
+} from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings/@caravan/buddy-reading-web-api';
 import { isAuthenticated } from '../middleware/auth';
 import {
@@ -10,6 +14,7 @@ import {
 } from '../services/discord';
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
+import { RequiredKeys } from 'utility-types';
 
 const router = express.Router();
 
@@ -44,13 +49,6 @@ function convertTokenResponseToModel(
   return model;
 }
 
-function convertUserResponseToModel(data: DiscordUserResponseData) {
-  const model: Pick<UserDoc, 'discord'> = {
-    discord: data,
-  };
-  return model;
-}
-
 router.get('/logout', async (req, res) => {
   destroySession(req, res);
   res.redirect('/');
@@ -60,7 +58,7 @@ router.post('/discord/join', isAuthenticated, async (req, res, next) => {
   const { token } = req.session;
   const discordClient = ReadingDiscordBot.getInstance();
   const guild = discordClient.guilds.first();
-  const result = await guild.addMember(req.user.discord.id, {
+  const result = await guild.addMember(req.user.discordId, {
     accessToken: token,
   });
   return result;
@@ -92,12 +90,14 @@ router.get('/discord/callback', async (req, res) => {
   const discordUserData = await ReadingDiscordBot.getMe(accessToken);
 
   let userDoc = await UserModel.findOne({
-    'discord.id': discordUserData.id,
+    discordId: discordUserData.id,
   });
   if (userDoc) {
-    // Update the user, but lazy now.
+    // Update the user, but lazy now. // THIS COMMENT IS OLD, NOT NECESSARY NOW?
   } else {
-    const userInstance = convertUserResponseToModel(discordUserData);
+    const userInstance = {
+      discordId: discordUserData.id,
+    };
     const userModel = new UserModel(userInstance);
     userDoc = await userModel.save();
   }

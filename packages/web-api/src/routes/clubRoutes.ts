@@ -8,9 +8,11 @@ import {
   ChannelCreationOverwrites,
 } from 'discord.js';
 import { check, validationResult } from 'express-validator/check';
-import { FilterAutoMongoKeys } from '@caravan/buddy-reading-types';
+import mongoose from 'mongoose';
+import { FilterAutoMongoKeys, Services } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
+import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
 import { ClubDoc } from '../../typings/@caravan/buddy-reading-web-api';
@@ -54,11 +56,65 @@ router.get('/:id', async (req, res, next) => {
       if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
         return;
       }
-      const guildMembers = (discordChannel as
+      const guildMembersArr = (discordChannel as
         | TextChannel
-        | VoiceChannel).members.array();
-      const clubWithDiscord = { ...club, members: guildMembers };
-      res.status(200).json(clubWithDiscord);
+        | VoiceChannel).members
+        .array()
+        .filter(m => !m.user.bot);
+      const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
+      const users = await UserModel.find({
+        discordId: { $in: guildMemberDiscordIds },
+        isBot: { $eq: false },
+      });
+
+      const guildMembers = guildMembersArr.map(mem => {
+        const user = users.find(u => u.discordId === mem.id);
+        if (user) {
+          const result = {
+            bio: user.bio,
+            discordUsername: mem.user.username,
+            discordId: mem.id,
+            name: user.name,
+            photoUrl:
+              user.photoUrl ||
+              mem.user.avatarURL ||
+              mem.user.displayAvatarURL ||
+              mem.user.defaultAvatarURL,
+            readingSpeed: user.readingSpeed,
+            userId: user.id,
+          };
+          return result;
+        } else {
+          // Handle case where a user comes into discord without creating an account
+          // i.e. create a shadow account
+          console.error('Create a shadow account');
+          return;
+        }
+      });
+
+      const clubWithDiscord: Services.GetClubById = {
+        _id: club.id,
+        name: club.name,
+        ownerId: club.ownerId,
+        shelf: club.shelf,
+        bio: club.bio,
+        members: guildMembers,
+        maxMembers: club.maxMembers,
+        vibe: club.vibe,
+        readingSpeed: club.readingSpeed,
+        channelSource: club.channelSource,
+        channelId: club.channelId,
+        private: club.private,
+        //TODO: Later
+        createdAt: (club as any).createdAt,
+        updatedAt: (club as any).updatedAt,
+      };
+      res.status(200).send(clubWithDiscord);
+    } else {
+      res
+        .status(500)
+        .send(`Error: unknown channelSource: ${club.channelSource}`);
+      return;
     }
   } catch (err) {
     if (err.name) {
@@ -76,7 +132,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.get('/my-clubs', isAuthenticated, async (req, res, next) => {
-  const discordId = req.user.discord.id;
+  const discordId = req.user.discordId;
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
 
@@ -143,7 +199,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    guild.addMember(req.user.discord.id, {
+    guild.addMember(req.user.discordId, {
       accessToken: token,
     });
 

@@ -128,7 +128,7 @@ const ReadingDiscordBot = (() => {
 //   async joinPrimaryGuild(user: UserDoc) {
 //     try {
 //       const joinResponse = await axios.put(
-//         `${DiscordApiUrl}/guilds/${PrimaryGuild}/members/${user.discord.id}`,
+//         `${DiscordApiUrl}/guilds/${PrimaryGuild}/members/${user.discordId}`,
 //         {
 //           headers: { Authorization: `Bot ${DiscordBotSecret}` },
 //           access_token: this.accessToken,

@@ -6,26 +6,13 @@ import {
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings/@caravan/buddy-reading-web-api';
 
-const nestedDiscordDefinition: Required<SameKeysAs<User['discord']>> = {
-  id: { type: String, required: true, unique: true, index: true },
-  username: { type: String, required: true, unique: true, index: true },
-  discriminator: { type: String, required: true },
-  avatar: { type: String },
-  bot: { type: Boolean },
-  mfa_enabled: { type: Boolean },
-  locale: { type: String },
-  verified: { type: Boolean },
-  email: { type: String },
-  flags: { type: Number },
-  premium_type: { type: Number },
-};
-
 const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
   bio: { type: String },
-  discord: nestedDiscordDefinition,
+  discordId: { type: String, required: true, unique: true, index: true },
   name: { type: String },
   photoUrl: { type: String },
   readingSpeed: { type: String },
+  isBot: { type: Boolean, required: true, default: false, index: true },
 };
 
 const userSchema = new Schema<UserDoc>(definition, {
