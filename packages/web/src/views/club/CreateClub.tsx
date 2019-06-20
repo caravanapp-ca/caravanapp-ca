@@ -38,7 +38,6 @@ import InputBase from '@material-ui/core/InputBase';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import SearchResultCards from '../books/SearchResultCards';

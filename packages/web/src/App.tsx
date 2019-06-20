@@ -11,6 +11,7 @@ import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
 import FindBooks from './views/books/FindBooks';
 import useInitializeUser from './common/useInitializeUser';
+import UpdateBook from './views/club/UpdateBook';
 
 export interface AppProps {}
 
@@ -33,6 +34,10 @@ export function App(props: AppProps) {
           exact
           path="/club/create"
           render={props => <CreateClub {...props} user={user} />}
+        />
+        <Route
+          path="/club/:id/updatebook"
+          render={props => <UpdateBook {...props} user={user} />}
         />
         <Route
           path="/club/:id"
