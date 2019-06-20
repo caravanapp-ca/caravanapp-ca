@@ -49,7 +49,7 @@ export default function ButtonAppBar(props: HeaderProps) {
 
   return (
     <ElevationScroll {...props}>
-      <AppBar className={classes.appBar}>
+      <AppBar className={classes.appBar} position="sticky">
         <Toolbar className={classes.toolBar}>
           {leftComponent}
           {centerComponent}
