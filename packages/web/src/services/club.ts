@@ -33,7 +33,7 @@ export async function modifyMyClubMembership(
   const res = await axios.put(`${clubRoute}/${clubId}/membership`, {
     isMember,
   });
-  // Contains the Member Object for the added user. May be of use later.
+  // Contains the Member object for the added user. May be of use later.
   // const data = res.data;
   return res.status;
 }
