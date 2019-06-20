@@ -1,6 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton, Typography } from '@material-ui/core';
+import {
+  IconButton,
+  Typography,
+  Checkbox,
+  Switch,
+  Button,
+} from '@material-ui/core';
 import { MoreVert, ArrowBack } from '@material-ui/icons';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
@@ -15,10 +21,21 @@ interface UpdateBookProps extends RouteComponentProps<UpdateBookRouteParams> {
   user: User | null;
 }
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  finishedSwitchContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: 'red',
+  },
+  button: {
+    margin: theme.spacing(1),
+  },
+}));
 
 export default function UpdateBook(props: UpdateBookProps) {
   const classes = useStyles();
+
+  const [finished, setFinished] = React.useState(true);
 
   const leftComponent = (
     <IconButton
@@ -46,10 +63,40 @@ export default function UpdateBook(props: UpdateBookProps) {
   );
 
   return (
-    <Header
-      leftComponent={leftComponent}
-      centerComponent={centerComponent}
-      rightComponent={rightComponent}
-    />
+    <div>
+      <Header
+        leftComponent={leftComponent}
+        centerComponent={centerComponent}
+        rightComponent={rightComponent}
+      />
+      <div>
+        <Typography>Your club is currently reading:</Typography>
+        <div className={classes.finishedSwitchContainer}>
+          <Typography>We finished Kafka on the Shore</Typography>
+          <Switch
+            checked={finished}
+            onChange={(event, checked) => {
+              setFinished(checked);
+            }}
+            value="finished"
+            color="primary"
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          />
+        </div>
+        <Typography>
+          Here are the books in your club's Want to Read list. You can pick one
+          for your next read.
+        </Typography>
+        <Typography>Or you can search for another book.</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={() => {}}
+        >
+          SAVE
+        </Button>
+      </div>
+    </div>
   );
 }
