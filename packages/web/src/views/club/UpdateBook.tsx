@@ -1,6 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton, Typography, Switch, Button } from '@material-ui/core';
+import {
+  IconButton,
+  Typography,
+  Switch,
+  Button,
+  Box,
+  Container,
+} from '@material-ui/core';
 import { MoreVert, ArrowBack } from '@material-ui/icons';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
@@ -20,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   finishedSwitchContainer: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: 'red',
+    alignItems: 'center',
   },
   button: {
     margin: theme.spacing(1),
@@ -79,35 +86,38 @@ export default function UpdateBook(props: UpdateBookProps) {
         centerComponent={centerComponent}
         rightComponent={rightComponent}
       />
-      <div>
-        <Typography>Your club is currently reading:</Typography>
-        <div className={classes.finishedSwitchContainer}>
-          <Typography>We finished Kafka on the Shore</Typography>
-          <Switch
-            checked={finished}
-            onChange={(event, checked) => {
-              setFinished(checked);
-            }}
-            value="finished"
+      <Container>
+        <Box>
+          <Typography>Your club is currently reading:</Typography>
+          <BookList data={dummyData} />
+          <div className={classes.finishedSwitchContainer}>
+            <Switch
+              checked={finished}
+              onChange={(event, checked) => {
+                setFinished(checked);
+              }}
+              value="finished"
+              color="primary"
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+            <Typography>We finished Kafka on the Shore</Typography>
+          </div>
+          <Typography>
+            Here are the books in your club's Want to Read list. You can pick
+            one for your next read.
+          </Typography>
+          <BookList data={dummyData} />
+          <Typography>Or you can search for another book.</Typography>
+          <Button
+            variant="contained"
             color="primary"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-        </div>
-        <Typography>
-          Here are the books in your club's Want to Read list. You can pick one
-          for your next read.
-        </Typography>
-        <BookList data={dummyData} />
-        <Typography>Or you can search for another book.</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={() => {}}
-        >
-          SAVE
-        </Button>
-      </div>
+            className={classes.button}
+            onClick={() => {}}
+          >
+            SAVE
+          </Button>
+        </Box>
+      </Container>
     </div>
   );
 }
