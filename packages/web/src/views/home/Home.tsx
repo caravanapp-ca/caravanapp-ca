@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import qs from 'query-string';
-import { User, Club, ShelfEntry } from '@caravan/buddy-reading-types';
+import { User, Club, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -23,7 +23,7 @@ interface HomeProps {
 }
 
 export interface ClubWithCurrentlyReading {
-  club: Club;
+  club: Services.GetClubs['clubs'][0];
   currentlyReading: ShelfEntry | null;
 }
 
@@ -68,9 +68,11 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     const getClubs = async () => {
-      const clubs = await getAllClubs();
-      if (clubs) {
-        const clubsWCR = transformClubsToWithCurrentlyReading(clubs);
+      const responseData = await getAllClubs();
+      if (responseData) {
+        const clubsWCR = transformClubsToWithCurrentlyReading(
+          responseData.clubs
+        );
         setClubsWCR(clubsWCR);
       }
     };
@@ -78,7 +80,7 @@ export default function Home(props: HomeProps) {
   }, []);
 
   function transformClubsToWithCurrentlyReading(
-    clubs: Club[]
+    clubs: Services.GetClubs['clubs']
   ): ClubWithCurrentlyReading[] {
     const clubsWCR: ClubWithCurrentlyReading[] = clubs.map(club => {
       const currentlyReading = club.shelf.find(

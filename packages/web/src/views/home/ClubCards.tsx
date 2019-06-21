@@ -162,7 +162,7 @@ export default function ClubCards(props: ClubCardsProps) {
                             variant="subtitle1"
                             className={classes.iconLabel}
                           >
-                            {/* {`${club.members.length}/${club.maxMembers}`} */}
+                            {`${club.memberCount}/${club.maxMembers}`}
                           </Typography>
                         </div>
                         {club.vibe && (

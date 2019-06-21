@@ -1,21 +1,77 @@
 import express from 'express';
 import {
+  ChannelCreationOverwrites,
+  ChannelData,
+  Guild,
+  GuildChannel,
   TextChannel,
   VoiceChannel,
-  GuildChannel,
-  ChannelData,
-  ChannelCreationOverwrites,
 } from 'discord.js';
 import { check, validationResult } from 'express-validator/check';
-import { FilterAutoMongoKeys, Services } from '@caravan/buddy-reading-types';
+import {
+  Club,
+  FilterAutoMongoKeys,
+  Services,
+} from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
-import { Club } from '@caravan/buddy-reading-types';
+import { ClubDoc } from '../../typings/@caravan/buddy-reading-web-api';
 
 const router = express.Router();
+
+function getChannelMemberCount(guild: Guild, club: ClubDoc) {
+  let discordChannel: GuildChannel | null = guild.channels.find(
+    c => c.id === club.channelId
+  );
+  if (discordChannel) {
+    return (discordChannel as TextChannel | VoiceChannel).members.size;
+  }
+  return null;
+}
+
+async function getChannelMembers(guild: Guild, club: ClubDoc) {
+  let discordChannel = guild.channels.find(c => c.id === club.channelId);
+  if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
+    return;
+  }
+  const guildMembersArr = (discordChannel as TextChannel | VoiceChannel).members
+    .array()
+    .filter(m => !m.user.bot);
+  const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
+  const users = await UserModel.find({
+    discordId: { $in: guildMemberDiscordIds },
+    isBot: { $eq: false },
+  });
+
+  const guildMembers = guildMembersArr.map(mem => {
+    const user = users.find(u => u.discordId === mem.id);
+    if (user) {
+      const result = {
+        bio: user.bio,
+        discordUsername: mem.user.username,
+        discordId: mem.id,
+        name: user.name,
+        photoUrl:
+          user.photoUrl ||
+          mem.user.avatarURL ||
+          mem.user.displayAvatarURL ||
+          mem.user.defaultAvatarURL,
+        readingSpeed: user.readingSpeed,
+        userId: user.id,
+      };
+      return result;
+    } else {
+      // Handle case where a user comes into discord without creating an account
+      // i.e. create a shadow account
+      console.error('Create a shadow account');
+      return;
+    }
+  });
+  return guildMembers;
+}
 
 // TODO: Need to add checks here: Is the club full? Is the club private? => Don't return
 // TODO: Paginate/feed-ify
@@ -37,9 +93,25 @@ router.get('/', async (req, res, next) => {
       .exec();
     // Don't return full clubs
     // Don't return private clubs
-    if (clubs) {
-      res.status(200).json(clubs);
-    }
+    const client = ReadingDiscordBot.getInstance();
+    const guild = client.guilds.first();
+    const clubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
+      .map(c => {
+        const memberCount = getChannelMemberCount(guild, c);
+        if (memberCount === null) {
+          return null;
+        }
+        const obj: Services.GetClubs['clubs'][0] = {
+          ...c.toObject(),
+          memberCount,
+        };
+        return obj;
+      })
+      .filter(c => c !== null);
+    const result: Services.GetClubs = {
+      clubs: clubsWithMemberCounts,
+    };
+    res.status(200).json(result);
   } catch (err) {
     console.error('Failed to get all clubs.', err);
     return next(err);
@@ -58,45 +130,7 @@ router.get('/:id', async (req, res, next) => {
     if (club.channelSource === 'discord') {
       const client = ReadingDiscordBot.getInstance();
       const guild = client.guilds.first();
-      let discordChannel = guild.channels.find(c => c.id === club.channelId);
-      if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
-        return;
-      }
-      const guildMembersArr = (discordChannel as
-        | TextChannel
-        | VoiceChannel).members
-        .array()
-        .filter(m => !m.user.bot);
-      const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
-      const users = await UserModel.find({
-        discordId: { $in: guildMemberDiscordIds },
-        isBot: { $eq: false },
-      });
-
-      const guildMembers = guildMembersArr.map(mem => {
-        const user = users.find(u => u.discordId === mem.id);
-        if (user) {
-          const result = {
-            bio: user.bio,
-            discordUsername: mem.user.username,
-            discordId: mem.id,
-            name: user.name,
-            photoUrl:
-              user.photoUrl ||
-              mem.user.avatarURL ||
-              mem.user.displayAvatarURL ||
-              mem.user.defaultAvatarURL,
-            readingSpeed: user.readingSpeed,
-            userId: user.id,
-          };
-          return result;
-        } else {
-          // Handle case where a user comes into discord without creating an account
-          // i.e. create a shadow account
-          console.error('Create a shadow account');
-          return;
-        }
-      });
+      const guildMembers = await getChannelMembers(guild, club);
 
       const clubWithDiscord: Services.GetClubById = {
         _id: club.id,
