@@ -45,6 +45,7 @@ import SelectedBookCards from '../books/SelectedBookCards';
 import { createClub } from '../../services/club';
 import { searchGoogleBooks } from '../../services/book';
 import { RSA_NO_PADDING } from 'constants';
+import BookSearch from '../books/BookSearch';
 
 const theme = createMuiTheme({
   palette: {
@@ -59,13 +60,6 @@ const useStyles = makeStyles(theme => ({
   formContainer: {
     paddingTop: theme.spacing(5),
     paddingBottom: theme.spacing(5),
-  },
-  paper: {
-    height: 160,
-    width: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    display: 'flex',
   },
   addButton: {
     display: 'flex',
@@ -95,39 +89,6 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 10,
     color: 'white',
     backgroundColor: '#7289da',
-  },
-  searchContainer: {
-    padding: 0,
-    marginBottom: 30,
-    position: 'relative',
-  },
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-    borderRadius: 10,
-  },
-  input: {
-    marginLeft: 8,
-    flex: 1,
-    paddingRight: 10,
-  },
-  iconButton: {
-    padding: 10,
-  },
-  searchResultsList: {
-    width: '100%',
-    borderRadius: 10,
-    position: 'absolute',
-    backgroundColor: 'white',
-    top: '50px',
-    left: 0,
-    zIndex: 1,
-  },
-  searchResult: {
-    padding: 5,
-    marginTop: 0,
-    marginBottom: 0,
   },
 }));
 
@@ -174,11 +135,6 @@ export default function CreateClub(props: CreateClubProps) {
     </IconButton>
   );
 
-  const [
-    searchResults,
-    setSearchResults,
-  ] = React.useState<GoogleBooks.Books | null>(null);
-
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
 
   const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<
@@ -193,69 +149,28 @@ export default function CreateClub(props: CreateClubProps) {
 
   const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
 
-  const [bookSearchQuery, setBookSearchQuery] = React.useState('');
-
   const [selectedBooks, setSelectedBooks] = React.useState<GoogleBooks.Item[]>(
     []
   );
 
-  const [firstBookId, setFirstBookId] = React.useState('');
-
-  const [searchHidden, setSearchHidden] = React.useState(false);
+  const [bookToRead, setBookToRead] = React.useState<GoogleBooks.Item | null>(
+    null
+  );
 
   const [privateClub, setPrivateClub] = React.useState(false);
 
-  useEffect(() => {
-    if (selectedBooks.find(b => b.id !== firstBookId)) {
-      setFirstBookId(selectedBooks.length > 0 ? selectedBooks[0].id : '');
-    }
-  }, [firstBookId, selectedBooks]);
-
-  useEffect(() => {
-    if (!bookSearchQuery || bookSearchQuery.length === 0) {
-      setSearchHidden(true);
-      setSearchResults(null);
-    }
-  }, [bookSearchQuery]);
-
-  async function bookSearch(query: string) {
-    if (query) {
-      const results = await searchGoogleBooks(query);
-      setSearchHidden(false);
-      setSearchResults(results);
-    }
-    return null;
+  function onSubmitSelectedBooks(
+    selectedBooks: GoogleBooks.Item[],
+    bookToRead: GoogleBooks.Item
+  ) {
+    setSelectedBooks(selectedBooks);
+    setBookToRead(bookToRead);
   }
 
-  function handleOnKeyDown(e: React.KeyboardEvent<any>) {
-    if (e.key == 'Enter') {
-      bookSearch(bookSearchQuery);
-    }
-  }
-
-  // TODO send method to book search card via props that allows displayed books to be added to selected list
-  async function onAddBook(book: GoogleBooks.Item) {
-    const newBooks = [...selectedBooks, book];
-    setSelectedBooks(newBooks);
-    setBookSearchQuery('');
-  }
-
-  async function onDeleteSelectedBook(book: GoogleBooks.Item) {
-    const updatedBooks = selectedBooks.filter(
-      selected => selected.id != book.id
-    );
-    setSelectedBooks(updatedBooks);
-  }
-
-  async function onSelectFirstBook(id: string) {
-    setFirstBookId(id);
-    getShelf(selectedBooks);
-  }
-
-  function getShelf(books: GoogleBooks.Item[]) {
+  function getShelf() {
     const result = selectedBooks.map(book => {
       let readingState = 'notStarted';
-      if (book.id === firstBookId) {
+      if (bookToRead && book.id === bookToRead.id) {
         readingState = 'current';
       }
       const res: FilterAutoMongoKeys<ShelfEntry> = {
@@ -282,7 +197,7 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   function createClubOnClick() {
-    const shelf = getShelf(selectedBooks) as ShelfEntry[];
+    const shelf = getShelf() as ShelfEntry[];
     const clubObj: any = {
       name: selectedGroupName,
       shelf,
@@ -361,42 +276,7 @@ export default function CreateClub(props: CreateClubProps) {
           >
             What books would you like to read?
           </Typography>
-
-          <Container className={classes.searchContainer} maxWidth="md">
-            <Paper elevation={2} className={classes.root}>
-              <IconButton
-                className={classes.iconButton}
-                aria-label="Menu"
-                onClick={() => bookSearch(bookSearchQuery)}
-              >
-                <SearchIcon />
-              </IconButton>
-              <InputBase
-                className={classes.input}
-                placeholder="Add a Book"
-                fullWidth
-                value={bookSearchQuery}
-                inputProps={{ 'aria-label': 'Add a Book' }}
-                onChange={e => setBookSearchQuery(e.target.value)}
-                onKeyDown={handleOnKeyDown}
-              />
-            </Paper>
-            {searchResults && !searchHidden && (
-              <SearchResultCards
-                searchResultObject={searchResults.items}
-                onSelected={onAddBook}
-              />
-            )}
-          </Container>
-          {selectedBooks.length > 0 && (
-            <SelectedBookCards
-              selectedBooks={selectedBooks}
-              firstBookId={firstBookId}
-              onDeleted={onDeleteSelectedBook}
-              onSelectFirstBook={onSelectFirstBook}
-            />
-          )}
-
+          <BookSearch onSubmitBooks={onSubmitSelectedBooks} maxSelected={5} />
           <Typography
             style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
             variant="subtitle1"
@@ -865,7 +745,7 @@ export default function CreateClub(props: CreateClubProps) {
               disabled={
                 selectedGroupBio === '' ||
                 selectedGroupName === '' ||
-                firstBookId === '' ||
+                !bookToRead ||
                 selectedBooks.length === 0
               }
               className={classes.createButton}

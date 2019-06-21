@@ -1,4 +1,6 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import { User, ShelfEntry, GoogleBooks } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   IconButton,
@@ -11,9 +13,8 @@ import {
 import { MoreVert, ArrowBack } from '@material-ui/icons';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import { RouteComponentProps } from 'react-router-dom';
-import { User, ShelfEntry } from '@caravan/buddy-reading-types';
 import BookList from './shelf-view/BookList';
+import BookSearch from '../books/BookSearch';
 
 interface UpdateBookRouteParams {
   id: string;
@@ -53,6 +54,16 @@ export default function UpdateBook(props: UpdateBookProps) {
   const classes = useStyles();
 
   const [finished, setFinished] = React.useState(true);
+  const [bookToRead, setBookToRead] = React.useState<GoogleBooks.Item | null>(
+    null
+  );
+
+  function onSubmitSelectedBooks(
+    selectedBooks: GoogleBooks.Item[],
+    bookToRead: GoogleBooks.Item
+  ) {
+    setBookToRead(bookToRead);
+  }
 
   const leftComponent = (
     <IconButton
@@ -108,6 +119,7 @@ export default function UpdateBook(props: UpdateBookProps) {
           </Typography>
           <BookList data={dummyData} />
           <Typography>Or you can search for another book.</Typography>
+          <BookSearch onSubmitBooks={onSubmitSelectedBooks} maxSelected={1} />
           <Button
             variant="contained"
             color="primary"
