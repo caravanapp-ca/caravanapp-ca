@@ -17,7 +17,7 @@ import { getThemeProps } from '@material-ui/styles';
 interface SelectedProps {
   selectedBooks: GoogleBooks.Item[];
   firstBookId: string;
-  onSelectFirstBook: (bookId: string) => void;
+  onChangeBookToRead: (book: GoogleBooks.Item) => void;
   onDeleted: (book: GoogleBooks.Item) => void;
 }
 
@@ -45,36 +45,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-// TODO pull cards from DB
-const cards = [1, 2];
-
 export default function SelectedBookCards(props: SelectedProps) {
   const classes = useStyles();
 
-  function handleFirstBookChange(event: React.ChangeEvent<HTMLInputElement>) {
-    console.log('First book id');
-    console.log(props.firstBookId);
-    console.log('this books id');
-    console.log(event.target.value);
-    props.onSelectFirstBook(event.target.value);
+  const [bookToRead, setBookToRead] = React.useState<string>('');
+
+  function onChangeBookToRead(event: React.ChangeEvent<HTMLInputElement>) {
+    const { onChangeBookToRead, selectedBooks } = props;
+    const targetId = event.target.value;
+    const target = selectedBooks.find(book => book.id === targetId);
+    if (target) {
+      onChangeBookToRead(target);
+    }
+    setBookToRead(event.target.value);
   }
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <Typography
-        style={{
-          marginBottom: 20,
-          fontSize: 14,
-          color: '#4B4B4B',
-          textAlign: 'center',
-          fontWeight: 'bold',
-        }}
-        variant="subtitle2"
-      >
-        Select which book you'll be reading first! The rest will go to your 'To
-        Be Read' list.
-      </Typography>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={2}>
           {props.selectedBooks.map(book => (
@@ -141,7 +129,7 @@ export default function SelectedBookCards(props: SelectedProps) {
                     <CardActions className={classes.cardActions}>
                       <Radio
                         checked={props.firstBookId === book.id}
-                        onChange={handleFirstBookChange}
+                        onChange={onChangeBookToRead}
                         style={{
                           color: '#7289da',
                           position: 'relative',
