@@ -1,5 +1,6 @@
 import React from 'react';
 import { ClubWithCurrentlyReading } from './Home';
+import { CircularProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -100,6 +101,9 @@ const useStyles = makeStyles(theme => ({
     'text-align': 'left',
     color: '#ffffff',
   },
+  progress: {
+    margin: theme.spacing(2),
+  },
 }));
 
 interface ClubCardsProps {
@@ -112,6 +116,8 @@ export default function ClubCards(props: ClubCardsProps) {
   const { clubsWCR } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
+
+  const [joinClubLoadingId, setJoinClubLoadingId] = React.useState('');
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
@@ -216,11 +222,14 @@ export default function ClubCards(props: ClubCardsProps) {
                         onClick={() =>
                           !props.user
                             ? setLoginModalShown(true)
-                            : authorizeDiscordJoin()
+                            : setJoinClubLoadingId(club._id)
                         }
                       >
                         JOIN
                       </Button>
+                      {joinClubLoadingId === club._id && (
+                        <CircularProgress className={classes.progress} />
+                      )}
                     </CardActions>
                   </Card>
                 </Grid>

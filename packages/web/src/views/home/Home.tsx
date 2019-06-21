@@ -48,6 +48,12 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     fontWeight: 'bold',
   },
+  bottomAuthButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: theme.spacing(1),
+  },
 }));
 
 export default function Home(props: HomeProps) {
@@ -202,7 +208,11 @@ export default function Home(props: HomeProps) {
           </div>
         )}
         <ClubCards clubsWCR={clubsWCR} user={props.user} />
-        <UserCard user={props.user} />
+        {!props.user && (
+          <div className={classes.bottomAuthButton}>
+            <UserCard user={props.user} />
+          </div>
+        )}
       </main>
       {loginModalShown && (
         <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />

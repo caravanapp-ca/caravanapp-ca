@@ -22,6 +22,7 @@ import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,7 +67,12 @@ export default function ClubComponent(props: ClubProps) {
   const [memberStatus, setMemberStatus] = React.useState<MembershipStatus>(
     'notMember'
   );
+  const [loginModalShown, setLoginModalShown] = React.useState(false);
   const clubId = props.match.params.id;
+
+  function onCloseLoginModal() {
+    setLoginModalShown(false);
+  }
 
   function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
     setTabValue(newValue);
@@ -151,7 +157,11 @@ export default function ClubComponent(props: ClubProps) {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  onClick={() => addOrRemoveMeFromClub('add')}
+                  onClick={() =>
+                    props.user
+                      ? addOrRemoveMeFromClub('add')
+                      : setLoginModalShown(true)
+                  }
                 >
                   JOIN CLUB
                 </Button>
@@ -173,6 +183,9 @@ export default function ClubComponent(props: ClubProps) {
         <div>
           <Typography>It does not appear that this club exists!</Typography>
         </div>
+      )}
+      {loginModalShown && (
+        <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
       )}
     </>
   );
