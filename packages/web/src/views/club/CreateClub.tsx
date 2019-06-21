@@ -40,6 +40,7 @@ import {
   groupVibeIcons,
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
+import { getShelfFromGoogleBooks } from './functions/ClubFunctions';
 
 const theme = createMuiTheme({
   palette: {
@@ -168,37 +169,14 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }, [createdClub]);
 
-  function getShelf(selectedBooks: GoogleBooks.Item[]) {
-    const result = selectedBooks.map(book => {
-      let readingState = 'notStarted';
-      if (bookToRead && book.id === bookToRead.id) {
-        readingState = 'current';
-      }
-      const res: FilterAutoMongoKeys<ShelfEntry> = {
-        readingState: readingState,
-        title: book.volumeInfo.title,
-        genres: book.volumeInfo.categories,
-        author: book.volumeInfo.authors.join(', '),
-        isbn:
-          'industryIdentifiers' in book.volumeInfo
-            ? book.volumeInfo.industryIdentifiers[0].identifier
-            : null,
-        publishedDate:
-          'publishedDate' in book.volumeInfo
-            ? book.volumeInfo.publishedDate
-            : null,
-        coverImageURL:
-          'imageLinks' in book.volumeInfo
-            ? book.volumeInfo.imageLinks.thumbnail
-            : null,
-      };
-      return res;
-    });
-    return result;
-  }
-
   async function createClubOnClick() {
-    const shelf = getShelf(selectedBooks) as ShelfEntry[];
+    if (!bookToRead) {
+      return;
+    }
+    const shelf = getShelfFromGoogleBooks(
+      selectedBooks,
+      bookToRead.id
+    ) as ShelfEntry[];
     const clubObj: any = {
       name: selectedGroupName,
       shelf,

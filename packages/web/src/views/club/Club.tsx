@@ -5,6 +5,7 @@ import {
   ShelfEntry,
   User,
   MembershipStatus,
+  Services,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -17,10 +18,10 @@ import {
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { getClub, modifyMyClubMembership } from '../../services/club';
 import { getUsersById } from '../../services/user';
+import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
-import { Services } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,15 +72,6 @@ export default function ClubComponent(props: ClubProps) {
     setTabValue(newValue);
   }
 
-  function getCurrentBook(club: Club) {
-    if (club && club.shelf) {
-      const book = club.shelf.find(book => book.readingState === 'current');
-      if (book) {
-        setCurrBook(book);
-      }
-    }
-  }
-
   async function getMembersInfo(club: Club) {
     if (club && club.members) {
       const memberIds = club.members.map(m => m.id);
@@ -115,9 +107,10 @@ export default function ClubComponent(props: ClubProps) {
     const getClubFun = async () => {
       try {
         const club = await getClub(clubId);
+        setClub(club);
         if (club) {
-          setClub(club);
-          getCurrentBook(club);
+          const currBook = getCurrentBook(club);
+          setCurrBook(currBook);
           getMembersInfo(club);
           setLoadedClub(true);
         }
