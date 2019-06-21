@@ -17,10 +17,11 @@ export default function BookList(props: BookListProps) {
 
   return (
     <List dense={false}>
-      {data.map(b => (
+      {data.map((b, index) => (
         <ListElementAvatar
           avatarElement={<Avatar alt={b.title} src={b.coverImageURL} />}
           primaryText={b.title}
+          key={b.isbn || index}
         />
       ))}
     </List>
