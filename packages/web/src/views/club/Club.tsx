@@ -78,7 +78,7 @@ export default function ClubComponent(props: ClubProps) {
     setTabValue(newValue);
   }
 
-  async function getMembersInfo(club: Club) {
+  async function getMembersInfo(club: Services.GetClubById | null) {
     if (club && club.members) {
       const memberIds = club.members.map(m => m.id);
       const users = await getUsersById(memberIds);

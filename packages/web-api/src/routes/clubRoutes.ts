@@ -28,7 +28,12 @@ function getChannelMemberCount(guild: Guild, club: ClubDoc) {
     c => c.id === club.channelId
   );
   if (discordChannel) {
-    return (discordChannel as TextChannel | VoiceChannel).members.size;
+    const userCount = (discordChannel as
+      | TextChannel
+      | VoiceChannel).members.filter(
+      m => !m.user.bot && m.highestRole.name !== 'Admin'
+    ).size;
+    return userCount;
   }
   return null;
 }
@@ -47,30 +52,32 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     isBot: { $eq: false },
   });
 
-  const guildMembers = guildMembersArr.map(mem => {
-    const user = users.find(u => u.discordId === mem.id);
-    if (user) {
-      const result = {
-        bio: user.bio,
-        discordUsername: mem.user.username,
-        discordId: mem.id,
-        name: user.name,
-        photoUrl:
-          user.photoUrl ||
-          mem.user.avatarURL ||
-          mem.user.displayAvatarURL ||
-          mem.user.defaultAvatarURL,
-        readingSpeed: user.readingSpeed,
-        userId: user.id,
-      };
-      return result;
-    } else {
-      // Handle case where a user comes into discord without creating an account
-      // i.e. create a shadow account
-      console.error('Create a shadow account');
-      return;
-    }
-  });
+  const guildMembers = guildMembersArr
+    .map(mem => {
+      const user = users.find(u => u.discordId === mem.id);
+      if (user) {
+        const result = {
+          bio: user.bio,
+          discordUsername: mem.user.username,
+          discordId: mem.id,
+          name: user.name,
+          photoUrl:
+            user.photoUrl ||
+            mem.user.avatarURL ||
+            mem.user.displayAvatarURL ||
+            mem.user.defaultAvatarURL,
+          readingSpeed: user.readingSpeed,
+          userId: user.id,
+        };
+        return result;
+      } else {
+        // Handle case where a user comes into discord without creating an account
+        // i.e. create a shadow account
+        console.error('Create a shadow account');
+        return null;
+      }
+    })
+    .filter(g => g !== null);
   return guildMembers;
 }
 
