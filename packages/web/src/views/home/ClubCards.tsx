@@ -10,6 +10,9 @@ import Typography from '@material-ui/core/Typography';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { authorizeDiscordJoin } from '../../services/auth';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
+import { User } from '@caravan/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,
@@ -101,11 +104,18 @@ const useStyles = makeStyles(theme => ({
 
 interface ClubCardsProps {
   clubsWCR: ClubWithCurrentlyReading[];
+  user: User | null;
 }
 
 export default function ClubCards(props: ClubCardsProps) {
   const classes = useStyles();
   const { clubsWCR } = props;
+
+  const [loginModalShown, setLoginModalShown] = React.useState(false);
+
+  function onCloseLoginModal() {
+    setLoginModalShown(false);
+  }
 
   return (
     <React.Fragment>
@@ -203,6 +213,11 @@ export default function ClubCards(props: ClubCardsProps) {
                         variant="contained"
                         className={classes.button}
                         color="primary"
+                        onClick={() =>
+                          !props.user
+                            ? setLoginModalShown(true)
+                            : authorizeDiscordJoin()
+                        }
                       >
                         JOIN
                       </Button>
@@ -212,6 +227,9 @@ export default function ClubCards(props: ClubCardsProps) {
               );
             })}
           </Grid>
+          {loginModalShown && (
+            <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
+          )}
         </Container>
       </main>
     </React.Fragment>
