@@ -16,7 +16,7 @@ import UpdateBook from './views/club/UpdateBook';
 export interface AppProps {}
 
 function HomeRedirect() {
-  return <Redirect to="/club" />;
+  return <Redirect to="/clubs" />;
 }
 
 export function App(props: AppProps) {
@@ -27,20 +27,20 @@ export function App(props: AppProps) {
         <Route exact path="/" component={HomeRedirect} />
         <Route
           exact
-          path="/club"
+          path="/clubs"
           render={props => <Home {...props} user={user} />}
         />
         <Route
           exact
-          path="/club/create"
+          path="/clubs/create"
           render={props => <CreateClub {...props} user={user} />}
         />
         <Route
-          path="/club/:id/updatebook"
+          path="/clubs/:id/updatebook"
           render={props => <UpdateBook {...props} user={user} />}
         />
         <Route
-          path="/club/:id"
+          path="/clubs/:id"
           render={props => <Club {...props} user={user} />}
         />
         <Route exact path="/findbooks" component={FindBooks} />

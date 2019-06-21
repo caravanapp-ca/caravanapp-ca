@@ -119,7 +119,7 @@ export default function Home(props: HomeProps) {
       color="inherit"
       aria-label="Add"
       component={AdapterLink}
-      to="/club/create"
+      to="/clubs/create"
     >
       <AddIcon />
     </IconButton>

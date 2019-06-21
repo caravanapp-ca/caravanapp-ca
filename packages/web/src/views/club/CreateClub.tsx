@@ -164,7 +164,7 @@ export default function CreateClub(props: CreateClubProps) {
 
   useEffect(() => {
     if (createdClub) {
-      props.history.replace(`/club/${createdClub.club._id}`);
+      props.history.replace(`/clubs/${createdClub.club._id}`);
     }
   }, [createdClub]);
 

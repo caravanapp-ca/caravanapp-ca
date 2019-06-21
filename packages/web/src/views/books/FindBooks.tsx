@@ -76,7 +76,7 @@ export default function FindBooks() {
       color="inherit"
       aria-label="Back"
       component={AdapterLink}
-      to="/club/create"
+      to="/clubs/create"
     >
       <BackIcon />
     </IconButton>
