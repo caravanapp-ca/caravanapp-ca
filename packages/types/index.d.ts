@@ -54,7 +54,7 @@ declare module '@caravan/buddy-reading-types' {
     userId: string;
   }
 
-  export interface ShelfEntry extends MongoTimestamps {
+  export interface ShelfEntry extends DocumentFields, MongoTimestamps {
     amazonId?: string;
     goodReadsId?: string;
     isbn?: string;

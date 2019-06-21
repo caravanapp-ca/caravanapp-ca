@@ -14,9 +14,11 @@ import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import { deleteCookie } from '../../common/cookies';
 import { DISCORD_OAUTH_STATE } from '../../state';
+import DiscordAuthButton from '../../components/DiscordAuthButton';
 import ClubCards from './ClubCards';
 import { UserCard } from './UserCard';
 import { getAllClubs } from '../../services/club';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
 
 interface HomeProps {
   user: User | null;
@@ -30,7 +32,7 @@ export interface ClubWithCurrentlyReading {
 const useStyles = makeStyles(theme => ({
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
+    padding: theme.spacing(0, 0, 6),
   },
   heroButtons: {
     marginTop: theme.spacing(4),
@@ -46,6 +48,12 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     fontWeight: 'bold',
   },
+  bottomAuthButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: theme.spacing(1),
+  },
 }));
 
 export default function Home(props: HomeProps) {
@@ -53,6 +61,10 @@ export default function Home(props: HomeProps) {
   const [clubsWCR, setClubsWCR] = React.useState<ClubWithCurrentlyReading[]>(
     []
   );
+
+  const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(true);
+
+  const [loginModalShown, setLoginModalShown] = React.useState(false);
 
   // Handle the `state` query to verify login
   useEffect(() => {
@@ -95,6 +107,10 @@ export default function Home(props: HomeProps) {
     return clubsWCR;
   }
 
+  function onCloseLoginModal() {
+    setLoginModalShown(false);
+  }
+
   const leftComponent = (
     <IconButton
       edge="start"
@@ -114,7 +130,7 @@ export default function Home(props: HomeProps) {
     </Typography>
   );
 
-  const rightComponent = (
+  const rightComponent = props.user ? (
     <IconButton
       edge="start"
       className={classes.addButton}
@@ -122,6 +138,16 @@ export default function Home(props: HomeProps) {
       aria-label="Add"
       component={AdapterLink}
       to="/clubs/create"
+    >
+      <AddIcon />
+    </IconButton>
+  ) : (
+    <IconButton
+      edge="start"
+      className={classes.addButton}
+      color="inherit"
+      aria-label="Add"
+      onClick={() => setLoginModalShown(true)}
     >
       <AddIcon />
     </IconButton>
@@ -137,47 +163,62 @@ export default function Home(props: HomeProps) {
       />
       <main>
         {/* Hero unit */}
-        <div className={classes.heroContent}>
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-              style={{ marginTop: 20 }}
-            >
-              Album layout
-            </Typography>
-            <Typography
-              variant="h5"
-              align="center"
-              color="textSecondary"
-              paragraph
-            >
-              Something short and leading about the collection below—its
-              contents, the creator, etc. Make it short and sweet, but not too
-              short so folks don&apos;t simply skip over it entirely.
-            </Typography>
-            <div className={classes.heroButtons}>
-              <Grid container spacing={2} justify="center">
-                <Grid item>
-                  <Button variant="contained" color="primary">
-                    Main call to action
-                  </Button>
+        {showWelcomeMessage && (
+          <div className={classes.heroContent}>
+            <Container maxWidth="sm">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="textPrimary"
+                gutterBottom
+                style={{ marginTop: 20 }}
+              >
+                Welcome to Caravan!
+              </Typography>
+              <Typography
+                variant="h5"
+                align="center"
+                color="textSecondary"
+                paragraph
+              >
+                Scroll around below to see any buddies or groups that are
+                available to read with. If you can't find anything quite right,
+                create a group yourself so people can find you!
+              </Typography>
+              <div className={classes.heroButtons}>
+                <Grid container spacing={2} justify="center">
+                  {!props.user && (
+                    <Grid item>
+                      <DiscordAuthButton />
+                    </Grid>
+                  )}
+                  {props.user && showWelcomeMessage && (
+                    <Grid item>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => setShowWelcomeMessage(false)}
+                      >
+                        Close
+                      </Button>
+                    </Grid>
+                  )}
                 </Grid>
-                <Grid item>
-                  <Button variant="outlined" color="primary">
-                    Secondary action
-                  </Button>
-                </Grid>
-              </Grid>
-            </div>
-          </Container>
-        </div>
-        <ClubCards clubsWCR={clubsWCR} />
-        <UserCard user={props.user} />
+              </div>
+            </Container>
+          </div>
+        )}
+        <ClubCards clubsWCR={clubsWCR} user={props.user} />
+        {!props.user && (
+          <div className={classes.bottomAuthButton}>
+            <UserCard user={props.user} />
+          </div>
+        )}
       </main>
+      {loginModalShown && (
+        <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
+      )}
     </>
   );
 }

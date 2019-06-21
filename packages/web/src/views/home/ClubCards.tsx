@@ -1,5 +1,6 @@
 import React from 'react';
 import { ClubWithCurrentlyReading } from './Home';
+import { CircularProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -10,6 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { authorizeDiscordJoin } from '../../services/auth';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
+import { User } from '@caravan/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,
@@ -97,15 +101,27 @@ const useStyles = makeStyles(theme => ({
     'text-align': 'left',
     color: '#ffffff',
   },
+  progress: {
+    margin: theme.spacing(2),
+  },
 }));
 
 interface ClubCardsProps {
   clubsWCR: ClubWithCurrentlyReading[];
+  user: User | null;
 }
 
 export default function ClubCards(props: ClubCardsProps) {
   const classes = useStyles();
   const { clubsWCR } = props;
+
+  const [loginModalShown, setLoginModalShown] = React.useState(false);
+
+  const [joinClubLoadingId, setJoinClubLoadingId] = React.useState('');
+
+  function onCloseLoginModal() {
+    setLoginModalShown(false);
+  }
 
   return (
     <React.Fragment>
@@ -203,15 +219,26 @@ export default function ClubCards(props: ClubCardsProps) {
                         variant="contained"
                         className={classes.button}
                         color="primary"
+                        onClick={() =>
+                          !props.user
+                            ? setLoginModalShown(true)
+                            : setJoinClubLoadingId(club._id)
+                        }
                       >
                         JOIN
                       </Button>
+                      {joinClubLoadingId === club._id && (
+                        <CircularProgress className={classes.progress} />
+                      )}
                     </CardActions>
                   </Card>
                 </Grid>
               );
             })}
           </Grid>
+          {loginModalShown && (
+            <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
+          )}
         </Container>
       </main>
     </React.Fragment>
