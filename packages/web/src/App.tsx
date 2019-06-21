@@ -12,11 +12,12 @@ import CreateClub from './views/club/CreateClub';
 import FindBooks from './views/books/FindBooks';
 import useInitializeUser from './common/useInitializeUser';
 import UpdateBook from './views/club/UpdateBook';
+import Privacy from './views/privacy/Privacy';
 
 export interface AppProps {}
 
 function HomeRedirect() {
-  return <Redirect to="/club" />;
+  return <Redirect to="/clubs" />;
 }
 
 export function App(props: AppProps) {
@@ -27,23 +28,24 @@ export function App(props: AppProps) {
         <Route exact path="/" component={HomeRedirect} />
         <Route
           exact
-          path="/club"
+          path="/clubs"
           render={props => <Home {...props} user={user} />}
         />
         <Route
           exact
-          path="/club/create"
+          path="/clubs/create"
           render={props => <CreateClub {...props} user={user} />}
         />
         <Route
-          path="/club/:id/updatebook"
+          path="/clubs/:id/updatebook"
           render={props => <UpdateBook {...props} user={user} />}
         />
         <Route
-          path="/club/:id"
+          path="/clubs/:id"
           render={props => <Club {...props} user={user} />}
         />
         <Route exact path="/findbooks" component={FindBooks} />
+        <Route exact path="/privacy" component={Privacy} />
       </Switch>
       <Footer />
     </Router>
