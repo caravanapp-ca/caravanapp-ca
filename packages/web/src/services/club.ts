@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Club, Services } from '@caravan/buddy-reading-types';
+import { Club, Services, ChannelSource } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
 
@@ -10,6 +10,8 @@ interface CreateClubProps {
   maxMembers: string;
   vibe: string;
   readingSpeed: string;
+  channelSource: ChannelSource;
+  private: boolean;
 }
 
 export async function getAllClubs() {
@@ -46,8 +48,13 @@ export async function createClub(props: CreateClubProps) {
     maxMembers: props.maxMembers,
     vibe: props.vibe,
     readingSpeed: props.readingSpeed,
+    private: props.private,
+    channelSource: props.channelSource,
   };
 
-  const res = await axios.post<Club | null>(clubRoute, body);
-  console.log(res);
+  const res = await axios.post<Services.CreateClubResult | null>(
+    clubRoute,
+    body
+  );
+  return res;
 }

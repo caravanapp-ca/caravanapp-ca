@@ -3,19 +3,16 @@ import {
   TextChannel,
   VoiceChannel,
   GuildChannel,
-  GuildMember,
   ChannelData,
   ChannelCreationOverwrites,
 } from 'discord.js';
 import { check, validationResult } from 'express-validator/check';
-import mongoose from 'mongoose';
 import { FilterAutoMongoKeys, Services } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
-import { ClubDoc } from '../../typings/@caravan/buddy-reading-web-api';
 import { Club } from '@caravan/buddy-reading-types';
 
 const router = express.Router();
@@ -35,10 +32,6 @@ router.get('/', async (req, res, next) => {
     return next(err);
   }
 });
-
-interface ClubWithDiscord extends ClubDoc {
-  members: GuildMember[];
-}
 
 // Get a club
 router.get('/:id', async (req, res, next) => {
@@ -219,7 +212,8 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
 
-    const result = {
+    const result: Services.CreateClubResult = {
+      //@ts-ignore
       club: newClub,
       discord: newChannel,
     };

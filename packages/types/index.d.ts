@@ -109,6 +109,10 @@ declare module '@caravan/buddy-reading-types' {
       updatedAt: string;
       private: boolean;
     }
+    export interface CreateClubResult {
+      club: Club;
+      discord: any;
+    }
   }
 
   export namespace GoogleBooks {

@@ -9,9 +9,7 @@ import {
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
 
-export interface ClubDoc
-  extends Document,
-    Omit<FilterAutoMongoKeys<Club>, 'shelf'> {
+export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
   _id: MongooseTypes.ObjectId;
   shelf: ShelfEntryDoc[];
 }

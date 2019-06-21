@@ -5,9 +5,9 @@ import {
   GoogleBooks,
   ShelfEntry,
   FilterAutoMongoKeys,
-  Club,
   ReadingSpeed,
   GroupVibe,
+  Services,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -23,16 +24,8 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
-import WalkIcon from '@material-ui/icons/DirectionsWalk';
-import CarIcon from '@material-ui/icons/DirectionsCar';
-import BikeIcon from '@material-ui/icons/DirectionsBike';
-import ChillIcon from '@material-ui/icons/Toys';
-import NerdyIcon from '@material-ui/icons/VideogameAsset';
-import LearningIcon from '@material-ui/icons/School';
-import FirstTimerIcon from '@material-ui/icons/Cake';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ThreeDotsIcon from '@material-ui/icons/MoreVert';
-import PowerIcon from '@material-ui/icons/FlashOn';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Switch from '@material-ui/core/Switch';
@@ -46,6 +39,14 @@ import { createClub } from '../../services/club';
 import { searchGoogleBooks } from '../../services/book';
 import { RSA_NO_PADDING } from 'constants';
 import BookSearch from '../books/BookSearch';
+import {
+  readingSpeedIcons,
+  readingSpeedLabels,
+} from '../../components/reading-speed-avatars-icons-labels';
+import {
+  groupVibeIcons,
+  groupVibeLabels,
+} from '../../components/group-vibe-avatars-icons-labels';
 
 const theme = createMuiTheme({
   palette: {
@@ -76,19 +77,6 @@ const useStyles = makeStyles(theme => ({
   moreButton: {
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(0),
-  },
-  createButtonSection: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '0px',
-  },
-  createButton: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    marginRight: 16,
-    marginBottom: 10,
-    color: 'white',
-    backgroundColor: '#7289da',
   },
 }));
 
@@ -136,28 +124,26 @@ export default function CreateClub(props: CreateClubProps) {
   );
 
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
-
   const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<
     ReadingSpeed
   >('moderate');
-
   const [selectedGroupVibe, setSelectedGroupVibe] = React.useState<GroupVibe>(
     'chill'
   );
-
   const [selectedGroupName, setSelectedGroupName] = React.useState('');
-
   const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
-
   const [selectedBooks, setSelectedBooks] = React.useState<GoogleBooks.Item[]>(
     []
   );
-
   const [bookToRead, setBookToRead] = React.useState<GoogleBooks.Item | null>(
     null
   );
-
   const [privateClub, setPrivateClub] = React.useState(false);
+  const [creatingClub, setCreatingClub] = React.useState(false);
+  const [
+    createdClub,
+    setCreatedClub,
+  ] = React.useState<Services.CreateClubResult | null>(null);
 
   function onSubmitSelectedBooks(
     selectedBooks: GoogleBooks.Item[],
@@ -165,6 +151,47 @@ export default function CreateClub(props: CreateClubProps) {
   ) {
     setSelectedBooks(selectedBooks);
     setBookToRead(bookToRead);
+  }
+
+  useEffect(() => {
+    if (selectedBooks.find(b => b.id !== firstBookId)) {
+      setFirstBookId(selectedBooks.length > 0 ? selectedBooks[0].id : '');
+    }
+  }, [firstBookId, selectedBooks]);
+
+  useEffect(() => {
+    if (!bookSearchQuery || bookSearchQuery.length === 0) {
+      setSearchHidden(true);
+      setSearchResults(null);
+    }
+  }, [bookSearchQuery]);
+
+  useEffect(() => {
+    if (createdClub) {
+      props.history.replace(`/club/${createdClub.club._id}`);
+    }
+  }, [createdClub]);
+
+  async function bookSearch(query: string) {
+    if (query) {
+      const results = await searchGoogleBooks(query);
+      setSearchHidden(false);
+      setSearchResults(results);
+    }
+    return null;
+  }
+
+  function handleOnKeyDown(e: React.KeyboardEvent<any>) {
+    if (e.key == 'Enter') {
+      bookSearch(bookSearchQuery);
+    }
+  }
+
+  // TODO send method to book search card via props that allows displayed books to be added to selected list
+  async function onAddBook(book: GoogleBooks.Item) {
+    const newBooks = [...selectedBooks, book];
+    setSelectedBooks(newBooks);
+    setBookSearchQuery('');
   }
 
   function getShelf() {
@@ -196,8 +223,8 @@ export default function CreateClub(props: CreateClubProps) {
     return result;
   }
 
-  function createClubOnClick() {
-    const shelf = getShelf() as ShelfEntry[];
+  async function createClubOnClick() {
+    const shelf = getShelf(selectedBooks) as ShelfEntry[];
     const clubObj: any = {
       name: selectedGroupName,
       shelf,
@@ -208,8 +235,12 @@ export default function CreateClub(props: CreateClubProps) {
       channelSource: 'discord',
       private: privateClub,
     };
-    createClub(clubObj);
-    console.log(clubObj.name);
+    setCreatingClub(true);
+    const createdClubRes = await createClub(clubObj);
+    const { data } = createdClubRes;
+    if (data) {
+      setCreatedClub(data);
+    }
   }
 
   const AntSwitch = withStyles(theme => ({
@@ -256,6 +287,47 @@ export default function CreateClub(props: CreateClubProps) {
       />
       <main>
         <Container className={classes.formContainer} maxWidth="md">
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography
+              style={{ marginBottom: 20, fontSize: 16, color: '#8B8B8B' }}
+              variant="subtitle1"
+            >
+              Visibility level
+            </Typography>
+            <div
+              style={{
+                marginBottom: '30px',
+              }}
+            >
+              <Typography component="div">
+                <Grid
+                  component="label"
+                  container
+                  alignItems="center"
+                  spacing={1}
+                >
+                  <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
+                    Public
+                  </Grid>
+                  <Grid item>
+                    <AntSwitch
+                      checked={privateClub}
+                      onChange={(e, checked) => setPrivateClub(checked)}
+                      value="checked"
+                    />
+                  </Grid>
+                  <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
+                    Private
+                  </Grid>
+                </Grid>
+              </Typography>
+            </div>
+          </div>
           <TextField
             id="filled-name"
             label="Group Name"
@@ -385,10 +457,10 @@ export default function CreateClub(props: CreateClubProps) {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
+              {readingSpeedIcons('slow', 'icon')}
               <div
                 style={{
                   display: 'flex',
@@ -411,20 +483,17 @@ export default function CreateClub(props: CreateClubProps) {
                   variant="h5"
                   component="h2"
                 >
-                  Slow
+                  A book a month
                 </Typography>
-              </div>
-              <div>
-                <WalkIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
+              {readingSpeedIcons('moderate', 'icon')}
               <div
                 style={{
                   display: 'flex',
@@ -447,20 +516,17 @@ export default function CreateClub(props: CreateClubProps) {
                   variant="h5"
                   component="h2"
                 >
-                  Moderate
+                  One book every couple of weeks
                 </Typography>
-              </div>
-              <div>
-                <BikeIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
+              {readingSpeedIcons('fast', 'icon')}
               <div
                 style={{
                   display: 'flex',
@@ -483,11 +549,8 @@ export default function CreateClub(props: CreateClubProps) {
                   variant="h5"
                   component="h2"
                 >
-                  Fast
+                  One or more books a week
                 </Typography>
-              </div>
-              <div>
-                <CarIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
           </div>
@@ -511,10 +574,10 @@ export default function CreateClub(props: CreateClubProps) {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
+              {groupVibeIcons('chill', 'icon')}
               <div
                 style={{
                   display: 'flex',
@@ -537,20 +600,17 @@ export default function CreateClub(props: CreateClubProps) {
                   variant="h5"
                   component="h2"
                 >
-                  Chill
+                  {groupVibeLabels('chill')}
                 </Typography>
-              </div>
-              <div>
-                <ChillIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
+              {groupVibeIcons('nerdy', 'icon')}
               <div
                 style={{
                   display: 'flex',
@@ -573,24 +633,20 @@ export default function CreateClub(props: CreateClubProps) {
                   variant="h5"
                   component="h2"
                 >
-                  Nerdy
+                  {groupVibeLabels('nerdy')}
                 </Typography>
-              </div>
-              <div>
-                <NerdyIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
+              {groupVibeIcons('power', 'icon')}
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'center',
                   alignItems: 'center',
                 }}
               >
@@ -609,20 +665,17 @@ export default function CreateClub(props: CreateClubProps) {
                   variant="h5"
                   component="h2"
                 >
-                  Power
+                  {groupVibeLabels('power')}
                 </Typography>
-              </div>
-              <div>
-                <PowerIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
+              {groupVibeIcons('first-timers', 'icon')}
               <div
                 style={{
                   display: 'flex',
@@ -645,20 +698,17 @@ export default function CreateClub(props: CreateClubProps) {
                   variant="h5"
                   component="h2"
                 >
-                  First-timers
+                  {groupVibeLabels('first-timers')}
                 </Typography>
-              </div>
-              <div>
-                <FirstTimerIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
+              {groupVibeIcons('learning', 'icon')}
               <div
                 style={{
                   display: 'flex',
@@ -681,11 +731,8 @@ export default function CreateClub(props: CreateClubProps) {
                   variant="h5"
                   component="h2"
                 >
-                  Learning
+                  {groupVibeLabels('learning')}
                 </Typography>
-              </div>
-              <div>
-                <LearningIcon style={{ fontSize: 50, color: '#4B4B4B' }} />
               </div>
             </div>
           </div>
@@ -708,38 +755,10 @@ export default function CreateClub(props: CreateClubProps) {
               shrink: true,
             }}
           />
-          <Typography
-            style={{ marginBottom: 20, fontSize: 16, color: '#8B8B8B' }}
-            variant="subtitle1"
-          >
-            Is your group public or private?
-          </Typography>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              marginBottom: '30px',
-            }}
-          >
-            <Typography component="div">
-              <Grid component="label" container alignItems="center" spacing={1}>
-                <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
-                  Public
-                </Grid>
-                <Grid item>
-                  <AntSwitch
-                    checked={privateClub}
-                    onChange={(e, checked) => setPrivateClub(checked)}
-                    value="checked"
-                  />
-                </Grid>
-                <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
-                  Private
-                </Grid>
-              </Grid>
-            </Typography>
-          </div>
           <div className={classes.createButtonSection}>
+            {creatingClub ? (
+              <CircularProgress className={classes.progress} />
+            ) : null}
             <Button
               variant="contained"
               disabled={
