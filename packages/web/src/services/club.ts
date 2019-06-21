@@ -25,7 +25,7 @@ export async function getAllClubs(
   pageSize?: number,
   readingSpeed?: ReadingSpeed
 ) {
-  const res = await axios.get<Club[]>(clubRoute, {
+  const res = await axios.get<Services.GetClubs>(clubRoute, {
     params: {
       after,
       pageSize,

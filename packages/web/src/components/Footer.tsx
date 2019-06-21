@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 function MadeWithLove() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Built with ❤️ by the '}
+      {'Built with ❤️by the '}
       <Link color="inherit" href="https://www.google.com">
         Caravan
       </Link>
@@ -37,8 +37,13 @@ export default function Footer() {
           align="center"
           component="p"
         >
+          {'We want to hear what you have to say! Check out our '}
+          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdpPzKPO9Spx7ovBKh5Q6n977hgBRbxTgiKVPaDIRnkjfb9jQ/viewform">
+            feedback form.
+          </Link>
+          <br />
           {'View our '}
-          <Link href="/privacy">privacy policy</Link>
+          <Link href="/privacy">privacy policy.</Link>
         </Typography>
       </footer>
     </React.Fragment>

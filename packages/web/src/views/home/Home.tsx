@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import qs from 'query-string';
-import { User, Club, ShelfEntry } from '@caravan/buddy-reading-types';
+import { User, Club, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -18,13 +18,14 @@ import DiscordAuthButton from '../../components/DiscordAuthButton';
 import ClubCards from './ClubCards';
 import { UserCard } from './UserCard';
 import { getAllClubs } from '../../services/club';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
 
 interface HomeProps {
   user: User | null;
 }
 
 export interface ClubWithCurrentlyReading {
-  club: Club;
+  club: Services.GetClubs['clubs'][0];
   currentlyReading: ShelfEntry | null;
 }
 
@@ -47,6 +48,12 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     fontWeight: 'bold',
   },
+  bottomAuthButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: theme.spacing(1),
+  },
 }));
 
 export default function Home(props: HomeProps) {
@@ -56,6 +63,8 @@ export default function Home(props: HomeProps) {
   );
 
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(true);
+
+  const [loginModalShown, setLoginModalShown] = React.useState(false);
 
   // Handle the `state` query to verify login
   useEffect(() => {
@@ -71,9 +80,11 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     const getClubs = async () => {
-      const clubs = await getAllClubs();
-      if (clubs) {
-        const clubsWCR = transformClubsToWithCurrentlyReading(clubs);
+      const responseData = await getAllClubs();
+      if (responseData) {
+        const clubsWCR = transformClubsToWithCurrentlyReading(
+          responseData.clubs
+        );
         setClubsWCR(clubsWCR);
       }
     };
@@ -81,7 +92,7 @@ export default function Home(props: HomeProps) {
   }, []);
 
   function transformClubsToWithCurrentlyReading(
-    clubs: Club[]
+    clubs: Services.GetClubs['clubs']
   ): ClubWithCurrentlyReading[] {
     const clubsWCR: ClubWithCurrentlyReading[] = clubs.map(club => {
       const currentlyReading = club.shelf.find(
@@ -94,6 +105,10 @@ export default function Home(props: HomeProps) {
       }
     });
     return clubsWCR;
+  }
+
+  function onCloseLoginModal() {
+    setLoginModalShown(false);
   }
 
   const leftComponent = (
@@ -115,7 +130,7 @@ export default function Home(props: HomeProps) {
     </Typography>
   );
 
-  const rightComponent = (
+  const rightComponent = props.user ? (
     <IconButton
       edge="start"
       className={classes.addButton}
@@ -123,6 +138,16 @@ export default function Home(props: HomeProps) {
       aria-label="Add"
       component={AdapterLink}
       to="/clubs/create"
+    >
+      <AddIcon />
+    </IconButton>
+  ) : (
+    <IconButton
+      edge="start"
+      className={classes.addButton}
+      color="inherit"
+      aria-label="Add"
+      onClick={() => setLoginModalShown(true)}
     >
       <AddIcon />
     </IconButton>
@@ -185,8 +210,15 @@ export default function Home(props: HomeProps) {
           </div>
         )}
         <ClubCards clubsWCR={clubsWCR} user={props.user} />
-        <UserCard user={props.user} />
+        {!props.user && (
+          <div className={classes.bottomAuthButton}>
+            <UserCard user={props.user} />
+          </div>
+        )}
       </main>
+      {loginModalShown && (
+        <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
+      )}
     </>
   );
 }

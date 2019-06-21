@@ -93,6 +93,24 @@ declare module '@caravan/buddy-reading-types' {
     | 'nerdy';
 
   export namespace Services {
+    export interface GetClubs {
+      clubs: {
+        _id: string;
+        name: string;
+        ownerId: string;
+        shelf: any[];
+        bio?: string;
+        maxMembers: number;
+        memberCount: number;
+        vibe?: GroupVibe;
+        readingSpeed?: ReadingSpeed;
+        channelSource?: ChannelSource;
+        channelId: string;
+        createdAt: string;
+        updatedAt: string;
+        private: boolean;
+      }[];
+    }
     export interface GetClubById {
       _id: string;
       name: string;
