@@ -8,56 +8,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import { searchGoogleBooks } from '../../services/book';
 
 const useStyles = makeStyles(theme => ({
-  formContainer: {
-    paddingTop: theme.spacing(5),
-    paddingBottom: theme.spacing(5),
-  },
-  paper: {
-    height: 160,
-    width: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    display: 'flex',
-  },
-  addButton: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backButton: {
-    marginRight: theme.spacing(2),
-  },
-  headerTitle: {
-    flexGrow: 1,
-    fontWeight: 'bold',
-  },
-  moreButton: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(0),
-  },
-  createButtonSection: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '0px',
-  },
-  createButton: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    marginRight: 16,
-    marginBottom: 10,
-    color: 'white',
-    backgroundColor: '#7289da',
-  },
-  searchContainer: {
-    padding: 0,
-    marginBottom: 30,
-    position: 'relative',
-  },
   root: {
     display: 'flex',
     alignItems: 'center',
     width: '100%',
     borderRadius: 10,
+  },
+  searchContainer: {
+    padding: 0,
+    marginBottom: 30,
+    position: 'relative',
   },
   input: {
     marginLeft: 8,
@@ -66,20 +26,6 @@ const useStyles = makeStyles(theme => ({
   },
   iconButton: {
     padding: 10,
-  },
-  searchResultsList: {
-    width: '100%',
-    borderRadius: 10,
-    position: 'absolute',
-    backgroundColor: 'white',
-    top: '50px',
-    left: 0,
-    zIndex: 1,
-  },
-  searchResult: {
-    padding: 5,
-    marginTop: 0,
-    marginBottom: 0,
   },
 }));
 
