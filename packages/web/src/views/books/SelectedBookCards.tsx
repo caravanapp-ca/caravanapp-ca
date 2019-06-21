@@ -19,6 +19,7 @@ interface SelectedProps {
   firstBookId: string;
   onChangeBookToRead: (book: GoogleBooks.Item) => void;
   onDeleted: (book: GoogleBooks.Item) => void;
+  radioValue: string;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -47,17 +48,20 @@ const useStyles = makeStyles(theme => ({
 
 export default function SelectedBookCards(props: SelectedProps) {
   const classes = useStyles();
+  const {
+    selectedBooks,
+    firstBookId,
+    onChangeBookToRead,
+    onDeleted,
+    radioValue,
+  } = props;
 
-  const [bookToRead, setBookToRead] = React.useState<string>('');
-
-  function onChangeBookToRead(event: React.ChangeEvent<HTMLInputElement>) {
-    const { onChangeBookToRead, selectedBooks } = props;
+  function onChangeBookToReadLocal(event: React.ChangeEvent<HTMLInputElement>) {
     const targetId = event.target.value;
     const target = selectedBooks.find(book => book.id === targetId);
     if (target) {
       onChangeBookToRead(target);
     }
-    setBookToRead(event.target.value);
   }
 
   return (
@@ -65,7 +69,7 @@ export default function SelectedBookCards(props: SelectedProps) {
       <CssBaseline />
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={2}>
-          {props.selectedBooks.map(book => (
+          {selectedBooks.map(book => (
             <Grid item key={book.id} xs={12} sm={12}>
               <Card className={classes.card}>
                 <CardContent className={classes.cardContent}>
@@ -128,8 +132,8 @@ export default function SelectedBookCards(props: SelectedProps) {
                     </div>
                     <CardActions className={classes.cardActions}>
                       <Radio
-                        checked={props.firstBookId === book.id}
-                        onChange={onChangeBookToRead}
+                        checked={radioValue === book.id}
+                        onChange={onChangeBookToReadLocal}
                         style={{
                           color: '#7289da',
                           position: 'relative',
@@ -145,7 +149,7 @@ export default function SelectedBookCards(props: SelectedProps) {
                           position: 'relative',
                           right: '4px',
                         }}
-                        onClick={() => props.onDeleted(book)}
+                        onClick={() => onDeleted(book)}
                       >
                         <DeleteIcon />
                       </IconButton>

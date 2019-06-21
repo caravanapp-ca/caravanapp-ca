@@ -14,6 +14,7 @@ import {
   Button,
   Box,
   Container,
+  Radio,
 } from '@material-ui/core';
 import { MoreVert, ArrowBack } from '@material-ui/icons';
 import AdapterLink from '../../components/AdapterLink';
@@ -51,13 +52,12 @@ export default function UpdateBook(props: UpdateBookProps) {
   const clubId = props.match.params.id;
 
   const [finished, setFinished] = React.useState(true);
-  const [bookToRead, setBookToRead] = React.useState<GoogleBooks.Item | null>(
-    null
-  );
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [wantToRead, setWantToRead] = React.useState<ShelfEntry[]>([]);
+  const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
+  const [newBookForShelf, setNewBookForShelf] = React.useState<boolean>(false);
 
   useEffect(() => {
     const getClubFun = async () => {
@@ -83,29 +83,39 @@ export default function UpdateBook(props: UpdateBookProps) {
     selectedBooks: GoogleBooks.Item[],
     bookToRead: GoogleBooks.Item
   ) {
-    setBookToRead(bookToRead);
-  }
-
-  async function onSaveSelection() {
-    // write change to database
-    if (!bookToRead || !currBook) {
-      return;
-    }
     const bookToReadAsShelfEntry = getShelfFromGoogleBooks(
       [bookToRead],
       bookToRead.id
     )[0] as ShelfEntry;
+    setBookToRead(bookToReadAsShelfEntry);
+    setNewBookForShelf(true);
+  }
+
+  async function onSaveSelection() {
+    if (!bookToRead || !currBook) {
+      return;
+    }
     const result = await updateCurrentlyReadBook(
       clubId,
-      bookToReadAsShelfEntry,
-      true,
+      bookToRead,
+      newBookForShelf,
       currBook._id,
       finished
     );
-    console.log(result);
-    return;
+    if (typeof result === 'number') {
+      // need to do error handling here based on error code
+      return;
+    }
     // navigate to club info page
     // show snack bar (on next page)
+  }
+
+  function onWantToReadSelect(bookId: string) {
+    const getBookToRead = wantToRead.find(book => book._id === bookId);
+    if (getBookToRead) {
+      setBookToRead(getBookToRead);
+      setNewBookForShelf(false);
+    }
   }
 
   const leftComponent = (
@@ -132,6 +142,14 @@ export default function UpdateBook(props: UpdateBookProps) {
       <MoreVert />
     </IconButton>
   );
+
+  let finishedLabel;
+  if (currBook) {
+    finishedLabel = `We finished ${currBook.title}`;
+    if (!finished) {
+      finishedLabel = `We'll finish ${currBook.title} later`;
+    }
+  }
 
   let searchLabel = 'Or you can search for another book.';
   if (wantToRead.length === 0) {
@@ -161,7 +179,7 @@ export default function UpdateBook(props: UpdateBookProps) {
                   color="primary"
                   inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
-                <Typography>{`We finished ${currBook.title}`}</Typography>
+                <Typography>{finishedLabel}</Typography>
               </div>
             </>
           )}
@@ -171,11 +189,24 @@ export default function UpdateBook(props: UpdateBookProps) {
                 Here are the books in your club's Want to Read list. You can
                 pick one for your next read.
               </Typography>
-              <BookList data={wantToRead} />
+              <BookList
+                data={wantToRead}
+                primary={'radio'}
+                onRadioPress={onWantToReadSelect}
+                radioValue={
+                  bookToRead && bookToRead._id ? bookToRead._id : undefined
+                }
+              />
             </>
           )}
           <Typography>{searchLabel}</Typography>
-          <BookSearch onSubmitBooks={onSubmitSelectedBooks} maxSelected={3} />
+          <BookSearch
+            onSubmitBooks={onSubmitSelectedBooks}
+            maxSelected={3}
+            radioValue={
+              bookToRead && bookToRead._id ? bookToRead._id : undefined
+            }
+          />
           <Button
             variant="contained"
             color="primary"

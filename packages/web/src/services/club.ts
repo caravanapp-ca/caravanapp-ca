@@ -69,7 +69,11 @@ export async function updateCurrentlyReadBook(
     prevBookId,
     finishedPrev,
   });
-  return res.data;
+  if (res.status === 200) {
+    return res.data;
+  } else {
+    return res.status;
+  }
 }
 
 export async function createClub(props: CreateClubProps) {
