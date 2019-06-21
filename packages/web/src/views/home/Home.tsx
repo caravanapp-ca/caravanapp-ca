@@ -18,6 +18,7 @@ import DiscordAuthButton from '../../components/DiscordAuthButton';
 import ClubCards from './ClubCards';
 import { UserCard } from './UserCard';
 import { getAllClubs } from '../../services/club';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
 
 interface HomeProps {
   user: User | null;
@@ -56,6 +57,8 @@ export default function Home(props: HomeProps) {
   );
 
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(true);
+
+  const [loginModalShown, setLoginModalShown] = React.useState(false);
 
   // Handle the `state` query to verify login
   useEffect(() => {
@@ -96,6 +99,10 @@ export default function Home(props: HomeProps) {
     return clubsWCR;
   }
 
+  function onCloseLoginModal() {
+    setLoginModalShown(false);
+  }
+
   const leftComponent = (
     <IconButton
       edge="start"
@@ -115,7 +122,7 @@ export default function Home(props: HomeProps) {
     </Typography>
   );
 
-  const rightComponent = (
+  const rightComponent = props.user ? (
     <IconButton
       edge="start"
       className={classes.addButton}
@@ -123,6 +130,16 @@ export default function Home(props: HomeProps) {
       aria-label="Add"
       component={AdapterLink}
       to="/clubs/create"
+    >
+      <AddIcon />
+    </IconButton>
+  ) : (
+    <IconButton
+      edge="start"
+      className={classes.addButton}
+      color="inherit"
+      aria-label="Add"
+      onClick={() => setLoginModalShown(true)}
     >
       <AddIcon />
     </IconButton>
@@ -187,6 +204,9 @@ export default function Home(props: HomeProps) {
         <ClubCards clubsWCR={clubsWCR} user={props.user} />
         <UserCard user={props.user} />
       </main>
+      {loginModalShown && (
+        <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
+      )}
     </>
   );
 }
