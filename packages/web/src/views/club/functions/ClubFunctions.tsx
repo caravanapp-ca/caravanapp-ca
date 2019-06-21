@@ -35,6 +35,7 @@ export function getShelfFromGoogleBooks(
       readingState = 'current';
     }
     const res: FilterAutoMongoKeys<ShelfEntry> = {
+      _id: book.id,
       readingState: readingState,
       title: book.volumeInfo.title,
       genres: book.volumeInfo.categories,
