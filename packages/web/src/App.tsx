@@ -12,6 +12,7 @@ import CreateClub from './views/club/CreateClub';
 import FindBooks from './views/books/FindBooks';
 import useInitializeUser from './common/useInitializeUser';
 import UpdateBook from './views/club/UpdateBook';
+import Privacy from './views/privacy/Privacy';
 
 export interface AppProps {}
 
@@ -44,6 +45,7 @@ export function App(props: AppProps) {
           render={props => <Club {...props} user={user} />}
         />
         <Route exact path="/findbooks" component={FindBooks} />
+        <Route exact path="/privacy" component={Privacy} />
       </Switch>
       <Footer />
     </Router>

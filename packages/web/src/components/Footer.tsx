@@ -30,18 +30,16 @@ export default function Footer() {
     <React.Fragment>
       <CssBaseline />
       <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
+        <MadeWithLove />
         <Typography
-          variant="subtitle1"
-          align="center"
+          variant="body2"
           color="textSecondary"
+          align="center"
           component="p"
         >
-          Something here to give the footer a purpose!
+          {'View our '}
+          <Link href="/privacy">privacy policy</Link>
         </Typography>
-        <MadeWithLove />
       </footer>
     </React.Fragment>
   );
