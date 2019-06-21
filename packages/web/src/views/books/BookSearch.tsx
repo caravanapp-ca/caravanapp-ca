@@ -87,7 +87,10 @@ export default function BookSearch(props: BookSearchProps) {
       newBooks = [...selectedBooks, book];
       setNumSelected(numSelected + 1);
     }
-    if (bookToRead) {
+    if (!bookToRead) {
+      setBookToRead(book);
+      onSubmitBooks(newBooks, book);
+    } else {
       onSubmitBooks(newBooks, bookToRead);
     }
     setSelectedBooks(newBooks);

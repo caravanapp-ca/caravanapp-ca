@@ -7,7 +7,11 @@ import {
   ChannelCreationOverwrites,
 } from 'discord.js';
 import { check, validationResult } from 'express-validator/check';
-import { FilterAutoMongoKeys, Services } from '@caravan/buddy-reading-types';
+import {
+  FilterAutoMongoKeys,
+  Services,
+  ReadingState,
+} from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
@@ -262,6 +266,87 @@ router.delete('/:id', isAuthenticated, async (req, res, next) => {
     return next(err);
   }
 });
+
+// Update a club's currently read book
+router.put(
+  '/:id/updatebook',
+  isAuthenticated,
+  check(['finishedPrev', 'newEntry']).isBoolean(),
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      return res.status(422).json({ errors: errorArr });
+    }
+    const clubId = req.params.id;
+    const { newBook, newEntry, prevBookId, finishedPrev } = req.body;
+    const prevCondition = {
+      _id: clubId,
+      'shelf._id': prevBookId,
+    };
+    let newReadState: ReadingState = 'read';
+    if (!finishedPrev) {
+      newReadState = 'notStarted';
+    }
+    const prevUpdate = {
+      $set: {
+        'shelf.$.readingState': newReadState,
+      },
+    };
+    let resultPrev;
+    try {
+      resultPrev = await ClubModel.findOneAndUpdate(prevCondition, prevUpdate, {
+        new: true,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+      return;
+    }
+    let newCondition, newUpdate;
+    if (!newEntry) {
+      newCondition = {
+        _id: clubId,
+        'shelf._id': newBook.id,
+      };
+      const newReadingState: ReadingState = 'current';
+      newUpdate = {
+        $set: {
+          'shelf.$.readingState': newReadingState,
+          'shelf.$.updatedAt': new Date(),
+        },
+      };
+    } else {
+      newCondition = {
+        _id: clubId,
+      };
+      newUpdate = {
+        $addToSet: {
+          shelf: {
+            author: newBook.author,
+            coverImageURL: newBook.coverImageURL,
+            readingState: 'current',
+            title: newBook.title,
+            isbn: newBook.isbn,
+            publishedDate: new Date(newBook.publishedDate),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        },
+      };
+    }
+    let resultNew;
+    try {
+      resultNew = await ClubModel.findOneAndUpdate(newCondition, newUpdate, {
+        new: true,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+    if (resultPrev && resultNew) {
+      res.status(200).send({ resultNew });
+    }
+  }
+);
 
 // Modify current user's club membership
 router.put(

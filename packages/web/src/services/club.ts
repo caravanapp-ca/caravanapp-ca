@@ -3,6 +3,7 @@ import {
   Club,
   Services,
   ChannelSource,
+  ShelfEntry,
   ReadingSpeed,
 } from '@caravan/buddy-reading-types';
 
@@ -53,6 +54,22 @@ export async function modifyMyClubMembership(
   // Contains the Member object for the added user. May be of use later.
   // const data = res.data;
   return res.status;
+}
+
+export async function updateCurrentlyReadBook(
+  clubId: string,
+  newBook: ShelfEntry,
+  newEntry: boolean,
+  prevBookId: string,
+  finishedPrev: boolean
+) {
+  const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
+    newBook,
+    newEntry,
+    prevBookId,
+    finishedPrev,
+  });
+  return res.data;
 }
 
 export async function createClub(props: CreateClubProps) {
