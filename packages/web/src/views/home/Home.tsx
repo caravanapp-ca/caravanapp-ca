@@ -37,17 +37,6 @@ const useStyles = makeStyles(theme => ({
   heroButtons: {
     marginTop: theme.spacing(4),
   },
-  homeButton: {
-    marginRight: theme.spacing(2),
-  },
-  addButton: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(0),
-  },
-  title: {
-    flexGrow: 1,
-    fontWeight: 'bold',
-  },
   bottomAuthButton: {
     display: 'flex',
     justifyContent: 'center',
@@ -114,7 +103,6 @@ export default function Home(props: HomeProps) {
   const leftComponent = (
     <IconButton
       edge="start"
-      className={classes.homeButton}
       color="inherit"
       aria-label="Home"
       component={AdapterLink}
@@ -125,7 +113,7 @@ export default function Home(props: HomeProps) {
   );
 
   const centerComponent = (
-    <Typography variant="h6" className={classes.title}>
+    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
       Find Groups
     </Typography>
   );
@@ -133,7 +121,6 @@ export default function Home(props: HomeProps) {
   const rightComponent = props.user ? (
     <IconButton
       edge="start"
-      className={classes.addButton}
       color="inherit"
       aria-label="Add"
       component={AdapterLink}
@@ -144,7 +131,6 @@ export default function Home(props: HomeProps) {
   ) : (
     <IconButton
       edge="start"
-      className={classes.addButton}
       color="inherit"
       aria-label="Add"
       onClick={() => setLoginModalShown(true)}
