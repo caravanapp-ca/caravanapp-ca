@@ -243,7 +243,7 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   function handleOnKeyDown(e: React.KeyboardEvent<any>) {
-    if (e.key == 'Enter') {
+    if (e.key === 'Enter') {
       bookSearch(bookSearchQuery);
     }
   }
@@ -257,7 +257,7 @@ export default function CreateClub(props: CreateClubProps) {
 
   async function onDeleteSelectedBook(book: GoogleBooks.Item) {
     const updatedBooks = selectedBooks.filter(
-      selected => selected.id != book.id
+      selected => selected.id !== book.id
     );
     setSelectedBooks(updatedBooks);
   }

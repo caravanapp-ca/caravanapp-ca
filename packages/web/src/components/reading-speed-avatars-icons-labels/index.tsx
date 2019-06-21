@@ -19,6 +19,7 @@ export function readingSpeedIcons(
         case 'icon':
           return <FastReadingSpeedIcon />;
       }
+      break;
     case 'moderate':
       switch (type) {
         case 'avatar':
@@ -26,6 +27,7 @@ export function readingSpeedIcons(
         case 'icon':
           return <ModerateReadingSpeedIcon />;
       }
+      break;
     case 'slow':
       switch (type) {
         case 'avatar':
@@ -33,6 +35,7 @@ export function readingSpeedIcons(
         case 'icon':
           return <SlowReadingSpeedIcon />;
       }
+      break;
   }
   return <></>;
 }
