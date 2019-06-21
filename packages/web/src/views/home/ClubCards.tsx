@@ -195,7 +195,7 @@ export default function ClubCards(props: ClubCardsProps) {
                         className={classes.button}
                         color="primary"
                         component={AdapterLink}
-                        to={`club/${club._id}`}
+                        to={`/clubs/${club._id}`}
                       >
                         INFO
                       </Button>
