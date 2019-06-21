@@ -154,47 +154,12 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   useEffect(() => {
-    if (selectedBooks.find(b => b.id !== firstBookId)) {
-      setFirstBookId(selectedBooks.length > 0 ? selectedBooks[0].id : '');
-    }
-  }, [firstBookId, selectedBooks]);
-
-  useEffect(() => {
-    if (!bookSearchQuery || bookSearchQuery.length === 0) {
-      setSearchHidden(true);
-      setSearchResults(null);
-    }
-  }, [bookSearchQuery]);
-
-  useEffect(() => {
     if (createdClub) {
       props.history.replace(`/club/${createdClub.club._id}`);
     }
   }, [createdClub]);
 
-  async function bookSearch(query: string) {
-    if (query) {
-      const results = await searchGoogleBooks(query);
-      setSearchHidden(false);
-      setSearchResults(results);
-    }
-    return null;
-  }
-
-  function handleOnKeyDown(e: React.KeyboardEvent<any>) {
-    if (e.key == 'Enter') {
-      bookSearch(bookSearchQuery);
-    }
-  }
-
-  // TODO send method to book search card via props that allows displayed books to be added to selected list
-  async function onAddBook(book: GoogleBooks.Item) {
-    const newBooks = [...selectedBooks, book];
-    setSelectedBooks(newBooks);
-    setBookSearchQuery('');
-  }
-
-  function getShelf() {
+  function getShelf(selectedBooks: GoogleBooks.Item[]) {
     const result = selectedBooks.map(book => {
       let readingState = 'notStarted';
       if (bookToRead && book.id === bookToRead.id) {
