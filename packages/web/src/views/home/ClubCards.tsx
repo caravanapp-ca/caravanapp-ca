@@ -224,6 +224,7 @@ export default function ClubCards(props: ClubCardsProps) {
                             ? setLoginModalShown(true)
                             : setJoinClubLoadingId(club._id)
                         }
+                        disabled={!(club.memberCount < club.maxMembers - 2)}
                       >
                         JOIN
                       </Button>

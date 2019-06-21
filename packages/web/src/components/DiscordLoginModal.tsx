@@ -76,6 +76,10 @@ export default function DiscordLoginModal(props: LoginModalProps) {
           Login with Discord and come find your ideal reading community - or
           start your own! If you don't yet have a Discord account, you'll be
           prompted to create one.
+          <br />
+          <br />
+          Logging in will add you to the Discord server where all Caravan book
+          clubs are currently hosted.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

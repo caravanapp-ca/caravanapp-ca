@@ -249,11 +249,14 @@ export default function CreateClub(props: CreateClubProps) {
               style={{ marginBottom: 20, fontSize: 16, color: '#8B8B8B' }}
               variant="subtitle1"
             >
-              Visibility level
+              Who can join?
             </Typography>
             <div
               style={{
                 marginBottom: '30px',
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'center',
               }}
             >
               <Typography component="div">
@@ -264,7 +267,7 @@ export default function CreateClub(props: CreateClubProps) {
                   spacing={1}
                 >
                   <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
-                    Public
+                    Anyone
                   </Grid>
                   <Grid item>
                     <AntSwitch
@@ -274,7 +277,7 @@ export default function CreateClub(props: CreateClubProps) {
                     />
                   </Grid>
                   <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
-                    Private
+                    Friends only
                   </Grid>
                 </Grid>
               </Typography>
@@ -310,82 +313,174 @@ export default function CreateClub(props: CreateClubProps) {
           </Typography>
           <div style={{ marginBottom: 20 }}>
             <MuiThemeProvider theme={theme}>
-              <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                <Radio
-                  checked={selectedGroupSize === 2}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSize(Number.parseInt(event.target.value))
-                  }
-                  value="2"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': '2' }}
-                />
-                <Radio
-                  checked={selectedGroupSize === 3}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSize(Number.parseInt(event.target.value))
-                  }
-                  value="3"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': '3' }}
-                />
-                <Radio
-                  checked={selectedGroupSize === 4}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSize(Number.parseInt(event.target.value))
-                  }
-                  value="4"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': '4' }}
-                />
-                <Radio
-                  checked={selectedGroupSize === 5}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSize(Number.parseInt(event.target.value))
-                  }
-                  value="5"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': '5' }}
-                />
-                <Radio
-                  checked={selectedGroupSize === 6}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSize(Number.parseInt(event.target.value))
-                  }
-                  value="6"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': '6' }}
-                />
-              </div>
               <div
                 style={{
                   display: 'flex',
-                  marginBottom: 20,
+                  flexDirection: 'row',
                   justifyContent: 'space-around',
-                  alignItems: 'center',
-                  color: '#4B4B4B',
                 }}
               >
-                <Typography variant="h5" component="h2">
-                  2
-                </Typography>
-                <Typography variant="h5" component="h2">
-                  3
-                </Typography>
-                <Typography variant="h5" component="h2">
-                  4
-                </Typography>
-                <Typography variant="h5" component="h2">
-                  5
-                </Typography>
-                <Typography variant="h5" component="h2">
-                  6
-                </Typography>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: 20,
+                    alignItems: 'center',
+                    color: '#4B4B4B',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Radio
+                    checked={selectedGroupSize === 2}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setSelectedGroupSize(Number.parseInt(event.target.value))
+                    }
+                    value="2"
+                    style={{ color: '#7289da' }}
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': '2' }}
+                  />
+                  <Typography variant="h5" component="h2">
+                    2
+                  </Typography>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: 20,
+                    alignItems: 'center',
+                    color: '#4B4B4B',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Radio
+                    checked={selectedGroupSize === 3}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setSelectedGroupSize(Number.parseInt(event.target.value))
+                    }
+                    value="3"
+                    style={{ color: '#7289da' }}
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': '3' }}
+                  />
+                  <Typography variant="h5" component="h2">
+                    3
+                  </Typography>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: 20,
+                    alignItems: 'center',
+                    color: '#4B4B4B',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Radio
+                    checked={selectedGroupSize === 4}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setSelectedGroupSize(Number.parseInt(event.target.value))
+                    }
+                    value="4"
+                    style={{ color: '#7289da' }}
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': '4' }}
+                  />
+                  <Typography variant="h5" component="h2">
+                    4
+                  </Typography>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: 20,
+                    alignItems: 'center',
+                    color: '#4B4B4B',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Radio
+                    checked={selectedGroupSize === 5}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setSelectedGroupSize(Number.parseInt(event.target.value))
+                    }
+                    value="5"
+                    style={{ color: '#7289da' }}
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': '5' }}
+                  />
+                  <Typography variant="h5" component="h2">
+                    5
+                  </Typography>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: 20,
+                    alignItems: 'center',
+                    color: '#4B4B4B',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Radio
+                    checked={selectedGroupSize === 6}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setSelectedGroupSize(Number.parseInt(event.target.value))
+                    }
+                    value="6"
+                    style={{ color: '#7289da' }}
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': '6' }}
+                  />
+                  <Typography variant="h5" component="h2">
+                    6
+                  </Typography>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: 20,
+                    alignItems: 'center',
+                    color: '#4B4B4B',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Radio
+                    checked={selectedGroupSize === 10}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setSelectedGroupSize(Number.parseInt(event.target.value))
+                    }
+                    value="10"
+                    style={{ color: '#7289da' }}
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': '10' }}
+                  />
+                  <Typography variant="h5" component="h2">
+                    10
+                  </Typography>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: 20,
+                    alignItems: 'center',
+                    color: '#4B4B4B',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Radio
+                    checked={selectedGroupSize === 20}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setSelectedGroupSize(Number.parseInt(event.target.value))
+                    }
+                    value="20"
+                    style={{ color: '#7289da' }}
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': '20' }}
+                  />
+                  <Typography variant="h5" component="h2">
+                    20
+                  </Typography>
+                </div>
               </div>
             </MuiThemeProvider>
           </div>
