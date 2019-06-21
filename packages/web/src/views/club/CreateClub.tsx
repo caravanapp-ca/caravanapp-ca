@@ -20,24 +20,17 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ThreeDotsIcon from '@material-ui/icons/MoreVert';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import SearchResultCards from '../books/SearchResultCards';
-import SelectedBookCards from '../books/SelectedBookCards';
 import { createClub } from '../../services/club';
-import { searchGoogleBooks } from '../../services/book';
-import { RSA_NO_PADDING } from 'constants';
 import BookSearch from '../books/BookSearch';
 import {
   readingSpeedIcons,
@@ -73,6 +66,22 @@ const useStyles = makeStyles(theme => ({
   headerTitle: {
     flexGrow: 1,
     fontWeight: 'bold',
+  },
+  createButton: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    marginRight: 16,
+    marginBottom: 10,
+    color: 'white',
+    backgroundColor: '#7289da',
+  },
+  createButtonSection: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    padding: '0px',
+  },
+  progress: {
+    margin: theme.spacing(2),
   },
   moreButton: {
     marginLeft: theme.spacing(2),
