@@ -65,6 +65,8 @@ export default function UpdateBook(props: UpdateBookProps) {
     setBookToRead(bookToRead);
   }
 
+  function onSaveSelection() {}
+
   const leftComponent = (
     <IconButton
       edge="start"
@@ -119,12 +121,12 @@ export default function UpdateBook(props: UpdateBookProps) {
           </Typography>
           <BookList data={dummyData} />
           <Typography>Or you can search for another book.</Typography>
-          <BookSearch onSubmitBooks={onSubmitSelectedBooks} maxSelected={1} />
+          <BookSearch onSubmitBooks={onSubmitSelectedBooks} maxSelected={3} />
           <Button
             variant="contained"
             color="primary"
             className={classes.button}
-            onClick={() => {}}
+            onClick={onSaveSelection}
           >
             SAVE
           </Button>
