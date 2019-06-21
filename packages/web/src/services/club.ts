@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { Club, Services, ChannelSource } from '@caravan/buddy-reading-types';
+import {
+  Club,
+  Services,
+  ChannelSource,
+  ReadingSpeed,
+} from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
 
@@ -14,8 +19,18 @@ interface CreateClubProps {
   private: boolean;
 }
 
-export async function getAllClubs() {
-  const res = await axios.get<Club[]>(clubRoute);
+export async function getAllClubs(
+  after?: string,
+  pageSize?: number,
+  readingSpeed?: ReadingSpeed
+) {
+  const res = await axios.get<Club[]>(clubRoute, {
+    params: {
+      after,
+      pageSize,
+      readingSpeed,
+    },
+  });
   const clubs = res.data;
   return clubs;
 }
