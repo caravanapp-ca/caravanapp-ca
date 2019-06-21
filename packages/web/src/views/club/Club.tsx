@@ -162,6 +162,7 @@ export default function ClubComponent(props: ClubProps) {
                       ? addOrRemoveMeFromClub('add')
                       : setLoginModalShown(true)
                   }
+                  disabled={loadedClub}
                 >
                   JOIN CLUB
                 </Button>
