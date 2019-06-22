@@ -50,8 +50,15 @@ export default function Home(props: HomeProps) {
   const [clubsWCR, setClubsWCR] = React.useState<ClubWithCurrentlyReading[]>(
     []
   );
-
-  const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(true);
+  const welcomeKey = 'hide-clubs-welcome';
+  const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
+    localStorage.getItem(welcomeKey) !== 'yes'
+  );
+  useEffect(() => {
+    if (!showWelcomeMessage) {
+      localStorage.setItem(welcomeKey, 'yes');
+    }
+  }, [showWelcomeMessage]);
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
