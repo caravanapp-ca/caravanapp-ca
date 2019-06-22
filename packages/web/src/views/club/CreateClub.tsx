@@ -61,13 +61,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  backButton: {
-    marginRight: theme.spacing(2),
-  },
-  headerTitle: {
-    flexGrow: 1,
-    fontWeight: 'bold',
-  },
   createButton: {
     fontSize: '20px',
     fontWeight: 'bold',
@@ -83,10 +76,6 @@ const useStyles = makeStyles(theme => ({
   },
   progress: {
     margin: theme.spacing(2),
-  },
-  moreButton: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(0),
   },
 }));
 
@@ -104,7 +93,6 @@ export default function CreateClub(props: CreateClubProps) {
   const leftComponent = (
     <IconButton
       edge="start"
-      className={classes.backButton}
       color="inherit"
       aria-label="Back"
       component={AdapterLink}
@@ -115,23 +103,22 @@ export default function CreateClub(props: CreateClubProps) {
   );
 
   const centerComponent = (
-    <Typography variant="h6" className={classes.headerTitle}>
+    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
       Create a Group
     </Typography>
   );
 
-  const rightComponent = (
-    <IconButton
-      edge="start"
-      className={classes.moreButton}
-      color="inherit"
-      aria-label="More"
-      component={AdapterLink}
-      to="/"
-    >
-      <ThreeDotsIcon />
-    </IconButton>
-  );
+  // const rightComponent = (
+  //   <IconButton
+  //     edge="start"
+  //     color="inherit"
+  //     aria-label="More"
+  //     component={AdapterLink}
+  //     to="/"
+  //   >
+  //     <ThreeDotsIcon />
+  //   </IconButton>
+  // );
 
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
   const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<
@@ -232,30 +219,27 @@ export default function CreateClub(props: CreateClubProps) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Header
-        leftComponent={leftComponent}
-        centerComponent={centerComponent}
-        rightComponent={rightComponent}
-      />
+      <Header leftComponent={leftComponent} centerComponent={centerComponent} />
       <main>
         <Container className={classes.formContainer} maxWidth="md">
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
+              flexDirection: 'column',
             }}
           >
             <Typography
-              style={{ marginBottom: 20, fontSize: 16, color: '#8B8B8B' }}
+              style={{ fontSize: 16, color: '#8B8B8B' }}
               variant="subtitle1"
             >
               Who can join?
             </Typography>
             <div
               style={{
-                marginBottom: '30px',
+                marginBottom: '10px',
                 display: 'flex',
-                justifyContent: 'space-around',
+                justifyContent: 'center',
                 alignItems: 'center',
               }}
             >
@@ -281,6 +265,37 @@ export default function CreateClub(props: CreateClubProps) {
                   </Grid>
                 </Grid>
               </Typography>
+            </div>
+            <div
+              style={{
+                marginBottom: '10px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {!privateClub && (
+                <Typography
+                  style={{
+                    fontSize: 16,
+                    color: '#8B8B8B',
+                  }}
+                  variant="subtitle1"
+                >
+                  Anyone can find and join my club
+                </Typography>
+              )}
+              {privateClub && (
+                <Typography
+                  style={{
+                    fontSize: 16,
+                    color: '#8B8B8B',
+                  }}
+                  variant="subtitle1"
+                >
+                  Only friends who I share the link with can join my club
+                </Typography>
+              )}
             </div>
           </div>
           <TextField

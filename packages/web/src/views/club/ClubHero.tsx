@@ -7,7 +7,7 @@ const useStyles = makeStyles(theme => ({
   bgImageContainer: {
     position: 'relative',
     'border-radius': '4px',
-    height: '194px',
+    height: '388px',
     width: '100%',
   },
   bgImage: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     'object-fit': 'cover',
     'object-position': '50% 50%',
-    filter: 'blur(6px)',
+    filter: 'blur(10px)',
   },
   bgShade: {
     position: 'absolute',
@@ -39,9 +39,10 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     'text-align': 'left',
     color: '#ffffff',
+    fontSize: '20px',
   },
   imageTitleText: {
-    'font-size': '20px',
+    'font-size': '40px',
     width: '100%',
     'text-align': 'left',
     color: '#ffffff',

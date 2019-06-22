@@ -14,7 +14,10 @@ import {
   Button,
   Typography,
   CircularProgress,
+  Container,
 } from '@material-ui/core';
+import BackIcon from '@material-ui/icons/ArrowBackIos';
+import IconButton from '@material-ui/core/IconButton';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { getClub, modifyMyClubMembership } from '../../services/club';
 import { getUsersById } from '../../services/user';
@@ -22,10 +25,13 @@ import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
+import AdapterLink from '../../components/AdapterLink';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
+import Header from '../../components/Header';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    container: {},
     root: {
       flexGrow: 1,
     },
@@ -69,6 +75,28 @@ export default function ClubComponent(props: ClubProps) {
   );
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const clubId = props.match.params.id;
+
+  const leftComponent = (
+    <IconButton
+      edge="start"
+      color="inherit"
+      aria-label="Back"
+      component={AdapterLink}
+      to="/"
+    >
+      <BackIcon />
+    </IconButton>
+  );
+
+  const centerComponent = club ? (
+    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+      {club.name}
+    </Typography>
+  ) : (
+    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+      Club Homepage
+    </Typography>
+  );
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
@@ -133,51 +161,58 @@ export default function ClubComponent(props: ClubProps) {
       {!loadedClub && <CircularProgress className={classes.progress} />}
       {loadedClub && club && (
         <div>
-          {currBook && <ClubHero currBook={currBook} />}
-          <Paper className={classes.root}>
-            <Tabs
-              value={tabValue}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-            >
-              <Tab label="Group" />
-              <Tab label="Shelf" />
-            </Tabs>
-          </Paper>
-          <div className={classes.contentContainer}>
-            {tabValue === 0 && (
-              <GroupView club={club} memberInfo={memberInfo} />
-            )}
-            {tabValue === 1 && <ShelfView shelf={club.shelf} />}
-            <div className={classes.buttonContainer}>
-              {memberStatus === 'notMember' && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  onClick={() =>
-                    props.user
-                      ? addOrRemoveMeFromClub('add')
-                      : setLoginModalShown(true)
-                  }
-                  disabled={loadedClub}
-                >
-                  JOIN CLUB
-                </Button>
+          <Header
+            leftComponent={leftComponent}
+            centerComponent={centerComponent}
+          />
+          <Container maxWidth="lg">
+            {currBook && <ClubHero currBook={currBook} />}
+            <Paper className={classes.root}>
+              <Tabs
+                value={tabValue}
+                onChange={handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab label="Group" />
+                <Tab label="Shelf" />
+              </Tabs>
+            </Paper>
+            <div className={classes.contentContainer}>
+              {tabValue === 0 && (
+                <GroupView club={club} memberInfo={memberInfo} />
               )}
-              {memberStatus === 'member' && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                >
-                  OPEN CHAT
-                </Button>
-              )}
+              {tabValue === 1 && <ShelfView shelf={club.shelf} />}
+              <div className={classes.buttonContainer}>
+                {memberStatus === 'notMember' && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={() =>
+                      props.user
+                        ? addOrRemoveMeFromClub('add')
+                        : setLoginModalShown(true)
+                    }
+                    disabled={false}
+                    //TODO make this disabled be based on max members vs actual members
+                  >
+                    JOIN CLUB
+                  </Button>
+                )}
+                {memberStatus === 'member' && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                  >
+                    OPEN CHAT
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
+          </Container>
         </div>
       )}
       {loadedClub && !club && (
