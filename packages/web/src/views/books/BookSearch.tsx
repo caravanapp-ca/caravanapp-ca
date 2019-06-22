@@ -35,10 +35,12 @@ interface BookSearchProps {
     bookToRead: GoogleBooks.Item
   ) => void;
   maxSelected: number;
+  radioValue?: string;
 }
 
 export default function BookSearch(props: BookSearchProps) {
   const classes = useStyles();
+  const { onSubmitBooks, maxSelected, radioValue } = props;
 
   const [bookSearchQuery, setBookSearchQuery] = React.useState<string>('');
   const [
@@ -77,7 +79,6 @@ export default function BookSearch(props: BookSearchProps) {
   }
 
   function onAddBook(book: GoogleBooks.Item) {
-    const { onSubmitBooks, maxSelected } = props;
     let newBooks;
     if (numSelected === maxSelected) {
       const selectedBooksCopy = [...selectedBooks];
@@ -106,7 +107,6 @@ export default function BookSearch(props: BookSearchProps) {
   }
 
   function onChangeBookToRead(book: GoogleBooks.Item) {
-    const { onSubmitBooks } = props;
     setBookToRead(book);
     onSubmitBooks(selectedBooks, book);
   }
@@ -145,6 +145,10 @@ export default function BookSearch(props: BookSearchProps) {
           firstBookId={selectedBooks[0].id}
           onDeleted={onDeleteSelectedBook}
           onChangeBookToRead={onChangeBookToRead}
+          radioValue={
+            radioValue ||
+            (bookToRead && bookToRead.id ? bookToRead.id : selectedBooks[0].id)
+          }
         />
       )}
     </>

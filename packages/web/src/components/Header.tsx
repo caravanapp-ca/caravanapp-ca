@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     toolBar: {
       justifyContent: 'space-between',
+      fontWeight: 'bold',
     },
     bottomBorder: {
       display: 'block',
@@ -53,7 +54,7 @@ export default function ButtonAppBar(props: HeaderProps) {
         <Toolbar className={classes.toolBar}>
           {leftComponent}
           {centerComponent}
-          {rightComponent}
+          {rightComponent ? rightComponent : <div />}
         </Toolbar>
         <div className={classes.bottomBorder} />
       </AppBar>
