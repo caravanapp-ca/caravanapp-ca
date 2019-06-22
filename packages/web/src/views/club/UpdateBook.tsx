@@ -80,14 +80,10 @@ export default function UpdateBook(props: UpdateBookProps) {
   }, [clubId]);
 
   function onSubmitSelectedBooks(
-    selectedBooks: GoogleBooks.Item[],
-    bookToRead: GoogleBooks.Item
+    selectedBooks: ShelfEntry[],
+    bookToRead: ShelfEntry
   ) {
-    const bookToReadAsShelfEntry = getShelfFromGoogleBooks(
-      [bookToRead],
-      bookToRead.id
-    )[0] as ShelfEntry;
-    setBookToRead(bookToReadAsShelfEntry);
+    setBookToRead(bookToRead);
     setNewBookForShelf(true);
   }
 
@@ -156,6 +152,8 @@ export default function UpdateBook(props: UpdateBookProps) {
     searchLabel = 'Search for a new book to set as your current read.';
   }
 
+  const selectedLabel = "We'll read this book next!";
+
   return (
     <div>
       <Header
@@ -194,8 +192,9 @@ export default function UpdateBook(props: UpdateBookProps) {
                 primary={'radio'}
                 onRadioPress={onWantToReadSelect}
                 radioValue={
-                  bookToRead && bookToRead._id ? bookToRead._id : undefined
+                  bookToRead && bookToRead._id ? bookToRead._id : 'none'
                 }
+                selectedLabel={selectedLabel}
               />
             </>
           )}
@@ -203,9 +202,8 @@ export default function UpdateBook(props: UpdateBookProps) {
           <BookSearch
             onSubmitBooks={onSubmitSelectedBooks}
             maxSelected={3}
-            radioValue={
-              bookToRead && bookToRead._id ? bookToRead._id : undefined
-            }
+            radioValue={bookToRead && bookToRead._id ? bookToRead._id : 'none'}
+            selectedLabel={selectedLabel}
           />
           <Button
             variant="contained"

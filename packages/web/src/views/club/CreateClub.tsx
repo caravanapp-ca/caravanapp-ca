@@ -303,7 +303,7 @@ export default function CreateClub(props: CreateClubProps) {
           >
             What books would you like to read?
           </Typography>
-          <BookSearch onSubmitBooks={onSubmitSelectedBooks} maxSelected={5} />
+          {/* <BookSearch onSubmitBooks={onSubmitSelectedBooks} maxSelected={5} /> */}
           <Typography
             style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
             variant="subtitle1"
