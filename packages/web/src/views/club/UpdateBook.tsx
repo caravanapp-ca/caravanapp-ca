@@ -14,7 +14,6 @@ import {
   Button,
   Box,
   Container,
-  Radio,
 } from '@material-ui/core';
 import { MoreVert, ArrowBack } from '@material-ui/icons';
 import AdapterLink from '../../components/AdapterLink';
