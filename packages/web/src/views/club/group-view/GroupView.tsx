@@ -31,8 +31,7 @@ interface GroupViewProps {
 
 export default function GroupView(props: GroupViewProps) {
   const classes = useStyles();
-  const { bio, maxMembers, vibe, readingSpeed } = props.club;
-  const { memberInfo } = props;
+  const { bio, maxMembers, members, vibe, readingSpeed } = props.club;
 
   let readingSpeedString;
   let readingSpeedAvatar;
@@ -61,7 +60,7 @@ export default function GroupView(props: GroupViewProps) {
           Members
         </Typography>
         <MemberList
-          members={memberInfo}
+          members={members}
           maxMembers={maxMembers}
           ownerId={props.club.ownerId}
         />

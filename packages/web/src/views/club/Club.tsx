@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  Club,
   ShelfEntry,
   User,
   MembershipStatus,
@@ -20,7 +19,6 @@ import BackIcon from '@material-ui/icons/ArrowBackIos';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { getClub, modifyMyClubMembership } from '../../services/club';
-import { getUsersById } from '../../services/user';
 import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
@@ -104,32 +102,15 @@ export default function ClubComponent(props: ClubProps) {
     setTabValue(newValue);
   }
 
-  async function getMembersInfo(club: Services.GetClubById | null) {
-    if (club && club.members) {
-      const memberIds = club.members.map(m => m.id);
-      const users = await getUsersById(memberIds);
-      if (users) {
-        const membersWithInfo = users.map(u => {
-          const member = club.members.find(m => m.id === u._id);
-          if (!member) {
-            throw Error('Should not happen');
-          }
-          return { ...u, roles: member.roles };
-        });
-        setMemberInfo(membersWithInfo);
-      }
-    }
-  }
-
   async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
     if (action === 'add') {
       const result = await modifyMyClubMembership(clubId, true);
-      if (result === 200) {
+      if (result.status >= 200 && result.status < 300) {
         setMemberStatus('member');
       }
     } else if (action === 'remove') {
       const result = await modifyMyClubMembership(clubId, false);
-      if (result === 200) {
+      if (result.status >= 200 && result.status < 300) {
         setMemberStatus('notMember');
       }
     }
@@ -143,7 +124,6 @@ export default function ClubComponent(props: ClubProps) {
         if (club) {
           const currBook = getCurrentBook(club);
           setCurrBook(currBook);
-          getMembersInfo(club);
           setLoadedClub(true);
         }
       } catch (err) {

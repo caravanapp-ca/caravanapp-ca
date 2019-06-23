@@ -32,7 +32,9 @@ function getChannelMemberCount(guild: Guild, club: ClubDoc) {
     const userCount = (discordChannel as
       | TextChannel
       | VoiceChannel).members.filter(
-      m => !m.user.bot && m.highestRole.name !== 'Admin'
+      m =>
+        !m.user.bot &&
+        (m.highestRole.name !== 'Admin' || club.ownerDiscordId === m.id)
     ).size;
     return userCount;
   }
@@ -46,7 +48,11 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   }
   const guildMembersArr = (discordChannel as TextChannel | VoiceChannel).members
     .array()
-    .filter(m => !m.user.bot);
+    .filter(
+      m =>
+        !m.user.bot &&
+        (m.highestRole.name !== 'Admin' || club.ownerDiscordId === m.id)
+    );
   const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
   const users = await UserModel.find({
     discordId: { $in: guildMemberDiscordIds },
@@ -145,6 +151,7 @@ router.get('/:id', async (req, res, next) => {
         _id: club.id,
         name: club.name,
         ownerId: club.ownerId,
+        ownerDiscordId: club.ownerDiscordId,
         shelf: club.shelf,
         bio: club.bio,
         members: guildMembers,
@@ -259,6 +266,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       readingSpeed: body.readingSpeed,
       shelf: body.shelf,
       ownerId: userId,
+      ownerDiscordId: req.user.discordId,
       channelSource: body.channelSource,
       channelId: channel.id,
       private: body.private,
@@ -282,29 +290,29 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 });
 
 // Modify a club
-router.put('/:id', isAuthenticated, async (req, res, next) => {
-  const editedClub = req.body;
-  try {
-    const doc = await ClubModel.findByIdAndUpdate(req.params.id, editedClub, {
-      new: true,
-    }).exec();
-    res.sendStatus(200);
-  } catch (err) {
-    console.log(`Failed to modify club ${req.params.id}`, err);
-    return next(err);
-  }
-});
+// router.put('/:id', isAuthenticated, async (req, res, next) => {
+//   const editedClub = req.body;
+//   try {
+//     const doc = await ClubModel.findByIdAndUpdate(req.params.id, editedClub, {
+//       new: true,
+//     }).exec();
+//     res.sendStatus(200);
+//   } catch (err) {
+//     console.log(`Failed to modify club ${req.params.id}`, err);
+//     return next(err);
+//   }
+// });
 
-// Delete a club
-router.delete('/:id', isAuthenticated, async (req, res, next) => {
-  try {
-    const record = await ClubModel.remove({ _id: req.params.id });
-    res.sendStatus(204);
-  } catch (err) {
-    console.log(`Failed to delete club ${req.params.id}`, err);
-    return next(err);
-  }
-});
+// // Delete a club
+// router.delete('/:id', isAuthenticated, async (req, res, next) => {
+//   try {
+//     const record = await ClubModel.remove({ _id: req.params.id });
+//     res.sendStatus(204);
+//   } catch (err) {
+//     console.log(`Failed to delete club ${req.params.id}`, err);
+//     return next(err);
+//   }
+// });
 
 // Update a club's currently read book
 router.put(
@@ -437,8 +445,67 @@ router.put(
       return res.status(422).json({ errors: errors.array() });
     }
     const userId = req.user._id;
+    const userDiscordId = req.user.discordId;
     const clubId = req.params.id;
     const { isMember } = req.body;
+
+    let club: ClubDoc;
+    try {
+      club = await ClubModel.findById(clubId);
+    } catch (err) {
+      res.status(400).send(`Could not find club ${clubId}`);
+      return;
+    }
+
+    const discordClient = ReadingDiscordBot.getInstance();
+    const guild = discordClient.guilds.first();
+    const channel: GuildChannel = guild.channels.find(
+      c => c.id === club.channelId
+    );
+    if (!channel) {
+      res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
+      return;
+    }
+
+    if (isMember) {
+      // Trying to add to members
+      const memberInChannel = (channel as
+        | VoiceChannel
+        | TextChannel).members.find(m => m.id === userDiscordId);
+      const { size } = (channel as VoiceChannel | TextChannel).members;
+      if (memberInChannel) {
+        // already a member
+        res.status(401).send("You're already a member of the club!");
+        return;
+      } else if (size >= club.maxMembers) {
+        res
+          .status(401)
+          .send(
+            `There are already ${size}/${club.maxMembers} people in the club.`
+          );
+        return;
+      } else {
+        const permissions = (channel as
+          | VoiceChannel
+          | TextChannel).memberPermissions(memberInChannel);
+        if (permissions && permissions.hasPermission('READ_MESSAGES')) {
+          res.status(401).send('You already have access to the channel!');
+          return;
+        } else {
+          (channel as VoiceChannel | TextChannel).overwritePermissions(
+            userDiscordId,
+            {
+              READ_MESSAGES: true,
+              SEND_MESSAGES: true,
+            }
+          );
+          res.sendStatus(200);
+          return;
+        }
+      }
+    } else {
+    }
+
     // try {
     //   if (isMember) {
     //     const condition = { _id: clubId, 'members.userId': { $ne: userId } };

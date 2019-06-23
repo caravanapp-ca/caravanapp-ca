@@ -53,7 +53,7 @@ export async function modifyMyClubMembership(
   });
   // Contains the Member object for the added user. May be of use later.
   // const data = res.data;
-  return res.status;
+  return res;
 }
 
 export async function updateCurrentlyReadBook(

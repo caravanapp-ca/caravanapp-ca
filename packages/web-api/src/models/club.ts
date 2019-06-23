@@ -34,6 +34,7 @@ const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   readingSpeed: { type: String },
   shelf: { type: [shelfSchema], required: true },
   ownerId: { type: String, required: true },
+  ownerDiscordId: { type: String },
   channelSource: { type: String, required: true }, // discord always for now
   channelId: { type: String, required: true },
   private: { type: String, required: true },

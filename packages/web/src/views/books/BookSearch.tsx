@@ -70,7 +70,7 @@ export default function BookSearch(props: BookSearchProps) {
   }
 
   function handleOnKeyDown(e: React.KeyboardEvent<any>) {
-    if (e.key == 'Enter') {
+    if (e.key === 'Enter') {
       bookSearch(bookSearchQuery);
     }
   }

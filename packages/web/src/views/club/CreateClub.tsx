@@ -4,7 +4,6 @@ import {
   User,
   GoogleBooks,
   ShelfEntry,
-  FilterAutoMongoKeys,
   ReadingSpeed,
   GroupVibe,
   Services,
@@ -24,7 +23,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
-import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
@@ -150,7 +148,7 @@ export default function CreateClub(props: CreateClubProps) {
     if (createdClub) {
       props.history.replace(`/clubs/${createdClub.club._id}`);
     }
-  }, [createdClub]);
+  }, [createdClub, props.history]);
 
   async function createClubOnClick() {
     if (!bookToRead) {

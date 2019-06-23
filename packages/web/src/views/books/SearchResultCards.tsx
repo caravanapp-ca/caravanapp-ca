@@ -3,13 +3,10 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import Radio from '@material-ui/core/Radio';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import { GoogleBooks } from '@caravan/buddy-reading-types';
@@ -58,9 +55,6 @@ const useStyles = makeStyles(theme => ({
     bottom: '5px',
   },
 }));
-
-// TODO pull cards from DB
-const cards = [1, 2];
 
 export default function SearchResultCards(props: ResultsProps) {
   const classes = useStyles();
