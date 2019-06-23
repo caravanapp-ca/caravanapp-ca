@@ -34,9 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {},
     root: {
       flexGrow: 1,
+      zIndex: 2,
     },
     button: {
-      margin: theme.spacing(1),
+      marginTop: theme.spacing(3),
     },
     input: {
       display: 'none',
@@ -48,8 +49,10 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(2),
     },
-    buttonContainer: {
+    buttonsContainer: {
+      display: 'flex',
       width: '100%',
+      justifyContent: 'center',
       alignItems: 'center',
     },
   })
@@ -139,6 +142,8 @@ export default function ClubComponent(props: ClubProps) {
 
   useEffect(() => {
     const getClubFun = async () => {
+      // REMOVE THIS
+      setMemberStatus('owner');
       try {
         const club = await getClub(clubId);
         setClub(club);
@@ -165,26 +170,26 @@ export default function ClubComponent(props: ClubProps) {
             leftComponent={leftComponent}
             centerComponent={centerComponent}
           />
+          {currBook && <ClubHero currBook={currBook} />}
+          <Paper className={classes.root}>
+            <Tabs
+              value={tabValue}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Group" />
+              <Tab label="Shelf" />
+            </Tabs>
+          </Paper>
           <Container maxWidth="lg">
-            {currBook && <ClubHero currBook={currBook} />}
-            <Paper className={classes.root}>
-              <Tabs
-                value={tabValue}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-              >
-                <Tab label="Group" />
-                <Tab label="Shelf" />
-              </Tabs>
-            </Paper>
             <div className={classes.contentContainer}>
               {tabValue === 0 && (
                 <GroupView club={club} memberInfo={memberInfo} />
               )}
               {tabValue === 1 && <ShelfView shelf={club.shelf} />}
-              <div className={classes.buttonContainer}>
+              <div className={classes.buttonsContainer}>
                 {memberStatus === 'notMember' && (
                   <Button
                     variant="contained"
@@ -208,6 +213,17 @@ export default function ClubComponent(props: ClubProps) {
                     className={classes.button}
                   >
                     OPEN CHAT
+                  </Button>
+                )}
+                {memberStatus === 'owner' && (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    className={classes.button}
+                    component={AdapterLink}
+                    to={`${clubId}/updatebook`}
+                  >
+                    UPDATE BOOK
                   </Button>
                 )}
               </div>

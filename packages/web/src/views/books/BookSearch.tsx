@@ -11,36 +11,37 @@ import { getShelfFromGoogleBooks } from '../club/functions/ClubFunctions';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-    borderRadius: 10,
-  },
-  searchContainer: {
-    padding: 0,
-    marginBottom: 30,
     position: 'relative',
+  },
+  searchBarContainer: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     marginLeft: 8,
+    marginRight: 8,
     flex: 1,
-    paddingRight: 10,
   },
-  iconButton: {
-    padding: 10,
+  iconButton: {},
+  bookListContainer: {
+    marginTop: theme.spacing(1),
   },
 }));
 
 interface BookSearchProps {
-  onSubmitBooks: (selectedBooks: ShelfEntry[], bookToRead: ShelfEntry) => void;
+  onSubmitBooks: (
+    selectedBooks: ShelfEntry[],
+    bookToRead: ShelfEntry | null
+  ) => void;
   maxSelected: number;
   radioValue?: string;
-  selectedLabel?: string;
 }
 
 export default function BookSearch(props: BookSearchProps) {
   const classes = useStyles();
-  const { onSubmitBooks, maxSelected, radioValue, selectedLabel } = props;
+  const { onSubmitBooks, maxSelected, radioValue } = props;
 
   const [bookSearchQuery, setBookSearchQuery] = React.useState<string>('');
   const [
@@ -88,12 +89,17 @@ export default function BookSearch(props: BookSearchProps) {
       newBooks = [...selectedBooks, bookAsShelfEntry];
       setNumSelected(numSelected + 1);
     }
-    if (!bookToRead) {
-      setBookToRead(bookAsShelfEntry);
-      onSubmitBooks(newBooks, bookAsShelfEntry);
-    } else {
-      onSubmitBooks(newBooks, bookToRead);
-    }
+    newBooks = newBooks.map(b => {
+      if (b._id !== bookAsShelfEntry._id && b.readingState === 'current') {
+        const bCopy = { ...b };
+        bCopy.readingState = 'notStarted';
+        return bCopy;
+      } else {
+        return b;
+      }
+    });
+    onSubmitBooks(newBooks, bookAsShelfEntry);
+    setBookToRead(bookAsShelfEntry);
     setSelectedBooks(newBooks);
     setBookSearchQuery('');
   }
@@ -102,6 +108,12 @@ export default function BookSearch(props: BookSearchProps) {
     const updatedBooks = selectedBooks.filter(
       selected => selected._id !== bookId
     );
+    if (bookId === radioValue) {
+      onSubmitBooks(updatedBooks, null);
+      setBookToRead(null);
+    } else {
+      onSubmitBooks(updatedBooks, bookToRead);
+    }
     setSelectedBooks(updatedBooks);
     setNumSelected(numSelected - 1);
   }
@@ -116,8 +128,8 @@ export default function BookSearch(props: BookSearchProps) {
 
   return (
     <>
-      <Container className={classes.searchContainer} maxWidth="md">
-        <Paper elevation={2} className={classes.root}>
+      <div className={classes.root}>
+        <Paper className={classes.searchBarContainer}>
           <IconButton
             className={classes.iconButton}
             aria-label="Menu"
@@ -141,17 +153,18 @@ export default function BookSearch(props: BookSearchProps) {
             onSelected={onAddBook}
           />
         )}
-      </Container>
+      </div>
       {selectedBooks.length > 0 && (
-        <BookList
-          data={selectedBooks}
-          primary={'radio'}
-          secondary={'delete'}
-          onRadioPress={onChangeBookToRead}
-          radioValue={radioValue}
-          onDelete={onDeleteSelectedBook}
-          selectedLabel={selectedLabel}
-        />
+        <div className={classes.bookListContainer}>
+          <BookList
+            data={selectedBooks}
+            primary={'radio'}
+            secondary={'delete'}
+            onRadioPress={onChangeBookToRead}
+            radioValue={radioValue}
+            onDelete={onDeleteSelectedBook}
+          />
+        </div>
       )}
     </>
   );

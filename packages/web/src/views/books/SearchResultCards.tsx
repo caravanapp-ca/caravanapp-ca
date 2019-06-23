@@ -23,7 +23,6 @@ interface ResultsProps {
 const useStyles = makeStyles(theme => ({
   searchResultsList: {
     width: '100%',
-    borderRadius: 10,
     borderColor: '#7289da',
     position: 'absolute',
     backgroundColor: 'white',
@@ -76,7 +75,11 @@ export default function SearchResultCards(props: ResultsProps) {
           cols={1}
         >
           {(props.searchResultObject || []).map((result, index) => (
-            <GridListTile cols={1} className={classes.searchResult} key={`${result.id}_${index}`}>
+            <GridListTile
+              cols={1}
+              className={classes.searchResult}
+              key={`${result.id}_${index}`}
+            >
               <Card className={classes.card}>
                 <CardContent className={classes.cardContent}>
                   <div

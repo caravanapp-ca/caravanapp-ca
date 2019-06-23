@@ -129,12 +129,8 @@ export default function CreateClub(props: CreateClubProps) {
   );
   const [selectedGroupName, setSelectedGroupName] = React.useState('');
   const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
-  const [selectedBooks, setSelectedBooks] = React.useState<GoogleBooks.Item[]>(
-    []
-  );
-  const [bookToRead, setBookToRead] = React.useState<GoogleBooks.Item | null>(
-    null
-  );
+  const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
+  const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
   const [privateClub, setPrivateClub] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
@@ -143,8 +139,8 @@ export default function CreateClub(props: CreateClubProps) {
   ] = React.useState<Services.CreateClubResult | null>(null);
 
   function onSubmitSelectedBooks(
-    selectedBooks: GoogleBooks.Item[],
-    bookToRead: GoogleBooks.Item
+    selectedBooks: ShelfEntry[],
+    bookToRead: ShelfEntry | null
   ) {
     setSelectedBooks(selectedBooks);
     setBookToRead(bookToRead);
@@ -160,13 +156,9 @@ export default function CreateClub(props: CreateClubProps) {
     if (!bookToRead) {
       return;
     }
-    const shelf = getShelfFromGoogleBooks(
-      selectedBooks,
-      bookToRead.id
-    ) as ShelfEntry[];
     const clubObj: any = {
       name: selectedGroupName,
-      shelf,
+      shelf: selectedBooks,
       bio: selectedGroupBio,
       maxMembers: selectedGroupSize,
       vibe: selectedGroupVibe,
@@ -318,7 +310,11 @@ export default function CreateClub(props: CreateClubProps) {
           >
             What books would you like to read?
           </Typography>
-          {/* <BookSearch onSubmitBooks={onSubmitSelectedBooks} maxSelected={5} /> */}
+          <BookSearch
+            onSubmitBooks={onSubmitSelectedBooks}
+            maxSelected={5}
+            radioValue={bookToRead && bookToRead._id ? bookToRead._id : 'none'}
+          />
           <Typography
             style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
             variant="subtitle1"

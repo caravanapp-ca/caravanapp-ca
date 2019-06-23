@@ -3,7 +3,7 @@ import { ShelfEntry } from '@caravan/buddy-reading-types';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListElementBook from '../../../components/ListElementBook';
-import { Radio, IconButton, Typography } from '@material-ui/core';
+import { Radio, IconButton, Typography, Paper } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { FastfoodOutlined } from '@material-ui/icons';
 
@@ -23,7 +23,6 @@ interface BookListProps {
   onRadioPress?: (value: string) => void;
   radioValue?: string;
   onDelete?: (id: string) => void;
-  selectedLabel?: string;
 }
 
 export default function BookList(props: BookListProps) {
@@ -36,7 +35,6 @@ export default function BookList(props: BookListProps) {
     onRadioPress,
     radioValue,
     onDelete,
-    selectedLabel,
   } = props;
 
   function radio(b: ShelfEntry, index: number): JSX.Element {
@@ -77,44 +75,43 @@ export default function BookList(props: BookListProps) {
   }
 
   return (
-    <List dense={false}>
-      {data.map((b, index) => {
-        let selected = false;
-        if (radioValue) {
-          if (b._id === radioValue) {
-            selected = true;
+    <Paper>
+      <List dense={false}>
+        {data.map((b, index) => {
+          let selected = false;
+          if (radioValue) {
+            if (b._id === radioValue) {
+              selected = true;
+            }
           }
-        }
-        let primaryElement;
-        switch (primary) {
-          case 'radio':
-            primaryElement = radio(b, index);
-            break;
-        }
-        let secondaryElement;
-        switch (secondary) {
-          case 'delete':
-            secondaryElement = deleteIcon(b, index);
-            break;
-        }
-        return (
-          <>
-            <ListElementBook
-              coverImage={b.coverImageURL}
-              primaryText={b.title}
-              secondaryText={b.author}
-              key={b.isbn || index}
-              primary={primaryElement}
-              secondary={secondaryElement}
-              onClick={onClick}
-              selected={selected}
-            />
-            {selected && selectedLabel && (
-              <Typography>{selectedLabel}</Typography>
-            )}
-          </>
-        );
-      })}
-    </List>
+          let primaryElement;
+          switch (primary) {
+            case 'radio':
+              primaryElement = radio(b, index);
+              break;
+          }
+          let secondaryElement;
+          switch (secondary) {
+            case 'delete':
+              secondaryElement = deleteIcon(b, index);
+              break;
+          }
+          return (
+            <>
+              <ListElementBook
+                coverImage={b.coverImageURL}
+                primaryText={b.title}
+                secondaryText={b.author}
+                key={b.isbn || index}
+                primary={primaryElement}
+                secondary={secondaryElement}
+                onClick={onClick}
+                selected={selected}
+              />
+            </>
+          );
+        })}
+      </List>
+    </Paper>
   );
 }
