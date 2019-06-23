@@ -61,13 +61,15 @@ export async function updateCurrentlyReadBook(
   newBook: ShelfEntry,
   newEntry: boolean,
   prevBookId: string,
-  finishedPrev: boolean
+  finishedPrev: boolean,
+  addToWantToRead: ShelfEntry[]
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
     newBook,
     newEntry,
     prevBookId,
     finishedPrev,
+    addToWantToRead,
   });
   if (res.status === 200) {
     return res.data;

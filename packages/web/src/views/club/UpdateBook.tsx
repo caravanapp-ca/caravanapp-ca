@@ -21,11 +21,7 @@ import Header from '../../components/Header';
 import BookList from './shelf-view/BookList';
 import BookSearch from '../books/BookSearch';
 import { updateCurrentlyReadBook, getClub } from '../../services/club';
-import {
-  getCurrentBook,
-  getWantToRead,
-  getShelfFromGoogleBooks,
-} from './functions/ClubFunctions';
+import { getCurrentBook, getWantToRead } from './functions/ClubFunctions';
 
 interface UpdateBookRouteParams {
   id: string;
@@ -40,9 +36,22 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: theme.spacing(1),
   },
-  button: {
-    margin: theme.spacing(1),
+  button: {},
+  container: {
+    marginTop: theme.spacing(3),
+  },
+  sectionContainer: {
+    marginTop: theme.spacing(3),
+  },
+  saveButtonContainer: {
+    marginTop: theme.spacing(3),
+    width: '100%',
+    alignItems: 'center',
+  },
+  instructionText: {
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -55,6 +64,7 @@ export default function UpdateBook(props: UpdateBookProps) {
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [wantToRead, setWantToRead] = React.useState<ShelfEntry[]>([]);
+  const [searchedBooks, setSearchedBooks] = React.useState<ShelfEntry[]>([]);
   const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
   const [newBookForShelf, setNewBookForShelf] = React.useState<boolean>(false);
 
@@ -79,14 +89,11 @@ export default function UpdateBook(props: UpdateBookProps) {
   }, [clubId]);
 
   function onSubmitSelectedBooks(
-    selectedBooks: GoogleBooks.Item[],
-    bookToRead: GoogleBooks.Item
+    selectedBooks: ShelfEntry[],
+    bookToRead: ShelfEntry | null
   ) {
-    const bookToReadAsShelfEntry = getShelfFromGoogleBooks(
-      [bookToRead],
-      bookToRead.id
-    )[0] as ShelfEntry;
-    setBookToRead(bookToReadAsShelfEntry);
+    setSearchedBooks(selectedBooks);
+    setBookToRead(bookToRead);
     setNewBookForShelf(true);
   }
 
@@ -94,19 +101,24 @@ export default function UpdateBook(props: UpdateBookProps) {
     if (!bookToRead || !currBook) {
       return;
     }
+    const addToWantToRead = searchedBooks.filter(
+      book => book._id !== bookToRead._id
+    );
     const result = await updateCurrentlyReadBook(
       clubId,
       bookToRead,
       newBookForShelf,
       currBook._id,
-      finished
+      finished,
+      addToWantToRead
     );
     if (typeof result === 'number') {
       // need to do error handling here based on error code
       return;
+    } else {
+      props.history.goBack();
+      // TODO: show snack bar on next page
     }
-    // navigate to club info page
-    // show snack bar (on next page)
   }
 
   function onWantToReadSelect(bookId: string) {
@@ -128,7 +140,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     </IconButton>
   );
 
-  const centerComponent = <Typography variant="h6">Update Club</Typography>;
+  const centerComponent = <Typography variant="h6">Update Book</Typography>;
 
   const rightComponent = (
     <IconButton
@@ -150,9 +162,11 @@ export default function UpdateBook(props: UpdateBookProps) {
     }
   }
 
-  let searchLabel = 'Or you can search for another book.';
+  let searchLabel =
+    "Or you can search for another book. Any books you don't select will be added to your club's Want to Read list.";
   if (wantToRead.length === 0) {
-    searchLabel = 'Search for a new book to set as your current read.';
+    searchLabel =
+      "Search for a new book to set as your current read. Any books you don't select will be added to your club's Want to Read list.";
   }
 
   return (
@@ -162,11 +176,13 @@ export default function UpdateBook(props: UpdateBookProps) {
         centerComponent={centerComponent}
         rightComponent={rightComponent}
       />
-      <Container>
+      <Container className={classes.container} maxWidth={'md'}>
         <Box>
           {currBook && (
             <>
-              <Typography>Your club is currently reading:</Typography>
+              <Typography className={classes.instructionText}>
+                Your club is currently reading:
+              </Typography>
               <BookList data={[currBook]} />
               <div className={classes.finishedSwitchContainer}>
                 <Switch
@@ -183,8 +199,8 @@ export default function UpdateBook(props: UpdateBookProps) {
             </>
           )}
           {wantToRead.length > 0 && (
-            <>
-              <Typography>
+            <div className={classes.sectionContainer}>
+              <Typography className={classes.instructionText}>
                 Here are the books in your club's Want to Read list. You can
                 pick one for your next read.
               </Typography>
@@ -193,27 +209,34 @@ export default function UpdateBook(props: UpdateBookProps) {
                 primary={'radio'}
                 onRadioPress={onWantToReadSelect}
                 radioValue={
-                  bookToRead && bookToRead._id ? bookToRead._id : undefined
+                  bookToRead && bookToRead._id ? bookToRead._id : 'none'
                 }
               />
-            </>
+            </div>
           )}
-          <Typography>{searchLabel}</Typography>
-          <BookSearch
-            onSubmitBooks={onSubmitSelectedBooks}
-            maxSelected={3}
-            radioValue={
-              bookToRead && bookToRead._id ? bookToRead._id : undefined
-            }
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={onSaveSelection}
-          >
-            SAVE
-          </Button>
+          <div className={classes.sectionContainer}>
+            <Typography className={classes.instructionText}>
+              {searchLabel}
+            </Typography>
+            <BookSearch
+              onSubmitBooks={onSubmitSelectedBooks}
+              maxSelected={3}
+              radioValue={
+                bookToRead && bookToRead._id ? bookToRead._id : 'none'
+              }
+            />
+          </div>
+          <div className={classes.saveButtonContainer}>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={onSaveSelection}
+              disabled={!bookToRead}
+            >
+              SAVE
+            </Button>
+          </div>
         </Box>
       </Container>
     </div>

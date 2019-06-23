@@ -13,6 +13,7 @@ import {
   FilterAutoMongoKeys,
   ReadingState,
   Services,
+  ShelfEntry,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
@@ -325,7 +326,14 @@ router.put(
       return res.status(422).json({ errors: errorArr });
     }
     const clubId = req.params.id;
-    const { newBook, newEntry, prevBookId, finishedPrev } = req.body;
+    const {
+      newBook,
+      newEntry,
+      prevBookId,
+      finishedPrev,
+      addToWantToRead,
+    } = req.body;
+    let addToWantToReadArr = addToWantToRead as ShelfEntry[];
     const prevCondition = {
       _id: clubId,
       'shelf._id': prevBookId,
@@ -345,14 +353,13 @@ router.put(
         new: true,
       });
     } catch (err) {
-      res.status(400).send(err);
-      return;
+      return res.status(400).send(err);
     }
     let newCondition, newUpdate;
     if (!newEntry) {
       newCondition = {
         _id: clubId,
-        'shelf._id': newBook.id,
+        'shelf._id': newBook._id,
       };
       const newReadingState: ReadingState = 'current';
       newUpdate = {
@@ -386,10 +393,43 @@ router.put(
         new: true,
       });
     } catch (err) {
-      res.status(400).send(err);
+      return res.status(400).send(err);
+    }
+    let resultAdd;
+    if (addToWantToReadArr.length > 0) {
+      const updateObject = addToWantToReadArr.map(b => ({
+        author: b.author,
+        coverImageURL: b.coverImageURL,
+        readingState: 'notStarted',
+        title: b.title,
+        isbn: b.isbn,
+        publishedDate: new Date(b.publishedDate),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }));
+      const addCondition = {
+        _id: clubId,
+      };
+      const addUpdate = {
+        $push: {
+          shelf: {
+            $each: updateObject,
+          },
+        },
+      };
+      try {
+        resultAdd = await ClubModel.findOneAndUpdate(addCondition, addUpdate, {
+          new: true,
+        });
+        if (resultPrev && resultNew && resultAdd) {
+          return res.status(200).send({ resultAdd });
+        }
+      } catch (err) {
+        return res.status(400).send(err);
+      }
     }
     if (resultPrev && resultNew) {
-      res.status(200).send({ resultNew });
+      return res.status(200).send({ resultNew });
     }
   }
 );

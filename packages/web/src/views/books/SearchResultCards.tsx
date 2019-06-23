@@ -20,7 +20,6 @@ interface ResultsProps {
 const useStyles = makeStyles(theme => ({
   searchResultsList: {
     width: '100%',
-    borderRadius: 10,
     borderColor: '#7289da',
     position: 'absolute',
     backgroundColor: 'white',

@@ -1,38 +1,39 @@
 import React, { useEffect } from 'react';
-import { GoogleBooks } from '@caravan/buddy-reading-types';
+import { GoogleBooks, ShelfEntry } from '@caravan/buddy-reading-types';
 import { Container, Paper, InputBase, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import SearchResultCards from '../books/SearchResultCards';
 import SelectedBookCards from '../books/SelectedBookCards';
 import { makeStyles } from '@material-ui/core/styles';
 import { searchGoogleBooks } from '../../services/book';
+import BookList from '../club/shelf-view/BookList';
+import { getShelfFromGoogleBooks } from '../club/functions/ClubFunctions';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-    borderRadius: 10,
-  },
-  searchContainer: {
-    padding: 0,
-    marginBottom: 30,
     position: 'relative',
+  },
+  searchBarContainer: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     marginLeft: 8,
+    marginRight: 8,
     flex: 1,
-    paddingRight: 10,
   },
-  iconButton: {
-    padding: 10,
+  iconButton: {},
+  bookListContainer: {
+    marginTop: theme.spacing(1),
   },
 }));
 
 interface BookSearchProps {
   onSubmitBooks: (
-    selectedBooks: GoogleBooks.Item[],
-    bookToRead: GoogleBooks.Item
+    selectedBooks: ShelfEntry[],
+    bookToRead: ShelfEntry | null
   ) => void;
   maxSelected: number;
   radioValue?: string;
@@ -48,13 +49,9 @@ export default function BookSearch(props: BookSearchProps) {
     setSearchResults,
   ] = React.useState<GoogleBooks.Books | null>(null);
   const [searchHidden, setSearchHidden] = React.useState<boolean>(false);
-  const [selectedBooks, setSelectedBooks] = React.useState<GoogleBooks.Item[]>(
-    []
-  );
+  const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
   const [numSelected, setNumSelected] = React.useState<number>(0);
-  const [bookToRead, setBookToRead] = React.useState<GoogleBooks.Item | null>(
-    null
-  );
+  const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
 
   useEffect(() => {
     if (!bookSearchQuery || bookSearchQuery.length === 0) {
@@ -79,42 +76,60 @@ export default function BookSearch(props: BookSearchProps) {
   }
 
   function onAddBook(book: GoogleBooks.Item) {
-    let newBooks;
+    const bookAsShelfEntry = getShelfFromGoogleBooks(
+      [book],
+      book.id
+    )[0] as ShelfEntry;
+    let newBooks: ShelfEntry[];
     if (numSelected === maxSelected) {
       const selectedBooksCopy = [...selectedBooks];
       selectedBooksCopy.shift();
-      newBooks = [...selectedBooksCopy, book];
+      newBooks = [...selectedBooksCopy, bookAsShelfEntry];
     } else {
-      newBooks = [...selectedBooks, book];
+      newBooks = [...selectedBooks, bookAsShelfEntry];
       setNumSelected(numSelected + 1);
     }
-    if (!bookToRead) {
-      setBookToRead(book);
-      onSubmitBooks(newBooks, book);
-    } else {
-      onSubmitBooks(newBooks, bookToRead);
-    }
+    newBooks = newBooks.map(b => {
+      if (b._id !== bookAsShelfEntry._id && b.readingState === 'current') {
+        const bCopy = { ...b };
+        bCopy.readingState = 'notStarted';
+        return bCopy;
+      } else {
+        return b;
+      }
+    });
+    onSubmitBooks(newBooks, bookAsShelfEntry);
+    setBookToRead(bookAsShelfEntry);
     setSelectedBooks(newBooks);
     setBookSearchQuery('');
   }
 
-  function onDeleteSelectedBook(book: GoogleBooks.Item) {
+  function onDeleteSelectedBook(bookId: string) {
     const updatedBooks = selectedBooks.filter(
-      selected => selected.id !== book.id
+      selected => selected._id !== bookId
     );
+    if (bookId === radioValue) {
+      onSubmitBooks(updatedBooks, null);
+      setBookToRead(null);
+    } else {
+      onSubmitBooks(updatedBooks, bookToRead);
+    }
     setSelectedBooks(updatedBooks);
     setNumSelected(numSelected - 1);
   }
 
-  function onChangeBookToRead(book: GoogleBooks.Item) {
-    setBookToRead(book);
-    onSubmitBooks(selectedBooks, book);
+  function onChangeBookToRead(bookId: string) {
+    const book = selectedBooks.find(book => book._id === bookId);
+    if (book) {
+      setBookToRead(book);
+      onSubmitBooks(selectedBooks, book);
+    }
   }
 
   return (
     <>
-      <Container className={classes.searchContainer} maxWidth="md">
-        <Paper elevation={2} className={classes.root}>
+      <div className={classes.root}>
+        <Paper className={classes.searchBarContainer}>
           <IconButton
             className={classes.iconButton}
             aria-label="Menu"
@@ -138,18 +153,18 @@ export default function BookSearch(props: BookSearchProps) {
             onSelected={onAddBook}
           />
         )}
-      </Container>
+      </div>
       {selectedBooks.length > 0 && (
-        <SelectedBookCards
-          selectedBooks={selectedBooks}
-          firstBookId={selectedBooks[0].id}
-          onDeleted={onDeleteSelectedBook}
-          onChangeBookToRead={onChangeBookToRead}
-          radioValue={
-            radioValue ||
-            (bookToRead && bookToRead.id ? bookToRead.id : selectedBooks[0].id)
-          }
-        />
+        <div className={classes.bookListContainer}>
+          <BookList
+            data={selectedBooks}
+            primary={'radio'}
+            secondary={'delete'}
+            onRadioPress={onChangeBookToRead}
+            radioValue={radioValue}
+            onDelete={onDeleteSelectedBook}
+          />
+        </div>
       )}
     </>
   );
