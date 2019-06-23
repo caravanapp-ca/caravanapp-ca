@@ -25,6 +25,7 @@ import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
 import AdapterLink from '../../components/AdapterLink';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
+import ClubLeaveDialog from './ClubLeaveDialog';
 import Header from '../../components/Header';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     button: {
-      marginTop: theme.spacing(3),
+      margin: theme.spacing(1),
     },
     input: {
       display: 'none',
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
+      marginTop: theme.spacing(3),
     },
   })
 );
@@ -63,58 +65,61 @@ interface ClubProps extends RouteComponentProps<ClubRouteParams> {
   user: User | null;
 }
 
+type LoadableMemberStatus = MembershipStatus | 'loading';
+
+const showJoinClub = (
+  memberStatus: LoadableMemberStatus,
+  club: Services.GetClubById
+) =>
+  memberStatus === 'notMember' &&
+  club &&
+  club.members &&
+  club.maxMembers > club.members.length;
+const showOpenChat = (memberStatus: LoadableMemberStatus) =>
+  memberStatus === 'owner' || memberStatus === 'member';
+const showUpdateBook = (memberStatus: LoadableMemberStatus) =>
+  memberStatus === 'owner';
+const showLeaveClub = (memberStatus: LoadableMemberStatus) =>
+  memberStatus === 'member';
+const getChatUrl = (club: Services.GetClubById, inApp: boolean) =>
+  inApp
+    ? `discord:/channels/${club.guildId}/${club.channelId}`
+    : `https://discordapp.com/channels/${club.guildId}/${club.channelId}`;
+const openChat = (club: Services.GetClubById, inApp: boolean) => {
+  if (inApp) {
+    window.location.href = getChatUrl(club, inApp);
+  } else {
+    window.open(getChatUrl(club, inApp), '_blank');
+  }
+};
+
 export default function ClubComponent(props: ClubProps) {
   const classes = useStyles();
+  const { user } = props;
+  const clubId = props.match.params.id;
+
   const [tabValue, setTabValue] = React.useState(0);
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
-  const [memberInfo, setMemberInfo] = React.useState<User[]>([]);
-  const [memberStatus, setMemberStatus] = React.useState<MembershipStatus>(
-    'notMember'
-  );
-  const [loginModalShown, setLoginModalShown] = React.useState(false);
-  const clubId = props.match.params.id;
+  const [loginDialogVisible, setLoginDialogVisible] = React.useState(false);
+  const [leaveDialogVisible, setLeaveDialogVisible] = React.useState(false);
+  const [memberStatus, setMembershipStatus] = React.useState<
+    LoadableMemberStatus
+  >('loading');
 
-  const leftComponent = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Back"
-      component={AdapterLink}
-      to="/"
-    >
-      <BackIcon />
-    </IconButton>
-  );
-
-  const centerComponent = club ? (
-    <Typography variant="h6">{club.name}</Typography>
-  ) : (
-    <Typography variant="h6">Club Homepage</Typography>
-  );
-
-  function onCloseLoginModal() {
-    setLoginModalShown(false);
-  }
-
-  function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
-    setTabValue(newValue);
-  }
-
-  async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
-    if (action === 'add') {
-      const result = await modifyMyClubMembership(clubId, true);
-      if (result.status >= 200 && result.status < 300) {
-        setMemberStatus('member');
+  useEffect(() => {
+    if (user && club) {
+      const member = club.members.find(m => m.userId === user._id);
+      if (member) {
+        setMembershipStatus(club.ownerId === user._id ? 'owner' : 'member');
+      } else {
+        setMembershipStatus('notMember');
       }
-    } else if (action === 'remove') {
-      const result = await modifyMyClubMembership(clubId, false);
-      if (result.status >= 200 && result.status < 300) {
-        setMemberStatus('notMember');
-      }
+    } else {
+      setMembershipStatus('notMember');
     }
-  }
+  }, [club, user]);
 
   useEffect(() => {
     const getClubFun = async () => {
@@ -134,6 +139,61 @@ export default function ClubComponent(props: ClubProps) {
     getClubFun();
   }, [clubId, memberStatus]);
 
+  const leftComponent = (
+    <IconButton
+      edge="start"
+      color="inherit"
+      aria-label="Back"
+      component={AdapterLink}
+      to="/"
+    >
+      <BackIcon />
+    </IconButton>
+  );
+
+  const centerComponent = club ? (
+    <Typography variant="h6">{club.name}</Typography>
+  ) : (
+    <Typography variant="h6">Club Homepage</Typography>
+  );
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const handleClubLeaveDialog = (confirm: boolean) => {
+    setLeaveDialogVisible(false);
+    if (confirm) {
+      addOrRemoveMeFromClub('remove');
+    }
+  };
+
+  async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
+    if (action === 'add') {
+      const result = await modifyMyClubMembership(clubId, true);
+      if (result.status >= 200 && result.status < 300) {
+        if (club) {
+          const newClub: Services.GetClubById = {
+            ...club,
+            members: result.data,
+          };
+          setClub(newClub);
+        }
+      }
+    } else if (action === 'remove') {
+      const result = await modifyMyClubMembership(clubId, false);
+      if (result.status >= 200 && result.status < 300) {
+        if (club) {
+          const newClub: Services.GetClubById = {
+            ...club,
+            members: result.data,
+          };
+          setClub(newClub);
+        }
+      }
+    }
+  }
+
   return (
     <>
       {!loadedClub && <CircularProgress className={classes.progress} />}
@@ -147,7 +207,7 @@ export default function ClubComponent(props: ClubProps) {
           <Paper className={classes.root}>
             <Tabs
               value={tabValue}
-              onChange={handleChange}
+              onChange={handleTabChange}
               indicatorColor="primary"
               textColor="primary"
               centered
@@ -158,12 +218,10 @@ export default function ClubComponent(props: ClubProps) {
           </Paper>
           <Container maxWidth="lg">
             <div className={classes.contentContainer}>
-              {tabValue === 0 && (
-                <GroupView club={club} memberInfo={memberInfo} />
-              )}
+              {tabValue === 0 && <GroupView club={club} />}
               {tabValue === 1 && <ShelfView shelf={club.shelf} />}
               <div className={classes.buttonsContainer}>
-                {memberStatus === 'notMember' && (
+                {showJoinClub(memberStatus, club) && (
                   <Button
                     variant="contained"
                     color="primary"
@@ -171,7 +229,7 @@ export default function ClubComponent(props: ClubProps) {
                     onClick={() =>
                       props.user
                         ? addOrRemoveMeFromClub('add')
-                        : setLoginModalShown(true)
+                        : setLoginDialogVisible(true)
                     }
                     disabled={false}
                     //TODO make this disabled be based on max members vs actual members
@@ -179,16 +237,37 @@ export default function ClubComponent(props: ClubProps) {
                     JOIN CLUB
                   </Button>
                 )}
-                {memberStatus === 'member' && (
+                {showOpenChat(memberStatus) && (
                   <Button
                     variant="contained"
                     color="primary"
                     className={classes.button}
+                    onClick={() => openChat(club, false)}
                   >
-                    OPEN CHAT
+                    OPEN CHAT IN WEB
                   </Button>
                 )}
-                {memberStatus === 'owner' && (
+                {showOpenChat(memberStatus) && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={() => openChat(club, true)}
+                  >
+                    OPEN CHAT IN APP
+                  </Button>
+                )}
+                {showLeaveClub(memberStatus) && (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={() => setLeaveDialogVisible(true)}
+                  >
+                    LEAVE CLUB
+                  </Button>
+                )}
+                {showUpdateBook(memberStatus) && (
                   <Button
                     variant="outlined"
                     color="primary"
@@ -209,8 +288,16 @@ export default function ClubComponent(props: ClubProps) {
           <Typography>It does not appear that this club exists!</Typography>
         </div>
       )}
-      {loginModalShown && (
-        <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
+      {loginDialogVisible && (
+        <DiscordLoginModal
+          onCloseLoginDialog={() => setLoginDialogVisible(false)}
+        />
+      )}
+      {leaveDialogVisible && (
+        <ClubLeaveDialog
+          onCancel={() => handleClubLeaveDialog(false)}
+          onConfirm={() => handleClubLeaveDialog(true)}
+        />
       )}
     </>
   );

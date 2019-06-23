@@ -123,6 +123,7 @@ declare module '@caravan/buddy-reading-types' {
       maxMembers: number;
       vibe: GroupVibe;
       readingSpeed: ReadingSpeed;
+      guildId: string;
       channelSource: ChannelSource;
       channelId: string;
       createdAt: string;

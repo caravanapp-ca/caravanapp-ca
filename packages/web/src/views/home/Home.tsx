@@ -198,7 +198,7 @@ export default function Home(props: HomeProps) {
         )}
       </main>
       {loginModalShown && (
-        <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
+        <DiscordLoginModal onCloseLoginDialog={onCloseLoginModal} />
       )}
     </>
   );

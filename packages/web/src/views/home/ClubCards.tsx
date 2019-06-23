@@ -11,7 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import PersonIcon from '@material-ui/icons/PersonOutline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { authorizeDiscordJoin } from '../../services/auth';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { User } from '@caravan/buddy-reading-types';
 import {
@@ -119,7 +118,7 @@ export default function ClubCards(props: ClubCardsProps) {
 
   const [joinClubLoadingId, setJoinClubLoadingId] = React.useState('');
 
-  function onCloseLoginModal() {
+  const onCloseLoginDialog = () => {
     setLoginModalShown(false);
   }
 
@@ -238,7 +237,7 @@ export default function ClubCards(props: ClubCardsProps) {
             })}
           </Grid>
           {loginModalShown && (
-            <DiscordLoginModal onCloseLoginModal={onCloseLoginModal} />
+            <DiscordLoginModal onCloseLoginDialog={onCloseLoginDialog} />
           )}
         </Container>
       </main>

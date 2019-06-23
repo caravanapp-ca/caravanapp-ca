@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface GroupViewProps {
   club: Club;
-  memberInfo: User[];
 }
 
 export default function GroupView(props: GroupViewProps) {

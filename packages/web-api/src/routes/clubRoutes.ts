@@ -155,6 +155,7 @@ router.get('/:id', async (req, res, next) => {
         maxMembers: club.maxMembers,
         vibe: club.vibe,
         readingSpeed: club.readingSpeed,
+        guildId: guild.id,
         channelSource: club.channelSource,
         channelId: club.channelId,
         private: club.private,
@@ -489,14 +490,15 @@ router.put(
           res.status(401).send('You already have access to the channel!');
           return;
         } else {
-          (channel as VoiceChannel | TextChannel).overwritePermissions(
+          await (channel as VoiceChannel | TextChannel).overwritePermissions(
             userDiscordId,
             {
               READ_MESSAGES: true,
               SEND_MESSAGES: true,
             }
           );
-          res.sendStatus(200);
+          const members = getCountableMembersInChannel(channel, club).array();
+          res.status(200).send(members);
           return;
         }
       }

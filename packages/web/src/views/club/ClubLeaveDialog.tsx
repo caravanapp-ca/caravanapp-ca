@@ -1,8 +1,6 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -11,7 +9,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import DiscordAuthButton from './DiscordAuthButton';
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
@@ -20,10 +17,14 @@ const Transition = React.forwardRef<unknown, TransitionProps>(
 );
 
 interface LoginModalProps {
-  onCloseLoginDialog: () => void;
+  onConfirm: () => void;
+  onCancel: () => void;
 }
 
 const useStyles = makeStyles(theme => ({
+  button: {
+    margin: theme.spacing(1),
+  },
   paper: {
     position: 'absolute',
     width: 400,
@@ -53,7 +54,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function DiscordLoginModal(props: LoginModalProps) {
+export default function ClubLeaveDialog(props: LoginModalProps) {
   const classes = useStyles();
 
   const [fullWidth, setFullWidth] = React.useState(true);
@@ -65,28 +66,24 @@ export default function DiscordLoginModal(props: LoginModalProps) {
       maxWidth={maxWidth}
       open={true}
       TransitionComponent={Transition}
-      onClose={props.onCloseLoginDialog}
+      onClose={props.onCancel}
       aria-labelledby="max-width-dialog-title"
     >
-      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}>
-        Find your community!
+      <DialogTitle id="leave-club-dialog" className={classes.dialogTitle}>
+        Leave club?
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Login with Discord and come find your ideal reading community - or
-          start your own! If you don't yet have a Discord account, you'll be
-          prompted to create one.
-          <br />
-          <br />
-          Logging in will add you to the Discord server where all Caravan book
-          clubs are currently hosted.
+          Are you sure you want to leave the club?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <DiscordAuthButton />
-        <Button onClick={props.onCloseLoginDialog} color="primary">
-          Close
-        </Button>
+          <Button className={classes.button} onClick={props.onConfirm} color="secondary">
+            Yes, leave the club
+          </Button>
+          <Button className={classes.button} onClick={props.onCancel} color="primary">
+            Cancel
+          </Button>
       </DialogActions>
     </Dialog>
   );
