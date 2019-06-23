@@ -27,6 +27,7 @@ declare module '@caravan/buddy-reading-types' {
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
+    ownerDiscordId?: string;
     shelf: ShelfEntry[];
     bio?: string;
     members: GuildMember[];
@@ -115,6 +116,7 @@ declare module '@caravan/buddy-reading-types' {
       _id: string;
       name: string;
       ownerId: string;
+      ownerDiscordId: string;
       shelf: any[];
       bio: string;
       members: any[];
