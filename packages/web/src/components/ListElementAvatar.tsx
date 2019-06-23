@@ -28,7 +28,7 @@ export default function ListElementAvatar(props: ListElementAvatarProps) {
   } = props;
 
   return (
-    <ListItem button>
+    <ListItem>
       <ListItemAvatar>
         {avatarElement ? (
           avatarElement
