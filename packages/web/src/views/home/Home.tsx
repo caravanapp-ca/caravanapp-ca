@@ -62,18 +62,6 @@ export default function Home(props: HomeProps) {
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
-  // Handle the `state` query to verify login
-  useEffect(() => {
-    const queries = qs.parse(window.location.search);
-    if (queries && queries.state) {
-      // Someone tampered with the login, remove token
-      if (queries.state !== localStorage.getItem(DISCORD_OAUTH_STATE)) {
-        deleteCookie('token');
-      }
-      localStorage.removeItem(DISCORD_OAUTH_STATE);
-    }
-  }, []);
-
   useEffect(() => {
     const getClubs = async () => {
       const responseData = await getAllClubs();
