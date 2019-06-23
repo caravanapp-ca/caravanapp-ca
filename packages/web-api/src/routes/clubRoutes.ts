@@ -6,6 +6,7 @@ import {
   GuildChannel,
   TextChannel,
   VoiceChannel,
+  GuildMember,
 } from 'discord.js';
 import { check, validationResult } from 'express-validator/check';
 import {
@@ -24,35 +25,27 @@ import { ClubDoc } from '../../typings/@caravan/buddy-reading-web-api';
 
 const router = express.Router();
 
-function getChannelMemberCount(guild: Guild, club: ClubDoc) {
-  let discordChannel: GuildChannel | null = guild.channels.find(
-    c => c.id === club.channelId
+const isInChannel = (member: GuildMember, club: ClubDoc) =>
+  !member.user.bot &&
+  (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id);
+
+const getCountableMembersInChannel = (
+  discordChannel: GuildChannel,
+  club: ClubDoc
+) =>
+  (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
+    isInChannel(m, club)
   );
-  if (discordChannel) {
-    const userCount = (discordChannel as
-      | TextChannel
-      | VoiceChannel).members.filter(
-      m =>
-        !m.user.bot &&
-        (m.highestRole.name !== 'Admin' || club.ownerDiscordId === m.id)
-    ).size;
-    return userCount;
-  }
-  return null;
-}
 
 async function getChannelMembers(guild: Guild, club: ClubDoc) {
   let discordChannel = guild.channels.find(c => c.id === club.channelId);
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
   }
-  const guildMembersArr = (discordChannel as TextChannel | VoiceChannel).members
-    .array()
-    .filter(
-      m =>
-        !m.user.bot &&
-        (m.highestRole.name !== 'Admin' || club.ownerDiscordId === m.id)
-    );
+  const guildMembersArr = getCountableMembersInChannel(
+    discordChannel,
+    club
+  ).array();
   const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
   const users = await UserModel.find({
     discordId: { $in: guildMemberDiscordIds },
@@ -111,13 +104,17 @@ router.get('/', async (req, res, next) => {
     const client = ReadingDiscordBot.getInstance();
     const guild = client.guilds.first();
     const clubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
-      .map(c => {
-        const memberCount = getChannelMemberCount(guild, c);
-        if (memberCount === null) {
+      .map(club => {
+        let discordChannel: GuildChannel | null = guild.channels.find(
+          c => c.id === club.channelId
+        );
+        if (!discordChannel) {
           return null;
         }
+        const memberCount = getCountableMembersInChannel(discordChannel, club)
+          .size;
         const obj: Services.GetClubs['clubs'][0] = {
-          ...c.toObject(),
+          ...club.toObject(),
           memberCount,
         };
         return obj;
@@ -472,7 +469,7 @@ router.put(
       const memberInChannel = (channel as
         | VoiceChannel
         | TextChannel).members.find(m => m.id === userDiscordId);
-      const { size } = (channel as VoiceChannel | TextChannel).members;
+      const { size } = getCountableMembersInChannel(channel, club);
       if (memberInChannel) {
         // already a member
         res.status(401).send("You're already a member of the club!");
