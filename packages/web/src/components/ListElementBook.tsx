@@ -24,6 +24,8 @@ const useStyles = makeStyles(theme => ({
     width: 50,
     borderRadius: 5,
     marginRight: 16,
+    objectFit: 'cover',
+    border: '1px solid #E9E9E9',
   },
 }));
 
@@ -42,7 +44,11 @@ export default function ListElementBook(props: ListElementBookProps) {
   return (
     <ListItem>
       {primary && <ListItemIcon>{primary}</ListItemIcon>}
-      <img src={coverImage} alt={primaryText} className={classes.coverImage} />
+      <img
+        src={coverImage || require('../resources/generic-book-cover.jpg')}
+        alt={primaryText}
+        className={classes.coverImage}
+      />
       <ListItemText
         primary={primaryText ? primaryText : 'Group member'}
         secondary={secondaryText ? secondaryText : null}
