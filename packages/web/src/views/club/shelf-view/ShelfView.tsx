@@ -34,7 +34,7 @@ export default function ShelfView(props: ShelfViewProps) {
     <div>
       {shelfMap.current.length > 0 && (
         <div className={classes.sectionContainer}>
-          <Typography className={classes.sectionLabel}>
+          <Typography variant={'h6'} className={classes.sectionLabel}>
             Currently Reading
           </Typography>
           <BookList data={shelfMap.current} />
@@ -42,13 +42,15 @@ export default function ShelfView(props: ShelfViewProps) {
       )}
       {shelfMap.notStarted.length > 0 && (
         <div className={classes.sectionContainer}>
-          <Typography className={classes.sectionLabel}>To be Read</Typography>
+          <Typography variant={'h6'} className={classes.sectionLabel}>
+            To be Read
+          </Typography>
           <BookList data={shelfMap.notStarted} />
         </div>
       )}
       {shelfMap.read.length > 0 && (
         <div className={classes.sectionContainer}>
-          <Typography className={classes.sectionLabel}>
+          <Typography variant={'h6'} className={classes.sectionLabel}>
             Previously Read
           </Typography>
           <BookList data={shelfMap.read} />

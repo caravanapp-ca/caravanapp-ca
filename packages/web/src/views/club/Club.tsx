@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {},
     root: {
       flexGrow: 1,
-      zIndex: 2,
     },
     button: {
       marginTop: theme.spacing(3),
@@ -92,13 +91,9 @@ export default function ClubComponent(props: ClubProps) {
   );
 
   const centerComponent = club ? (
-    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
-      {club.name}
-    </Typography>
+    <Typography variant="h6">{club.name}</Typography>
   ) : (
-    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
-      Club Homepage
-    </Typography>
+    <Typography variant="h6">Club Homepage</Typography>
   );
 
   function onCloseLoginModal() {
@@ -142,8 +137,6 @@ export default function ClubComponent(props: ClubProps) {
 
   useEffect(() => {
     const getClubFun = async () => {
-      // REMOVE THIS
-      setMemberStatus('owner');
       try {
         const club = await getClub(clubId);
         setClub(club);
