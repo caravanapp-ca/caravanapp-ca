@@ -51,7 +51,7 @@ export function getShelfFromGoogleBooks(
       coverImageURL:
         'imageLinks' in book.volumeInfo
           ? book.volumeInfo.imageLinks.thumbnail
-          : null,
+          : require('../../../resources/generic-book-cover.jpg'),
     };
     return res;
   });

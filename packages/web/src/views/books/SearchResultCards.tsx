@@ -94,14 +94,15 @@ export default function SearchResultCards(props: ResultsProps) {
                         style={{
                           width: '50px',
                           height: '80px',
+                          objectFit: 'cover',
                           overflow: 'hidden',
                           borderRadius: '10%',
-                          border: '1px solid #C8C8C8',
+                          border: '1px solid #E9E9E9',
                         }}
                         src={
                           ('imageLinks' in result.volumeInfo &&
                             result.volumeInfo.imageLinks.thumbnail) ||
-                          'https://www.newel.com/img/inventory/no_image_available_300x300.jpg'
+                          require('../../resources/generic-book-cover.jpg')
                         }
                         alt=""
                       />
