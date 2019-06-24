@@ -204,6 +204,7 @@ export default function ClubCards(props: ClubCardsProps) {
                     <Button
                       className={classes.button}
                       color="primary"
+                      variant="contained"
                       component={AdapterLink}
                       to={`/clubs/${club._id}`}
                     >
