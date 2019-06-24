@@ -216,7 +216,7 @@ export default function ClubComponent(props: ClubProps) {
               <Tab label="Shelf" />
             </Tabs>
           </Paper>
-          <Container maxWidth="lg">
+          <Container maxWidth="md">
             <div className={classes.contentContainer}>
               {tabValue === 0 && <GroupView club={club} />}
               {tabValue === 1 && <ShelfView shelf={club.shelf} />}

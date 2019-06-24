@@ -36,7 +36,7 @@ export default function MemberList(props: MemberListProps) {
           primaryText={m.name || m.discordUsername}
           secondaryElement={
             props.ownerId === m.userId ? (
-              <IconButton edge="end" aria-label="Star">
+              <IconButton edge="end" aria-label="Star" disabled={true}>
                 <StarIcon />
               </IconButton>
             ) : null
