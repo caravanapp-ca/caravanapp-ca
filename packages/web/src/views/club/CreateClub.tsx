@@ -177,13 +177,7 @@ export default function CreateClub(props: CreateClubProps) {
       <Header leftComponent={leftComponent} centerComponent={centerComponent} />
       <main>
         <Container className={classes.formContainer} maxWidth="md">
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexDirection: 'column',
-            }}
-          >
+          <div>
             <Typography
               style={{ fontSize: 16, color: '#8B8B8B' }}
               variant="subtitle1"
@@ -215,7 +209,7 @@ export default function CreateClub(props: CreateClubProps) {
                     flexGrow: 1,
                     justifyContent: 'center',
                     marginLeft: 8,
-                    marginRight: 8
+                    marginRight: 8,
                   }}
                 >
                   <Switch
@@ -240,10 +234,8 @@ export default function CreateClub(props: CreateClubProps) {
             </Grid>
             <div
               style={{
-                marginBottom: '10px',
-                display: 'flex',
+                width: '100%',
                 justifyContent: 'center',
-                alignItems: 'center',
               }}
             >
               {!privateClub && (
