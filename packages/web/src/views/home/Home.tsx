@@ -95,18 +95,6 @@ export default function Home(props: HomeProps) {
     setLoginModalShown(false);
   }
 
-  const leftComponent = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Home"
-      component={AdapterLink}
-      to="/"
-    >
-      <HomeIcon />
-    </IconButton>
-  );
-
   const centerComponent = (
     <Typography variant="h6" style={{ fontWeight: 'bold' }}>
       Find Groups
@@ -138,7 +126,7 @@ export default function Home(props: HomeProps) {
     <>
       <CssBaseline />
       <Header
-        leftComponent={leftComponent}
+        leftComponent={<div />}
         centerComponent={centerComponent}
         rightComponent={rightComponent}
       />

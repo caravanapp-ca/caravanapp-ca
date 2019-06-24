@@ -120,7 +120,7 @@ export default function ClubCards(props: ClubCardsProps) {
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
-  }
+  };
 
   return (
     <React.Fragment>
@@ -223,7 +223,7 @@ export default function ClubCards(props: ClubCardsProps) {
                             ? setLoginModalShown(true)
                             : setJoinClubLoadingId(club._id)
                         }
-                        disabled={!(club.memberCount < club.maxMembers - 2)}
+                        disabled={club.memberCount >= club.maxMembers}
                       >
                         JOIN
                       </Button>
