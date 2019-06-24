@@ -273,7 +273,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     });
     const club = new ClubModel(clubModelBody);
     const clubSavePromise = club.save();
-    const [guildMember, clubSave] = await Promise.all([
+    const [guildMember, newClub] = await Promise.all([
       addMemberPromise,
       clubSavePromise,
     ]);
