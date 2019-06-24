@@ -13,7 +13,6 @@ import AddIcon from '@material-ui/icons/Add';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import { deleteCookie } from '../../common/cookies';
-import { DISCORD_OAUTH_STATE } from '../../state';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import DiscordAuthButton from '../../components/DiscordAuthButton';
