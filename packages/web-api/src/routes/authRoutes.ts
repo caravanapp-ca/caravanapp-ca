@@ -54,16 +54,6 @@ router.get('/logout', async (req, res) => {
   res.redirect('/');
 });
 
-router.post('/discord/join', isAuthenticated, async (req, res, next) => {
-  const { token } = req.session;
-  const discordClient = ReadingDiscordBot.getInstance();
-  const guild = discordClient.guilds.first();
-  const result = await guild.addMember(req.user.discordId, {
-    accessToken: token,
-  });
-  return result;
-});
-
 router.post('/discord/disconnect', isAuthenticated, async (req, res, next) => {
   const { token } = req.session;
   await SessionModel.findOneAndDelete({ accessToken: token });
@@ -88,6 +78,8 @@ router.get('/discord/callback', async (req, res) => {
   }
   let { access_token: accessToken } = tokenResponseData;
   const discordUserData = await ReadingDiscordBot.getMe(accessToken);
+  const discordClient = ReadingDiscordBot.getInstance();
+  const guild = discordClient.guilds.first();
 
   let userDoc = await UserModel.findOne({
     discordId: discordUserData.id,
@@ -140,6 +132,15 @@ router.get('/discord/callback', async (req, res) => {
     destroySession(req, res);
     res.redirect(`/?error=${encodedErrorMessage}`);
     return;
+  }
+
+  try {
+    const result = await guild.addMember(req.user.discordId, {
+      accessToken,
+    });
+  } catch (err) {
+    console.error(`Couldn't add user to guild: ${userDoc.id}`);
+    successfulAuthentication = false;
   }
 
   if (successfulAuthentication) {

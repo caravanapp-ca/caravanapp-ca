@@ -1,21 +1,16 @@
 import React, { useEffect } from 'react';
-import qs from 'query-string';
-import { User, Club, ShelfEntry, Services } from '@caravan/buddy-reading-types';
+import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
-import HomeIcon from '@material-ui/icons/Home';
 import AddIcon from '@material-ui/icons/Add';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import { deleteCookie } from '../../common/cookies';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
-import DiscordAuthButton from '../../components/DiscordAuthButton';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { getAllClubs } from '../../services/club';
 import ClubCards from './ClubCards';
@@ -97,7 +92,6 @@ export default function Home(props: HomeProps) {
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
-    console.log('KPKE');
   }
 
   const centerComponent = (
@@ -129,7 +123,6 @@ export default function Home(props: HomeProps) {
 
   return (
     <>
-      <CssBaseline />
       <Header
         leftComponent={<div />}
         centerComponent={centerComponent}

@@ -16,7 +16,6 @@ import {
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -207,8 +206,7 @@ export default function CreateClub(props: CreateClubProps) {
   }))(Switch);
 
   return (
-    <React.Fragment>
-      <CssBaseline />
+    <>
       <Header leftComponent={leftComponent} centerComponent={centerComponent} />
       <main>
         <Container className={classes.formContainer} maxWidth="md">
@@ -837,6 +835,6 @@ export default function CreateClub(props: CreateClubProps) {
           </div>
         </Container>
       </main>
-    </React.Fragment>
+    </>
   );
 }

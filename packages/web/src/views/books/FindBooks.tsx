@@ -2,7 +2,6 @@ import React from 'react';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
@@ -161,7 +160,6 @@ export default function FindBooks() {
 
   return (
     <React.Fragment>
-      <CssBaseline />
       <Header
         leftComponent={leftComponent}
         centerComponent={centerComponent}

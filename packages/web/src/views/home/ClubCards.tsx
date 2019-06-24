@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import PersonIcon from '@material-ui/icons/PersonOutline';
@@ -123,8 +122,6 @@ export default function ClubCards(props: ClubCardsProps) {
   };
 
   return (
-    <React.Fragment>
-      <CssBaseline />
       <main>
         <Container className={classes.cardGrid} maxWidth="md">
           <Grid container spacing={4}>
@@ -241,6 +238,5 @@ export default function ClubCards(props: ClubCardsProps) {
           )}
         </Container>
       </main>
-    </React.Fragment>
   );
 }
