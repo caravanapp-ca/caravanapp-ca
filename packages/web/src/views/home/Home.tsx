@@ -19,7 +19,6 @@ import DiscordAuthButton from '../../components/DiscordAuthButton';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { getAllClubs } from '../../services/club';
 import ClubCards from './ClubCards';
-import { UserCard } from './UserCard';
 
 interface HomeProps {
   user: User | null;
