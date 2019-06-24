@@ -14,7 +14,7 @@ import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import { deleteCookie } from '../../common/cookies';
 import { DISCORD_OAUTH_STATE } from '../../state';
-import DiscordAuthButton from '../../components/DiscordAuthButton';
+import JoinCaravanButton from '../../components/JoinCaravanButton';
 import ClubCards from './ClubCards';
 import { UserCard } from './UserCard';
 import { getAllClubs } from '../../services/club';
@@ -32,10 +32,15 @@ export interface ClubWithCurrentlyReading {
 const useStyles = makeStyles(theme => ({
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(0, 0, 6),
+    padding: theme.spacing(0, 0, 0),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   heroButtons: {
     marginTop: theme.spacing(4),
+    paddingBottom: 20,
   },
   bottomAuthButton: {
     display: 'flex',
@@ -93,6 +98,7 @@ export default function Home(props: HomeProps) {
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
+    console.log('KPKE');
   }
 
   const leftComponent = (
@@ -146,14 +152,14 @@ export default function Home(props: HomeProps) {
         {/* Hero unit */}
         {showWelcomeMessage && (
           <div className={classes.heroContent}>
-            <Container maxWidth="sm">
+            <Container maxWidth="md">
               <Typography
                 component="h1"
                 variant="h2"
                 align="center"
                 color="textPrimary"
                 gutterBottom
-                style={{ marginTop: 20 }}
+                style={{ paddingTop: 20 }}
               >
                 Welcome to Caravan!
               </Typography>
@@ -171,7 +177,9 @@ export default function Home(props: HomeProps) {
                 <Grid container spacing={2} justify="center">
                   {!props.user && (
                     <Grid item>
-                      <DiscordAuthButton />
+                      <JoinCaravanButton
+                        onClick={() => setLoginModalShown(true)}
+                      />
                     </Grid>
                   )}
                   {props.user && showWelcomeMessage && (
@@ -191,11 +199,6 @@ export default function Home(props: HomeProps) {
           </div>
         )}
         <ClubCards clubsWCR={clubsWCR} user={props.user} />
-        {!props.user && (
-          <div className={classes.bottomAuthButton}>
-            <UserCard user={props.user} />
-          </div>
-        )}
       </main>
       {loginModalShown && (
         <DiscordLoginModal onCloseLoginDialog={onCloseLoginModal} />

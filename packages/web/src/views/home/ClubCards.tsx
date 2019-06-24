@@ -120,7 +120,7 @@ export default function ClubCards(props: ClubCardsProps) {
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
-  }
+  };
 
   return (
     <React.Fragment>

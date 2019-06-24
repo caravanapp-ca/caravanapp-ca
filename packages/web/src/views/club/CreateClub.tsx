@@ -258,7 +258,7 @@ export default function CreateClub(props: CreateClubProps) {
             </div>
             <div
               style={{
-                marginBottom: '10px',
+                marginBottom: '20px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -291,7 +291,7 @@ export default function CreateClub(props: CreateClubProps) {
           <TextField
             id="filled-name"
             label="Group Name"
-            style={{ marginBottom: 20, marginTop: 40 }}
+            style={{ marginBottom: 20 }}
             helperText="50 character limit"
             variant="outlined"
             fullWidth
@@ -314,7 +314,12 @@ export default function CreateClub(props: CreateClubProps) {
             radioValue={bookToRead && bookToRead._id ? bookToRead._id : 'none'}
           />
           <Typography
-            style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
+            style={{
+              marginBottom: 10,
+              marginTop: 20,
+              fontSize: 16,
+              color: '#8B8B8B',
+            }}
             variant="subtitle1"
             component="h2"
           >

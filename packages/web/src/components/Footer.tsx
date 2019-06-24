@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 function MadeWithLove() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      Built with ❤️ by the Caravan team.
+      Built with ❤️by the Caravan team.
     </Typography>
   );
 }
