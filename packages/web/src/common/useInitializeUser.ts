@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User } from '@caravan/buddy-reading-types';
 import { getCookie } from './cookies';
+import { KEY_USER } from './localStorage';
 import { getUser } from '../services/user';
 
 function useInitializeUser() {
@@ -9,7 +10,7 @@ function useInitializeUser() {
   useEffect(() => {
     const processUser = async () => {
       if (!user) {
-        const hydratedUserJson = window.localStorage.getItem('user');
+        const hydratedUserJson = window.localStorage.getItem(KEY_USER);
         if (!hydratedUserJson) {
           const userId = getCookie('userId');
           if (userId) {
@@ -17,13 +18,13 @@ function useInitializeUser() {
             const user = await getUser(userId);
             if (user) {
               const dehydratedUser = JSON.stringify(user);
-              window.localStorage.setItem('user', dehydratedUser);
+              window.localStorage.setItem(KEY_USER, dehydratedUser);
               setUser(user);
             } else {
               console.info('Are you having fun messing with cookies? :)');
             }
           } else if (!checkedStore) {
-            window.localStorage.removeItem('user');
+            window.localStorage.removeItem(KEY_USER);
             setCheckedStore(true);
           }
         } else {
