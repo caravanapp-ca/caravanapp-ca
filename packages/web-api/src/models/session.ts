@@ -4,7 +4,7 @@ import {
   SameKeysAs,
   Session,
 } from '@caravan/buddy-reading-types';
-import { SessionDoc } from '../../typings/@caravan/buddy-reading-web-api';
+import { SessionDoc } from '../../typings';
 
 const definition: SameKeysAs<FilterAutoMongoKeys<Session>> = {
   accessToken: { type: String, required: true },

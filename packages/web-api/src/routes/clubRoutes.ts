@@ -21,7 +21,7 @@ import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
-import { ClubDoc } from '../../typings/@caravan/buddy-reading-web-api';
+import { ClubDoc } from '../../typings';
 
 const router = express.Router();
 
@@ -499,7 +499,7 @@ router.put(
         );
       }
     } else {
-      if (club.ownerId === userId) {
+      if (club.ownerId === userId.toHexString()) {
         res.status(401).send('An owner cannot leave a club.');
         return;
       }

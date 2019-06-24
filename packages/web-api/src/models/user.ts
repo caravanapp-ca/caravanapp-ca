@@ -4,7 +4,7 @@ import {
   FilterAutoMongoKeys,
   SameKeysAs,
 } from '@caravan/buddy-reading-types';
-import { UserDoc } from '../../typings/@caravan/buddy-reading-web-api';
+import { UserDoc } from '../../typings';
 
 const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
   bio: { type: String },

@@ -6,7 +6,7 @@ import {
   SameKeysAs,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
-import { ClubDoc } from '../../typings/@caravan/buddy-reading-web-api';
+import { ClubDoc } from '../../typings';
 
 const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
   amazonId: { type: String },

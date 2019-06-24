@@ -1,4 +1,4 @@
-import { UserDoc } from '@caravan/buddy-reading-types';
+import { UserDoc } from '../';
 
 declare global {
   namespace Express {

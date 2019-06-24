@@ -27,7 +27,9 @@ export interface SessionDoc extends Document, FilterAutoMongoKeys<Session> {
   _id: MongooseTypes.ObjectId;
 }
 
-export interface ShelfEntryDoc extends Document, ShelfEntry {
+export interface ShelfEntryDoc
+  extends Document,
+    FilterAutoMongoKeys<ShelfEntry> {
   _id: MongooseTypes.ObjectId;
 }
 

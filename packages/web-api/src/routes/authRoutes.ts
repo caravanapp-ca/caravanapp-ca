@@ -4,7 +4,7 @@ import {
   Session,
   User,
 } from '@caravan/buddy-reading-types';
-import { UserDoc } from '../../typings/@caravan/buddy-reading-web-api';
+import { UserDoc } from '../../typings';
 import { isAuthenticated } from '../middleware/auth';
 import {
   DiscordOAuth2Url,
