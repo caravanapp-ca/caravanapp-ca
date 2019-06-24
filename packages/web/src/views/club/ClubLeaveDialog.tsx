@@ -1,5 +1,4 @@
 import React from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -78,12 +77,20 @@ export default function ClubLeaveDialog(props: LoginModalProps) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-          <Button className={classes.button} onClick={props.onConfirm} color="secondary">
-            Yes, leave the club
-          </Button>
-          <Button className={classes.button} onClick={props.onCancel} color="primary">
-            Cancel
-          </Button>
+        <Button
+          className={classes.button}
+          onClick={props.onConfirm}
+          color="secondary"
+        >
+          Yes, leave the club
+        </Button>
+        <Button
+          className={classes.button}
+          onClick={props.onCancel}
+          color="primary"
+        >
+          Cancel
+        </Button>
       </DialogActions>
     </Dialog>
   );

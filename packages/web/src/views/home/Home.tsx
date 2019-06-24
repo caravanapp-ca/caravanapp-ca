@@ -1,24 +1,19 @@
 import React, { useEffect } from 'react';
-import qs from 'query-string';
-import { User, Club, ShelfEntry, Services } from '@caravan/buddy-reading-types';
+import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
-import HomeIcon from '@material-ui/icons/Home';
 import AddIcon from '@material-ui/icons/Add';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import { deleteCookie } from '../../common/cookies';
+import JoinCaravanButton from '../../components/JoinCaravanButton';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
-import DiscordAuthButton from '../../components/DiscordAuthButton';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { getAllClubs } from '../../services/club';
 import ClubCards from './ClubCards';
-import { UserCard } from './UserCard';
 
 interface HomeProps {
   user: User | null;
@@ -32,10 +27,15 @@ export interface ClubWithCurrentlyReading {
 const useStyles = makeStyles(theme => ({
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(0, 0, 6),
+    padding: theme.spacing(0, 0, 0),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   heroButtons: {
     marginTop: theme.spacing(4),
+    paddingBottom: 20,
   },
   bottomAuthButton: {
     display: 'flex',
@@ -119,7 +119,6 @@ export default function Home(props: HomeProps) {
 
   return (
     <>
-      <CssBaseline />
       <Header
         leftComponent={<div />}
         centerComponent={centerComponent}
@@ -129,14 +128,14 @@ export default function Home(props: HomeProps) {
         {/* Hero unit */}
         {showWelcomeMessage && (
           <div className={classes.heroContent}>
-            <Container maxWidth="sm">
+            <Container maxWidth="md">
               <Typography
                 component="h1"
                 variant="h2"
                 align="center"
                 color="textPrimary"
                 gutterBottom
-                style={{ marginTop: 20 }}
+                style={{ paddingTop: 20 }}
               >
                 Welcome to Caravan!
               </Typography>
@@ -154,7 +153,9 @@ export default function Home(props: HomeProps) {
                 <Grid container spacing={2} justify="center">
                   {!props.user && (
                     <Grid item>
-                      <DiscordAuthButton />
+                      <JoinCaravanButton
+                        onClick={() => setLoginModalShown(true)}
+                      />
                     </Grid>
                   )}
                   {props.user && showWelcomeMessage && (
@@ -174,11 +175,6 @@ export default function Home(props: HomeProps) {
           </div>
         )}
         <ClubCards clubsWCR={clubsWCR} user={props.user} />
-        {!props.user && (
-          <div className={classes.bottomAuthButton}>
-            <UserCard user={props.user} />
-          </div>
-        )}
       </main>
       {loginModalShown && (
         <DiscordLoginModal onCloseLoginDialog={onCloseLoginModal} />

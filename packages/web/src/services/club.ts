@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  Club,
   Services,
   ChannelSource,
   ShelfEntry,

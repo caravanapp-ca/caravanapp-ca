@@ -6,6 +6,7 @@ import {
   Switch,
 } from 'react-router-dom';
 import qs from 'query-string';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import Footer from './components/Footer';
 import Home from './views/home/Home';
 import Club from './views/club/Club';
@@ -42,6 +43,7 @@ export function App(props: AppProps) {
   }, []);
   return (
     <Router>
+      <CssBaseline />
       <Switch>
         <Route exact path="/" component={HomeRedirect} />
         <Route

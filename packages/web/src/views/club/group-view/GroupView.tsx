@@ -1,5 +1,5 @@
 import React from 'react';
-import { Club, User } from '@caravan/buddy-reading-types';
+import { Club } from '@caravan/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import ListElementAvatar from '../../../components/ListElementAvatar';

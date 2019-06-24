@@ -52,19 +52,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  createButton: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    marginRight: 16,
-    marginBottom: 10,
-    color: 'white',
-    backgroundColor: '#7289da',
-  },
-  createButtonSection: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '0px',
-  },
   progress: {
     margin: theme.spacing(2),
   },
@@ -183,7 +170,7 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   return (
-    <div>
+    <>
       <Header leftComponent={leftComponent} centerComponent={centerComponent} />
       <Container className={classes.formContainer} maxWidth="md">
         <div className={classes.sectionContainer}>
@@ -196,7 +183,6 @@ export default function CreateClub(props: CreateClubProps) {
             direction="row"
             justify="center"
             alignItems="center"
-            style={{ marginBottom: 8 }}
           >
             <Grid item xs>
               <div
@@ -324,7 +310,7 @@ export default function CreateClub(props: CreateClubProps) {
                   onChange={() => setSelectedGroupSpeed(speed)}
                   value={speed}
                   color="primary"
-                  style={{ marginLeft: 8, color: '#7289da' }}
+                  style={{ marginLeft: 8 }}
                 />
                 <Typography style={{ marginLeft: 8 }}>
                   {readingSpeedLabels(speed)}
@@ -410,6 +396,6 @@ export default function CreateClub(props: CreateClubProps) {
           </div>
         </div>
       </Container>
-    </div>
+    </>
   );
 }
