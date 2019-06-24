@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, useScrollTrigger } from '@material-ui/core';
+import { AppBar, Toolbar, useScrollTrigger, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 interface ScrollProps {
@@ -19,15 +19,26 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'white',
       color: 'inherit',
     },
-    toolBar: {
-      justifyContent: 'space-between',
-      fontWeight: 'bold',
-    },
     bottomBorder: {
       display: 'block',
       height: 2,
       width: '100%',
       backgroundColor: '#7289da',
+    },
+    toolBarLeftContainer: {
+      display: 'flex',
+      flexGrow: 1,
+      justifyContent: 'flex-start',
+    },
+    toolBarCenterContainer: {
+      display: 'flex',
+      flexGrow: 1,
+      justifyContent: 'center',
+    },
+    toolBarRightContainer: {
+      display: 'flex',
+      flexGrow: 1,
+      justifyContent: 'flex-end',
     },
   })
 );
@@ -51,10 +62,30 @@ export default function ButtonAppBar(props: HeaderProps) {
   return (
     <ElevationScroll {...props}>
       <AppBar className={classes.appBar} position="sticky">
-        <Toolbar className={classes.toolBar}>
-          {leftComponent}
-          {centerComponent}
-          {rightComponent ? rightComponent : <div />}
+        <Toolbar>
+          <Grid
+            container
+            spacing={0}
+            direction="row"
+            justify="center"
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <div className={classes.toolBarLeftContainer}>
+                {leftComponent}
+              </div>
+            </Grid>
+            <Grid item xs={8}>
+              <div className={classes.toolBarCenterContainer}>
+                {centerComponent}
+              </div>
+            </Grid>
+            <Grid item xs={2}>
+              <div className={classes.toolBarRightContainer}>
+                {rightComponent}
+              </div>
+            </Grid>
+          </Grid>
         </Toolbar>
         <div className={classes.bottomBorder} />
       </AppBar>
