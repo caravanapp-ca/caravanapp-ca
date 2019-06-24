@@ -2,7 +2,7 @@ import btoa from 'btoa';
 import React from 'react';
 import { Button, makeStyles } from '@material-ui/core';
 import LockIcon from '@material-ui/icons/Lock';
-import { DISCORD_OAUTH_STATE } from '../state';
+import { KEY_DISCORD_OAUTH_STATE } from '../common/localStorage';
 
 export interface DiscordAuthButtonProps {}
 
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
  * @see https://stackoverflow.com/a/52420482/4400318
  */
 function getOAuth2StateParam() {
-  const discordOAuthState = localStorage.getItem(DISCORD_OAUTH_STATE);
+  const discordOAuthState = localStorage.getItem(KEY_DISCORD_OAUTH_STATE);
   if (discordOAuthState) {
     return discordOAuthState;
   }
@@ -36,7 +36,7 @@ function getOAuth2StateParam() {
     : typedArray.map(v => v); // otherwise map()
   // Base64 encode the JSON so that it can be sent to an OAuth server
   const oauthState = btoa(JSON.stringify(arr));
-  localStorage.setItem(DISCORD_OAUTH_STATE, oauthState);
+  localStorage.setItem(KEY_DISCORD_OAUTH_STATE, oauthState);
 
   // and to retrieve it...
   // const str = localStorage.getItem('foo');
@@ -54,7 +54,7 @@ export default function DiscordAuthButton(props: DiscordAuthButtonProps) {
     const host =
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3001'
-        : undefined;
+        : '';
     window.location.href = `${host}/api/auth/discord/login?state=${oauth2State}`;
   }
   return (

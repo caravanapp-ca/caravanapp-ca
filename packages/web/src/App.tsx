@@ -14,8 +14,9 @@ import FindBooks from './views/books/FindBooks';
 import useInitializeUser from './common/useInitializeUser';
 import UpdateBook from './views/club/UpdateBook';
 import Privacy from './views/privacy/Privacy';
-import { DISCORD_OAUTH_STATE } from './state';
+import { KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
+import { clearAuthState } from './common/localStorage';
 
 export interface AppProps {}
 
@@ -30,14 +31,13 @@ export function App(props: AppProps) {
     const queries = qs.parse(window.location.search);
     if (queries && queries.state) {
       // Someone tampered with the login, remove token
-      if (queries.state !== localStorage.getItem(DISCORD_OAUTH_STATE)) {
+      if (queries.state !== localStorage.getItem(KEY_DISCORD_OAUTH_STATE)) {
         deleteCookie('token');
       }
-      localStorage.removeItem(DISCORD_OAUTH_STATE);
+      localStorage.removeItem(KEY_DISCORD_OAUTH_STATE);
     }
     if (!getCookie('token')) {
-      localStorage.removeItem('user');
-      localStorage.removeItem('discordOAuthState');
+      clearAuthState();
     }
   }, []);
   return (

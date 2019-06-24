@@ -15,10 +15,12 @@ import Header from '../../components/Header';
 import { deleteCookie } from '../../common/cookies';
 import { DISCORD_OAUTH_STATE } from '../../state';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
+import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
+import DiscordAuthButton from '../../components/DiscordAuthButton';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
+import { getAllClubs } from '../../services/club';
 import ClubCards from './ClubCards';
 import { UserCard } from './UserCard';
-import { getAllClubs } from '../../services/club';
-import DiscordLoginModal from '../../components/DiscordLoginModal';
 
 interface HomeProps {
   user: User | null;
@@ -55,13 +57,12 @@ export default function Home(props: HomeProps) {
   const [clubsWCR, setClubsWCR] = React.useState<ClubWithCurrentlyReading[]>(
     []
   );
-  const welcomeKey = 'hide-clubs-welcome';
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
-    localStorage.getItem(welcomeKey) !== 'yes'
+    localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
   useEffect(() => {
     if (!showWelcomeMessage) {
-      localStorage.setItem(welcomeKey, 'yes');
+      localStorage.setItem(KEY_HIDE_WELCOME_CLUBS, 'yes');
     }
   }, [showWelcomeMessage]);
 
@@ -101,18 +102,6 @@ export default function Home(props: HomeProps) {
     console.log('KPKE');
   }
 
-  const leftComponent = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Home"
-      component={AdapterLink}
-      to="/"
-    >
-      <HomeIcon />
-    </IconButton>
-  );
-
   const centerComponent = (
     <Typography variant="h6" style={{ fontWeight: 'bold' }}>
       Find Groups
@@ -144,7 +133,7 @@ export default function Home(props: HomeProps) {
     <>
       <CssBaseline />
       <Header
-        leftComponent={leftComponent}
+        leftComponent={<div />}
         centerComponent={centerComponent}
         rightComponent={rightComponent}
       />
