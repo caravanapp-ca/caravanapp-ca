@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, Redirect } from 'react-router-dom';
 import {
   User,
   ShelfEntry,
@@ -58,6 +58,7 @@ const useStyles = makeStyles(theme => ({
 export default function UpdateBook(props: UpdateBookProps) {
   const classes = useStyles();
   const clubId = props.match.params.id;
+  const user = props.user;
 
   const [finished, setFinished] = React.useState(true);
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
@@ -67,6 +68,13 @@ export default function UpdateBook(props: UpdateBookProps) {
   const [searchedBooks, setSearchedBooks] = React.useState<ShelfEntry[]>([]);
   const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
   const [newBookForShelf, setNewBookForShelf] = React.useState<boolean>(false);
+  const [backToClub, setBackToClub] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    if (club && (!user || user._id !== club.ownerId)) {
+      setBackToClub(true);
+    }
+  }, [club]);
 
   useEffect(() => {
     const getClubFun = async () => {
@@ -167,6 +175,10 @@ export default function UpdateBook(props: UpdateBookProps) {
   if (wantToRead.length === 0) {
     searchLabel =
       "Search for a new book to set as your current read. Any books you don't select will be added to your club's Want to Read list.";
+  }
+
+  if (backToClub) {
+    return <Redirect to={`/clubs/${clubId}`} />;
   }
 
   return (

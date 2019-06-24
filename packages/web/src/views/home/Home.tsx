@@ -94,11 +94,7 @@ export default function Home(props: HomeProps) {
     setLoginModalShown(false);
   }
 
-  const centerComponent = (
-    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
-      Find Groups
-    </Typography>
-  );
+  const centerComponent = <Typography variant="h6">Find Groups</Typography>;
 
   const rightComponent = props.user ? (
     <IconButton

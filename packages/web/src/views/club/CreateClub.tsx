@@ -2,17 +2,12 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
-  GoogleBooks,
   ShelfEntry,
   ReadingSpeed,
   GroupVibe,
   Services,
 } from '@caravan/buddy-reading-types';
-import {
-  makeStyles,
-  createMuiTheme,
-  MuiThemeProvider,
-} from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -50,29 +45,21 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
-    paddingTop: theme.spacing(5),
-    paddingBottom: theme.spacing(5),
+    paddingBottom: theme.spacing(4),
   },
   addButton: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  createButton: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    marginRight: 16,
-    marginBottom: 10,
-    color: 'white',
-    backgroundColor: '#7289da',
-  },
-  createButtonSection: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '0px',
-  },
   progress: {
     margin: theme.spacing(2),
+  },
+  sectionContainer: {
+    marginTop: theme.spacing(4),
+  },
+  sectionHeader: {
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -99,11 +86,7 @@ export default function CreateClub(props: CreateClubProps) {
     </IconButton>
   );
 
-  const centerComponent = (
-    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
-      Create a Group
-    </Typography>
-  );
+  const centerComponent = <Typography variant="h6">Create a Group</Typography>;
 
   // const rightComponent = (
   //   <IconButton
@@ -134,6 +117,16 @@ export default function CreateClub(props: CreateClubProps) {
     createdClub,
     setCreatedClub,
   ] = React.useState<Services.CreateClubResult | null>(null);
+
+  const groupSizes: number[] = [2, 3, 4, 5, 6, 10, 20];
+  const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
+  const groupVibes: GroupVibe[] = [
+    'chill',
+    'first-timers',
+    'learning',
+    'nerdy',
+    'power',
+  ];
 
   function onSubmitSelectedBooks(
     selectedBooks: ShelfEntry[],
@@ -171,125 +164,75 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }
 
-  const AntSwitch = withStyles(theme => ({
-    root: {
-      width: 28,
-      height: 16,
-      padding: 0,
-      display: 'flex',
-    },
-    switchBase: {
-      padding: 2,
-      color: theme.palette.grey[500],
-      '&$checked': {
-        transform: 'translateX(12px)',
-        color: theme.palette.common.white,
-        '& + $track': {
-          opacity: 1,
-          backgroundColor: '#7289da',
-          borderColor: '#7289da',
-        },
-      },
-    },
-    thumb: {
-      width: 12,
-      height: 12,
-      boxShadow: 'none',
-    },
-    track: {
-      border: `1px solid ${theme.palette.grey[500]}`,
-      borderRadius: 16 / 2,
-      opacity: 1,
-      backgroundColor: theme.palette.common.white,
-    },
-    checked: {},
-  }))(Switch);
+  let privateSwitchLabel = 'Anyone can find and join my club.';
+  if (privateClub) {
+    privateSwitchLabel = 'Only friends I share the link with can join my club.';
+  }
 
   return (
     <>
       <Header leftComponent={leftComponent} centerComponent={centerComponent} />
-      <main>
-        <Container className={classes.formContainer} maxWidth="md">
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexDirection: 'column',
-            }}
+      <Container className={classes.formContainer} maxWidth="md">
+        <div className={classes.sectionContainer}>
+          <Typography variant="subtitle1" className={classes.sectionHeader}>
+            Who can join?
+          </Typography>
+          <Grid
+            container
+            spacing={0}
+            direction="row"
+            justify="center"
+            alignItems="center"
           >
-            <Typography
-              style={{ fontSize: 16, color: '#8B8B8B' }}
-              variant="subtitle1"
-            >
-              Who can join?
-            </Typography>
-            <div
-              style={{
-                marginBottom: '10px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Typography component="div">
-                <Grid
-                  component="label"
-                  container
-                  alignItems="center"
-                  spacing={1}
-                >
-                  <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
-                    Anyone
-                  </Grid>
-                  <Grid item>
-                    <AntSwitch
-                      checked={privateClub}
-                      onChange={(e, checked) => setPrivateClub(checked)}
-                      value="checked"
-                    />
-                  </Grid>
-                  <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
-                    Friends only
-                  </Grid>
-                </Grid>
-              </Typography>
-            </div>
-            <div
-              style={{
-                marginBottom: '20px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              {!privateClub && (
-                <Typography
-                  style={{
-                    fontSize: 16,
-                    color: '#8B8B8B',
-                  }}
-                  variant="subtitle1"
-                >
-                  Anyone can find and join my club
-                </Typography>
-              )}
-              {privateClub && (
-                <Typography
-                  style={{
-                    fontSize: 16,
-                    color: '#8B8B8B',
-                  }}
-                  variant="subtitle1"
-                >
-                  Only friends who I share the link with can join my club
-                </Typography>
-              )}
-            </div>
-          </div>
+            <Grid item xs>
+              <div
+                style={{
+                  display: 'flex',
+                  flexGrow: 1,
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <Typography>Anyone</Typography>
+              </div>
+            </Grid>
+            <Grid item>
+              <div
+                style={{
+                  display: 'flex',
+                  flexGrow: 1,
+                  justifyContent: 'center',
+                  marginLeft: 8,
+                  marginRight: 8,
+                }}
+              >
+                <Switch
+                  checked={privateClub}
+                  onChange={(e, checked) => setPrivateClub(checked)}
+                  value="checked"
+                  color="primary"
+                />
+              </div>
+            </Grid>
+            <Grid item xs>
+              <div
+                style={{
+                  display: 'flex',
+                  flexGrow: 1,
+                  justifyContent: 'flex-start',
+                }}
+              >
+                <Typography>Friends only</Typography>
+              </div>
+            </Grid>
+          </Grid>
+          <Typography align="center" style={{ color: 'rgba(0, 0, 0, 0.5)' }}>
+            {privateSwitchLabel}
+          </Typography>
+        </div>
+        <div className={classes.sectionContainer}>
           <TextField
             id="filled-name"
             label="Group Name"
-            style={{ marginBottom: 20 }}
             helperText="50 character limit"
             variant="outlined"
             fullWidth
@@ -300,10 +243,9 @@ export default function CreateClub(props: CreateClubProps) {
               >
             ) => setSelectedGroupName(e.target.value)}
           />
-          <Typography
-            style={{ marginBottom: 10, fontSize: 16, color: '#8B8B8B' }}
-            variant="subtitle1"
-          >
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography className={classes.sectionHeader} variant="subtitle1">
             What books would you like to read?
           </Typography>
           <BookSearch
@@ -311,530 +253,149 @@ export default function CreateClub(props: CreateClubProps) {
             maxSelected={5}
             radioValue={bookToRead && bookToRead._id ? bookToRead._id : 'none'}
           />
-          <Typography
-            style={{
-              marginBottom: 10,
-              marginTop: 20,
-              fontSize: 16,
-              color: '#8B8B8B',
-            }}
-            variant="subtitle1"
-            component="h2"
-          >
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography variant="subtitle1" className={classes.sectionHeader}>
             How many group members do you want?
           </Typography>
-          <div style={{ marginBottom: 20 }}>
-            <MuiThemeProvider theme={theme}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}
+          >
+            {groupSizes.map(size => (
               <div
                 style={{
                   display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-around',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    marginBottom: 20,
-                    alignItems: 'center',
-                    color: '#4B4B4B',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <Radio
-                    checked={selectedGroupSize === 2}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setSelectedGroupSize(Number.parseInt(event.target.value))
-                    }
-                    value="2"
-                    style={{ color: '#7289da' }}
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': '2' }}
-                  />
-                  <Typography variant="h5" component="h2">
-                    2
-                  </Typography>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    marginBottom: 20,
-                    alignItems: 'center',
-                    color: '#4B4B4B',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <Radio
-                    checked={selectedGroupSize === 3}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setSelectedGroupSize(Number.parseInt(event.target.value))
-                    }
-                    value="3"
-                    style={{ color: '#7289da' }}
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': '3' }}
-                  />
-                  <Typography variant="h5" component="h2">
-                    3
-                  </Typography>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    marginBottom: 20,
-                    alignItems: 'center',
-                    color: '#4B4B4B',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <Radio
-                    checked={selectedGroupSize === 4}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setSelectedGroupSize(Number.parseInt(event.target.value))
-                    }
-                    value="4"
-                    style={{ color: '#7289da' }}
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': '4' }}
-                  />
-                  <Typography variant="h5" component="h2">
-                    4
-                  </Typography>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    marginBottom: 20,
-                    alignItems: 'center',
-                    color: '#4B4B4B',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <Radio
-                    checked={selectedGroupSize === 5}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setSelectedGroupSize(Number.parseInt(event.target.value))
-                    }
-                    value="5"
-                    style={{ color: '#7289da' }}
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': '5' }}
-                  />
-                  <Typography variant="h5" component="h2">
-                    5
-                  </Typography>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    marginBottom: 20,
-                    alignItems: 'center',
-                    color: '#4B4B4B',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <Radio
-                    checked={selectedGroupSize === 6}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setSelectedGroupSize(Number.parseInt(event.target.value))
-                    }
-                    value="6"
-                    style={{ color: '#7289da' }}
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': '6' }}
-                  />
-                  <Typography variant="h5" component="h2">
-                    6
-                  </Typography>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    marginBottom: 20,
-                    alignItems: 'center',
-                    color: '#4B4B4B',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <Radio
-                    checked={selectedGroupSize === 10}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setSelectedGroupSize(Number.parseInt(event.target.value))
-                    }
-                    value="10"
-                    style={{ color: '#7289da' }}
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': '10' }}
-                  />
-                  <Typography variant="h5" component="h2">
-                    10
-                  </Typography>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    marginBottom: 20,
-                    alignItems: 'center',
-                    color: '#4B4B4B',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <Radio
-                    checked={selectedGroupSize === 20}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setSelectedGroupSize(Number.parseInt(event.target.value))
-                    }
-                    value="20"
-                    style={{ color: '#7289da' }}
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': '20' }}
-                  />
-                  <Typography variant="h5" component="h2">
-                    20
-                  </Typography>
-                </div>
+                <Radio
+                  checked={selectedGroupSize === size}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    setSelectedGroupSize(size)
+                  }
+                  value={size.toString()}
+                  color="primary"
+                />
+                <Typography>{size}</Typography>
               </div>
-            </MuiThemeProvider>
+            ))}
           </div>
-
-          <Typography
-            style={{ marginBottom: 30, fontSize: 16, color: '#8B8B8B' }}
-            variant="subtitle1"
-            component="h2"
-          >
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography variant="subtitle1" className={classes.sectionHeader}>
             How fast do you want the group to read?
           </Typography>
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              width: '80%',
-              marginBottom: 30,
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {readingSpeedIcons('slow', 'icon')}
+            {readingSpeeds.map(speed => (
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'center',
+                  flexDirection: 'row',
                   alignItems: 'center',
                 }}
               >
+                {readingSpeedIcons(speed, 'icon')}
                 <Radio
-                  checked={selectedGroupSpeed === 'slow'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSpeed(event.target.value as ReadingSpeed)
-                  }
-                  value="slow"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'Slow' }}
+                  checked={selectedGroupSpeed === speed}
+                  onChange={() => setSelectedGroupSpeed(speed)}
+                  value={speed}
+                  color="primary"
+                  style={{ marginLeft: 8 }}
                 />
-                <Typography
-                  style={{ marginLeft: 10, color: '#4B4B4B' }}
-                  variant="h5"
-                  component="h2"
-                >
-                  A book a month
+                <Typography style={{ marginLeft: 8 }}>
+                  {readingSpeedLabels(speed)}
                 </Typography>
               </div>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {readingSpeedIcons('moderate', 'icon')}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Radio
-                  checked={selectedGroupSpeed === 'moderate'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSpeed(event.target.value as ReadingSpeed)
-                  }
-                  value="moderate"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'Moderate' }}
-                />
-                <Typography
-                  style={{ marginLeft: 10, color: '#4B4B4B' }}
-                  variant="h5"
-                  component="h2"
-                >
-                  One book every couple of weeks
-                </Typography>
-              </div>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {readingSpeedIcons('fast', 'icon')}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Radio
-                  checked={selectedGroupSpeed === 'fast'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSpeed(event.target.value as ReadingSpeed)
-                  }
-                  value="fast"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'Fast' }}
-                />
-                <Typography
-                  style={{ marginLeft: 10, color: '#4B4B4B' }}
-                  variant="h5"
-                  component="h2"
-                >
-                  One or more books a week
-                </Typography>
-              </div>
-            </div>
+            ))}
           </div>
-
-          <Typography
-            style={{ marginBottom: 30, fontSize: 16, color: '#8B8B8B' }}
-            variant="subtitle1"
-            component="h2"
-          >
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography variant="subtitle1" className={classes.sectionHeader}>
             What vibe do you want the group to have?
           </Typography>
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              width: '80%',
-              marginBottom: 30,
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {groupVibeIcons('chill', 'icon')}
+            {groupVibes.map(vibe => (
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'center',
+                  flexDirection: 'row',
                   alignItems: 'center',
                 }}
               >
+                {groupVibeIcons(vibe, 'icon')}
                 <Radio
-                  checked={selectedGroupVibe === 'chill'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibe(event.target.value as GroupVibe)
-                  }
-                  value="chill"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'Chill' }}
+                  checked={selectedGroupVibe === vibe}
+                  onChange={() => setSelectedGroupVibe(vibe)}
+                  value={vibe}
+                  color="primary"
+                  style={{ marginLeft: 8 }}
                 />
-                <Typography
-                  style={{ marginLeft: 10, color: '#4B4B4B' }}
-                  variant="h5"
-                  component="h2"
-                >
-                  {groupVibeLabels('chill')}
+                <Typography style={{ marginLeft: 8 }}>
+                  {groupVibeLabels(vibe)}
                 </Typography>
               </div>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {groupVibeIcons('nerdy', 'icon')}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Radio
-                  checked={selectedGroupVibe === 'nerdy'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibe(event.target.value as GroupVibe)
-                  }
-                  value="nerdy"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'Nerdy' }}
-                />
-                <Typography
-                  style={{ marginLeft: 10, color: '#4B4B4B' }}
-                  variant="h5"
-                  component="h2"
-                >
-                  {groupVibeLabels('nerdy')}
-                </Typography>
-              </div>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {groupVibeIcons('power', 'icon')}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <Radio
-                  checked={selectedGroupVibe === 'power'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibe(event.target.value as GroupVibe)
-                  }
-                  value="power"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'Power' }}
-                />
-                <Typography
-                  style={{ marginLeft: 10, color: '#4B4B4B' }}
-                  variant="h5"
-                  component="h2"
-                >
-                  {groupVibeLabels('power')}
-                </Typography>
-              </div>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {groupVibeIcons('first-timers', 'icon')}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Radio
-                  checked={selectedGroupVibe === 'first-timers'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibe(event.target.value as GroupVibe)
-                  }
-                  value="first-timers"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'FirstTimer' }}
-                />
-                <Typography
-                  style={{ marginLeft: 10, color: '#4B4B4B' }}
-                  variant="h5"
-                  component="h2"
-                >
-                  {groupVibeLabels('first-timers')}
-                </Typography>
-              </div>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {groupVibeIcons('learning', 'icon')}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Radio
-                  checked={selectedGroupVibe === 'learning'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupVibe(event.target.value as GroupVibe)
-                  }
-                  value="learning"
-                  style={{ color: '#7289da' }}
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'Learning' }}
-                />
-                <Typography
-                  style={{ marginLeft: 10, color: '#4B4B4B' }}
-                  variant="h5"
-                  component="h2"
-                >
-                  {groupVibeLabels('learning')}
-                </Typography>
-              </div>
-            </div>
+            ))}
           </div>
-
+        </div>
+        <div className={classes.sectionContainer}>
           <TextField
-            id="multiline-full-width"
-            style={{ marginBottom: 20, width: '100%' }}
-            placeholder="Group Bio"
-            helperText="300 character limit"
+            id="outlined-multiline-static"
+            label="Group Bio"
+            multiline
+            fullWidth
+            rows="4"
             variant="outlined"
+            inputProps={{ maxLength: 300 }}
+            helperText="300 character limit"
             onChange={(
               e: React.ChangeEvent<
                 HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
               >
             ) => setSelectedGroupBio(e.target.value)}
-            multiline
-            rows="4"
-            inputProps={{ maxLength: 300 }}
-            InputLabelProps={{
-              shrink: true,
-            }}
           />
-          <div className={classes.createButtonSection}>
-            {creatingClub ? (
-              <CircularProgress className={classes.progress} />
-            ) : null}
-            <Button
-              variant="contained"
-              disabled={
-                selectedGroupBio === '' ||
-                selectedGroupName === '' ||
-                !bookToRead ||
-                selectedBooks.length === 0
-              }
-              className={classes.createButton}
-              size="small"
-              onClick={createClubOnClick}
-            >
-              Create
-            </Button>
+        </div>
+        <div className={classes.sectionContainer}>
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'flex-end',
+            }}
+          >
+            {!creatingClub && (
+              <Button
+                variant="contained"
+                disabled={
+                  selectedGroupBio === '' ||
+                  selectedGroupName === '' ||
+                  !bookToRead ||
+                  selectedBooks.length === 0
+                }
+                onClick={createClubOnClick}
+                color="primary"
+              >
+                CREATE
+              </Button>
+            )}
+            {creatingClub && <CircularProgress />}
           </div>
-        </Container>
-      </main>
+        </div>
+      </Container>
     </>
   );
 }
