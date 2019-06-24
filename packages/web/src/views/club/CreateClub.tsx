@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
-  GoogleBooks,
   ShelfEntry,
   ReadingSpeed,
   GroupVibe,
@@ -172,40 +171,6 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }
 
-  const AntSwitch = withStyles(theme => ({
-    root: {
-      width: 28,
-      height: 16,
-      padding: 0,
-      display: 'flex',
-    },
-    switchBase: {
-      padding: 2,
-      color: theme.palette.grey[500],
-      '&$checked': {
-        transform: 'translateX(12px)',
-        color: theme.palette.common.white,
-        '& + $track': {
-          opacity: 1,
-          backgroundColor: '#7289da',
-          borderColor: '#7289da',
-        },
-      },
-    },
-    thumb: {
-      width: 12,
-      height: 12,
-      boxShadow: 'none',
-    },
-    track: {
-      border: `1px solid ${theme.palette.grey[500]}`,
-      borderRadius: 16 / 2,
-      opacity: 1,
-      backgroundColor: theme.palette.common.white,
-    },
-    checked: {},
-  }))(Switch);
-
   return (
     <React.Fragment>
       <CssBaseline />
@@ -225,37 +190,54 @@ export default function CreateClub(props: CreateClubProps) {
             >
               Who can join?
             </Typography>
-            <div
-              style={{
-                marginBottom: '10px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+            <Grid
+              container
+              spacing={0}
+              direction="row"
+              justify="center"
+              alignItems="center"
             >
-              <Typography component="div">
-                <Grid
-                  component="label"
-                  container
-                  alignItems="center"
-                  spacing={1}
+              <Grid item xs>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexGrow: 1,
+                    justifyContent: 'flex-end',
+                  }}
                 >
-                  <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
-                    Anyone
-                  </Grid>
-                  <Grid item>
-                    <AntSwitch
-                      checked={privateClub}
-                      onChange={(e, checked) => setPrivateClub(checked)}
-                      value="checked"
-                    />
-                  </Grid>
-                  <Grid item style={{ fontSize: 24, color: '#4B4B4B' }}>
-                    Friends only
-                  </Grid>
-                </Grid>
-              </Typography>
-            </div>
+                  <Typography>Anyone</Typography>
+                </div>
+              </Grid>
+              <Grid item>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexGrow: 1,
+                    justifyContent: 'center',
+                    marginLeft: 8,
+                    marginRight: 8
+                  }}
+                >
+                  <Switch
+                    checked={privateClub}
+                    onChange={(e, checked) => setPrivateClub(checked)}
+                    value="checked"
+                    color="primary"
+                  />
+                </div>
+              </Grid>
+              <Grid item xs>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexGrow: 1,
+                    justifyContent: 'flex-start',
+                  }}
+                >
+                  <Typography>Friends only</Typography>
+                </div>
+              </Grid>
+            </Grid>
             <div
               style={{
                 marginBottom: '10px',
