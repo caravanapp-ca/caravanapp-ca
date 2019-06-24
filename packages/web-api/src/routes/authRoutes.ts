@@ -135,7 +135,7 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
-    const result = await guild.addMember(req.user.discordId, {
+    const result = await guild.addMember(discordUserData.id, {
       accessToken,
     });
   } catch (err) {

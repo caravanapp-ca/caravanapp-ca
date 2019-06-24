@@ -122,96 +122,94 @@ export default function ClubCards(props: ClubCardsProps) {
   };
 
   return (
-      <main>
-        <Container className={classes.cardGrid} maxWidth="md">
-          <Grid container spacing={4}>
-            {clubsWCR.map(c => {
-              const { club, currentlyReading } = c;
-              let year;
-              if (currentlyReading && currentlyReading.publishedDate) {
-                year = new Date(
-                  currentlyReading.publishedDate
-                ).getUTCFullYear();
-              }
-              return (
-                <Grid item key={club._id} xs={12} sm={6}>
-                  <Card className={classes.card}>
-                    <div className={classes.clubImageContainer}>
-                      {currentlyReading && (
-                        <>
-                          <img
-                            src={currentlyReading.coverImageURL}
-                            alt={currentlyReading.title}
-                            className={classes.clubImage}
-                          />
-                          <div className={classes.clubImageShade} />
-                          <div className={classes.imageTextContainer}>
-                            <Typography className={classes.imageText}>
-                              Currently reading:
-                            </Typography>
-                            <Typography className={classes.imageTitleText}>
-                              {currentlyReading.title}
-                            </Typography>
-                            <Typography className={classes.imageText}>
-                              {currentlyReading.author}
-                              {year && `, ${year}`}
-                            </Typography>
-                            <Typography className={classes.imageText}>
-                              {currentlyReading.genres.join(', ')}
-                            </Typography>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                    <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {club.name}
-                      </Typography>
-                      <div className={classes.iconRoot}>
+    <main>
+      <Container className={classes.cardGrid} maxWidth="md">
+        <Grid container spacing={4}>
+          {clubsWCR.map(c => {
+            const { club, currentlyReading } = c;
+            let year;
+            if (currentlyReading && currentlyReading.publishedDate) {
+              year = new Date(currentlyReading.publishedDate).getUTCFullYear();
+            }
+            return (
+              <Grid item key={club._id} xs={12} sm={6}>
+                <Card className={classes.card}>
+                  <div className={classes.clubImageContainer}>
+                    {currentlyReading && (
+                      <>
+                        <img
+                          src={currentlyReading.coverImageURL}
+                          alt={currentlyReading.title}
+                          className={classes.clubImage}
+                        />
+                        <div className={classes.clubImageShade} />
+                        <div className={classes.imageTextContainer}>
+                          <Typography className={classes.imageText}>
+                            Currently reading:
+                          </Typography>
+                          <Typography className={classes.imageTitleText}>
+                            {currentlyReading.title}
+                          </Typography>
+                          <Typography className={classes.imageText}>
+                            {currentlyReading.author}
+                            {year && `, ${year}`}
+                          </Typography>
+                          <Typography className={classes.imageText}>
+                            {currentlyReading.genres.join(', ')}
+                          </Typography>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <CardContent className={classes.cardContent}>
+                    <Typography gutterBottom variant="h5" component="h2">
+                      {club.name}
+                    </Typography>
+                    <div className={classes.iconRoot}>
+                      <div className={classes.iconWithLabel}>
+                        <PersonIcon />
+                        <Typography
+                          variant="subtitle1"
+                          className={classes.iconLabel}
+                        >
+                          {`${club.memberCount}/${club.maxMembers}`}
+                        </Typography>
+                      </div>
+                      {club.vibe && (
                         <div className={classes.iconWithLabel}>
-                          <PersonIcon />
+                          {groupVibeIcons(club.vibe, 'icon')}
                           <Typography
                             variant="subtitle1"
                             className={classes.iconLabel}
                           >
-                            {`${club.memberCount}/${club.maxMembers}`}
+                            {groupVibeLabels(club.vibe)}
                           </Typography>
                         </div>
-                        {club.vibe && (
-                          <div className={classes.iconWithLabel}>
-                            {groupVibeIcons(club.vibe, 'icon')}
-                            <Typography
-                              variant="subtitle1"
-                              className={classes.iconLabel}
-                            >
-                              {groupVibeLabels(club.vibe)}
-                            </Typography>
-                          </div>
-                        )}
-                        {club.readingSpeed && (
-                          <div className={classes.iconWithLabel}>
-                            {readingSpeedIcons(club.readingSpeed, 'icon')}
-                            <Typography
-                              variant="subtitle1"
-                              className={classes.iconLabel}
-                            >
-                              {readingSpeedLabels(club.readingSpeed)}
-                            </Typography>
-                          </div>
-                        )}
-                      </div>
-                      <Typography>{club.bio}</Typography>
-                    </CardContent>
-                    <CardActions className={classes.cardActions}>
-                      <Button
-                        className={classes.button}
-                        color="primary"
-                        component={AdapterLink}
-                        to={`/clubs/${club._id}`}
-                      >
-                        INFO
-                      </Button>
-                      <Button
+                      )}
+                      {club.readingSpeed && (
+                        <div className={classes.iconWithLabel}>
+                          {readingSpeedIcons(club.readingSpeed, 'icon')}
+                          <Typography
+                            variant="subtitle1"
+                            className={classes.iconLabel}
+                          >
+                            {readingSpeedLabels(club.readingSpeed)}
+                          </Typography>
+                        </div>
+                      )}
+                    </div>
+                    <Typography>{club.bio}</Typography>
+                  </CardContent>
+                  <CardActions className={classes.cardActions}>
+                    <Button
+                      className={classes.button}
+                      color="primary"
+                      component={AdapterLink}
+                      to={`/clubs/${club._id}`}
+                    >
+                      INFO
+                    </Button>
+                    {/* <Button
                         variant="contained"
                         className={classes.button}
                         color="primary"
@@ -223,20 +221,20 @@ export default function ClubCards(props: ClubCardsProps) {
                         disabled={club.memberCount >= club.maxMembers}
                       >
                         JOIN
-                      </Button>
-                      {joinClubLoadingId === club._id && (
-                        <CircularProgress className={classes.progress} />
-                      )}
-                    </CardActions>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
-          {loginModalShown && (
-            <DiscordLoginModal onCloseLoginDialog={onCloseLoginDialog} />
-          )}
-        </Container>
-      </main>
+                      </Button> */}
+                    {joinClubLoadingId === club._id && (
+                      <CircularProgress className={classes.progress} />
+                    )}
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+        {loginModalShown && (
+          <DiscordLoginModal onCloseLoginDialog={onCloseLoginDialog} />
+        )}
+      </Container>
+    </main>
   );
 }

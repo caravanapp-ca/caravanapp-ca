@@ -169,27 +169,15 @@ export default function ClubComponent(props: ClubProps) {
   };
 
   async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
-    if (action === 'add') {
-      const result = await modifyMyClubMembership(clubId, true);
-      if (result.status >= 200 && result.status < 300) {
-        if (club) {
-          const newClub: Services.GetClubById = {
-            ...club,
-            members: result.data,
-          };
-          setClub(newClub);
-        }
-      }
-    } else if (action === 'remove') {
-      const result = await modifyMyClubMembership(clubId, false);
-      if (result.status >= 200 && result.status < 300) {
-        if (club) {
-          const newClub: Services.GetClubById = {
-            ...club,
-            members: result.data,
-          };
-          setClub(newClub);
-        }
+    const addMember = action === 'add';
+    const result = await modifyMyClubMembership(clubId, addMember);
+    if (result.status >= 200 && result.status < 300) {
+      if (club) {
+        const newClub: Services.GetClubById = {
+          ...club,
+          members: result.data,
+        };
+        setClub(newClub);
       }
     }
   }

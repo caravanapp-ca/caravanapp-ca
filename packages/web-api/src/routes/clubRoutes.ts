@@ -465,11 +465,11 @@ router.put(
       return;
     }
 
+    const memberInChannel = (channel as
+      | VoiceChannel
+      | TextChannel).members.find(m => m.id === userDiscordId);
     if (isMember) {
       // Trying to add to members
-      const memberInChannel = (channel as
-        | VoiceChannel
-        | TextChannel).members.find(m => m.id === userDiscordId);
       const { size } = getCountableMembersInChannel(channel, club);
       if (memberInChannel) {
         // already a member
@@ -489,56 +489,34 @@ router.put(
         if (permissions && permissions.hasPermission('READ_MESSAGES')) {
           res.status(401).send('You already have access to the channel!');
           return;
-        } else {
-          await (channel as VoiceChannel | TextChannel).overwritePermissions(
-            userDiscordId,
-            {
-              READ_MESSAGES: true,
-              SEND_MESSAGES: true,
-            }
-          );
-          const members = getCountableMembersInChannel(channel, club).array();
-          res.status(200).send(members);
-          return;
         }
+        await (channel as VoiceChannel | TextChannel).overwritePermissions(
+          userDiscordId,
+          {
+            READ_MESSAGES: true,
+            SEND_MESSAGES: true,
+          }
+        );
       }
     } else {
+      if (club.ownerId === userId) {
+        res.status(401).send('An owner cannot leave a club.');
+        return;
+      }
+      if (!memberInChannel) {
+        res.status(401).send("You're not a member of the club already!");
+        return;
+      }
+      await (channel as VoiceChannel | TextChannel).overwritePermissions(
+        userDiscordId,
+        {
+          READ_MESSAGES: false,
+          SEND_MESSAGES: false,
+        }
+      );
     }
-
-    // try {
-    //   if (isMember) {
-    //     const condition = { _id: clubId, 'members.userId': { $ne: userId } };
-    //     const update = {
-    //       $addToSet: {
-    //         members: {
-    //           userId,
-    //           role: 'member',
-    //           createdAt: new Date(),
-    //           updatedAt: new Date(),
-    //         },
-    //       },
-    //     };
-    //     const result = await ClubModel.findOneAndUpdate(condition, update, {
-    //       new: true,
-    //     });
-    //     const userMembership = result.members.find(mem =>
-    //       mem.userId.equals(userId)
-    //     );
-    //     res.status(200).json(userMembership);
-    //   } else if (!isMember) {
-    //     const update = {
-    //       $pull: {
-    //         members: {
-    //           userId,
-    //         },
-    //       },
-    //     };
-    //     const result = await ClubModel.findByIdAndUpdate(clubId, update);
-    //     res.sendStatus(200);
-    //   }
-    // } catch (err) {
-    //   res.status(400).send(err);
-    // }
+    const members = await getChannelMembers(guild, club);
+    res.status(200).send(members);
   }
 );
 
