@@ -164,16 +164,16 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }
 
-  let privateSwitchLabel = 'Anyone can find and join my club.';
-  if (privateClub) {
-    privateSwitchLabel = 'Only friends I share the link with can join my club.';
-  }
+  // let privateSwitchLabel = 'Anyone can find and join my club.';
+  // if (privateClub) {
+  //   privateSwitchLabel = 'Only friends I share the link with can join my club.';
+  // }
 
   return (
     <>
       <Header leftComponent={leftComponent} centerComponent={centerComponent} />
       <Container className={classes.formContainer} maxWidth="md">
-        <div className={classes.sectionContainer}>
+        {/* <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
             Who can join?
           </Typography>
@@ -228,7 +228,7 @@ export default function CreateClub(props: CreateClubProps) {
           <Typography align="center" style={{ color: 'rgba(0, 0, 0, 0.5)' }}>
             {privateSwitchLabel}
           </Typography>
-        </div>
+        </div> */}
         <div className={classes.sectionContainer}>
           <TextField
             id="filled-name"
