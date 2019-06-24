@@ -115,6 +115,7 @@ router.get('/', async (req, res, next) => {
           .size;
         const obj: Services.GetClubs['clubs'][0] = {
           ...club.toObject(),
+          guildId: guild.id,
           memberCount,
         };
         return obj;
@@ -253,10 +254,6 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    guild.addMember(req.user.discordId, {
-      accessToken: token,
-    });
-
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
       bio: body.bio,
@@ -271,8 +268,15 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       vibe: body.vibe,
     };
 
+    const addMemberPromise = guild.addMember(req.user.discordId, {
+      accessToken: token,
+    });
     const club = new ClubModel(clubModelBody);
-    const newClub = await club.save();
+    const clubSavePromise = club.save();
+    const [guildMember, clubSave] = await Promise.all([
+      addMemberPromise,
+      clubSavePromise,
+    ]);
 
     const result: Services.CreateClubResult = {
       //@ts-ignore
