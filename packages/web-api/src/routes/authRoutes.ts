@@ -8,13 +8,11 @@ import { UserDoc } from '../../typings';
 import { isAuthenticated } from '../middleware/auth';
 import {
   DiscordOAuth2Url,
-  DiscordUserResponseData,
   OAuth2TokenResponseData,
   ReadingDiscordBot,
 } from '../services/discord';
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
-import { RequiredKeys } from 'utility-types';
 
 const router = express.Router();
 

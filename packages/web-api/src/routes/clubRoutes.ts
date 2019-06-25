@@ -8,7 +8,7 @@ import {
   VoiceChannel,
   GuildMember,
 } from 'discord.js';
-import { check, validationResult } from 'express-validator/check';
+import { check, validationResult } from 'express-validator';
 import {
   Club,
   FilterAutoMongoKeys,
