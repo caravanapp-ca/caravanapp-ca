@@ -221,6 +221,8 @@ interface CreateClubBody
   extends CreateChannelInput,
     Omit<Club, 'ownerId' | 'channelId'> {}
 
+const knownHttpsRedirects = ['http://books.google.com/books/'];
+
 // Create club
 router.post('/', isAuthenticated, async (req, res, next) => {
   try {
@@ -254,12 +256,27 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
+    const shelf = body.shelf.map(item => {
+      if (
+        item &&
+        item.coverImageURL &&
+        knownHttpsRedirects.find(url => item.coverImageURL.startsWith(url))
+      ) {
+        const newItem: CreateClubBody['shelf'][0] = {
+          ...item,
+          coverImageURL: item.coverImageURL.replace('http:', 'https:'),
+        };
+        return newItem;
+      }
+      return item;
+    });
+
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
       bio: body.bio,
       maxMembers: body.maxMembers,
       readingSpeed: body.readingSpeed,
-      shelf: body.shelf,
+      shelf,
       ownerId: userId,
       ownerDiscordId: req.user.discordId,
       channelSource: body.channelSource,
