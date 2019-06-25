@@ -1,10 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import {
   FilterAutoMongoKeys,
   Session,
   User,
 } from '@caravan/buddy-reading-types';
-import { UserDoc } from '../../typings';
 import { isAuthenticated } from '../middleware/auth';
 import {
   DiscordOAuth2Url,
@@ -13,6 +12,8 @@ import {
 } from '../services/discord';
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
+import { generateSlugIds } from '../common/url';
+import { getAvailableSlugIds } from '../services/user';
 
 const router = express.Router();
 
@@ -85,11 +86,24 @@ router.get('/discord/callback', async (req, res) => {
   if (userDoc) {
     // Update the user, but lazy now. // THIS COMMENT IS OLD, NOT NECESSARY NOW?
   } else {
-    const userInstance = {
-      discordId: discordUserData.id,
-    };
-    const userModel = new UserModel(userInstance);
-    userDoc = await userModel.save();
+    const slugs = generateSlugIds(discordUserData.username);
+    const availableSlugs = await getAvailableSlugIds(slugs);
+    let currentSlugdId = 0;
+    while (!userDoc && currentSlugdId < availableSlugs.length) {
+      const userInstance: Pick<User, 'discordId' | 'urlSlug'> = {
+        discordId: discordUserData.id,
+        urlSlug: availableSlugs[currentSlugdId],
+      };
+      const userModel = new UserModel(userInstance);
+      // TODO: handle slug failure due to time windowing
+      userDoc = await userModel.save();
+      currentSlugdId++;
+    }
+    if (!userDoc || currentSlugdId - 1 < availableSlugs.length) {
+      throw new Error(
+        `User creation failed. UserDoc: ${userDoc}, Discord: ${discordUserData.id}`
+      );
+    }
   }
 
   try {

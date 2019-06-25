@@ -72,10 +72,17 @@ declare module '@caravan/buddy-reading-types' {
   export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
     discordId: string;
+    goodreadsUrl?: string;
+    website?: string;
     name?: string;
     photoUrl?: string;
-    readingSpeed?: string;
+    smallPhotoUrl?: string;
+    readingSpeed?: ReadingSpeed;
+    age?: number;
+    gender?: string;
+    location?: string;
     isBot: boolean;
+    urlSlug: string;
   }
 
   export type ChannelSource = 'discord';
