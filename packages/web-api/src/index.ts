@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 import express from 'express';
+import helmet from 'helmet';
 import path from 'path';
 
 import authRoutes from './routes/authRoutes';
@@ -19,10 +20,6 @@ import { ReadingDiscordBot } from './services/discord';
 
 (async () => {
   const app = express();
-  app.use(cookieParser());
-  app.use(
-    cookieSession({ name: 'session', keys: [process.env.COOKIE_SESSION_KEY] })
-  );
 
   await connectToDb();
 
@@ -30,11 +27,16 @@ import { ReadingDiscordBot } from './services/discord';
   const env = process.env.NODE_ENV || 'development';
   console.log(`Running in ${env} environment`);
 
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-
   // logs in
   const discordClient = ReadingDiscordBot.getInstance();
+
+  app.use(helmet());
+  app.use(cookieParser());
+  app.use(
+    cookieSession({ name: 'session', keys: [process.env.COOKIE_SESSION_KEY] })
+  );
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
 
   app.use('/api/test', testRoutes);
   app.use('/api/club', clubRoutes);
