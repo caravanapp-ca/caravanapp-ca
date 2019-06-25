@@ -31,6 +31,23 @@ import { ReadingDiscordBot } from './services/discord';
   const discordClient = ReadingDiscordBot.getInstance();
 
   app.use(helmet());
+  app.enable('trust proxy');
+  if (process.env.NODE_ENV === 'production') {
+    app.use(function(req, res, next) {
+      const isHttps = req.secure;
+      if (isHttps) {
+        next();
+      } else {
+        if (req.method === 'GET') {
+          res.redirect(301, `https://${req.headers.host}${req.originalUrl}`);
+        } else {
+          res
+            .status(403)
+            .send('Please use HTTPS when submitting data to this server.');
+        }
+      }
+    });
+  }
   app.use(cookieParser());
   app.use(
     cookieSession({ name: 'session', keys: [process.env.COOKIE_SESSION_KEY] })
