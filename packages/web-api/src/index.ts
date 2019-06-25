@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 import bodyParser from 'body-parser';
-import cors from 'cors'; // Might not need
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 import express from 'express';
@@ -33,7 +32,17 @@ import { ReadingDiscordBot } from './services/discord';
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(cors()); // might not need
+  if (process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+      if (req.secure) {
+        // request was via https, so do no special handling
+        next();
+      } else {
+        // request was via http, so redirect to https
+        res.redirect('https://' + req.headers.host + req.url);
+      }
+    });
+  }
 
   // logs in
   const discordClient = ReadingDiscordBot.getInstance();
