@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Home from './views/home/Home';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
+import Onboarding from './views/onboarding/Onboarding';
 import FindBooks from './views/books/FindBooks';
 import useInitializeUser from './common/useInitializeUser';
 import UpdateBook from './views/club/UpdateBook';
@@ -63,6 +64,10 @@ export function App(props: AppProps) {
         <Route
           path="/clubs/:id"
           render={props => <Club {...props} user={user} />}
+        />
+        <Route
+          path="/onboarding"
+          render={props => <Onboarding {...props} user={user} />}
         />
         <Route exact path="/findbooks" component={FindBooks} />
         <Route exact path="/privacy" component={Privacy} />
