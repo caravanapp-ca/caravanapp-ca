@@ -13,6 +13,7 @@ import {
   Button,
   Typography,
   Container,
+  Link,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
@@ -54,30 +55,14 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     activeViewContainer: {},
+    rightIcon: {
+      marginLeft: theme.spacing(1),
+    },
     leftIcon: {
       marginRight: theme.spacing(1),
     },
   })
 );
-
-// TODO: Get rid of this
-const dummyUser: User = {
-  _id: '0123456789',
-  bio: 'Check out my WattPad!',
-  discordId: '1234567890',
-  website: 'wattpad.com/users/frescocherry',
-  name: 'FrescoCherry',
-  photoUrl:
-    '../../resources/43171540_10156548611140822_6109789487653453824_n.jpg',
-  readingSpeed: 'moderate',
-  age: 22,
-  gender: 'male',
-  location: 'Toronto',
-  isBot: false,
-  urlSlug: 'matt-cherry',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
 
 export default function UserView(props: UserViewProps) {
   const classes = useStyles();
@@ -143,14 +128,19 @@ export default function UserView(props: UserViewProps) {
       <div className={classes.nameplateContainer}>
         <UserAvatar user={user} />
         <div style={{ marginLeft: theme.spacing(4) }}>
+          <Typography variant="body1">{user.bio}</Typography>
+          <Typography variant="body1">
+            <Link href={user.website}>{user.website}</Link>
+          </Typography>
           <Button
             variant="outlined"
             color="primary"
             // TODO: Connect this button to send a DM to the user on Discord
             onClick={() => {}}
+            style={{ marginTop: theme.spacing(2) }}
           >
-            <MessageIcon className={classes.leftIcon} />
             <Typography variant="button">MESSAGE</Typography>
+            <MessageIcon className={classes.rightIcon} />
           </Button>
         </div>
       </div>

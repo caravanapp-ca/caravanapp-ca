@@ -12,6 +12,7 @@ const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
   goodreadsUrl: { type: String },
   website: { type: String },
   name: { type: String },
+  selectedGenres: { type: [Object], required: true },
   photoUrl: { type: String },
   smallPhotoUrl: { type: String },
   readingSpeed: { type: String },

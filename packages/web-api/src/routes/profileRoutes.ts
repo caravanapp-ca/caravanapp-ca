@@ -1,14 +1,13 @@
 import express from 'express';
-import { Services, ProfileQuestions } from '@caravan/buddy-reading-types';
+import { Services, Genres } from '@caravan/buddy-reading-types';
 import GenreModel from '../models/genre';
+import { getGenreDoc } from '../services/genre';
 
 const router = express.Router();
 
 router.get('/genres', async (req, res, next) => {
   try {
-    const genreDoc = await GenreModel.findOne()
-      .sort({ created_at: -1 })
-      .exec();
+    const genreDoc = await getGenreDoc();
     if (!genreDoc) {
       res.status(500).send('No genres found, oops!');
       return;

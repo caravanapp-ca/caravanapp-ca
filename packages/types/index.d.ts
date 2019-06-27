@@ -83,6 +83,7 @@ declare module '@caravan/buddy-reading-types' {
     location?: string;
     isBot: boolean;
     urlSlug: string;
+    selectedGenres: { key: string; name: string }[];
   }
 
   export interface Genres {

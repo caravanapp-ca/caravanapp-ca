@@ -90,9 +90,13 @@ router.get('/discord/callback', async (req, res) => {
     const availableSlugs = await getAvailableSlugIds(slugs);
     let currentSlugdId = 0;
     while (!userDoc && currentSlugdId < availableSlugs.length) {
-      const userInstance: Pick<User, 'discordId' | 'urlSlug'> = {
+      const userInstance: Pick<
+        User,
+        'discordId' | 'urlSlug' | 'selectedGenres'
+      > = {
         discordId: discordUserData.id,
         urlSlug: availableSlugs[currentSlugdId],
+        selectedGenres: [],
       };
       const userModel = new UserModel(userInstance);
       // TODO: handle slug failure due to time windowing

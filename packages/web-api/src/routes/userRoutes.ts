@@ -7,9 +7,11 @@ import {
   ReadingSpeed,
   FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
+import GenreModel from '../models/genre';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { userSlugExists } from '../services/user';
+import { getGenreDoc } from '../services/genre';
 
 const router = express.Router();
 
@@ -57,18 +59,6 @@ router.post('/users', async (req, res, next) => {
   }
 });
 
-// Create a user
-router.post('/', async (req, res, next) => {
-  try {
-    const user = new UserModel(req.body);
-    const newUser = await user.save();
-    res.status(201).json(newUser);
-  } catch (err) {
-    console.log('Failed to create new user', err);
-    return next(err);
-  }
-});
-
 const READING_SPEEDS: ReadingSpeed[] = ['slow', 'moderate', 'fast'];
 
 router.post('/:urlSlug/available', async (req, res, next) => {
@@ -96,7 +86,7 @@ router.post('/:urlSlug/available', async (req, res, next) => {
 // TODO: Consider moving the update validation to the mongoose level
 // Modify a user
 router.put(
-  '/:urlSlug',
+  '/',
   isAuthenticated,
   check(['bio'], 'Bio must not be more than 150 characters')
     .isString()
@@ -123,18 +113,31 @@ router.put(
     .isString()
     .isLength({ max: 300 })
     .optional(),
-  check('urlSlug')
-    .isString()
-    .isLength({ min: 5, max: 20 }),
+  check('selectedGenres').isArray(),
   async (req, res, next) => {
     const { userId } = req.session;
-    const { urlSlug } = req.params;
     const user: User = req.body;
-    const slugExists = await userSlugExists(urlSlug);
-    if (slugExists) {
-      res.status(409).send('User already exists.');
+
+    const genreDoc = await getGenreDoc();
+    if (!genreDoc) {
+      res.status(500).send('No genres found, oops!');
       return;
     }
+
+    const userGenres = user.selectedGenres
+      .map(g => {
+        const validGenre = genreDoc.genres[g.key];
+        if (validGenre) {
+          const newValidUserGenre: { key: string; name: string } = {
+            key: g.name,
+            name: validGenre.name,
+          };
+          return newValidUserGenre;
+        }
+        throw new Error(`Unknown genre: ${g.key}, ${g.name}`);
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
+
     const newUser: Omit<
       FilterAutoMongoKeys<User>,
       'isBot' | 'smallPhotoUrl' | 'discordId'
@@ -149,6 +152,7 @@ router.put(
       readingSpeed: user.readingSpeed,
       urlSlug: user.urlSlug,
       website: user.website,
+      selectedGenres: userGenres,
     };
     try {
       const userDoc = await UserModel.findByIdAndUpdate(userId, newUser);
