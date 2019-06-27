@@ -6,6 +6,8 @@ import {
   ShelfEntry,
   User,
   Genres,
+  ProfileQuestions,
+  MongoTimestamps,
 } from '@caravan/buddy-reading-types';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
@@ -16,6 +18,13 @@ export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
 }
 
 export interface GenreDoc extends Document, Omit<Genres, '_id'> {
+  _id: MongooseTypes.ObjectId;
+}
+
+export interface ProfileQuestionsDoc
+  extends Document,
+    MongoTimestamps,
+    Omit<ProfileQuestions, '_id'> {
   _id: MongooseTypes.ObjectId;
 }
 

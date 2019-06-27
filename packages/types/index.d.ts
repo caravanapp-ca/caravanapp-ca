@@ -81,13 +81,29 @@ declare module '@caravan/buddy-reading-types' {
   export interface Genres {
     _id: string;
     mainGenres: string[];
-    genres: Genre[];
+    genres: {
+      [key: string]: Genre;
+    };
   }
 
   export interface Genre extends DocumentFields {
     key: string;
     name: string;
     subgenres: string[];
+  }
+
+  export interface ProfileQuestions {
+    _id: string;
+    questions: ProfileQuestion[];
+  }
+
+  export interface ProfileQuestion {
+    id: string;
+    title: string;
+    subtitle: string;
+    required: boolean;
+    min: number;
+    max: number;
   }
 
   export type ChannelSource = 'discord';
@@ -151,6 +167,7 @@ declare module '@caravan/buddy-reading-types' {
       genres: string[];
       readingSpeed: string;
     }
+    export interface GetProfileQuestions {}
   }
 
   export namespace GoogleBooks {

@@ -110,7 +110,7 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
     <Typography variant="h6">Reading Preferences</Typography>
   );
 
-  const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
+  const [genreDoc, setGenres] = React.useState<Services.GetGenres | null>(null);
 
   const [
     selectedReadingPreferences,
@@ -201,20 +201,21 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
           </Typography>
           {/* <div className={classes.genreContainer}> */}
           <Grid container spacing={3}>
-            {genres &&
-              genres.mainGenres.map((genre: string) => {
-                const genreSelected = props.selectedGenres.includes(genre);
+            {genreDoc &&
+              genreDoc.mainGenres.map((genreKey: string) => {
+                const genreSelected = props.selectedGenres.includes(genreKey);
+                console.log(genreKey);
                 return (
-                  <Grid item lg={3} md={4} xs={6}>
+                  <Grid item lg={3} md={4} xs={6} key={genreKey}>
                     <Button
                       className={classes.button}
                       color={genreSelected ? 'primary' : 'default'}
                       variant="contained"
                       onClick={() =>
-                        props.onGenreSelected(genre, !genreSelected)
+                        props.onGenreSelected(genreKey, !genreSelected)
                       }
                     >
-                      {genre}
+                      {genreDoc.genres[genreKey].name}
                     </Button>
                   </Grid>
                 );
