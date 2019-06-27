@@ -22,6 +22,9 @@ const theme = responsiveFontSizes(
       error: {
         main: '#B00020',
       },
+      link: {
+        main: '#0365D6',
+      },
     },
     typography: {
       fontFamily: [
@@ -60,5 +63,7 @@ export const errorTheme = (outerTheme: Theme) => ({
     primary: outerTheme.palette.error,
   },
 });
+
+export const linkColor: string = '#0365D6';
 
 export default theme;

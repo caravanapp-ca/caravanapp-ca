@@ -1,14 +1,31 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { User } from '@caravan/buddy-reading-types';
-import { makeStyles, createStyles, Theme } from '@material-ui/core';
+import {
+  makeStyles,
+  createStyles,
+  Theme,
+  Paper,
+  Tabs,
+  useMediaQuery,
+  useTheme,
+  Tab,
+  Button,
+  Typography,
+  Container,
+} from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ThreeDotsIcon from '@material-ui/icons/MoreVert';
+import MessageIcon from '@material-ui/icons/Message';
 import { getUser } from '../../services/user';
 import { isMe } from '../../common/localStorage';
 import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
+import UserAvatar from './UserAvatar';
+import UserBio from './UserBio';
+import UserShelf from './UserShelf';
 
 interface UserRouteParams {
   id: string;
@@ -26,6 +43,19 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       justifyItems: 'center',
+    },
+    nameplateContainer: {
+      display: 'flex',
+      padding: theme.spacing(4),
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    tabRoot: {
+      flexGrow: 1,
+    },
+    activeViewContainer: {},
+    leftIcon: {
+      marginRight: theme.spacing(1),
     },
   })
 );
@@ -51,10 +81,15 @@ const dummyUser: User = {
 
 export default function UserView(props: UserViewProps) {
   const classes = useStyles();
+  const theme = useTheme();
+
   const { id: userId } = props.match.params;
   const [user, setUser] = React.useState<User | null>(null);
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
+  const [tabValue, setTabValue] = React.useState(0);
+
+  const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     getUser(userId).then(user => {
@@ -74,6 +109,10 @@ export default function UserView(props: UserViewProps) {
       </div>
     );
   }
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setTabValue(newValue);
+  };
 
   const leftComponent = (
     <IconButton
@@ -96,8 +135,44 @@ export default function UserView(props: UserViewProps) {
 
   return (
     <>
-      <Header leftComponent={leftComponent} rightComponent={rightComponent} />
-      <main />
+      <Header
+        leftComponent={leftComponent}
+        centerComponent={centerComponent}
+        rightComponent={rightComponent}
+      />
+      <div className={classes.nameplateContainer}>
+        <UserAvatar user={user} />
+        <div style={{ marginLeft: theme.spacing(4) }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            // TODO: Connect this button to send a DM to the user on Discord
+            onClick={() => {}}
+          >
+            <MessageIcon className={classes.leftIcon} />
+            <Typography variant="button">MESSAGE</Typography>
+          </Button>
+        </div>
+      </div>
+      <Paper className={classes.tabRoot}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+          centered={!screenSmallerThanMd}
+        >
+          <Tab label="Bio" />
+          <Tab label="Shelf" />
+        </Tabs>
+      </Paper>
+      <Container maxWidth={'md'}>
+        <>
+          {tabValue === 0 && <UserBio user={user} />}
+          {tabValue === 1 && <UserShelf user={user} />}
+        </>
+      </Container>
     </>
   );
 }
