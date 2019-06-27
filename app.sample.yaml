@@ -22,7 +22,6 @@ env_variables:
   DISCORD_GUILD: # Get from discord
   DISCORD_GUILD_ID: # Get from discord
   DISCORD_REDIRECT: # https://{HOSTNAME}/api/auth/discord/callback'
-  GA_TRACKING_ID: # Get from Google Analytics
   MONGO_DB: 'mongodb://${username}:${password}@35.226.113.101:27017/buddy_reading'
 
 handlers:

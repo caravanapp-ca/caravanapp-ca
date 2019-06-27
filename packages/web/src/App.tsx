@@ -22,7 +22,8 @@ import { clearAuthState } from './common/localStorage';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 
-const trackingId = process.env.GA_TRACKING_ID;
+const trackingId =
+  process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
 
 interface AppProps {}
 
