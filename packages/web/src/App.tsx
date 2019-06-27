@@ -69,6 +69,10 @@ export function App(props: AppProps) {
             path="/clubs/:id"
             render={props => <Club {...props} user={user} />}
           />
+          <Route
+            path="/onboarding"
+            render={props => <Onboarding {...props} user={user} />}
+          />
           <Route exact path="/findbooks" component={FindBooks} />
           <Route exact path="/privacy" component={Privacy} />
         </Switch>

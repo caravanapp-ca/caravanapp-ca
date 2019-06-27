@@ -9,7 +9,10 @@ import {
   Genre,
   Genres,
 } from '@caravan/buddy-reading-types';
+import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import CardContent from '@material-ui/core/CardContent';
+import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -19,6 +22,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import Grid from '@material-ui/core/Grid';
+import AddIcon from '@material-ui/icons/Add';
 import { withStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -35,21 +39,10 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
-    paddingBottom: theme.spacing(4),
-  },
-  addButton: {
+    padding: theme.spacing(6, 4, 6),
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
     alignItems: 'center',
-  },
-  progress: {
-    margin: theme.spacing(2),
-  },
-  sectionContainer: {
-    marginTop: theme.spacing(4),
-  },
-  sectionHeader: {
-    marginBottom: theme.spacing(1),
   },
   hero: {
     padding: theme.spacing(6, 2, 2),
@@ -57,26 +50,35 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  heroInfo: {
-    padding: theme.spacing(6, 2, 2),
+  progressFraction: {
+    padding: theme.spacing(4, 2, 0),
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  card: {
+    height: '100%',
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'relative',
   },
-  button: {
-    // margin: theme.spacing(1),
-    // justifyContent: 'center',
+  cardContent: {
+    flexGrow: 1,
   },
-  gridList: {
-    width: '100%',
-    height: 470,
+  questionText: {
+    fontWeight: 'bold',
+    fontStyle: 'italic',
   },
-  genreContainer: {
+  answerText: {
+    fontStyle: 'italic',
+  },
+  fabContainer: {
     display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    overflow: 'hidden',
+    flexDirection: 'row',
+    position: 'absolute',
+    top: theme.spacing(-3),
+    right: theme.spacing(-3),
+    zIndex: 1,
   },
 }));
 
@@ -89,16 +91,11 @@ interface AboutYouProps {
 export default function AboutYou(props: AboutYouProps) {
   const classes = useStyles();
 
-  // useEffect(() => {
-  //   const getGenres = async () => {
-  //     const response = await getAllGenres();
-  //     if (response.status >= 200 && response.status < 300) {
-  //       const { data } = response;
-  //       setGenres(data);
-  //     }
-  //   };
-  //   getGenres();
-  // }, []);
+  const [numAnswered, setNumAnswered] = React.useState(0);
+
+  const minimumRequired: number = 3;
+
+  const questionPrompts: string[] = ['Q1', 'Q2', 'Q3'];
 
   return (
     <>
@@ -108,14 +105,51 @@ export default function AboutYou(props: AboutYouProps) {
           <br /> Answer at least 3 prompts to display on your profile.
         </Typography>
       </div>
-      <div className={classes.heroInfo}>
-        <Typography variant="subtitle1">
-          To get started, let us know your reading preferences to help us find
-          groups you'll love.
+      <div className={classes.progressFraction}>
+        <Typography style={{ fontWeight: 'bold' }}>
+          {numAnswered} / {minimumRequired}
         </Typography>
       </div>
       <Container className={classes.formContainer} maxWidth="md">
-        <Typography>Joker</Typography>
+        <Grid container spacing={4}>
+          {questionPrompts.map(c => {
+            return (
+              <Grid
+                container
+                lg={12}
+                style={{ paddingBottom: theme.spacing(2) }}
+              >
+                <Card className={classes.card}>
+                  <CardContent className={classes.cardContent}>
+                    <Typography
+                      gutterBottom
+                      variant="subtitle1"
+                      component="h2"
+                      className={classes.questionText}
+                      color="textPrimary"
+                    >
+                      Select a prompt
+                    </Typography>
+                    <br />
+                    <Typography
+                      gutterBottom
+                      variant="subtitle1"
+                      component="h2"
+                      className={classes.answerText}
+                    >
+                      And write your answer.
+                    </Typography>
+                  </CardContent>
+                  <div className={classes.fabContainer}>
+                    <Fab color="primary">
+                      <AddIcon />
+                    </Fab>
+                  </div>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
       </Container>
     </>
   );

@@ -60,14 +60,14 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(1),
   },
   hero: {
-    padding: theme.spacing(6, 0, 0),
+    padding: theme.spacing(5, 0, 0),
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },
   heroInfo: {
-    padding: theme.spacing(6, 2, 2),
+    padding: theme.spacing(5, 2, 2),
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -143,7 +143,7 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
       </div>
 
       <div className={classes.heroInfo}>
-        <Typography variant="subtitle1">
+        <Typography variant="h6">
           To get started, let us know your reading preferences to help us find
           groups you'll love.
         </Typography>
