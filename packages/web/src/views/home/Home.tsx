@@ -90,7 +90,7 @@ export default function Home(props: HomeProps) {
     setLoginModalShown(false);
   }
 
-  const centerComponent = <HeaderTitle title="Find Groups" />;
+  const centerComponent = <HeaderTitle title="Caravan" />;
 
   const rightComponent = props.user ? (
     <IconButton
@@ -132,7 +132,7 @@ export default function Home(props: HomeProps) {
                 color="textPrimary"
                 gutterBottom
               >
-                Welcome to Caravan!
+                Find your perfect reading buddies.
               </Typography>
               <Typography
                 variant="h5"
