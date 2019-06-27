@@ -30,6 +30,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const dummyUser: User = {
+  _id: '0123456789',
+  bio: 'Check out my WattPad!',
+  discordId: '1234567890',
+  website: 'wattpad.com/users/frescocherry',
+  name: 'FrescoCherry',
+  photoUrl:
+    '../../resources/43171540_10156548611140822_6109789487653453824_n.jpg',
+  readingSpeed: 'moderate',
+  age: 22,
+  gender: 'male',
+  location: 'Toronto',
+  isBot: false,
+  urlSlug: 'matt-cherry',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
 export default function UserView(props: UserViewProps) {
   const classes = useStyles();
   const { id: userId } = props.match.params;
