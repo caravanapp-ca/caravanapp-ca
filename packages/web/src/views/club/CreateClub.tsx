@@ -134,9 +134,25 @@ export default function CreateClub(props: CreateClubProps) {
     if (!bookToRead) {
       return;
     }
+    const selectedBooksWReadingState = selectedBooks.map(book => {
+      if (book._id !== bookToRead._id && book.readingState !== 'notStarted') {
+        const bookCopy = { ...book };
+        bookCopy.readingState = 'notStarted';
+        return bookCopy;
+      } else if (
+        book._id === bookToRead._id &&
+        book.readingState !== 'current'
+      ) {
+        const bookCopy = { ...book };
+        bookCopy.readingState = 'current';
+        return bookCopy;
+      }
+      return book;
+    });
+
     const clubObj: any = {
       name: selectedGroupName,
-      shelf: selectedBooks,
+      shelf: selectedBooksWReadingState,
       bio: selectedGroupBio,
       maxMembers: selectedGroupSize,
       vibe: selectedGroupVibe,
@@ -191,7 +207,7 @@ export default function CreateClub(props: CreateClubProps) {
           )}
           <BookSearch
             onSubmitBooks={onSubmitSelectedBooks}
-            maxSelected={5}
+            maxSelected={20}
             radioValue={bookToRead && bookToRead._id ? bookToRead._id : 'none'}
           />
         </div>
