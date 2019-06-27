@@ -23,14 +23,6 @@ import { withStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import AdapterLink from '../../components/AdapterLink';
-import Header from '../../components/Header';
-import { saveReadingPreferences } from '../../services/onboarding';
-import { getAllGenres } from '../../services/genre';
-import {
-  readingSpeedIcons,
-  readingSpeedLabels,
-  readingSpeedSubtitles,
-} from '../../components/reading-speed-avatars-icons-labels';
 
 const theme = createMuiTheme({
   palette: {
@@ -60,9 +52,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(1),
   },
   hero: {
-    padding: theme.spacing(6, 0, 0),
+    padding: theme.spacing(6, 2, 2),
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -112,13 +103,10 @@ export default function AboutYou(props: AboutYouProps) {
   return (
     <>
       <div className={classes.hero}>
-        <Typography variant="h5">Welcome to</Typography>
-        <div style={{ display: 'flex' }}>
-          <Typography variant="h3">Caravan</Typography>
-          <Typography variant="h3" color="primary">
-            .
-          </Typography>
-        </div>
+        <Typography variant="h5">
+          Tell other readers about yourself! <br />
+          <br /> Answer at least 3 prompts to display on your profile.
+        </Typography>
       </div>
       <div className={classes.heroInfo}>
         <Typography variant="subtitle1">
