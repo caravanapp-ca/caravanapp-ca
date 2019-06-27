@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+// TODO: Get rid of this
 const dummyUser: User = {
   _id: '0123456789',
   bio: 'Check out my WattPad!',
@@ -85,6 +86,8 @@ export default function UserView(props: UserViewProps) {
     </IconButton>
   );
 
+  const centerComponent = <HeaderTitle title={user.name || 'User Profile'} />;
+
   const rightComponent = (
     <IconButton edge="start" color="inherit" aria-label="More">
       <ThreeDotsIcon />
@@ -93,7 +96,7 @@ export default function UserView(props: UserViewProps) {
 
   return (
     <>
-      <Header leftComponent={<div />} rightComponent={rightComponent} />
+      <Header leftComponent={leftComponent} rightComponent={rightComponent} />
       <main />
     </>
   );
