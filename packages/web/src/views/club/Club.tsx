@@ -14,10 +14,19 @@ import {
   Typography,
   CircularProgress,
   Container,
+  useMediaQuery,
+  Fab,
+  IconButton,
 } from '@material-ui/core';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
-import IconButton from '@material-ui/core/IconButton';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import ChatIcon from '@material-ui/icons/Chat';
+import JoinIcon from '@material-ui/icons/PersonAdd';
+import {
+  makeStyles,
+  createStyles,
+  useTheme,
+  Theme,
+} from '@material-ui/core/styles';
 import { getClub, modifyMyClubMembership } from '../../services/club';
 import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
@@ -27,6 +36,7 @@ import AdapterLink from '../../components/AdapterLink';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import ClubLeaveDialog from './ClubLeaveDialog';
 import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,6 +64,14 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       marginTop: theme.spacing(3),
     },
+    fabContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      position: 'absolute',
+      top: theme.spacing(10),
+      right: theme.spacing(3),
+    },
+    fab: {},
   })
 );
 
@@ -95,6 +113,7 @@ const openChat = (club: Services.GetClubById, inApp: boolean) => {
 
 export default function ClubComponent(props: ClubProps) {
   const classes = useStyles();
+  const theme = useTheme();
   const { user } = props;
   const clubId = props.match.params.id;
 
@@ -107,6 +126,8 @@ export default function ClubComponent(props: ClubProps) {
   const [memberStatus, setMembershipStatus] = React.useState<
     LoadableMemberStatus
   >('loading');
+
+  const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     if (user && club) {
@@ -152,9 +173,9 @@ export default function ClubComponent(props: ClubProps) {
   );
 
   const centerComponent = club ? (
-    <Typography variant="h6">{club.name}</Typography>
+    <HeaderTitle title={club.name} />
   ) : (
-    <Typography variant="h6">Club Homepage</Typography>
+    <HeaderTitle title="Club Homepage" />
   );
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -198,7 +219,8 @@ export default function ClubComponent(props: ClubProps) {
               onChange={handleTabChange}
               indicatorColor="primary"
               textColor="primary"
-              centered
+              variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+              centered={!screenSmallerThanMd}
             >
               <Tab label="Group" />
               <Tab label="Shelf" />
@@ -210,49 +232,95 @@ export default function ClubComponent(props: ClubProps) {
               {tabValue === 1 && <ShelfView shelf={club.shelf} />}
               <div className={classes.buttonsContainer}>
                 {showJoinClub(memberStatus, club) && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={() =>
-                      props.user
-                        ? addOrRemoveMeFromClub('add')
-                        : setLoginDialogVisible(true)
-                    }
-                    disabled={false}
-                    //TODO make this disabled be based on max members vs actual members
-                  >
-                    JOIN CLUB
-                  </Button>
+                  <>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      onClick={() =>
+                        props.user
+                          ? addOrRemoveMeFromClub('add')
+                          : setLoginDialogVisible(true)
+                      }
+                      disabled={false}
+                      //TODO make this disabled be based on max members vs actual members
+                    >
+                      <Typography
+                        variant="button"
+                        style={{ textAlign: 'center' }}
+                      >
+                        JOIN CLUB
+                      </Typography>
+                    </Button>
+                    <div className={classes.fabContainer}>
+                      <Fab
+                        color="secondary"
+                        className={classes.fab}
+                        onClick={() =>
+                          props.user
+                            ? addOrRemoveMeFromClub('add')
+                            : setLoginDialogVisible(true)
+                        }
+                      >
+                        <JoinIcon />
+                      </Fab>
+                    </div>
+                  </>
+                )}
+                {showOpenChat(memberStatus) && (
+                  <>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      className={classes.button}
+                      onClick={() => openChat(club, false)}
+                    >
+                      <Typography
+                        variant="button"
+                        style={{ textAlign: 'center' }}
+                      >
+                        OPEN CHAT IN WEB
+                      </Typography>
+                    </Button>
+                    <div className={classes.fabContainer}>
+                      <Fab
+                        color="secondary"
+                        className={classes.fab}
+                        onClick={() => openChat(club, false)}
+                      >
+                        <ChatIcon />
+                      </Fab>
+                    </div>
+                  </>
                 )}
                 {showOpenChat(memberStatus) && (
                   <Button
                     variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={() => openChat(club, false)}
-                  >
-                    OPEN CHAT IN WEB
-                  </Button>
-                )}
-                {showOpenChat(memberStatus) && (
-                  <Button
-                    variant="contained"
-                    color="primary"
+                    color="secondary"
                     className={classes.button}
                     onClick={() => openChat(club, true)}
                   >
-                    OPEN CHAT IN APP
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
+                    >
+                      OPEN CHAT IN APP
+                    </Typography>
                   </Button>
                 )}
                 {showLeaveClub(memberStatus) && (
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                     className={classes.button}
                     onClick={() => setLeaveDialogVisible(true)}
                   >
-                    LEAVE CLUB
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
+                    >
+                      LEAVE CLUB
+                    </Typography>
                   </Button>
                 )}
                 {showUpdateBook(memberStatus) && (
@@ -263,7 +331,12 @@ export default function ClubComponent(props: ClubProps) {
                     component={AdapterLink}
                     to={`${clubId}/updatebook`}
                   >
-                    UPDATE BOOK
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
+                    >
+                      UPDATE BOOK
+                    </Typography>
                   </Button>
                 )}
               </div>

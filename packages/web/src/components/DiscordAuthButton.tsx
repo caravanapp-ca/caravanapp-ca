@@ -8,8 +8,6 @@ export interface DiscordAuthButtonProps {}
 
 const useStyles = makeStyles(theme => ({
   button: {
-    'background-color': '#7289da',
-    color: 'white',
     margin: theme.spacing(1),
   },
   leftIcon: {
@@ -52,13 +50,16 @@ export default function DiscordAuthButton(props: DiscordAuthButtonProps) {
   function onClick() {
     const oauth2State = getOAuth2StateParam();
     const host =
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3001'
-        : '';
+      process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '';
     window.location.href = `${host}/api/auth/discord/login?state=${oauth2State}`;
   }
   return (
-    <Button variant="contained" className={classes.button} onClick={onClick}>
+    <Button
+      variant="contained"
+      color="primary"
+      className={classes.button}
+      onClick={onClick}
+    >
       <LockIcon className={classes.leftIcon} />
       Login with Discord
     </Button>

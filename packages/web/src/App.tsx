@@ -19,6 +19,9 @@ import Privacy from './views/privacy/Privacy';
 import { KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
 import { clearAuthState } from './common/localStorage';
+import { ThemeProvider } from '@material-ui/styles';
+import { Theme } from '@material-ui/core/styles';
+import theme from './theme';
 
 export interface AppProps {}
 
@@ -43,37 +46,35 @@ export function App(props: AppProps) {
     }
   }, []);
   return (
-    <Router>
-      <CssBaseline />
-      <Switch>
-        <Route exact path="/" component={HomeRedirect} />
-        <Route
-          exact
-          path="/clubs"
-          render={props => <Home {...props} user={user} />}
-        />
-        <Route
-          exact
-          path="/clubs/create"
-          render={props => <CreateClub {...props} user={user} />}
-        />
-        <Route
-          path="/clubs/:id/updatebook"
-          render={props => <UpdateBook {...props} user={user} />}
-        />
-        <Route
-          path="/clubs/:id"
-          render={props => <Club {...props} user={user} />}
-        />
-        <Route
-          path="/onboarding"
-          render={props => <Onboarding {...props} user={user} />}
-        />
-        <Route exact path="/findbooks" component={FindBooks} />
-        <Route exact path="/privacy" component={Privacy} />
-      </Switch>
-      <Footer />
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <CssBaseline />
+        <Switch>
+          <Route exact path="/" component={HomeRedirect} />
+          <Route
+            exact
+            path="/clubs"
+            render={props => <Home {...props} user={user} />}
+          />
+          <Route
+            exact
+            path="/clubs/create"
+            render={props => <CreateClub {...props} user={user} />}
+          />
+          <Route
+            path="/clubs/:id/updatebook"
+            render={props => <UpdateBook {...props} user={user} />}
+          />
+          <Route
+            path="/clubs/:id"
+            render={props => <Club {...props} user={user} />}
+          />
+          <Route exact path="/findbooks" component={FindBooks} />
+          <Route exact path="/privacy" component={Privacy} />
+        </Switch>
+        <Footer />
+      </Router>
+    </ThemeProvider>
   );
 }
 

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'block',
       height: 2,
       width: '100%',
-      backgroundColor: '#7289da',
+      backgroundColor: theme.palette.primary.main,
     },
     toolBarLeftContainer: {
       display: 'flex',

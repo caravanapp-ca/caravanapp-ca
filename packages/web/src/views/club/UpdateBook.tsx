@@ -15,7 +15,7 @@ import {
   Box,
   Container,
 } from '@material-ui/core';
-import { MoreVert, ArrowBack } from '@material-ui/icons';
+import { MoreVert, ArrowBackIos } from '@material-ui/icons';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import BookList from './shelf-view/BookList';
@@ -47,6 +47,7 @@ const useStyles = makeStyles(theme => ({
   },
   saveButtonContainer: {
     marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
     width: '100%',
     alignItems: 'center',
   },
@@ -144,23 +145,23 @@ export default function UpdateBook(props: UpdateBookProps) {
       aria-label="Back"
       onClick={() => props.history.goBack()}
     >
-      <ArrowBack />
+      <ArrowBackIos />
     </IconButton>
   );
 
   const centerComponent = <Typography variant="h6">Update Book</Typography>;
 
-  const rightComponent = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="More"
-      component={AdapterLink}
-      to="/"
-    >
-      <MoreVert />
-    </IconButton>
-  );
+  // const rightComponent = (
+  //   <IconButton
+  //     edge="start"
+  //     color="inherit"
+  //     aria-label="More"
+  //     component={AdapterLink}
+  //     to="/"
+  //   >
+  //     <MoreVert />
+  //   </IconButton>
+  // );
 
   let finishedLabel;
   if (currBook) {
@@ -186,7 +187,7 @@ export default function UpdateBook(props: UpdateBookProps) {
       <Header
         leftComponent={leftComponent}
         centerComponent={centerComponent}
-        rightComponent={rightComponent}
+        // rightComponent={rightComponent}
       />
       <Container className={classes.container} maxWidth={'md'}>
         <Box>
@@ -241,7 +242,7 @@ export default function UpdateBook(props: UpdateBookProps) {
           <div className={classes.saveButtonContainer}>
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               className={classes.button}
               onClick={onSaveSelection}
               disabled={!bookToRead}

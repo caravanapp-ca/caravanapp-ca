@@ -5,7 +5,7 @@ import List from '@material-ui/core/List';
 import ListElementBook from '../../../components/ListElementBook';
 import { Radio, IconButton, Typography, Paper } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { FastfoodOutlined } from '@material-ui/icons';
+import PlusIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,11 +18,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface BookListProps {
   data: ShelfEntry[];
   primary?: 'radio';
-  secondary?: 'delete';
+  secondary?: 'delete' | 'add';
   onClick?: any;
   onRadioPress?: (value: string) => void;
   radioValue?: string;
   onDelete?: (id: string) => void;
+  onAdd?: (book: ShelfEntry) => void;
 }
 
 export default function BookList(props: BookListProps) {
@@ -35,6 +36,7 @@ export default function BookList(props: BookListProps) {
     onRadioPress,
     radioValue,
     onDelete,
+    onAdd,
   } = props;
 
   function radio(b: ShelfEntry, index: number): JSX.Element {
@@ -60,7 +62,6 @@ export default function BookList(props: BookListProps) {
       return (
         <IconButton
           className={classes.button}
-          aria-label="Delete"
           value={b._id}
           onClick={() => onDelete(b._id)}
         >
@@ -70,6 +71,24 @@ export default function BookList(props: BookListProps) {
     } else {
       throw new Error(
         'You need to pass an onDelete function to set secondary = "delete"'
+      );
+    }
+  }
+
+  function addIcon(b: ShelfEntry, index: number): JSX.Element {
+    if (onAdd) {
+      return (
+        <IconButton
+          className={classes.button}
+          value={b._id}
+          onClick={() => onAdd(b)}
+        >
+          <PlusIcon />
+        </IconButton>
+      );
+    } else {
+      throw new Error(
+        'You need to pass an onAdd function to set secondary = "add"'
       );
     }
   }
@@ -95,20 +114,21 @@ export default function BookList(props: BookListProps) {
             case 'delete':
               secondaryElement = deleteIcon(b, index);
               break;
+            case 'add':
+              secondaryElement = addIcon(b, index);
+              break;
           }
           return (
-            <>
-              <ListElementBook
-                coverImage={b.coverImageURL}
-                primaryText={b.title}
-                secondaryText={b.author}
-                key={b.isbn || index}
-                primary={primaryElement}
-                secondary={secondaryElement}
-                onClick={onClick}
-                selected={selected}
-              />
-            </>
+            <ListElementBook
+              coverImage={b.coverImageURL}
+              primaryText={b.title}
+              secondaryText={b.author}
+              key={b.isbn || index}
+              primary={primaryElement}
+              secondary={secondaryElement}
+              onClick={onClick}
+              selected={selected}
+            />
           );
         })}
       </List>

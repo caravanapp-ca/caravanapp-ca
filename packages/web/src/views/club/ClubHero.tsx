@@ -39,10 +39,9 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     'text-align': 'left',
     color: '#ffffff',
-    fontSize: '20px',
   },
   imageTitleText: {
-    'font-size': '40px',
+    fontWeight: 600,
     width: '100%',
     'text-align': 'left',
     color: '#ffffff',
@@ -86,17 +85,16 @@ export default function ClubHero(props: ClubHeroProps) {
         <img src={coverImageURL} alt={title} className={classes.bgImage} />
         <div className={classes.bgShade} />
         <div className={classes.heroTextContainer}>
-          <Typography className={classes.imageText}>
-            Currently reading:
+          <Typography variant="h3" className={classes.imageTitleText}>
+            {title}
           </Typography>
-          <Typography className={classes.imageTitleText}>{title}</Typography>
           {authorDateString && (
-            <Typography className={classes.imageText}>
+            <Typography variant="h6" className={classes.imageText}>
               {authorDateString}
             </Typography>
           )}
           {genres && (
-            <Typography className={classes.imageText}>
+            <Typography variant="h6" className={classes.imageText}>
               {genres.join(', ')}
             </Typography>
           )}
