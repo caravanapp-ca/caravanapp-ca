@@ -7,17 +7,17 @@ import {
 } from 'react-router-dom';
 import qs from 'query-string';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { clearAuthState, KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
+import { deleteCookie, getCookie } from './common/cookies';
+import useInitializeUser from './common/useInitializeUser';
 import Footer from './components/Footer';
-import Home from './views/home/Home';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
+import Home from './views/home/Home';
 import FindBooks from './views/books/FindBooks';
-import useInitializeUser from './common/useInitializeUser';
-import UpdateBook from './views/club/UpdateBook';
 import Privacy from './views/privacy/Privacy';
-import { KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
-import { deleteCookie, getCookie } from './common/cookies';
-import { clearAuthState } from './common/localStorage';
+import UpdateBook from './views/club/UpdateBook';
+import User from './views/user/User';
 
 export interface AppProps {}
 
@@ -64,6 +64,7 @@ export function App(props: AppProps) {
           path="/clubs/:id"
           render={props => <Club {...props} user={user} />}
         />
+        <Route path="/user/:id" component={User} />
         <Route exact path="/findbooks" component={FindBooks} />
         <Route exact path="/privacy" component={Privacy} />
       </Switch>

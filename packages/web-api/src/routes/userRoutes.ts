@@ -17,11 +17,11 @@ const router = express.Router();
 router.get('/:urlSlug', async (req, res, next) => {
   const { urlSlug } = req.params;
   try {
-    const userExists = await userSlugExists(urlSlug);
-    if (userExists) {
-      res.status(409).send('User already exists.');
+    const user = await UserModel.findOne({ urlSlug: { $eq: urlSlug } });
+    if (user) {
+      res.status(200).send(user.toJSON());
     } else {
-      res.sendStatus(200);
+      res.sendStatus(400);
     }
   } catch (err) {
     const { code } = err;
