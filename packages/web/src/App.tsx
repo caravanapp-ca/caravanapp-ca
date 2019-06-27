@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
 import Home from './views/home/Home';
+import Onboarding from './views/onboarding/Onboarding';
 import FindBooks from './views/books/FindBooks';
 import Privacy from './views/privacy/Privacy';
 import UpdateBook from './views/club/UpdateBook';

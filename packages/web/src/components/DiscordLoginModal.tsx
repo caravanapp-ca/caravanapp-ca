@@ -17,6 +17,7 @@ const Transition = React.forwardRef<unknown, TransitionProps>(
 );
 
 interface LoginModalProps {
+  open: boolean;
   onCloseLoginDialog: () => void;
 }
 
@@ -52,12 +53,12 @@ const useStyles = makeStyles(theme => ({
 
 export default function DiscordLoginModal(props: LoginModalProps) {
   const classes = useStyles();
-  const { onCloseLoginDialog } = props;
+  const { onCloseLoginDialog, open } = props;
 
   return (
-    <Dialog open={true} onClose={onCloseLoginDialog}>
+    <Dialog open={open} onClose={onCloseLoginDialog}>
       <DialogTitle id="alert-dialog-title">
-        {'Log in to Caravan via Discord?'}
+        {'Find your reading community'}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">

@@ -62,3 +62,14 @@ export function readingSpeedLabels(
       return 'Slow';
   }
 }
+
+export function readingSpeedSubtitles(speed: ReadingSpeed): string {
+  switch (speed) {
+    case 'fast':
+      return '(book every 1-2 weeks)';
+    case 'moderate':
+      return '(2-4 weeks)';
+    case 'slow':
+      return '(4+ weeks)';
+  }
+}

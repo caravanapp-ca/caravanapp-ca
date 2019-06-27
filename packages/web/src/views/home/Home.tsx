@@ -174,9 +174,10 @@ export default function Home(props: HomeProps) {
         )}
         <ClubCards clubsWCR={clubsWCR} user={props.user} />
       </main>
-      {loginModalShown && (
-        <DiscordLoginModal onCloseLoginDialog={onCloseLoginModal} />
-      )}
+      <DiscordLoginModal
+        onCloseLoginDialog={onCloseLoginModal}
+        open={loginModalShown}
+      />
     </>
   );
 }
