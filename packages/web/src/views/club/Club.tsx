@@ -26,6 +26,7 @@ import {
   createStyles,
   useTheme,
   Theme,
+  MuiThemeProvider,
 } from '@material-ui/core/styles';
 import { getClub, modifyMyClubMembership } from '../../services/club';
 import { getCurrentBook } from './functions/ClubFunctions';
@@ -37,6 +38,7 @@ import DiscordLoginModal from '../../components/DiscordLoginModal';
 import ClubLeaveDialog from './ClubLeaveDialog';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
+import { errorTheme } from '../../theme';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -309,19 +311,21 @@ export default function ClubComponent(props: ClubProps) {
                   </Button>
                 )}
                 {showLeaveClub(memberStatus) && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={() => setLeaveDialogVisible(true)}
-                  >
-                    <Typography
-                      variant="button"
-                      style={{ textAlign: 'center' }}
+                  <MuiThemeProvider theme={errorTheme}>
+                    <Button
+                      color="primary"
+                      className={classes.button}
+                      variant="outlined"
+                      onClick={() => setLeaveDialogVisible(true)}
                     >
-                      LEAVE CLUB
-                    </Typography>
-                  </Button>
+                      <Typography
+                        variant="button"
+                        style={{ textAlign: 'center' }}
+                      >
+                        LEAVE CLUB
+                      </Typography>
+                    </Button>
+                  </MuiThemeProvider>
                 )}
                 {showUpdateBook(memberStatus) && (
                   <Button
@@ -349,17 +353,15 @@ export default function ClubComponent(props: ClubProps) {
           <Typography>It does not appear that this club exists!</Typography>
         </div>
       )}
-      {loginDialogVisible && (
-        <DiscordLoginModal
-          onCloseLoginDialog={() => setLoginDialogVisible(false)}
-        />
-      )}
-      {leaveDialogVisible && (
-        <ClubLeaveDialog
-          onCancel={() => handleClubLeaveDialog(false)}
-          onConfirm={() => handleClubLeaveDialog(true)}
-        />
-      )}
+      <DiscordLoginModal
+        open={loginDialogVisible}
+        onCloseLoginDialog={() => setLoginDialogVisible(false)}
+      />
+      <ClubLeaveDialog
+        open={leaveDialogVisible}
+        onCancel={() => handleClubLeaveDialog(false)}
+        onConfirm={() => handleClubLeaveDialog(true)}
+      />
     </>
   );
 }

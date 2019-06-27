@@ -1,5 +1,8 @@
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
-import { purple } from '@material-ui/core/colors';
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  Theme,
+} from '@material-ui/core/styles';
 const montserrat = require('typeface-montserrat');
 
 const theme = responsiveFontSizes(
@@ -49,5 +52,13 @@ const theme = responsiveFontSizes(
     },
   })
 );
+
+export const errorTheme = (outerTheme: Theme) => ({
+  ...outerTheme,
+  palette: {
+    ...outerTheme.palette,
+    primary: outerTheme.palette.error,
+  },
+});
 
 export default theme;

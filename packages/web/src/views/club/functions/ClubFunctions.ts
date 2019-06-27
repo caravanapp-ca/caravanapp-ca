@@ -39,7 +39,7 @@ export function getShelfFromGoogleBooks(
       readingState: readingState,
       title: book.volumeInfo.title,
       genres: book.volumeInfo.categories,
-      author: book.volumeInfo.authors.join(', '),
+      author: (book.volumeInfo.authors || ['Unknown author']).join(', '),
       isbn:
         'industryIdentifiers' in book.volumeInfo
           ? book.volumeInfo.industryIdentifiers[0].identifier

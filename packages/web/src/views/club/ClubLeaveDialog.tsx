@@ -1,5 +1,9 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  makeStyles,
+  useTheme,
+  MuiThemeProvider,
+} from '@material-ui/core/styles';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,6 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
+import { errorTheme } from '../../theme';
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
@@ -18,6 +23,7 @@ const Transition = React.forwardRef<unknown, TransitionProps>(
 interface LoginModalProps {
   onConfirm: () => void;
   onCancel: () => void;
+  open: boolean;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -55,6 +61,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function ClubLeaveDialog(props: LoginModalProps) {
   const classes = useStyles();
+  const theme = useTheme();
+
+  const { onCancel, onConfirm, open } = props;
 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
@@ -63,9 +72,9 @@ export default function ClubLeaveDialog(props: LoginModalProps) {
     <Dialog
       fullWidth={fullWidth}
       maxWidth={maxWidth}
-      open={true}
+      open={open}
       TransitionComponent={Transition}
-      onClose={props.onCancel}
+      onClose={onCancel}
       aria-labelledby="max-width-dialog-title"
     >
       <DialogTitle id="leave-club-dialog" className={classes.dialogTitle}>
@@ -77,20 +86,18 @@ export default function ClubLeaveDialog(props: LoginModalProps) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button
-          className={classes.button}
-          onClick={props.onConfirm}
-          color="secondary"
-        >
-          Yes, leave the club
-        </Button>
-        <Button
-          className={classes.button}
-          onClick={props.onCancel}
-          color="primary"
-        >
+        <Button className={classes.button} onClick={onCancel} color="primary">
           Cancel
         </Button>
+        <MuiThemeProvider theme={errorTheme}>
+          <Button
+            className={classes.button}
+            onClick={onConfirm}
+            color="primary"
+          >
+            Yes, leave the club
+          </Button>
+        </MuiThemeProvider>
       </DialogActions>
     </Dialog>
   );
