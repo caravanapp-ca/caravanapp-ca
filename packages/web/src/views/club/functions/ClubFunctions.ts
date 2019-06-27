@@ -27,11 +27,11 @@ export function getWantToRead(club: Club): ShelfEntry[] {
 
 export function getShelfFromGoogleBooks(
   selectedBooks: GoogleBooks.Item[],
-  currentBookId: string
+  currentBookId?: string
 ) {
   const result = selectedBooks.map(book => {
     let readingState = 'notStarted';
-    if (book.id === currentBookId) {
+    if (currentBookId && book.id === currentBookId) {
       readingState = 'current';
     }
     const res: FilterAutoMongoKeys<ShelfEntry> = {
@@ -39,7 +39,7 @@ export function getShelfFromGoogleBooks(
       readingState: readingState,
       title: book.volumeInfo.title,
       genres: book.volumeInfo.categories,
-      author: book.volumeInfo.authors.join(', '),
+      author: (book.volumeInfo.authors || ['Unknown author']).join(', '),
       isbn:
         'industryIdentifiers' in book.volumeInfo
           ? book.volumeInfo.industryIdentifiers[0].identifier

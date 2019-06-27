@@ -14,6 +14,7 @@ import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { getAllClubs } from '../../services/club';
 import ClubCards from './ClubCards';
+import logo from '../../resources/logo.svg';
 
 interface HomeProps {
   user: User | null;
@@ -27,15 +28,10 @@ export interface ClubWithCurrentlyReading {
 const useStyles = makeStyles(theme => ({
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(0, 0, 0),
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: theme.spacing(8, 0, 6),
   },
   heroButtons: {
     marginTop: theme.spacing(4),
-    paddingBottom: 20,
   },
   bottomAuthButton: {
     display: 'flex',
@@ -94,7 +90,9 @@ export default function Home(props: HomeProps) {
     setLoginModalShown(false);
   }
 
-  const centerComponent = <Typography variant="h6">Find Groups</Typography>;
+  const centerComponent = (
+    <img src={logo} style={{ height: 20, objectFit: 'contain' }} />
+  );
 
   const rightComponent = props.user ? (
     <IconButton
@@ -131,13 +129,13 @@ export default function Home(props: HomeProps) {
             <Container maxWidth="md">
               <Typography
                 component="h1"
-                variant="h2"
+                variant="h3"
                 align="center"
-                color="textPrimary"
+                color="primary"
+                style={{ fontWeight: 600 }}
                 gutterBottom
-                style={{ paddingTop: 20 }}
               >
-                Welcome to Caravan!
+                Find your perfect reading buddies.
               </Typography>
               <Typography
                 variant="h5"
@@ -145,9 +143,9 @@ export default function Home(props: HomeProps) {
                 color="textSecondary"
                 paragraph
               >
-                Scroll around below to see any buddies or groups that are
-                available to read with. If you can't find anything quite right,
-                create a group yourself so people can find you!
+                Browse below to find others to read with. If you can't find
+                anything that matches your interest, create a club so others can
+                find you!
               </Typography>
               <div className={classes.heroButtons}>
                 <Grid container spacing={2} justify="center">
@@ -165,7 +163,7 @@ export default function Home(props: HomeProps) {
                         color="primary"
                         onClick={() => setShowWelcomeMessage(false)}
                       >
-                        Close
+                        <Typography variant="button">CLOSE</Typography>
                       </Button>
                     </Grid>
                   )}

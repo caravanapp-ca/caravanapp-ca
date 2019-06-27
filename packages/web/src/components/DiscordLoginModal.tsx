@@ -52,38 +52,26 @@ const useStyles = makeStyles(theme => ({
 
 export default function DiscordLoginModal(props: LoginModalProps) {
   const classes = useStyles();
-
-  const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+  const { onCloseLoginDialog } = props;
 
   return (
-    <Dialog
-      fullWidth={fullWidth}
-      maxWidth={maxWidth}
-      open={true}
-      TransitionComponent={Transition}
-      onClose={props.onCloseLoginDialog}
-      aria-labelledby="max-width-dialog-title"
-    >
-      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}>
-        Find your community!
+    <Dialog open={true} onClose={onCloseLoginDialog}>
+      <DialogTitle id="alert-dialog-title">
+        {'Log in to Caravan via Discord?'}
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Login with Discord and come find your ideal reading community - or
-          start your own! If you don't yet have a Discord account, you'll be
-          prompted to create one.
-          <br />
-          <br />
-          Logging in will add you to the Discord server where all Caravan book
-          clubs are currently hosted.
+        <DialogContentText id="alert-dialog-description">
+          This will allow you to join and create clubs. If it is your first
+          time, it will also add you to the Caravan Clubs Discord server where
+          all clubs are currently hosted. If you don't have Discord yet you can
+          sign up by following the link below.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <DiscordAuthButton />
-        <Button onClick={props.onCloseLoginDialog} color="primary">
+        <Button onClick={onCloseLoginDialog} color="primary">
           Close
         </Button>
+        <DiscordAuthButton />
       </DialogActions>
     </Dialog>
   );

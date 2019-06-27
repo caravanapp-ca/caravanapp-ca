@@ -17,9 +17,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
-import Switch from '@material-ui/core/Switch';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import { createClub } from '../../services/club';
@@ -32,16 +29,7 @@ import {
   groupVibeIcons,
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
-import { getShelfFromGoogleBooks } from './functions/ClubFunctions';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: purple,
-    secondary: {
-      main: '#7289da',
-    },
-  },
-});
+import HeaderTitle from '../../components/HeaderTitle';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -86,7 +74,7 @@ export default function CreateClub(props: CreateClubProps) {
     </IconButton>
   );
 
-  const centerComponent = <Typography variant="h6">Create a Group</Typography>;
+  const centerComponent = <HeaderTitle title="Create a Club" />;
 
   // const rightComponent = (
   //   <IconButton
@@ -111,7 +99,7 @@ export default function CreateClub(props: CreateClubProps) {
   const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
   const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
   const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
-  const [privateClub, setPrivateClub] = React.useState(false);
+  const [privateClub] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
     createdClub,
@@ -173,62 +161,6 @@ export default function CreateClub(props: CreateClubProps) {
     <>
       <Header leftComponent={leftComponent} centerComponent={centerComponent} />
       <Container className={classes.formContainer} maxWidth="md">
-        {/* <div className={classes.sectionContainer}>
-          <Typography variant="subtitle1" className={classes.sectionHeader}>
-            Who can join?
-          </Typography>
-          <Grid
-            container
-            spacing={0}
-            direction="row"
-            justify="center"
-            alignItems="center"
-          >
-            <Grid item xs>
-              <div
-                style={{
-                  display: 'flex',
-                  flexGrow: 1,
-                  justifyContent: 'flex-end',
-                }}
-              >
-                <Typography>Anyone</Typography>
-              </div>
-            </Grid>
-            <Grid item>
-              <div
-                style={{
-                  display: 'flex',
-                  flexGrow: 1,
-                  justifyContent: 'center',
-                  marginLeft: 8,
-                  marginRight: 8,
-                }}
-              >
-                <Switch
-                  checked={privateClub}
-                  onChange={(e, checked) => setPrivateClub(checked)}
-                  value="checked"
-                  color="primary"
-                />
-              </div>
-            </Grid>
-            <Grid item xs>
-              <div
-                style={{
-                  display: 'flex',
-                  flexGrow: 1,
-                  justifyContent: 'flex-start',
-                }}
-              >
-                <Typography>Friends only</Typography>
-              </div>
-            </Grid>
-          </Grid>
-          <Typography align="center" style={{ color: 'rgba(0, 0, 0, 0.5)' }}>
-            {privateSwitchLabel}
-          </Typography>
-        </div> */}
         <div className={classes.sectionContainer}>
           <TextField
             id="filled-name"
@@ -245,9 +177,18 @@ export default function CreateClub(props: CreateClubProps) {
           />
         </div>
         <div className={classes.sectionContainer}>
-          <Typography className={classes.sectionHeader} variant="subtitle1">
+          <Typography variant="subtitle1">
             What books would you like to read?
           </Typography>
+          {selectedBooks.length > 0 && (
+            <Typography
+              variant="subtitle2"
+              color="textSecondary"
+              className={classes.sectionHeader}
+            >
+              Select a book for your club to read first.
+            </Typography>
+          )}
           <BookSearch
             onSubmitBooks={onSubmitSelectedBooks}
             maxSelected={5}
@@ -275,9 +216,7 @@ export default function CreateClub(props: CreateClubProps) {
               >
                 <Radio
                   checked={selectedGroupSize === size}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setSelectedGroupSize(size)
-                  }
+                  onChange={() => setSelectedGroupSize(size)}
                   value={size.toString()}
                   color="primary"
                 />
@@ -387,7 +326,7 @@ export default function CreateClub(props: CreateClubProps) {
                   selectedBooks.length === 0
                 }
                 onClick={createClubOnClick}
-                color="primary"
+                color="secondary"
               >
                 CREATE
               </Button>

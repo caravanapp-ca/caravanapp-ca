@@ -1,5 +1,10 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  makeStyles,
+  useTheme,
+  Theme,
+  MuiThemeProvider,
+} from '@material-ui/core/styles';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,6 +13,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
+import { errorTheme } from '../../theme';
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
@@ -55,6 +61,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ClubLeaveDialog(props: LoginModalProps) {
   const classes = useStyles();
+  const theme = useTheme();
 
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
@@ -79,18 +86,20 @@ export default function ClubLeaveDialog(props: LoginModalProps) {
       <DialogActions>
         <Button
           className={classes.button}
-          onClick={props.onConfirm}
-          color="secondary"
-        >
-          Yes, leave the club
-        </Button>
-        <Button
-          className={classes.button}
           onClick={props.onCancel}
           color="primary"
         >
           Cancel
         </Button>
+        <MuiThemeProvider theme={errorTheme}>
+          <Button
+            className={classes.button}
+            onClick={props.onConfirm}
+            color="primary"
+          >
+            Yes, leave the club
+          </Button>
+        </MuiThemeProvider>
       </DialogActions>
     </Dialog>
   );

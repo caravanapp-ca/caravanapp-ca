@@ -88,20 +88,20 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
   },
   imageText: {
-    'font-size': '16px',
     width: '100%',
     'text-align': 'left',
     color: '#ffffff',
   },
   imageTitleText: {
-    'font-size': '20px',
     width: '100%',
     'text-align': 'left',
     color: '#ffffff',
+    fontWeight: 600,
   },
   progress: {
     margin: theme.spacing(2),
   },
+  clubTitle: {},
 }));
 
 interface ClubCardsProps {
@@ -114,7 +114,6 @@ export default function ClubCards(props: ClubCardsProps) {
   const { clubsWCR } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-
   const [joinClubLoadingId, setJoinClubLoadingId] = React.useState('');
 
   const onCloseLoginDialog = () => {
@@ -144,10 +143,10 @@ export default function ClubCards(props: ClubCardsProps) {
                         />
                         <div className={classes.clubImageShade} />
                         <div className={classes.imageTextContainer}>
-                          <Typography className={classes.imageText}>
-                            Currently reading:
-                          </Typography>
-                          <Typography className={classes.imageTitleText}>
+                          <Typography
+                            variant="h5"
+                            className={classes.imageTitleText}
+                          >
                             {currentlyReading.title}
                           </Typography>
                           <Typography className={classes.imageText}>
@@ -162,7 +161,12 @@ export default function ClubCards(props: ClubCardsProps) {
                     )}
                   </div>
                   <CardContent className={classes.cardContent}>
-                    <Typography gutterBottom variant="h5" component="h2">
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="h2"
+                      className={classes.clubTitle}
+                    >
                       {club.name}
                     </Typography>
                     <div className={classes.iconRoot}>
@@ -208,7 +212,7 @@ export default function ClubCards(props: ClubCardsProps) {
                       component={AdapterLink}
                       to={`/clubs/${club._id}`}
                     >
-                      INFO
+                      <Typography variant="button">INFO</Typography>
                     </Button>
                     {/* <Button
                         variant="contained"

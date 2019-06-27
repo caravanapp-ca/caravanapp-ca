@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
 import { GoogleBooks, ShelfEntry } from '@caravan/buddy-reading-types';
-import { Container, Paper, InputBase, IconButton } from '@material-ui/core';
+import {
+  Container,
+  Paper,
+  InputBase,
+  IconButton,
+  Popover,
+} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import SearchResultCards from '../books/SearchResultCards';
 import SelectedBookCards from '../books/SelectedBookCards';
@@ -39,6 +45,8 @@ interface BookSearchProps {
   radioValue?: string;
 }
 
+const searchRef = React.createRef();
+
 export default function BookSearch(props: BookSearchProps) {
   const classes = useStyles();
   const { onSubmitBooks, maxSelected, radioValue } = props;
@@ -48,14 +56,14 @@ export default function BookSearch(props: BookSearchProps) {
     searchResults,
     setSearchResults,
   ] = React.useState<GoogleBooks.Books | null>(null);
-  const [searchHidden, setSearchHidden] = React.useState<boolean>(false);
+  const [showPopper, setShowPopper] = React.useState<boolean>(false);
   const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
   const [numSelected, setNumSelected] = React.useState<number>(0);
   const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
 
   useEffect(() => {
     if (!bookSearchQuery || bookSearchQuery.length === 0) {
-      setSearchHidden(true);
+      setShowPopper(false);
       setSearchResults(null);
     }
   }, [bookSearchQuery]);
@@ -63,10 +71,8 @@ export default function BookSearch(props: BookSearchProps) {
   async function bookSearch(query: string) {
     if (query) {
       const results = await searchGoogleBooks(query);
-      setSearchHidden(false);
       setSearchResults(results);
     }
-    return null;
   }
 
   function handleOnKeyDown(e: React.KeyboardEvent<any>) {
@@ -75,11 +81,20 @@ export default function BookSearch(props: BookSearchProps) {
     }
   }
 
-  function onAddBook(book: GoogleBooks.Item) {
-    const bookAsShelfEntry = getShelfFromGoogleBooks(
-      [book],
-      book.id
-    )[0] as ShelfEntry;
+  function instanceOfGB(object: any): object is GoogleBooks.Item {
+    return 'id' in object;
+  }
+
+  function onAddBook(book: GoogleBooks.Item | ShelfEntry) {
+    let bookAsShelfEntry: ShelfEntry;
+    if (instanceOfGB(book)) {
+      bookAsShelfEntry = getShelfFromGoogleBooks(
+        [book],
+        book.id
+      )[0] as ShelfEntry;
+    } else {
+      bookAsShelfEntry = book;
+    }
     let newBooks: ShelfEntry[];
     if (numSelected === maxSelected) {
       const selectedBooksCopy = [...selectedBooks];
@@ -126,6 +141,13 @@ export default function BookSearch(props: BookSearchProps) {
     }
   }
 
+  function handleSearchClick(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    setShowPopper(true);
+    bookSearch(bookSearchQuery);
+  }
+
   return (
     <>
       <div className={classes.root}>
@@ -133,7 +155,7 @@ export default function BookSearch(props: BookSearchProps) {
           <IconButton
             className={classes.iconButton}
             aria-label="Menu"
-            onClick={() => bookSearch(bookSearchQuery)}
+            onClick={handleSearchClick}
           >
             <SearchIcon />
           </IconButton>
@@ -145,13 +167,33 @@ export default function BookSearch(props: BookSearchProps) {
             inputProps={{ 'aria-label': 'Add a Book' }}
             onChange={e => setBookSearchQuery(e.target.value)}
             onKeyDown={handleOnKeyDown}
+            ref={searchRef}
           />
         </Paper>
-        {searchResults && !searchHidden && (
-          <SearchResultCards
-            searchResultObject={searchResults.items}
-            onSelected={onAddBook}
-          />
+        {searchResults && showPopper && (
+          <Popover
+            open={showPopper}
+            anchorEl={searchRef.current as Element}
+            onClose={() => setShowPopper(false)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <Container maxWidth="sm" style={{ padding: 0 }}>
+              <BookList
+                data={
+                  getShelfFromGoogleBooks(searchResults.items) as ShelfEntry[]
+                }
+                secondary={'add'}
+                onAdd={onAddBook}
+              />
+            </Container>
+          </Popover>
         )}
       </div>
       {selectedBooks.length > 0 && (
