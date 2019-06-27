@@ -23,6 +23,7 @@ import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import Grid from '@material-ui/core/Grid';
 import AddIcon from '@material-ui/icons/Add';
+import { getAllProfileQuestions } from '../../services/profile';
 import { withStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -95,7 +96,21 @@ export default function AboutYou(props: AboutYouProps) {
 
   const minimumRequired: number = 3;
 
-  const questionPrompts: string[] = ['Q1', 'Q2', 'Q3'];
+  const [
+    profileQuestions,
+    setProfileQuestions,
+  ] = React.useState<Services.GetProfileQuestions | null>(null);
+
+  useEffect(() => {
+    const getProfileQuestions = async () => {
+      const response = await getAllProfileQuestions();
+      if (response.status >= 200 && response.status < 300) {
+        const { data } = response;
+        setProfileQuestions(data);
+      }
+    };
+    getProfileQuestions();
+  }, []);
 
   return (
     <>
@@ -112,43 +127,44 @@ export default function AboutYou(props: AboutYouProps) {
       </div>
       <Container className={classes.formContainer} maxWidth="md">
         <Grid container spacing={4}>
-          {questionPrompts.map(c => {
-            return (
-              <Grid
-                container
-                lg={12}
-                style={{ paddingBottom: theme.spacing(2) }}
-              >
-                <Card className={classes.card}>
-                  <CardContent className={classes.cardContent}>
-                    <Typography
-                      gutterBottom
-                      variant="subtitle1"
-                      component="h2"
-                      className={classes.questionText}
-                      color="textPrimary"
-                    >
-                      Select a prompt
-                    </Typography>
-                    <br />
-                    <Typography
-                      gutterBottom
-                      variant="subtitle1"
-                      component="h2"
-                      className={classes.answerText}
-                    >
-                      And write your answer.
-                    </Typography>
-                  </CardContent>
-                  <div className={classes.fabContainer}>
-                    <Fab color="primary">
-                      <AddIcon />
-                    </Fab>
-                  </div>
-                </Card>
-              </Grid>
-            );
-          })}
+          {profileQuestions &&
+            profileQuestions.map(c => {
+              return (
+                <Grid
+                  container
+                  lg={12}
+                  style={{ paddingBottom: theme.spacing(2) }}
+                >
+                  <Card className={classes.card}>
+                    <CardContent className={classes.cardContent}>
+                      <Typography
+                        gutterBottom
+                        variant="subtitle1"
+                        component="h2"
+                        className={classes.questionText}
+                        color="textPrimary"
+                      >
+                        Select a prompt
+                      </Typography>
+                      <br />
+                      <Typography
+                        gutterBottom
+                        variant="subtitle1"
+                        component="h2"
+                        className={classes.answerText}
+                      >
+                        And write your answer.
+                      </Typography>
+                    </CardContent>
+                    <div className={classes.fabContainer}>
+                      <Fab color="primary">
+                        <AddIcon />
+                      </Fab>
+                    </div>
+                  </Card>
+                </Grid>
+              );
+            })}
         </Grid>
       </Container>
     </>
