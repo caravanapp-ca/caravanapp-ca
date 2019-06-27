@@ -58,7 +58,7 @@ export default function DiscordLoginModal(props: LoginModalProps) {
   return (
     <Dialog open={open} onClose={onCloseLoginDialog}>
       <DialogTitle id="alert-dialog-title">
-        {'Log in to Caravan via Discord?'}
+        {'Find your reading community'}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">

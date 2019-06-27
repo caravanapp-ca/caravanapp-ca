@@ -78,6 +78,34 @@ declare module '@caravan/buddy-reading-types' {
     isBot: boolean;
   }
 
+  export interface Genres {
+    _id: string;
+    mainGenres: string[];
+    genres: {
+      [key: string]: Genre;
+    };
+  }
+
+  export interface Genre extends DocumentFields {
+    key: string;
+    name: string;
+    subgenres: string[];
+  }
+
+  export interface ProfileQuestions {
+    _id: string;
+    questions: ProfileQuestion[];
+  }
+
+  export interface ProfileQuestion {
+    id: string;
+    title: string;
+    subtitle: string;
+    required: boolean;
+    min: number;
+    max: number;
+  }
+
   export type ChannelSource = 'discord';
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';
@@ -134,6 +162,12 @@ declare module '@caravan/buddy-reading-types' {
       club: Club;
       discord: any;
     }
+    export interface GetGenres extends Omit<Genres, '_id'> {}
+    export interface ReadingPreferencesResult {
+      genres: string[];
+      readingSpeed: string;
+    }
+    export interface GetProfileQuestions {}
   }
 
   export namespace GoogleBooks {
