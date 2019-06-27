@@ -1,5 +1,4 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
-import { purple } from '@material-ui/core/colors';
 const montserrat = require('typeface-montserrat');
 
 const theme = responsiveFontSizes(

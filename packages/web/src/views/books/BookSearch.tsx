@@ -155,7 +155,7 @@ export default function BookSearch(props: BookSearchProps) {
           <IconButton
             className={classes.iconButton}
             aria-label="Menu"
-            onClick={e => handleSearchClick(e)}
+            onClick={handleSearchClick}
           >
             <SearchIcon />
           </IconButton>
