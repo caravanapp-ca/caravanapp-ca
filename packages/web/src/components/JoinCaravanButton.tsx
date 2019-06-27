@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles, Typography } from '@material-ui/core';
 
 export interface JoinCaravanButtonProps {
   onClick: () => void;
@@ -7,13 +7,7 @@ export interface JoinCaravanButtonProps {
 
 const useStyles = makeStyles(theme => ({
   button: {
-    'background-color': '#7289da',
-    color: 'white',
     margin: theme.spacing(1),
-  },
-  leftIcon: {
-    color: 'white',
-    marginRight: theme.spacing(1),
   },
 }));
 
@@ -23,10 +17,11 @@ export default function JoinCaravanButton(props: JoinCaravanButtonProps) {
   return (
     <Button
       variant="contained"
+      color="secondary"
       className={classes.button}
       onClick={props.onClick}
     >
-      LOGIN TO CARAVAN
+      <Typography variant="button">LOG IN</Typography>
     </Button>
   );
 }
