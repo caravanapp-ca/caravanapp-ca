@@ -353,17 +353,15 @@ export default function ClubComponent(props: ClubProps) {
           <Typography>It does not appear that this club exists!</Typography>
         </div>
       )}
-      {loginDialogVisible && (
-        <DiscordLoginModal
-          onCloseLoginDialog={() => setLoginDialogVisible(false)}
-        />
-      )}
-      {leaveDialogVisible && (
-        <ClubLeaveDialog
-          onCancel={() => handleClubLeaveDialog(false)}
-          onConfirm={() => handleClubLeaveDialog(true)}
-        />
-      )}
+      <DiscordLoginModal
+        open={loginDialogVisible}
+        onCloseLoginDialog={() => setLoginDialogVisible(false)}
+      />
+      <ClubLeaveDialog
+        open={leaveDialogVisible}
+        onCancel={() => handleClubLeaveDialog(false)}
+        onConfirm={() => handleClubLeaveDialog(true)}
+      />
     </>
   );
 }

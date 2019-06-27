@@ -236,9 +236,10 @@ export default function ClubCards(props: ClubCardsProps) {
             );
           })}
         </Grid>
-        {loginModalShown && (
-          <DiscordLoginModal onCloseLoginDialog={onCloseLoginDialog} />
-        )}
+        <DiscordLoginModal
+          onCloseLoginDialog={onCloseLoginDialog}
+          open={loginModalShown}
+        />
       </Container>
     </main>
   );
