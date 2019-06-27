@@ -14,7 +14,7 @@ import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { getAllClubs } from '../../services/club';
 import ClubCards from './ClubCards';
-import HeaderTitle from '../../components/HeaderTitle';
+import logo from '../../resources/logo.svg';
 
 interface HomeProps {
   user: User | null;
@@ -90,7 +90,9 @@ export default function Home(props: HomeProps) {
     setLoginModalShown(false);
   }
 
-  const centerComponent = <HeaderTitle title="Caravan" />;
+  const centerComponent = (
+    <img src={logo} style={{ height: 20, objectFit: 'contain' }} />
+  );
 
   const rightComponent = props.user ? (
     <IconButton
@@ -127,9 +129,10 @@ export default function Home(props: HomeProps) {
             <Container maxWidth="md">
               <Typography
                 component="h1"
-                variant="h2"
+                variant="h3"
                 align="center"
-                color="textPrimary"
+                color="primary"
+                style={{ fontWeight: 600 }}
                 gutterBottom
               >
                 Find your perfect reading buddies.

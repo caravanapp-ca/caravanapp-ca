@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="158px" height="27px" viewBox="0 0 158 27" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Icon / Web Header</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icon-/-Web-Header" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#FFFFFF" x="0" y="0" width="158" height="27"></rect>
+        <text id="Caravan." font-family="Montserrat-SemiBold, Montserrat SemiBold" font-size="36" font-weight="500">
+            <tspan x="-0.83" y="26" fill="#4A4A4A">Caravan</tspan>
+            <tspan x="150.046" y="26" fill="#5C6BC0">.</tspan>
+        </text>
+    </g>
+</svg>
