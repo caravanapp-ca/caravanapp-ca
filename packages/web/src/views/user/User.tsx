@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     nameplateContainer: {
       display: 'flex',
-      padding: theme.spacing(4),
+      padding: theme.spacing(2),
       flexDirection: 'row',
       alignItems: 'center',
     },
@@ -128,7 +128,10 @@ export default function UserView(props: UserViewProps) {
       <div className={classes.nameplateContainer}>
         <UserAvatar user={user} />
         <div style={{ marginLeft: theme.spacing(4) }}>
-          <Typography variant="body1">{user.bio}</Typography>
+          <Typography variant="h5">{user.name}</Typography>
+          <Typography variant="body1" style={{ marginTop: theme.spacing(1) }}>
+            {user.bio}
+          </Typography>
           <Typography variant="body1">
             <Link href={user.website}>{user.website}</Link>
           </Typography>
@@ -137,7 +140,7 @@ export default function UserView(props: UserViewProps) {
             color="primary"
             // TODO: Connect this button to send a DM to the user on Discord
             onClick={() => {}}
-            style={{ marginTop: theme.spacing(2) }}
+            style={{ marginTop: theme.spacing(1) }}
           >
             <Typography variant="button">MESSAGE</Typography>
             <MessageIcon className={classes.rightIcon} />

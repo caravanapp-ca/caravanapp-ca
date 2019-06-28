@@ -1,11 +1,12 @@
 import React from 'react';
 import { User, ReadingSpeed } from '@caravan/buddy-reading-types';
-import { Typography, Link, Button, makeStyles } from '@material-ui/core';
+import { Typography, Button, makeStyles } from '@material-ui/core';
 import ListElementAvatar from '../../components/ListElementAvatar';
 import {
   readingSpeedIcons,
   readingSpeedLabels,
 } from '../../components/reading-speed-avatars-icons-labels';
+import GenreChip from '../../components/GenreChip';
 
 const useStyles = makeStyles(theme => ({
   genresContainer: {
@@ -43,14 +44,7 @@ export default function UserBio(props: UserBioProps) {
       <Typography variant="h6">Genres</Typography>
       <div className={classes.genresContainer}>
         {user.selectedGenres.map(g => (
-          <Button
-            className={classes.button}
-            color="default"
-            variant="contained"
-            key={g.key}
-          >
-            {g.name}
-          </Button>
+          <GenreChip key={g.key} name={g.name} active={false} />
         ))}
       </div>
       <Typography variant="h6">{`Get to know ${user.name}`}</Typography>
