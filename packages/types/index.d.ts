@@ -97,7 +97,7 @@ declare module '@caravan/buddy-reading-types' {
     questions: ProfileQuestion[];
   }
 
-  export interface ProfileQuestion {
+  export interface ProfileQuestion extends DocumentFields {
     id: string;
     title: string;
     subtitle: string;
@@ -167,7 +167,8 @@ declare module '@caravan/buddy-reading-types' {
       genres: string[];
       readingSpeed: string;
     }
-    export interface GetProfileQuestions {}
+    export interface GetProfileQuestions
+      extends Omit<ProfileQuestions, '_id'> {}
   }
 
   export namespace GoogleBooks {

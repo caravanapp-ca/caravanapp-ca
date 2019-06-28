@@ -23,7 +23,7 @@ const profileQuestionSchema = new Schema(profileQuestionSchemaDefinition, {});
 const profileQuestionsSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<ProfileQuestions>
 > = {
-  questions: { type: profileQuestionSchema, required: true },
+  questions: { type: [profileQuestionSchema], required: true },
 };
 
 const profileQuestionsSchema = new Schema<ProfileQuestionsDoc>(
@@ -35,5 +35,6 @@ const profileQuestionsSchema = new Schema<ProfileQuestionsDoc>(
 
 export default model<ProfileQuestionsDoc>(
   'ProfileQuestion',
-  profileQuestionsSchema
+  profileQuestionsSchema,
+  'profileQuestions'
 );
