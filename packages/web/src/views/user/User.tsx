@@ -10,16 +10,12 @@ import {
   useMediaQuery,
   useTheme,
   Tab,
-  Button,
-  Typography,
   Container,
-  Link,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ThreeDotsIcon from '@material-ui/icons/MoreVert';
-import MessageIcon from '@material-ui/icons/Message';
 import { getUser } from '../../services/user';
 import { isMe } from '../../common/localStorage';
 import Header from '../../components/Header';
@@ -27,6 +23,7 @@ import HeaderTitle from '../../components/HeaderTitle';
 import UserAvatar from './UserAvatar';
 import UserBio from './UserBio';
 import UserShelf from './UserShelf';
+import UserNameplate from './UserNameplate';
 
 interface UserRouteParams {
   id: string;
@@ -36,31 +33,28 @@ interface UserViewProps extends RouteComponentProps<UserRouteParams> {}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
     loadingContainer: {
       display: 'flex',
       justifyContent: 'center',
       justifyItems: 'center',
     },
     nameplateContainer: {
+      backgroundColor: '#FFFFFF',
       display: 'flex',
       padding: theme.spacing(2),
       flexDirection: 'row',
       alignItems: 'center',
+      position: 'relative',
+      zIndex: 2,
     },
     tabRoot: {
+      backgroundColor: '#FFFFFF',
+      boxShadow: '0px 2px 4px #a0a0a0',
       flexGrow: 1,
+      position: 'relative',
+      zIndex: 1,
     },
     activeViewContainer: {},
-    rightIcon: {
-      marginLeft: theme.spacing(1),
-    },
-    leftIcon: {
-      marginRight: theme.spacing(1),
-    },
   })
 );
 
@@ -73,8 +67,10 @@ export default function UserView(props: UserViewProps) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
   const [tabValue, setTabValue] = React.useState(0);
+  const [scrolled, setScrolled] = React.useState(0);
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
     getUser(userId).then(user => {
@@ -85,6 +81,20 @@ export default function UserView(props: UserViewProps) {
       setUser(user);
     });
   }, [userId]);
+
+  const listenToScroll = () => {
+    const winScroll =
+      document.body.scrollTop || document.documentElement.scrollTop;
+    setScrolled(winScroll);
+  };
+
+  useEffect(() => window.addEventListener('scroll', listenToScroll), []);
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener('scroll', listenToScroll);
+    };
+  }, []);
 
   if (!user) {
     return (
@@ -122,44 +132,31 @@ export default function UserView(props: UserViewProps) {
     <>
       <Header
         leftComponent={leftComponent}
-        centerComponent={centerComponent}
+        centerComponent={scrolled > 64 ? centerComponent : undefined}
         rightComponent={rightComponent}
+        showBorder={scrolled > 1 ? false : true}
       />
       <div className={classes.nameplateContainer}>
-        <UserAvatar user={user} />
-        <div style={{ marginLeft: theme.spacing(4) }}>
-          <Typography variant="h5">{user.name}</Typography>
-          <Typography variant="body1" style={{ marginTop: theme.spacing(1) }}>
-            {user.bio}
-          </Typography>
-          <Typography variant="body1">
-            <Link href={user.website}>{user.website}</Link>
-          </Typography>
-          <Button
-            variant="outlined"
-            color="primary"
-            // TODO: Connect this button to send a DM to the user on Discord
-            onClick={() => {}}
-            style={{ marginTop: theme.spacing(1) }}
-          >
-            <Typography variant="button">MESSAGE</Typography>
-            <MessageIcon className={classes.rightIcon} />
-          </Button>
+        <UserAvatar
+          user={user}
+          size={screenSmallerThanSm ? 'small' : 'regular'}
+        />
+        <div style={{ marginLeft: theme.spacing(2) }}>
+          <UserNameplate user={user} />
         </div>
       </div>
-      <Paper className={classes.tabRoot}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
-          centered={!screenSmallerThanMd}
-        >
-          <Tab label="Bio" />
-          <Tab label="Shelf" />
-        </Tabs>
-      </Paper>
+      <Tabs
+        value={tabValue}
+        onChange={handleTabChange}
+        indicatorColor="primary"
+        textColor="primary"
+        variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+        centered={!screenSmallerThanMd}
+        className={classes.tabRoot}
+      >
+        <Tab label="Bio" />
+        <Tab label="Shelf" />
+      </Tabs>
       <Container maxWidth={'md'}>
         <>
           {tabValue === 0 && <UserBio user={user} />}
