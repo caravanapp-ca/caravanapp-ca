@@ -13,7 +13,9 @@ const genreSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<Genre>> = {
   subgenres: { type: [String], required: true },
 };
 
-const genreSchema = new Schema(genreSchemaDefinition, {});
+const genreSchema = new Schema(genreSchemaDefinition, {
+  _id: false,
+});
 
 const genresSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<Genres>> = {
   mainGenres: { type: [String], required: true },
