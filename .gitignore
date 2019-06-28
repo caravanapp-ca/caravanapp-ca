@@ -14,5 +14,5 @@ package-lock.json
 /.changelog
 
 # App Engine
-app.production.yaml
+# app.production.yaml
 app.staging.yaml
