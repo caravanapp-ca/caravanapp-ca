@@ -77,7 +77,7 @@ export default function Onboarding(props: OnboardingProps) {
 
   const [continuing, setContinuing] = React.useState(false);
 
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const [currentPage, setCurrentPage] = React.useState(2);
 
   const [
     selectedReadingPreferences,

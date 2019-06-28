@@ -59,6 +59,16 @@ interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
   user: User | null;
 }
 
+const groupSizes: number[] = [2, 3, 4, 5, 6, 10, 20];
+const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
+const groupVibes: GroupVibe[] = [
+  'chill',
+  'first-timers',
+  'learning',
+  'nerdy',
+  'power',
+];
+
 export default function CreateClub(props: CreateClubProps) {
   const classes = useStyles();
 
@@ -106,16 +116,6 @@ export default function CreateClub(props: CreateClubProps) {
     setCreatedClub,
   ] = React.useState<Services.CreateClubResult | null>(null);
 
-  const groupSizes: number[] = [2, 3, 4, 5, 6, 10, 20];
-  const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
-  const groupVibes: GroupVibe[] = [
-    'chill',
-    'first-timers',
-    'learning',
-    'nerdy',
-    'power',
-  ];
-
   function onSubmitSelectedBooks(
     selectedBooks: ShelfEntry[],
     bookToRead: ShelfEntry | null
@@ -134,9 +134,25 @@ export default function CreateClub(props: CreateClubProps) {
     if (!bookToRead) {
       return;
     }
+    const selectedBooksWReadingState = selectedBooks.map(book => {
+      if (book._id !== bookToRead._id && book.readingState !== 'notStarted') {
+        const bookCopy = { ...book };
+        bookCopy.readingState = 'notStarted';
+        return bookCopy;
+      } else if (
+        book._id === bookToRead._id &&
+        book.readingState !== 'current'
+      ) {
+        const bookCopy = { ...book };
+        bookCopy.readingState = 'current';
+        return bookCopy;
+      }
+      return book;
+    });
+
     const clubObj: any = {
       name: selectedGroupName,
-      shelf: selectedBooks,
+      shelf: selectedBooksWReadingState,
       bio: selectedGroupBio,
       maxMembers: selectedGroupSize,
       vibe: selectedGroupVibe,
@@ -191,7 +207,7 @@ export default function CreateClub(props: CreateClubProps) {
           )}
           <BookSearch
             onSubmitBooks={onSubmitSelectedBooks}
-            maxSelected={5}
+            maxSelected={20}
             radioValue={bookToRead && bookToRead._id ? bookToRead._id : 'none'}
           />
         </div>
