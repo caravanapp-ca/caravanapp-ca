@@ -1,0 +1,40 @@
+runtime: nodejs
+env: flex
+
+# https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
+# This sample incurs costs to run on the App Engine flexible environment.
+# The settings below are to reduce costs during testing and are not appropriate
+# for production use. For more information, see:
+# https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
+manual_scaling:
+  instances: 1
+
+resources:
+  cpu: .5
+  memory_gb: 0.5
+  disk_size_gb: 10
+
+# All (private) environment variables are substituted
+# in the Cloud Build trigger to prevent adding secrets
+# intro git. Our current trigger is located at
+# https://console.cloud.google.com/cloud-build/triggers/c906a244-ed2d-490e-bedb-81434c11dfa4?project=buddyreading
+env_variables:
+  COOKIE_SESSION_KEY: '${_COOKIE_SESSION_KEY}'
+  DISCORD_BOT_SECRET: '${_DISCORD_BOT_SECRET}'
+  DISCORD_CLIENT_ID: '${_DISCORD_CLIENT_ID}'
+  DISCORD_CLIENT_SECRET: '${_DISCORD_CLIENT_SECRET}'
+  DISCORD_GUILD: '${_DISCORD_GUILD}'
+  DISCORD_GUILD_ID: '${_DISCORD_GUILD_ID}'
+  DISCORD_REDIRECT: '${_DISCORD_REDIRECT}'
+  MONGO_DB: '${_MONGO_DB}'
+
+handlers:
+  - url: /
+    static_files: packages/web/build/index.html
+    upload: packages/web/build/index.html
+  - url: /
+    static_dir: packages/web/build
+# manual_scaling - Lock instances to 1 . using App Engine Flexible will create VM instances to serve from.
+# If you want to lower your usage, you might restrict your App to just one 1 instance
+# (probably not what you want in production, but perfect for in prototyping and development cases ).
+# https://stackoverflow.com/questions/37381694/google-app-engine-how-to-correctly-deploy-an-app
