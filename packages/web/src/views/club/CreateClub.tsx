@@ -59,6 +59,16 @@ interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
   user: User | null;
 }
 
+const groupSizes: number[] = [2, 3, 4, 5, 6, 10, 20];
+const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
+const groupVibes: GroupVibe[] = [
+  'chill',
+  'first-timers',
+  'learning',
+  'nerdy',
+  'power',
+];
+
 export default function CreateClub(props: CreateClubProps) {
   const classes = useStyles();
 
@@ -105,16 +115,6 @@ export default function CreateClub(props: CreateClubProps) {
     createdClub,
     setCreatedClub,
   ] = React.useState<Services.CreateClubResult | null>(null);
-
-  const groupSizes: number[] = [2, 3, 4, 5, 6, 10, 20];
-  const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
-  const groupVibes: GroupVibe[] = [
-    'chill',
-    'first-timers',
-    'learning',
-    'nerdy',
-    'power',
-  ];
 
   function onSubmitSelectedBooks(
     selectedBooks: ShelfEntry[],
