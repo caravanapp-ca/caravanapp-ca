@@ -55,6 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: 1,
     },
     activeViewContainer: {},
+    centerComponent: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
   })
 );
 
@@ -120,7 +125,12 @@ export default function UserView(props: UserViewProps) {
     </IconButton>
   );
 
-  const centerComponent = <HeaderTitle title={user.name || 'User Profile'} />;
+  const centerComponent = (
+    <div className={classes.centerComponent}>
+      <UserAvatar user={user} style={{ marginRight: theme.spacing(1) }} />
+      <HeaderTitle title={user.name || 'User Profile'} />
+    </div>
+  );
 
   const rightComponent = (
     <IconButton edge="start" color="inherit" aria-label="More">
@@ -134,12 +144,12 @@ export default function UserView(props: UserViewProps) {
         leftComponent={leftComponent}
         centerComponent={scrolled > 64 ? centerComponent : undefined}
         rightComponent={rightComponent}
-        showBorder={scrolled > 1 ? false : true}
+        showBorder={scrolled > 1 ? true : false}
       />
       <div className={classes.nameplateContainer}>
         <UserAvatar
           user={user}
-          size={screenSmallerThanSm ? 'small' : 'regular'}
+          size={screenSmallerThanSm ? 'small' : 'large'}
         />
         <div style={{ marginLeft: theme.spacing(2) }}>
           <UserNameplate user={user} />

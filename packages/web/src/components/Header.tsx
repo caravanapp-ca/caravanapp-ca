@@ -88,7 +88,7 @@ export default function ButtonAppBar(props: HeaderProps) {
             </Grid>
           </Grid>
         </Toolbar>
-        {showBorder === false && <div className={classes.bottomBorder} />}
+        {showBorder !== false && <div className={classes.bottomBorder} />}
       </AppBar>
     </ElevationScroll>
   );
