@@ -6,10 +6,10 @@ import cookieSession from 'cookie-session';
 import express from 'express';
 import helmet from 'helmet';
 import path from 'path';
-
 import authRoutes from './routes/authRoutes';
 import clubRoutes from './routes/clubRoutes';
 import userRoutes from './routes/userRoutes';
+import bookRoutes from './routes/bookRoutes';
 import testRoutes from './routes/testRoutes';
 
 import {
@@ -59,6 +59,7 @@ import { ReadingDiscordBot } from './services/discord';
   app.use('/api/club', clubRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/user', userRoutes);
+  app.use('/api/books', bookRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

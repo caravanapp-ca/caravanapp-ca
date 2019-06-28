@@ -78,6 +78,7 @@ export default function BookSearch(props: BookSearchProps) {
   function handleOnKeyDown(e: React.KeyboardEvent<any>) {
     if (e.key === 'Enter') {
       bookSearch(bookSearchQuery);
+      setShowPopper(true);
     }
   }
 
@@ -144,8 +145,8 @@ export default function BookSearch(props: BookSearchProps) {
   function handleSearchClick(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
-    setShowPopper(true);
     bookSearch(bookSearchQuery);
+    setShowPopper(true);
   }
 
   return (
