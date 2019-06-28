@@ -84,6 +84,7 @@ declare module '@caravan/buddy-reading-types' {
     isBot: boolean;
     urlSlug: string;
     selectedGenres: { key: string; name: string }[];
+    questions: UserQA[];
   }
 
   export interface Genres {
@@ -98,6 +99,14 @@ declare module '@caravan/buddy-reading-types' {
     key: string;
     name: string;
     subgenres: string[];
+  }
+
+  export interface UserQA {
+    id: string;
+    title: string;
+    answer: string;
+    userVisible: boolean;
+    sort: number;
   }
 
   export interface ProfileQuestions {

@@ -6,12 +6,14 @@ import {
   User,
   ReadingSpeed,
   FilterAutoMongoKeys,
+  UserQA,
 } from '@caravan/buddy-reading-types';
 import GenreModel from '../models/genre';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { userSlugExists } from '../services/user';
 import { getGenreDoc } from '../services/genre';
+import { getProfileQuestions } from '../services/profileQuestions';
 
 const router = express.Router();
 
@@ -138,6 +140,24 @@ router.put(
       })
       .sort((a, b) => a.name.localeCompare(b.name));
 
+    const questionDoc = await getProfileQuestions();
+    if (!questionDoc) {
+      res.status(500).send('No questions found, oops!');
+      return;
+    }
+
+    const userQA = user.questions.map(q => {
+      const validQuestion = questionDoc.questions.find(f => f.id === q.id);
+      if (validQuestion) {
+        const newUserQA: UserQA = {
+          ...q,
+          title: validQuestion.title,
+        };
+        return newUserQA;
+      }
+      throw new Error(`Unknown question: ${q.id}, ${q.title}`);
+    });
+
     const newUser: Omit<
       FilterAutoMongoKeys<User>,
       'isBot' | 'smallPhotoUrl' | 'discordId'
@@ -153,6 +173,7 @@ router.put(
       urlSlug: user.urlSlug,
       website: user.website,
       selectedGenres: userGenres,
+      questions: userQA,
     };
     try {
       const userDoc = await UserModel.findByIdAndUpdate(userId, newUser);
