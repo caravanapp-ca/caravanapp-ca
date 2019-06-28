@@ -10,6 +10,7 @@ import {
   Genres,
 } from '@caravan/buddy-reading-types';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
+import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
@@ -35,6 +36,7 @@ import {
   readingSpeedLabels,
   readingSpeedSubtitles,
 } from '../../components/reading-speed-avatars-icons-labels';
+import { getAllProfileQuestions } from '../../services/profile';
 
 const theme = createMuiTheme({
   palette: {
@@ -55,21 +57,43 @@ interface OnboardingProps extends RouteComponentProps<OnboardingRouteParams> {
   user: User | null;
 }
 
+interface QA {
+  qid: string;
+  answer: string;
+}
+
 export default function Onboarding(props: OnboardingProps) {
   const classes = useStyles();
 
-  const centerComponent1 = (
+  const centerComponentReadingPreferences = (
     <Typography variant="h6">Reading Preferences</Typography>
   );
 
-  const centerComponent2 = <Typography variant="h6">About You</Typography>;
+  const centerComponentAboutYou = (
+    <Typography variant="h6">About You</Typography>
+  );
 
-  const leftComponent = (
+  const centerComponentSelectPrompt = (
+    <Typography variant="h6">Select a Prompt</Typography>
+  );
+
+  const leftComponentAboutYou = (
     <IconButton
       edge="start"
       color="inherit"
       aria-label="Back"
       onClick={() => setCurrentPage(1)}
+    >
+      <BackIcon />
+    </IconButton>
+  );
+
+  const leftComponentSelectPrompt = (
+    <IconButton
+      edge="start"
+      color="inherit"
+      aria-label="Back"
+      onClick={() => setCurrentPage(2)}
     >
       <BackIcon />
     </IconButton>
@@ -91,6 +115,30 @@ export default function Onboarding(props: OnboardingProps) {
   );
 
   const [selectedGenres, setSelectedGenres] = React.useState<string[]>([]);
+
+  const [
+    profileQuestions,
+    setProfileQuestions,
+  ] = React.useState<Services.GetProfileQuestions | null>(null);
+
+  const [answers, setAnswers] = React.useState<QA[]>([
+    {
+      qid: 'q1',
+      answer: 'Nice',
+    },
+  ]);
+
+  useEffect(() => {
+    const getProfileQuestions = async () => {
+      const response = await getAllProfileQuestions();
+      if (response.status >= 200 && response.status < 300) {
+        const { data } = response;
+        setProfileQuestions(data);
+        console.log(data);
+      }
+    };
+    getProfileQuestions();
+  }, []);
 
   function onGenreSelected(genre: string, selected: boolean) {
     if (selected) {
@@ -127,11 +175,30 @@ export default function Onboarding(props: OnboardingProps) {
     setCurrentPage(2);
   }
 
+  function onUpdateAnswers(qKey: string, answer: string, added: boolean) {
+    if (added && profileQuestions) {
+      let newAnswers: QA[];
+      const newAnswer = {
+        qid: qKey,
+        answer: answer,
+      };
+      newAnswers = [...answers, newAnswer];
+      setAnswers(newAnswers);
+    } else {
+      const updatedAnswers = answers.filter(a => a.qid !== qKey);
+      setAnswers(updatedAnswers);
+    }
+  }
+
+  function onAddQuestion() {
+    setCurrentPage(3);
+  }
+
   return (
     <>
       {currentPage === 1 && (
         <>
-          <Header centerComponent={centerComponent1} />
+          <Header centerComponent={centerComponentReadingPreferences} />
           <ReadingPreferences
             continuing={continuing}
             onContinue={continueToNextPage}
@@ -143,16 +210,28 @@ export default function Onboarding(props: OnboardingProps) {
           />
         </>
       )}
-      {currentPage === 2 && (
+      {currentPage === 2 && profileQuestions && (
         <>
           <Header
-            centerComponent={centerComponent2}
-            leftComponent={leftComponent}
+            centerComponent={centerComponentAboutYou}
+            leftComponent={leftComponentAboutYou}
           />
           <AboutYou
             continuing={continuing}
             onContinue={continueToNextPage}
+            questions={profileQuestions.questions}
             user={props.user}
+            answers={answers}
+            onUpdateAnswers={onUpdateAnswers}
+            onAddQuestion={onAddQuestion}
+          />
+        </>
+      )}
+      {currentPage === 3 && (
+        <>
+          <Header
+            centerComponent={centerComponentSelectPrompt}
+            leftComponent={leftComponentSelectPrompt}
           />
         </>
       )}

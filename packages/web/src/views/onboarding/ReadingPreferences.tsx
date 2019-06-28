@@ -9,9 +9,11 @@ import {
   Genre,
   Genres,
 } from '@caravan/buddy-reading-types';
+import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -204,7 +206,6 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
             {genreDoc &&
               genreDoc.mainGenres.map((genreKey: string) => {
                 const genreSelected = props.selectedGenres.includes(genreKey);
-                console.log(genreKey);
                 return (
                   <Grid item lg={3} md={4} xs={6} key={genreKey}>
                     <Button
@@ -232,16 +233,15 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
             }}
           >
             {!props.continuing && (
-              <Button
-                variant="contained"
+              <Fab
                 disabled={props.selectedGenres.length === 0}
                 onClick={() =>
                   props.onContinue(props.selectedGenres, props.selectedSpeed)
                 }
                 color="primary"
               >
-                CONTINUE
-              </Button>
+                <ForwardIcon />
+              </Fab>
             )}
             {props.continuing && <CircularProgress />}
           </div>
