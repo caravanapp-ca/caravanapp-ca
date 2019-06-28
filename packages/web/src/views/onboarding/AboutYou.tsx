@@ -107,6 +107,7 @@ export default function AboutYou(props: AboutYouProps) {
       if (response.status >= 200 && response.status < 300) {
         const { data } = response;
         setProfileQuestions(data);
+        console.log(data);
       }
     };
     getProfileQuestions();
@@ -128,7 +129,7 @@ export default function AboutYou(props: AboutYouProps) {
       <Container className={classes.formContainer} maxWidth="md">
         <Grid container spacing={4}>
           {profileQuestions &&
-            profileQuestions.map(c => {
+            profileQuestions.questions.map(q => {
               return (
                 <Grid
                   container
@@ -144,7 +145,7 @@ export default function AboutYou(props: AboutYouProps) {
                         className={classes.questionText}
                         color="textPrimary"
                       >
-                        Select a prompt
+                        {q.title}
                       </Typography>
                       <br />
                       <Typography
