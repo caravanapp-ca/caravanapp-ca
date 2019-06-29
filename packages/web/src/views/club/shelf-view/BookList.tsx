@@ -24,6 +24,7 @@ interface BookListProps {
   radioValue?: string;
   onDelete?: (id: string) => void;
   onAdd?: (book: ShelfEntry) => void;
+  footerElement?: JSX.Element;
 }
 
 export default function BookList(props: BookListProps) {
@@ -37,6 +38,7 @@ export default function BookList(props: BookListProps) {
     radioValue,
     onDelete,
     onAdd,
+    footerElement,
   } = props;
 
   function radio(b: ShelfEntry, index: number): JSX.Element {
@@ -131,6 +133,7 @@ export default function BookList(props: BookListProps) {
             />
           );
         })}
+        {footerElement}
       </List>
     </Paper>
   );

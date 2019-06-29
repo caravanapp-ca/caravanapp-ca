@@ -178,9 +178,10 @@ export default function UpdateBook(props: UpdateBookProps) {
       "Search for a new book to set as your current read. Any books you don't select will be added to your club's Want to Read list.";
   }
 
-  if (backToClub) {
-    return <Redirect to={`/clubs/${clubId}`} />;
-  }
+  // TODO: remove this
+  // if (backToClub) {
+  //   return <Redirect to={`/clubs/${clubId}`} />;
+  // }
 
   return (
     <div>
@@ -233,7 +234,7 @@ export default function UpdateBook(props: UpdateBookProps) {
             </Typography>
             <BookSearch
               onSubmitBooks={onSubmitSelectedBooks}
-              maxSelected={3}
+              maxSelected={9}
               radioValue={
                 bookToRead && bookToRead._id ? bookToRead._id : 'none'
               }
