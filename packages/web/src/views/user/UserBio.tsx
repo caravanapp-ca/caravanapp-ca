@@ -46,7 +46,7 @@ export default function UserBio(props: UserBioProps) {
         <Typography variant="h6" className={classes.sectionLabel}>
           {'Q & A'}
         </Typography>
-        <UserQuestions user={user} />
+        <UserQuestions user={user} numQuestionsToPreview={4} />
       </div>
     </>
   );

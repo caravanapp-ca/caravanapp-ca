@@ -7,6 +7,7 @@ import {
   ReadingSpeed,
   FilterAutoMongoKeys,
   UserQA,
+  UserShelfEntry,
 } from '@caravan/buddy-reading-types';
 import GenreModel from '../models/genre';
 import UserModel from '../models/user';
@@ -116,6 +117,7 @@ router.put(
     .isLength({ max: 300 })
     .optional(),
   check('selectedGenres').isArray(),
+  check('shelf').exists(),
   async (req, res, next) => {
     const { userId } = req.session;
     const user: User = req.body;
@@ -124,6 +126,18 @@ router.put(
     if (!genreDoc) {
       res.status(500).send('No genres found, oops!');
       return;
+    }
+
+    const userShelf = user.shelf;
+    if (!userShelf.notStarted || userShelf.notStarted.length > 500) {
+      throw new Error(
+        'Shelf object is missing the notStarted key, or you passed over 500 entries!'
+      );
+    }
+    if (!userShelf.read || userShelf.read.length > 5000) {
+      throw new Error(
+        'Shelf object is missing the read key, or you passed over 5000 entries!'
+      );
     }
 
     const userGenres = user.selectedGenres
@@ -174,6 +188,7 @@ router.put(
       website: user.website,
       selectedGenres: userGenres,
       questions: userQA,
+      shelf: userShelf,
     };
     try {
       const userDoc = await UserModel.findByIdAndUpdate(userId, newUser);

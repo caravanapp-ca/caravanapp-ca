@@ -69,6 +69,11 @@ declare module '@caravan/buddy-reading-types' {
     genres: string[];
   }
 
+  export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {
+    readingState: Pick<ReadingState, 'notStarted' | 'read'>;
+    clubId?: string;
+  }
+
   export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
     discordId: string;
@@ -85,6 +90,7 @@ declare module '@caravan/buddy-reading-types' {
     urlSlug: string;
     selectedGenres: { key: string; name: string }[];
     questions: UserQA[];
+    shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
   }
 
   export interface Genres {
@@ -126,6 +132,8 @@ declare module '@caravan/buddy-reading-types' {
   export type ChannelSource = 'discord';
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';
+
+  export type UserShelfReadingState = 'notStarted' | 'read';
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
 
