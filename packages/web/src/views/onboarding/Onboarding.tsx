@@ -30,6 +30,7 @@ import { saveReadingPreferences } from '../../services/onboarding';
 
 import ReadingPreferences from './ReadingPreferences';
 import AboutYou from './AboutYou';
+import ProfileQuestionsCarousel from '../../components/ProfileQuestionsCarousel';
 import { getAllGenres } from '../../services/genre';
 import {
   readingSpeedIcons,
@@ -227,12 +228,13 @@ export default function Onboarding(props: OnboardingProps) {
           />
         </>
       )}
-      {currentPage === 3 && (
+      {currentPage === 3 && profileQuestions && (
         <>
           <Header
             centerComponent={centerComponentSelectPrompt}
             leftComponent={leftComponentSelectPrompt}
           />
+          <ProfileQuestionsCarousel questions={profileQuestions.questions} />
         </>
       )}
     </>
