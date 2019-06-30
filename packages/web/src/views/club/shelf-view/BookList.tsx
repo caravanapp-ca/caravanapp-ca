@@ -1,9 +1,9 @@
 import React from 'react';
-import { ShelfEntry } from '@caravan/buddy-reading-types';
+import { ShelfEntry, UserShelfEntry } from '@caravan/buddy-reading-types';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListElementBook from '../../../components/ListElementBook';
-import { Radio, IconButton, Typography, Paper } from '@material-ui/core';
+import { Radio, IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlusIcon from '@material-ui/icons/Add';
 
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface BookListProps {
-  data: ShelfEntry[];
+  data: ShelfEntry[] | UserShelfEntry[];
   primary?: 'radio';
   secondary?: 'delete' | 'add';
   onClick?: any;
@@ -98,12 +98,10 @@ export default function BookList(props: BookListProps) {
   return (
     <Paper>
       <List dense={false}>
-        {data.map((b, index) => {
+        {(data as UserShelfEntry[]).map((b, index) => {
           let selected = false;
-          if (radioValue) {
-            if (b._id === radioValue) {
-              selected = true;
-            }
+          if (radioValue && radioValue === b._id) {
+            selected = true;
           }
           let primaryElement;
           switch (primary) {
@@ -122,6 +120,8 @@ export default function BookList(props: BookListProps) {
           }
           return (
             <ListElementBook
+              clubId={b.clubId}
+              club={b.club}
               coverImage={b.coverImageURL}
               primaryText={b.title}
               secondaryText={b.author}

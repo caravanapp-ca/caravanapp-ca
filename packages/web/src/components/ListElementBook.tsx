@@ -6,9 +6,13 @@ import {
   Paper,
   ListItemIcon,
   ListItemSecondaryAction,
+  Typography,
 } from '@material-ui/core';
+import { Club } from '@caravan/buddy-reading-types';
 
 export interface ListElementBookProps {
+  clubId?: string;
+  club?: Club;
   coverImage?: any;
   primaryText?: string;
   secondaryText?: string;
@@ -27,12 +31,19 @@ const useStyles = makeStyles(theme => ({
     objectFit: 'cover',
     border: '1px solid #E9E9E9',
   },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginHorizontal: theme.spacing(1),
+  },
 }));
 
 export default function ListElementBook(props: ListElementBookProps) {
   const classes = useStyles();
 
   const {
+    clubId,
+    club,
     coverImage,
     primaryText,
     secondaryText,
@@ -49,10 +60,17 @@ export default function ListElementBook(props: ListElementBookProps) {
         alt={primaryText}
         className={classes.coverImage}
       />
-      <ListItemText
-        primary={primaryText ? primaryText : 'Group member'}
-        secondary={secondaryText ? secondaryText : null}
-      />
+      <div className={classes.textContainer}>
+        {club && (
+          <Typography variant="body1" color="primary">
+            {club.name}
+          </Typography>
+        )}
+        <ListItemText
+          primary={primaryText ? primaryText : 'Group member'}
+          secondary={secondaryText ? secondaryText : null}
+        />
+      </div>
       {secondary && (
         <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
       )}

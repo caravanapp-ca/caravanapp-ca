@@ -72,6 +72,7 @@ declare module '@caravan/buddy-reading-types' {
   export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {
     readingState: UserShelfReadingState;
     clubId?: string;
+    club?: Club;
   }
 
   export interface User extends DocumentFields, MongoTimestamps {

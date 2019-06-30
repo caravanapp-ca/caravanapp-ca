@@ -5,6 +5,7 @@ import {
   SameKeysAs,
   UserQA,
   UserShelfEntry,
+  Club,
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings';
 
@@ -41,6 +42,7 @@ const userShelfEntryDefinition: SameKeysAs<
   genres: { type: [String], required: true },
   // Unique for user shelves compared to club shelves
   clubId: { type: String },
+  club: { type: Object },
   // Can't have readingState as current; too lazy to validate at this level
   readingState: { type: String, required: true },
 };
@@ -74,7 +76,10 @@ const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
   isBot: { type: Boolean, required: true, default: false, index: true },
   urlSlug: { type: String, required: true, unique: true, index: true },
   questions: { type: [questionsSchema], required: true, default: [] },
-  shelf: { type: [mapUserShelfSchema], required: true, default: [] },
+  shelf: {
+    type: mapUserShelfSchema,
+    required: true,
+  },
 };
 
 const userSchema = new Schema<UserDoc>(definition, {
