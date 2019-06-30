@@ -187,41 +187,47 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Return clubs from array of clubId's.
-router.get('/clubsById', async (req, res, next) => {
-  const { clubIds } = req.query;
-  try {
-    const clubs = await ClubModel.find({
-      _id: {
-        $in: clubIds,
-      },
-    });
-    if (!clubs) {
-      res.status(404).send;
-      return;
-    }
-    const client = ReadingDiscordBot.getInstance();
-    const guild = client.guilds.first();
-    const clubsWithMembers = await clubs.map(async c => {
-      if (c.channelSource === 'discord') {
-        const guildMembers = await getChannelMembers(guild, c);
-        return {
-          ...c.toObject(),
-          members: guildMembers,
-          guildId: guild.id,
-        };
-      } else {
-        res
-          .status(500)
-          .send(`Error: unknown channelSource: ${c.channelSource}`);
+router.post(
+  '/clubsById',
+  check('clubIds').isArray(),
+  async (req, res, next) => {
+    const { clubIds } = req.body;
+    try {
+      const clubs = await ClubModel.find({
+        _id: {
+          $in: clubIds,
+        },
+      });
+      if (!clubs) {
+        res.status(404).send;
         return;
       }
-    });
-    res.status(200).send(clubsWithMembers);
-  } catch (err) {
-    console.log('Failed to get clubs.', err);
-    return next(err);
+      const client = ReadingDiscordBot.getInstance();
+      const guild = client.guilds.first();
+      const clubsWithMembers = await Promise.all(
+        clubs.map(c => {
+          if (c.channelSource === 'discord') {
+            const guildMembers = getChannelMembers(guild, c);
+            return {
+              ...c.toObject(),
+              members: guildMembers,
+              guildId: guild.id,
+            };
+          } else {
+            res
+              .status(500)
+              .send(`Error: unknown channelSource: ${c.channelSource}`);
+            return;
+          }
+        })
+      );
+      res.status(200).send(clubsWithMembers);
+    } catch (err) {
+      console.log('Failed to get clubs.', err);
+      return next(err);
+    }
   }
-});
+);
 
 router.get('/my-clubs', isAuthenticated, async (req, res, next) => {
   const discordId = req.user.discordId;

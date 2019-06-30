@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Club } from '@caravan/buddy-reading-types';
+import AdapterLink from './AdapterLink';
 
 export interface ListElementBookProps {
   clubId?: string;
@@ -53,7 +54,12 @@ export default function ListElementBook(props: ListElementBookProps) {
   } = props;
 
   return (
-    <ListItem>
+    <ListItem
+      // @ts-ignore
+      button={clubId ? true : false}
+      component={clubId ? AdapterLink : undefined}
+      to={clubId ? `/clubs/${clubId}` : undefined}
+    >
       {primary && <ListItemIcon>{primary}</ListItemIcon>}
       <img
         src={coverImage || require('../resources/generic-book-cover.jpg')}
