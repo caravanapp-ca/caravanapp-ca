@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import { Club } from '@caravan/buddy-reading-types';
 import AdapterLink from './AdapterLink';
+import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
 
 export interface ListElementBookProps {
   clubId?: string;
@@ -36,6 +37,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     marginHorizontal: theme.spacing(1),
+  },
+  clubNameContainer: {
+    display: 'flex',
+    flexDirection: 'row',
   },
 }));
 
@@ -68,14 +73,17 @@ export default function ListElementBook(props: ListElementBookProps) {
       />
       <div className={classes.textContainer}>
         {club && (
-          <Typography variant="body1" color="primary">
-            {club.name}
-          </Typography>
+          <div className={classes.clubNameContainer}>
+            <GroupIcon color="primary" />
+            <Typography variant="body1" color="primary">
+              {club.name}
+            </Typography>
+          </div>
         )}
-        <ListItemText
-          primary={primaryText ? primaryText : 'Group member'}
-          secondary={secondaryText ? secondaryText : null}
-        />
+        <Typography variant="body1">{primaryText}</Typography>
+        <Typography variant="body2" color="textSecondary">
+          {secondaryText}
+        </Typography>
       </div>
       {secondary && (
         <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
