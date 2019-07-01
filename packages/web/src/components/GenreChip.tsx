@@ -8,8 +8,9 @@ import {
   useTheme,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import { washedTheme } from '../theme';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(theme =>
   createStyles({
     button: {
       margin: theme.spacing(1),
@@ -21,14 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
       margin: theme.spacing(1),
-      borderRadius: 5,
+      borderRadius: 4,
     },
     chipActive: {
       backgroundColor: theme.palette.primary.main,
       color: '#FFFFFF',
     },
     chipInactive: {
-      backgroundColor: theme.palette.grey[300],
+      backgroundColor: washedTheme.palette.primary.light,
       color: theme.palette.text.primary,
     },
     activeText: {

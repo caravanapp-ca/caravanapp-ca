@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function UserNameplate(props: UserShelfProps) {
   const classes = useStyles();
+
   const theme = useTheme();
   const { user } = props;
 
