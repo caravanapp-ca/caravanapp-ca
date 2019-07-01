@@ -4,6 +4,7 @@ import {
   User,
   ReadingState,
   UserShelfEntry,
+  Club,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -28,7 +29,7 @@ import UserAvatar from './UserAvatar';
 import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
-import { getClubsById } from '../../services/club';
+import { getClubsById, getUserClubs } from '../../services/club';
 
 interface UserRouteParams {
   id: string;
@@ -81,6 +82,7 @@ export default function UserView(props: UserViewProps) {
     notStarted: [],
     read: [],
   });
+  const [userClubs, setUserClubs] = React.useState<Club[]>([]);
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
   const [tabValue, setTabValue] = React.useState(0);
@@ -94,7 +96,12 @@ export default function UserView(props: UserViewProps) {
       if (user) {
         const isUserMe = isMe(user._id);
         setUserIsMe(isUserMe);
-        getUserShelf(user);
+        getUserClubs(user).then(clubs => {
+          getUserShelf(user, clubs).then(shelf => {
+            setUserShelf(shelf);
+          });
+          setUserClubs(clubs);
+        });
       }
       setUser(user);
     });
@@ -114,12 +121,27 @@ export default function UserView(props: UserViewProps) {
     setScrolled(winScroll);
   };
 
-  async function getUserShelf(user: User) {
+  async function getUserClubsFn(user: User) {
+    const clubs = await getUserClubs(user);
+    return clubs;
+  }
+
+  async function getUserShelf(user: User, clubs: Club[]) {
     const userShelf: UserShelfType = {
       current: [],
       notStarted: [],
       read: [],
     };
+    clubs.forEach(c => {
+      const currBook = c.shelf.find(b => b.readingState === 'current');
+      if (currBook) {
+        userShelf.current.push({
+          ...currBook,
+          clubId: c._id,
+          club: c,
+        });
+      }
+    });
     userShelf.notStarted = user.shelf.notStarted;
     userShelf.read = user.shelf.read;
     const clubIdsArr: string[] = [];
@@ -130,14 +152,13 @@ export default function UserView(props: UserViewProps) {
         clubIdsArr.push(s.clubId);
       }
     });
-    const clubs = await getClubsById(clubIdsArr);
-    if (clubs && clubs.length === indices.length) {
-      for (let i = 0; i < clubs.length; i++) {
-        userShelf.read[indices[i]].club = clubs[i];
+    const rClubs = await getClubsById(clubIdsArr);
+    if (rClubs && rClubs.length === indices.length) {
+      for (let i = 0; i < rClubs.length; i++) {
+        userShelf.read[indices[i]].club = rClubs[i];
       }
     }
-    // TODO: Call service to get the currently read books from the user's clubs.
-    setUserShelf(userShelf);
+    return userShelf;
   }
 
   if (!user) {
@@ -171,18 +192,18 @@ export default function UserView(props: UserViewProps) {
     </div>
   );
 
-  const rightComponent = (
-    <IconButton edge="start" color="inherit" aria-label="More">
-      <ThreeDotsIcon />
-    </IconButton>
-  );
+  // const rightComponent = (
+  //   <IconButton edge="start" color="inherit" aria-label="More">
+  //     <ThreeDotsIcon />
+  //   </IconButton>
+  // );
 
   return (
     <>
       <Header
         leftComponent={leftComponent}
         centerComponent={scrolled > 64 ? centerComponent : undefined}
-        rightComponent={rightComponent}
+        // rightComponent={rightComponent}
         showBorder={scrolled > 1 ? true : false}
       />
       <div className={classes.nameplateContainer}>

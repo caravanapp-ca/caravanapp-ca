@@ -15,6 +15,7 @@ import {
   ReadingState,
   Services,
   ShelfEntry,
+  User,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
@@ -36,6 +37,17 @@ const getCountableMembersInChannel = (
   (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
     isInChannel(m, club)
   );
+
+const getUserChannels = (guild: Guild, discordId: string) => {
+  const channels = guild.channels.filter(c => {
+    const cTyped = c as TextChannel | VoiceChannel;
+    return (
+      (c.type === 'text' || c.type === 'voice') &&
+      cTyped.members.some(m => m.id === discordId)
+    );
+  });
+  return channels;
+};
 
 async function getChannelMembers(guild: Guild, club: ClubDoc) {
   let discordChannel = guild.channels.find(c => c.id === club.channelId);
@@ -183,6 +195,35 @@ router.get('/:id', async (req, res, next) => {
     }
     console.log(`Failed to get club ${id}`, err);
     return next(err);
+  }
+});
+
+// Gets all of the clubs the specified user is currently in
+router.post('/getUserClubs', async (req, res, next) => {
+  const user: User = req.body.user;
+  // TODO: Validation that object passed is actually of User type
+  if (user.discordId) {
+    const client = ReadingDiscordBot.getInstance();
+    const guild = client.guilds.first();
+    const { discordId } = user;
+    const channels = getUserChannels(guild, discordId);
+    const channelIds = channels.map(c => c.id);
+    try {
+      const clubs = await ClubModel.find({
+        channelSource: 'discord',
+        channelId: {
+          $in: channelIds,
+        },
+      });
+      if (!clubs) {
+        res.status(404).send;
+        return;
+      }
+      res.status(200).json(clubs);
+    } catch (err) {
+      console.log('Failed to get clubs for user ' + user._id);
+      return next(err);
+    }
   }
 });
 

@@ -4,6 +4,7 @@ import {
   ChannelSource,
   ShelfEntry,
   ReadingSpeed,
+  User,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -49,6 +50,15 @@ export async function getClubsById(clubIds: string[]) {
     {
       clubIds,
     }
+  );
+  const clubs = res.data;
+  return clubs;
+}
+
+export async function getUserClubs(user: User) {
+  const res = await axios.post<Services.GetClubById[]>(
+    `${clubRoute}/getUserClubs`,
+    { user }
   );
   const clubs = res.data;
   return clubs;
