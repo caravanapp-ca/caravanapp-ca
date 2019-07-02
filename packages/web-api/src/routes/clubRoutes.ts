@@ -105,6 +105,7 @@ router.get('/', async (req, res, next) => {
     // Don't return full clubs
     if (!clubs) {
       res.sendStatus(404);
+      return;
     }
     const client = ReadingDiscordBot.getInstance();
     const guild = client.guilds.first();
