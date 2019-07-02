@@ -75,7 +75,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     if (club && (!user || user._id !== club.ownerId)) {
       setBackToClub(true);
     }
-  }, [club]);
+  }, [club, user]);
 
   useEffect(() => {
     const getClubFun = async () => {
