@@ -59,6 +59,23 @@ router.post('/discord/disconnect', isAuthenticated, async (req, res, next) => {
   destroySession(req, res);
 });
 
+router.post('/init-slugs', async (req, res) => {
+  const users = await UserModel.find({});
+  const discordClient = ReadingDiscordBot.getInstance();
+  const guild = discordClient.guilds.first();
+  users.forEach(async user => {
+    const discordMember = guild.members.find(m => m.id === user.discordId);
+    const slugs = generateSlugIds(discordMember.displayName);
+    const availableSlugs = await getAvailableSlugIds(slugs);
+    await UserModel.updateOne(
+      { _id: user.id },
+      {
+        urlSlug: availableSlugs[0],
+      }
+    );
+  });
+});
+
 router.get('/discord/callback', async (req, res) => {
   const { code, error, error_description, state } = req.query;
   if (error) {
@@ -101,7 +118,12 @@ router.get('/discord/callback', async (req, res) => {
       };
       const userModel = new UserModel(userInstance);
       // TODO: handle slug failure due to time windowing
-      userDoc = await userModel.save();
+      try {
+        userDoc = await userModel.save();
+      } catch (err) {
+        userDoc = undefined;
+        console.log(err);
+      }
       currentSlugdId++;
     }
     if (!userDoc || currentSlugdId - 1 < availableSlugs.length) {
