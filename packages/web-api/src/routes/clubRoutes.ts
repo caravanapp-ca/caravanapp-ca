@@ -146,7 +146,7 @@ router.get('/:id', async (req, res, next) => {
   try {
     const club = await ClubModel.findById(id);
     if (!club) {
-      res.status(404).send(null);
+      res.sendStatus(404);
       return;
     }
     if (club.channelSource === 'discord') {
@@ -184,7 +184,7 @@ router.get('/:id', async (req, res, next) => {
     if (err.name) {
       switch (err.name) {
         case 'CastError':
-          res.status(404).send(null);
+          res.sendStatus(404);
           return;
         default:
           break;
@@ -213,7 +213,7 @@ router.post('/getUserClubs', async (req, res, next) => {
         },
       });
       if (!clubs) {
-        res.status(404).send;
+        res.sendStatus(404);
         return;
       }
       res.status(200).json(clubs);
@@ -237,7 +237,7 @@ router.post(
         },
       });
       if (!clubs) {
-        res.status(404).send;
+        res.sendStatus(404);
         return;
       }
       const client = ReadingDiscordBot.getInstance();
