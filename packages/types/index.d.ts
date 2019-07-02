@@ -130,6 +130,20 @@ declare module '@caravan/buddy-reading-types' {
     max: number;
   }
 
+  export type EditableUserField =
+    | 'bio'
+    | 'goodreadsUrl'
+    | 'website'
+    | 'name'
+    | 'photoUrl'
+    | 'readingSpeed'
+    | 'age'
+    | 'gender'
+    | 'location'
+    | 'selectedGenres'
+    | 'questions'
+    | 'shelf';
+
   export type ChannelSource = 'discord';
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';

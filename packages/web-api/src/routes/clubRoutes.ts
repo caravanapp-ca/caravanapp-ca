@@ -69,17 +69,14 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
       const user = users.find(u => u.discordId === mem.id);
       if (user) {
         const result = {
-          bio: user.bio,
+          ...user.toObject(),
           discordUsername: mem.user.username,
           discordId: mem.id,
-          name: user.name,
           photoUrl:
             user.photoUrl ||
             mem.user.avatarURL ||
             mem.user.displayAvatarURL ||
             mem.user.defaultAvatarURL,
-          readingSpeed: user.readingSpeed,
-          userId: user.id,
         };
         return result;
       } else {
@@ -245,24 +242,44 @@ router.post(
       }
       const client = ReadingDiscordBot.getInstance();
       const guild = client.guilds.first();
-      const clubsWithMembers = await Promise.all(
-        clubs.map(c => {
-          if (c.channelSource === 'discord') {
-            const guildMembers = getChannelMembers(guild, c);
-            return {
-              ...c.toObject(),
-              members: guildMembers,
-              guildId: guild.id,
-            };
-          } else {
-            res
-              .status(500)
-              .send(`Error: unknown channelSource: ${c.channelSource}`);
-            return;
-          }
-        })
-      );
-      res.status(200).send(clubsWithMembers);
+      const guildMembersPromises: Promise<{
+        club: ClubDoc;
+        guildMembers: any[];
+      }>[] = [];
+      let guildErr: Error | null = null;
+      clubs.forEach(c => {
+        if (c.channelSource === 'discord') {
+          guildMembersPromises.push(
+            getChannelMembers(guild, c).then(r => {
+              return { club: c, guildMembers: r };
+            })
+          );
+        } else {
+          guildErr = new Error(
+            `Error: unknown channelSource: ${c.channelSource}`
+          );
+        }
+      });
+      if (guildErr) {
+        res
+          .status(500)
+          // TODO: Check if it's appropriate to send errors like this.
+          .send(guildErr);
+        return;
+      }
+
+      const allGuildMembers = await Promise.all(guildMembersPromises);
+      const clubsWithMemberObjs = allGuildMembers.map(gmObj => {
+        if (gmObj.club.channelSource === 'discord') {
+          return {
+            ...gmObj.club.toObject(),
+            members: gmObj.guildMembers,
+            guildId: guild.id,
+          };
+        }
+        // TODO: Add other channel sources
+      });
+      res.status(200).send(clubsWithMemberObjs);
     } catch (err) {
       console.log('Failed to get clubs.', err);
       return next(err);
