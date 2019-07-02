@@ -7,6 +7,7 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
 } from '@material-ui/core';
+import { useTheme } from '@material-ui/styles';
 
 export interface ListElementBookProps {
   coverImage?: any;
@@ -27,10 +28,15 @@ const useStyles = makeStyles(theme => ({
     objectFit: 'cover',
     border: '1px solid #E9E9E9',
   },
+  listItemText: {
+    marginRight: theme.spacing(2),
+  },
 }));
 
 export default function ListElementBook(props: ListElementBookProps) {
   const classes = useStyles();
+
+  const theme = useTheme();
 
   const {
     coverImage,
@@ -41,6 +47,11 @@ export default function ListElementBook(props: ListElementBookProps) {
     selected,
   } = props;
 
+  let shortenedTitle = primaryText;
+  if (shortenedTitle && shortenedTitle.length > 99) {
+    shortenedTitle = shortenedTitle.substring(0, 96) + '...';
+  }
+
   return (
     <ListItem>
       {primary && <ListItemIcon>{primary}</ListItemIcon>}
@@ -50,8 +61,9 @@ export default function ListElementBook(props: ListElementBookProps) {
         className={classes.coverImage}
       />
       <ListItemText
-        primary={primaryText ? primaryText : 'Group member'}
-        secondary={secondaryText ? secondaryText : null}
+        primary={shortenedTitle ? shortenedTitle : undefined}
+        secondary={secondaryText ? secondaryText : undefined}
+        className={classes.listItemText}
       />
       {secondary && (
         <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>

@@ -209,6 +209,8 @@ export default function CreateClub(props: CreateClubProps) {
             onSubmitBooks={onSubmitSelectedBooks}
             maxSelected={20}
             radioValue={bookToRead && bookToRead._id ? bookToRead._id : 'none'}
+            primary={'radio'}
+            secondary={'delete'}
           />
         </div>
         <div className={classes.sectionContainer}>

@@ -237,6 +237,8 @@ export default function UpdateBook(props: UpdateBookProps) {
               radioValue={
                 bookToRead && bookToRead._id ? bookToRead._id : 'none'
               }
+              primary={'radio'}
+              secondary={'delete'}
             />
           </div>
           <div className={classes.saveButtonContainer}>

@@ -43,13 +43,23 @@ interface BookSearchProps {
   ) => void;
   maxSelected: number;
   radioValue?: string;
+  primary?: 'radio';
+  secondary?: 'delete';
+  initialSelectedBooks?: ShelfEntry[];
 }
 
 const searchRef = React.createRef();
 
 export default function BookSearch(props: BookSearchProps) {
   const classes = useStyles();
-  const { onSubmitBooks, maxSelected, radioValue } = props;
+  const {
+    onSubmitBooks,
+    maxSelected,
+    radioValue,
+    primary,
+    secondary,
+    initialSelectedBooks,
+  } = props;
 
   const [bookSearchQuery, setBookSearchQuery] = React.useState<string>('');
   const [
@@ -57,8 +67,12 @@ export default function BookSearch(props: BookSearchProps) {
     setSearchResults,
   ] = React.useState<GoogleBooks.Books | null>(null);
   const [showPopper, setShowPopper] = React.useState<boolean>(false);
-  const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
-  const [numSelected, setNumSelected] = React.useState<number>(0);
+  const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>(
+    initialSelectedBooks || []
+  );
+  const [numSelected, setNumSelected] = React.useState<number>(
+    (initialSelectedBooks && initialSelectedBooks.length) || 0
+  );
   const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
 
   useEffect(() => {
@@ -201,10 +215,10 @@ export default function BookSearch(props: BookSearchProps) {
         <div className={classes.bookListContainer}>
           <BookList
             data={selectedBooks}
-            primary={'radio'}
-            secondary={'delete'}
+            primary={primary ? primary : undefined}
+            secondary={secondary ? secondary : undefined}
             onRadioPress={onChangeBookToRead}
-            radioValue={radioValue}
+            radioValue={radioValue ? radioValue : undefined}
             onDelete={onDeleteSelectedBook}
           />
         </div>

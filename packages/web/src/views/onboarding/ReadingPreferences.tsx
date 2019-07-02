@@ -97,7 +97,7 @@ interface ReadingPreferencesRouteParams {
 
 interface ReadingPreferencesProps {
   user: User | null;
-  onContinue: (genres: string[], readingSpeed: string) => void;
+  onContinue: () => void;
   continuing: boolean;
   selectedGenres: string[];
   onGenreSelected: (genre: string, selected: boolean) => void;
@@ -235,9 +235,7 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
             {!props.continuing && (
               <Fab
                 disabled={props.selectedGenres.length === 0}
-                onClick={() =>
-                  props.onContinue(props.selectedGenres, props.selectedSpeed)
-                }
+                onClick={() => props.onContinue()}
                 color="primary"
               >
                 <ForwardIcon />

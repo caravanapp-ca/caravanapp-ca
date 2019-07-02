@@ -1,27 +1,12 @@
-import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import {
-  User,
-  ShelfEntry,
-  ReadingSpeed,
-  GroupVibe,
-  Services,
-  Genre,
-  Genres,
-} from '@caravan/buddy-reading-types';
-import {
-  Fab,
-  ListItem,
-  List,
-  ListItemSecondaryAction,
-  ListItemText,
-  Divider,
-} from '@material-ui/core';
+import React from 'react';
+import { User, Services } from '@caravan/buddy-reading-types';
+import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -52,6 +37,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    marginBottom: 50,
   },
   hero: {
     padding: theme.spacing(6, 2, 2),
@@ -104,11 +90,19 @@ const useStyles = makeStyles(theme => ({
   questionPrompt: {
     marginBottom: theme.spacing(2),
   },
+  sectionContainer: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: theme.spacing(4),
+    alignItems: 'flex-end',
+  },
 }));
 
 interface AboutYouProps {
   user: User | null;
-  onContinue: (genres: string[], readingSpeed: string) => void;
+  onContinue: () => void;
   continuing: boolean;
   questions: Services.GetProfileQuestions['questions'];
   answers: QA[];
@@ -132,7 +126,7 @@ export default function AboutYou(props: AboutYouProps) {
 
   const minimumRequired = 3;
 
-  const numberOfDefaultToShow = Math.max(minimumRequired - answers.length, 0);
+  const numberOfDefaultToShow = Math.max(minimumRequired - answers.length, 1);
 
   const questionCard = (
     title: string,
@@ -208,14 +202,21 @@ export default function AboutYou(props: AboutYouProps) {
     <>
       <div className={classes.hero}>
         <Typography variant="h6">
-          Tell other readers about yourself! <br />
-          <br /> Answer at least 3 prompts to display on your profile.
+          Tell other readers about yourself by answering some book-related
+          prompts.
         </Typography>
       </div>
       <div className={classes.progressFraction}>
-        <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
-          Minimum {minimumRequired}
-        </Typography>
+        {answers.length < minimumRequired && (
+          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
+            Minimum {minimumRequired}
+          </Typography>
+        )}
+        {answers.length >= minimumRequired && (
+          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
+            Keep answering to fill out your profile!
+          </Typography>
+        )}
       </div>
       <Container className={classes.formContainer} maxWidth="md">
         <Grid container spacing={2}>
@@ -228,6 +229,23 @@ export default function AboutYou(props: AboutYouProps) {
           })}
           {defaultAnswerCards}
         </Grid>
+        <div className={classes.sectionContainer}>
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Fab
+              disabled={props.answers.length < 3}
+              color="primary"
+              onClick={() => props.onContinue()}
+            >
+              <ForwardIcon />
+            </Fab>
+          </div>
+        </div>
       </Container>
     </>
   );
