@@ -188,7 +188,7 @@ export default function Home(props: HomeProps) {
           <div
             style={{
               display: 'flex',
-              alignContent: 'center',
+              alignItems: 'center',
               flexDirection: 'column',
             }}
           >
