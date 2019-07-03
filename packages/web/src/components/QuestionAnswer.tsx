@@ -4,16 +4,19 @@ import SaveIcon from '@material-ui/icons/Save';
 
 interface QuestionAnswerProps {
   questionKey: string;
+  isNew: boolean;
+  index: number;
   question: string;
   answer: string;
-  numRows?: number;
   isEditing: boolean;
   onEdit?: (
-    questionKey: string,
-    newAnswer: string,
+    answer: string,
+    isNew: boolean,
+    index: number,
     visible: boolean,
     sort: number
   ) => void;
+  numRows?: number;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -33,14 +36,23 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function QuestionAnswer(props: QuestionAnswerProps) {
-  const { questionKey, question, answer, numRows, isEditing, onEdit } = props;
+  const {
+    questionKey,
+    isNew,
+    index,
+    question,
+    answer,
+    isEditing,
+    onEdit,
+    numRows,
+  } = props;
   const classes = useStyles();
   return (
     <TextField
       onChange={
         onEdit && isEditing
           ? // TODO: Add support for visible, and sort here (params 3-4)
-            e => onEdit(questionKey, e.target.value, true, 0)
+            e => onEdit(e.target.value, isNew, index, true, 0)
           : undefined
       }
       disabled={!(onEdit && isEditing)}

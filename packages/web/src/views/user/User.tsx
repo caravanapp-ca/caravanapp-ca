@@ -106,6 +106,9 @@ export default function UserView(props: UserViewProps) {
   const [tabValue, setTabValue] = React.useState(0);
   const [scrolled, setScrolled] = React.useState(0);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
+  const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
+    []
+  );
   const [
     questions,
     setQuestions,
@@ -141,12 +144,6 @@ export default function UserView(props: UserViewProps) {
       setUser(user);
     });
   }, [userId]);
-
-  useEffect(() => {
-    if (user && questions) {
-      sortQuestions(user, questions);
-    }
-  }, [user && user.questions, questions]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 
@@ -253,14 +250,29 @@ export default function UserView(props: UserViewProps) {
         typeof newValue === 'string'
       ) {
         writeChange = true;
-      } else if (field === 'selectedGenres' || field === 'questions') {
+      } else if (field === 'selectedGenres') {
         writeChange = true;
+      } else if (field === 'questions') {
+        setUserQuestionsWkspc(newValue);
       }
       if (writeChange) {
         const userCopy: User = { ...user, [field]: newValue };
         setUser(userCopy);
       }
     }
+  };
+
+  const onSaveClick = () => {
+    if (userQuestionsWkspc.length > 0) {
+      const userCopy: User = { ...user, questions: userQuestionsWkspc };
+      if (questions) {
+        const initQuestions = sortQuestions(userCopy, questions);
+        setInitQuestions(initQuestions);
+      }
+      setUserQuestionsWkspc([]);
+      setUser(userCopy);
+    }
+    setIsEditing(false);
   };
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -294,7 +306,7 @@ export default function UserView(props: UserViewProps) {
           edge="start"
           color="inherit"
           aria-label="More"
-          onClick={() => setIsEditing(false)}
+          onClick={() => onSaveClick()}
         >
           <SaveIcon />
         </IconButton>
