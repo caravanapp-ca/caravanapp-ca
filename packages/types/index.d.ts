@@ -75,6 +75,11 @@ declare module '@caravan/buddy-reading-types' {
     club?: Club;
   }
 
+  export interface UserSelectedGenre {
+    key: string;
+    name: string;
+  }
+
   export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
     discordId: string;
@@ -89,7 +94,7 @@ declare module '@caravan/buddy-reading-types' {
     location?: string;
     isBot: boolean;
     urlSlug: string;
-    selectedGenres: { key: string; name: string }[];
+    selectedGenres: UserSelectedGenre[];
     questions: UserQA[];
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
   }

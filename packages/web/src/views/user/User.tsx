@@ -6,6 +6,9 @@ import {
   UserShelfEntry,
   Club,
   EditableUserField,
+  Services,
+  ProfileQuestion,
+  UserQA,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -31,6 +34,9 @@ import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
 import { getClubsById, getUserClubs } from '../../services/club';
+import { getAllGenres } from '../../services/genre';
+import { AxiosResponse } from 'axios';
+import { getAllProfileQuestions } from '../../services/profile';
 
 interface UserRouteParams {
   id: string;
@@ -99,6 +105,18 @@ export default function UserView(props: UserViewProps) {
   const [userIsMe, setUserIsMe] = React.useState(false);
   const [tabValue, setTabValue] = React.useState(0);
   const [scrolled, setScrolled] = React.useState(0);
+  const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
+  const [
+    questions,
+    setQuestions,
+  ] = React.useState<Services.GetProfileQuestions | null>(null);
+  const [initQuestions, setInitQuestions] = React.useState<{
+    initAnsweredQs: UserQA[];
+    initUnansweredQs: ProfileQuestion[];
+  }>({
+    initAnsweredQs: [],
+    initUnansweredQs: [],
+  });
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -108,6 +126,11 @@ export default function UserView(props: UserViewProps) {
       if (user) {
         const isUserMe = isMe(user._id);
         setUserIsMe(isUserMe);
+
+        // TODO: Wrap these in if(isUserMe)
+        getGenres();
+        getQuestions(user);
+
         getUserClubs(user).then(clubs => {
           getUserShelf(user, clubs).then(shelf => {
             setUserShelf(shelf);
@@ -118,6 +141,12 @@ export default function UserView(props: UserViewProps) {
       setUser(user);
     });
   }, [userId]);
+
+  useEffect(() => {
+    if (user && questions) {
+      sortQuestions(user, questions);
+    }
+  }, [user && user.questions, questions]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 
@@ -132,6 +161,45 @@ export default function UserView(props: UserViewProps) {
       document.body.scrollTop || document.documentElement.scrollTop;
     setScrolled(winScroll);
   };
+
+  async function getGenres() {
+    const res = await getAllGenres();
+    if (res.status === 200) {
+      setGenres(res.data);
+    } else {
+      // TODO: error handling
+    }
+  }
+
+  async function getQuestions(user: User) {
+    const res = await getAllProfileQuestions();
+    if (res.status === 200) {
+      const questions = res.data;
+      setQuestions(questions);
+      const initQuestions = sortQuestions(user, questions);
+      setInitQuestions(initQuestions);
+    } else {
+      // TODO: error handling
+    }
+  }
+
+  function sortQuestions(user: User, questions: Services.GetProfileQuestions) {
+    const initUnansweredQs: ProfileQuestion[] = [];
+    const initAnsweredQs: UserQA[] = [];
+    const initQuestions = {
+      initUnansweredQs,
+      initAnsweredQs,
+    };
+    questions.questions.forEach(q => {
+      const uq = user.questions.find(uq => uq.id === q.id);
+      if (uq) {
+        initQuestions.initAnsweredQs.push(uq);
+      } else {
+        initQuestions.initUnansweredQs.push(q);
+      }
+    });
+    return initQuestions;
+  }
 
   async function getUserShelf(user: User, clubs: Club[]) {
     const userShelf: UserShelfType = {
@@ -168,18 +236,6 @@ export default function UserView(props: UserViewProps) {
     return userShelf;
   }
 
-  const onEdit = (field: EditableUserField, newValue: any) => {
-    if (user) {
-      if (
-        EditableUserFieldStringsArr.includes(field) &&
-        typeof newValue === 'string'
-      ) {
-        const userCopy: User = { ...user, [field]: newValue };
-        setUser(userCopy);
-      }
-    }
-  };
-
   if (!user) {
     return (
       <div className={classes.loadingContainer}>
@@ -188,6 +244,24 @@ export default function UserView(props: UserViewProps) {
       </div>
     );
   }
+
+  const onEdit = (field: EditableUserField, newValue: any) => {
+    if (user) {
+      let writeChange = false;
+      if (
+        EditableUserFieldStringsArr.includes(field) &&
+        typeof newValue === 'string'
+      ) {
+        writeChange = true;
+      } else if (field === 'selectedGenres' || field === 'questions') {
+        writeChange = true;
+      }
+      if (writeChange) {
+        const userCopy: User = { ...user, [field]: newValue };
+        setUser(userCopy);
+      }
+    }
+  };
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -255,7 +329,12 @@ export default function UserView(props: UserViewProps) {
           size={screenSmallerThanSm ? 'small' : 'large'}
         />
         <div style={{ marginLeft: theme.spacing(2) }}>
-          <UserNameplate user={user} isEditing={isEditing} />
+          <UserNameplate
+            user={user}
+            userIsMe={userIsMe}
+            isEditing={isEditing}
+            onEdit={onEdit}
+          />
         </div>
       </div>
       <Tabs
@@ -272,7 +351,15 @@ export default function UserView(props: UserViewProps) {
       </Tabs>
       <Container maxWidth={'md'}>
         <>
-          {tabValue === 0 && <UserBio user={user} />}
+          {tabValue === 0 && (
+            <UserBio
+              user={user}
+              isEditing={isEditing}
+              onEdit={onEdit}
+              genres={genres || undefined}
+              initQuestions={initQuestions || undefined}
+            />
+          )}
           {tabValue === 1 && <UserShelf user={user} shelf={userShelf} />}
         </>
       </Container>

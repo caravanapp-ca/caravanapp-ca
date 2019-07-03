@@ -14,9 +14,9 @@ import MessageIcon from '@material-ui/icons/Message';
 
 interface UserNameplateProps {
   user: User;
-  isEditing?: boolean;
-  onEdit?: (key: 'name' | 'bio' | 'website', newValue: string) => void;
-  displayName?: string;
+  userIsMe: boolean;
+  isEditing: boolean;
+  onEdit: (field: 'name' | 'bio' | 'website', newValue: string) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,6 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     leftIcon: {
       marginRight: theme.spacing(1),
+    },
+    editContainer: {
+      display: 'flex',
+      flexDirection: 'column',
     },
     textField: {
       marginTop: theme.spacing(1),
@@ -37,11 +41,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { user, isEditing, onEdit } = props;
+  const { user, userIsMe, isEditing, onEdit } = props;
 
+  // TODO: Add userIsMe to if statement after testing
   if (isEditing && onEdit) {
     return (
-      <>
+      <div className={classes.editContainer}>
         <TextField
           id="display-name"
           label="Display Name"
@@ -51,7 +56,25 @@ export default function UserNameplate(props: UserNameplateProps) {
           margin="normal"
           variant="outlined"
         />
-      </>
+        <TextField
+          id="bio"
+          label="Bio"
+          className={classes.textField}
+          value={user.bio}
+          onChange={e => onEdit('bio', e.target.value)}
+          margin="normal"
+          variant="outlined"
+        />
+        <TextField
+          id="website"
+          label="Website"
+          className={classes.textField}
+          value={user.website}
+          onChange={e => onEdit('website', e.target.value)}
+          margin="normal"
+          variant="outlined"
+        />
+      </div>
     );
   } else {
     return (
@@ -63,16 +86,18 @@ export default function UserNameplate(props: UserNameplateProps) {
         <Typography variant="body1">
           <Link href={user.website}>{user.website}</Link>
         </Typography>
-        <Button
-          variant="outlined"
-          color="primary"
-          // TODO: Connect this button to send a DM to the user on Discord
-          onClick={() => {}}
-          style={{ marginTop: theme.spacing(1) }}
-        >
-          <Typography variant="button">MESSAGE</Typography>
-          <MessageIcon className={classes.rightIcon} />
-        </Button>
+        {!userIsMe && (
+          <Button
+            variant="outlined"
+            color="primary"
+            // TODO: Connect this button to send a DM to the user on Discord
+            onClick={() => {}}
+            style={{ marginTop: theme.spacing(1) }}
+          >
+            <Typography variant="button">MESSAGE</Typography>
+            <MessageIcon className={classes.rightIcon} />
+          </Button>
+        )}
       </>
     );
   }

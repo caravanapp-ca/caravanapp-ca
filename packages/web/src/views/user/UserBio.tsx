@@ -1,5 +1,11 @@
 import React from 'react';
-import { User } from '@caravan/buddy-reading-types';
+import {
+  User,
+  EditableUserField,
+  Services,
+  ProfileQuestion,
+  UserQA,
+} from '@caravan/buddy-reading-types';
 import { Typography, Button, makeStyles } from '@material-ui/core';
 import UserReadingSpeed from './UserReadingSpeed';
 import UserGenres from './UserGenres';
@@ -20,10 +26,17 @@ const useStyles = makeStyles(theme => ({
 
 interface UserBioProps {
   user: User;
+  isEditing: boolean;
+  onEdit: (field: EditableUserField, newValue: any) => void;
+  genres?: Services.GetGenres;
+  initQuestions?: {
+    initAnsweredQs: UserQA[];
+    initUnansweredQs: ProfileQuestion[];
+  };
 }
 
 export default function UserBio(props: UserBioProps) {
-  const { user } = props;
+  const { user, isEditing, onEdit, genres, initQuestions } = props;
   const classes = useStyles();
 
   return (
@@ -32,13 +45,18 @@ export default function UserBio(props: UserBioProps) {
         <Typography variant="h6" className={classes.sectionLabel}>
           Reading Speed
         </Typography>
-        <UserReadingSpeed user={user} />
+        <UserReadingSpeed user={user} isEditing={isEditing} onEdit={onEdit} />
       </div>
       <div className={classes.sectionContainer}>
         <Typography variant="h6" className={classes.sectionLabel}>
           Genres
         </Typography>
-        <UserGenres user={user} />
+        <UserGenres
+          user={user}
+          isEditing={isEditing}
+          onEdit={onEdit}
+          genres={genres || undefined}
+        />
       </div>
       <div
         className={clsx(classes.sectionContainer, classes.sectionContainerEnd)}
@@ -46,7 +64,13 @@ export default function UserBio(props: UserBioProps) {
         <Typography variant="h6" className={classes.sectionLabel}>
           {'Q & A'}
         </Typography>
-        <UserQuestions user={user} numQuestionsToPreview={4} />
+        <UserQuestions
+          user={user}
+          numQuestionsToPreview={4}
+          isEditing={isEditing}
+          onEdit={onEdit}
+          initQuestions={initQuestions || undefined}
+        />
       </div>
     </>
   );

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   makeStyles,
-  Theme,
   createStyles,
   Typography,
   Button,
@@ -9,6 +8,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { washedTheme } from '../theme';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme =>
       color: '#FFFFFF',
     },
     chipInactive: {
-      backgroundColor: washedTheme.palette.primary.light,
+      backgroundColor: washedTheme.palette.primary.main,
       color: theme.palette.text.primary,
     },
     activeText: {
@@ -39,17 +39,17 @@ const useStyles = makeStyles(theme =>
 );
 
 interface GenreChipProps {
-  key: string;
+  genreKey: string;
   name: string;
   active: boolean;
-  clickable?: true;
-  onClick?: (key: string) => void;
+  clickable?: boolean;
+  onClick?: (genreKey: string, currActive: boolean) => void;
 }
 
 export default function GenreChip(props: GenreChipProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { key, name, active, clickable, onClick } = props;
+  const { genreKey, name, active, clickable, onClick } = props;
   if (!clickable || !onClick) {
     return (
       <div
@@ -64,15 +64,17 @@ export default function GenreChip(props: GenreChipProps) {
     );
   } else {
     return (
-      <Button
-        className={classes.button}
-        color={active ? 'primary' : 'default'}
-        variant="contained"
-        key={key}
-        onClick={() => onClick(key)}
-      >
-        <Typography variant="button">{name}</Typography>
-      </Button>
+      <MuiThemeProvider theme={active ? theme : washedTheme}>
+        <Button
+          className={classes.button}
+          color="primary"
+          variant="contained"
+          key={genreKey}
+          onClick={() => onClick(genreKey, active)}
+        >
+          <Typography>{name}</Typography>
+        </Button>
+      </MuiThemeProvider>
     );
   }
 }

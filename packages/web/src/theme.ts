@@ -75,7 +75,7 @@ export const washedTheme = responsiveFontSizes(
       ...themeObj.palette,
       primary: {
         ...themeObj.palette.primary,
-        light: '#EEF0F8',
+        main: '#EEF0F8',
       },
     },
   })

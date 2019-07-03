@@ -1,13 +1,19 @@
 import React from 'react';
-import { TextField, makeStyles, withStyles } from '@material-ui/core';
+import { TextField, makeStyles, IconButton } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
 
 interface QuestionAnswerProps {
-  key: string;
+  questionKey: string;
   question: string;
   answer: string;
   numRows?: number;
-  editing?: boolean;
-  onEdit?: (newAnswer: string) => void;
+  isEditing: boolean;
+  onEdit?: (
+    questionKey: string,
+    newAnswer: string,
+    visible: boolean,
+    sort: number
+  ) => void;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -17,16 +23,27 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.primary.main,
   },
   notchedOutline: {
-    borderColor: theme.palette.primary.main + ' !important',
+    disabled: {
+      borderColor: theme.palette.grey[400] + ' !important',
+    },
   },
-  disabledLabel: {},
+  disabledLabel: {
+    color: theme.palette.primary.main + ' !important',
+  },
 }));
 
 export default function QuestionAnswer(props: QuestionAnswerProps) {
-  const { key, question, answer, numRows, editing, onEdit } = props;
+  const { questionKey, question, answer, numRows, isEditing, onEdit } = props;
   const classes = useStyles();
   return (
     <TextField
+      onChange={
+        onEdit && isEditing
+          ? // TODO: Add support for visible, and sort here (params 3-4)
+            e => onEdit(questionKey, e.target.value, true, 0)
+          : undefined
+      }
+      disabled={!(onEdit && isEditing)}
       InputProps={{
         classes: {
           root: classes.root,
@@ -39,13 +56,12 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
           disabled: classes.disabledLabel,
         },
       }}
-      id={key}
+      id={questionKey}
       label={question}
       defaultValue={answer}
       rows={numRows || 4}
       fullWidth
       multiline
-      disabled
       margin="normal"
       variant="outlined"
     />

@@ -34,7 +34,9 @@ export default function MemberList(props: MemberListProps) {
           avatarElement={
             m.photoUrl ? (
               <Avatar alt={m.name || m.discordUsername} src={m.photoUrl} />
-            ) : null
+            ) : (
+              undefined
+            )
           }
           primaryText={m.name || m.discordUsername}
           secondaryElement={
@@ -42,7 +44,9 @@ export default function MemberList(props: MemberListProps) {
               <IconButton edge="end" aria-label="Star" disabled={true}>
                 <StarIcon />
               </IconButton>
-            ) : null
+            ) : (
+              undefined
+            )
           }
         />
       ))}

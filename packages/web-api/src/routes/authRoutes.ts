@@ -59,7 +59,7 @@ router.post('/discord/disconnect', isAuthenticated, async (req, res, next) => {
   destroySession(req, res);
 });
 
-// TODO: remove, function used to generate slugs for all users.
+// TODO: remove - function used to generate slugs for all users.
 // router.post('/init-slugs', async (req, res) => {
 //   const users = await UserModel.find({});
 //   const discordClient = ReadingDiscordBot.getInstance();

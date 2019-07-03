@@ -9,9 +9,10 @@ import AdapterLink from './AdapterLink';
 
 export interface ListElementAvatarProps {
   avatarElement?: any;
+  primaryElement?: JSX.Element;
+  secondaryElement?: JSX.Element;
   primaryText?: string;
   secondaryText?: string;
-  secondaryElement?: any;
   button?: boolean;
   link?: string;
 }
@@ -23,9 +24,10 @@ export default function ListElementAvatar(props: ListElementAvatarProps) {
 
   const {
     avatarElement,
+    primaryElement,
+    secondaryElement,
     primaryText,
     secondaryText,
-    secondaryElement,
     button,
     link,
   } = props;
@@ -37,6 +39,7 @@ export default function ListElementAvatar(props: ListElementAvatarProps) {
       component={button && link ? AdapterLink : undefined}
       to={button && link ? link : undefined}
     >
+      {primaryElement}
       <ListItemAvatar>
         {avatarElement ? (
           avatarElement
