@@ -96,7 +96,9 @@ router.get('/', async (req, res, next) => {
   const { after, pageSize, readingSpeed } = req.query;
   try {
     // Calculate number of documents to skip
-    const query: any = {};
+    const query: any = {
+      private: false,
+    };
     if (after) {
       query._id = { $gt: after };
     }
@@ -107,9 +109,13 @@ router.get('/', async (req, res, next) => {
     const limit = Math.min(Math.max(size, 10), 25);
     const clubs = await ClubModel.find(query)
       .limit(limit)
+      .sort({ createdAt: -1 })
       .exec();
     // Don't return full clubs
-    // Don't return private clubs
+    if (!clubs) {
+      res.sendStatus(404);
+      return;
+    }
     const client = ReadingDiscordBot.getInstance();
     const guild = client.guilds.first();
     const clubsWithMemberCounts: Services.GetClubs['clubs'] = clubs

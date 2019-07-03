@@ -32,8 +32,7 @@ export async function getAllClubs(
       readingSpeed,
     },
   });
-  const clubs = res.data;
-  return clubs;
+  return res;
 }
 
 export async function getClub(clubId: string) {

@@ -75,7 +75,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     if (club && (!user || user._id !== club.ownerId)) {
       setBackToClub(true);
     }
-  }, [club]);
+  }, [club, user]);
 
   useEffect(() => {
     const getClubFun = async () => {
@@ -238,6 +238,8 @@ export default function UpdateBook(props: UpdateBookProps) {
               radioValue={
                 bookToRead && bookToRead._id ? bookToRead._id : 'none'
               }
+              primary={'radio'}
+              secondary={'delete'}
             />
           </div>
           <div className={classes.saveButtonContainer}>
