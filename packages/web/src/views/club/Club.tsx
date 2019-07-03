@@ -240,7 +240,7 @@ export default function ClubComponent(props: ClubProps) {
                   <>
                     <Button
                       variant="contained"
-                      color="primary"
+                      color="secondary"
                       className={classes.button}
                       onClick={() =>
                         props.user
