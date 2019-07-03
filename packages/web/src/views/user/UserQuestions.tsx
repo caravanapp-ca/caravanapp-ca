@@ -131,6 +131,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
                     index={i}
                     question={q.title}
                     answer={''}
+                    placeholder={q.subtitle}
                     isEditing={isEditing}
                     onEdit={onQuestionsEdit}
                   />

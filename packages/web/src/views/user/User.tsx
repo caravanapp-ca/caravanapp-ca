@@ -251,6 +251,8 @@ export default function UserView(props: UserViewProps) {
         writeChange = true;
       } else if (field === 'selectedGenres') {
         writeChange = true;
+      } else if (field === 'shelf') {
+        setUserShelf(newValue);
       } else if (field === 'questions') {
         setUserQuestionsWkspc(newValue);
       }

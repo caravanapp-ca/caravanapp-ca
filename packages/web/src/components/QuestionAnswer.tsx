@@ -7,7 +7,8 @@ interface QuestionAnswerProps {
   isNew: boolean;
   index: number;
   question: string;
-  answer: string;
+  answer?: string;
+  placeholder?: string;
   isEditing: boolean;
   onEdit?: (
     answer: string,
@@ -42,6 +43,7 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
     index,
     question,
     answer,
+    placeholder,
     isEditing,
     onEdit,
     numRows,
@@ -71,6 +73,7 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
       id={questionKey}
       label={question}
       defaultValue={answer}
+      placeholder={placeholder}
       rows={numRows || 4}
       fullWidth
       multiline
