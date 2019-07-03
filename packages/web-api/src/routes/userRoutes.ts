@@ -8,10 +8,12 @@ import {
   UserQA,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
-import { isAuthenticated } from '../middleware/auth';
+import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import { userSlugExists, getMe } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
+import { UserDoc } from '../../typings';
+import { checkObjectIdIsValid } from '../common/mongoose';
 
 const router = express.Router();
 
@@ -39,10 +41,13 @@ router.get('/@me', async (req, res, next) => {
 router.get('/:urlSlugOrId', async (req, res, next) => {
   const { urlSlugOrId } = req.params;
   try {
-    const user = await UserModel.findOne().or([
-      { urlSlug: urlSlugOrId },
-      { _id: urlSlugOrId },
-    ]);
+    let user: UserDoc;
+    const isObjId = checkObjectIdIsValid(urlSlugOrId);
+    if (!isObjId) {
+      user = await UserModel.findOne({ urlSlug: urlSlugOrId });
+    } else {
+      user = await UserModel.findById(urlSlugOrId);
+    }
     if (user) {
       res.status(200).send(user.toJSON());
     } else {
@@ -86,7 +91,7 @@ router.post('/:urlSlug/available', async (req, res, next) => {
 // Modify a user
 router.put(
   '/',
-  isAuthenticated,
+  isAuthenticatedButNotNecessarilyOnboarded,
   check(['bio'], 'Bio must not be more than 150 characters')
     .isString()
     .isLength({ max: 150 })
@@ -114,6 +119,10 @@ router.put(
     .optional(),
   check('selectedGenres').isArray(),
   check('shelf').exists(),
+  check('questions').isArray(),
+  check('onboarding')
+    .isBoolean()
+    .optional(),
   async (req, res, next) => {
     const { userId } = req.session;
     const user: User = req.body;
@@ -170,7 +179,11 @@ router.put(
 
     const newUser: Omit<
       FilterAutoMongoKeys<User>,
-      'isBot' | 'smallPhotoUrl' | 'discordId' | 'discordUsername'
+      | 'isBot'
+      | 'smallPhotoUrl'
+      | 'discordId'
+      | 'discordUsername'
+      | 'onboardingVersion'
     > = {
       age: user.age,
       bio: user.bio,

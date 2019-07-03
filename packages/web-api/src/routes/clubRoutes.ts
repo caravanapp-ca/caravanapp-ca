@@ -20,7 +20,7 @@ import {
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
-import { isAuthenticated } from '../middleware/auth';
+import { isOnboarded } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
 import { ClubDoc } from '../../typings';
 
@@ -293,7 +293,7 @@ router.post(
   }
 );
 
-router.get('/my-clubs', isAuthenticated, async (req, res, next) => {
+router.get('/my-clubs', isOnboarded, async (req, res, next) => {
   const discordId = req.user.discordId;
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
@@ -331,7 +331,7 @@ interface CreateClubBody
 const knownHttpsRedirects = ['http://books.google.com/books/'];
 
 // Create club
-router.post('/', isAuthenticated, async (req, res, next) => {
+router.post('/', isOnboarded, async (req, res, next) => {
   try {
     const { userId, token } = req.session;
     const discordClient = ReadingDiscordBot.getInstance();
@@ -443,7 +443,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 // Update a club's currently read book
 router.put(
   '/:id/updatebook',
-  isAuthenticated,
+  isOnboarded,
   check(['finishedPrev', 'newEntry']).isBoolean(),
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -563,7 +563,7 @@ router.put(
 // Modify current user's club membership
 router.put(
   '/:id/membership',
-  isAuthenticated,
+  isOnboarded,
   check('isMember').isBoolean(),
   async (req, res, next) => {
     const errors = validationResult(req);

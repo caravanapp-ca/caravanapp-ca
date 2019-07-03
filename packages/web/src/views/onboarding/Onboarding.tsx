@@ -10,6 +10,7 @@ import {
   Genre,
   Genres,
   ProfileQuestions,
+  UserQA,
 } from '@caravan/buddy-reading-types';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
@@ -42,6 +43,7 @@ import {
   readingSpeedSubtitles,
 } from '../../components/reading-speed-avatars-icons-labels';
 import { getAllProfileQuestions } from '../../services/profile';
+import { updateUserProfile } from '../../services/user';
 
 const theme = createMuiTheme({
   palette: {
@@ -60,11 +62,6 @@ interface OnboardingRouteParams {
 
 interface OnboardingProps extends RouteComponentProps<OnboardingRouteParams> {
   user: User | null;
-}
-
-interface QA {
-  qid: string;
-  answer: string;
 }
 
 export default function Onboarding(props: OnboardingProps) {
@@ -186,7 +183,7 @@ export default function Onboarding(props: OnboardingProps) {
     setUnansweredProfileQuestions,
   ] = React.useState<ProfileQuestions['questions']>([]);
 
-  const [answers, setAnswers] = React.useState<QA[]>([]);
+  const [answers, setAnswers] = React.useState<UserQA[]>([]);
 
   const [questionBeingAnsweredId, setQuestionBeingAnsweredId] = React.useState<
     string | null
@@ -223,7 +220,7 @@ export default function Onboarding(props: OnboardingProps) {
         // Get all the ids of the questions they've answered and add them to an array
         const answeredIds: string[] = [];
         for (let i = 0; i < answers.length; i++) {
-          answeredIds.push(answers[i].qid);
+          answeredIds.push(answers[i].id);
         }
         // Make the unanswered questions not include the ids of the questions they've already answered
         const updatedQuestions = profileQuestions.questions.filter(
@@ -254,17 +251,34 @@ export default function Onboarding(props: OnboardingProps) {
     setCurrentPage(2);
   }
 
-  function onUpdateAnswers(qKey: string, answer: string, added: boolean) {
+  function onUpdateAnswers(
+    title: string,
+    userVisible: boolean,
+    sort: number,
+    qKey: string,
+    answer: string,
+    added: boolean
+  ) {
     if (added && profileQuestions) {
-      let newAnswers: QA[];
+      let newAnswers: UserQA[];
       const newAnswer = {
-        qid: qKey,
-        answer: answer,
+        id: qKey,
+        answer,
+        sort,
+        userVisible,
+        title,
       };
       newAnswers = [...answers, newAnswer];
+      console.log('newAnswers');
+      console.log(newAnswers);
       setAnswers(newAnswers);
     } else {
-      const updatedAnswers = answers.filter(a => a.qid !== qKey);
+      const updatedAnswers = answers.filter(a => a.id !== qKey);
+      for (let i = 0; i < updatedAnswers.length; i++) {
+        updatedAnswers[i].sort = i;
+      }
+      console.log('updatedAnswers');
+      console.log(updatedAnswers);
       setAnswers(updatedAnswers);
     }
   }
@@ -288,11 +302,14 @@ export default function Onboarding(props: OnboardingProps) {
   }
 
   function onSaveAnswer() {
-    if (questionBeingAnsweredId) {
-      let newAnswers: QA[];
+    if (questionBeingAnsweredId && questionBeingAnsweredText) {
+      let newAnswers: UserQA[];
       const newAnswer = {
-        qid: questionBeingAnsweredId,
+        id: questionBeingAnsweredId,
         answer: currentAnswer,
+        sort: answers.length,
+        userVisible: true,
+        title: questionBeingAnsweredText,
       };
       newAnswers = [...answers, newAnswer];
       setAnswers(newAnswers);
@@ -316,6 +333,12 @@ export default function Onboarding(props: OnboardingProps) {
 
   function writeOnboardingDataToDB() {
     setWritingOnboardingToDB(true);
+    // const res = await updateUserProfile(
+    //   selectedGenres,
+    //   selectedBooks,
+    //   selectedSpeed,
+    //   answers
+    // );
   }
 
   return (

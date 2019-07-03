@@ -82,6 +82,7 @@ const definition: SameKeysAs<
     type: mapUserShelfSchema,
     required: true,
   },
+  onboardingVersion: { type: Number, required: true, default: 0 },
 };
 
 const userSchema = new Schema<UserDoc>(definition, {

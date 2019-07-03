@@ -140,7 +140,7 @@ export default function SelectBooks(props: SelectBookProps) {
           </Typography>
           <BookSearch
             onSubmitBooks={props.onSubmitSelectedBooks}
-            maxSelected={100}
+            maxSelected={10000}
             secondary={'delete'}
             initialSelectedBooks={selectedBooks}
           />
