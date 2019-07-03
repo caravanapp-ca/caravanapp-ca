@@ -11,6 +11,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import MessageIcon from '@material-ui/icons/Message';
+import AdapterLink from '../../components/AdapterLink';
 
 interface UserNameplateProps {
   user: User;
@@ -84,14 +85,18 @@ export default function UserNameplate(props: UserNameplateProps) {
           {user.bio}
         </Typography>
         <Typography variant="body1">
-          <Link href={user.website}>{user.website}</Link>
+          <Link onClick={() => window.open(user.website)}>{user.website}</Link>
         </Typography>
         {!userIsMe && (
           <Button
             variant="outlined"
             color="primary"
-            // TODO: Connect this button to send a DM to the user on Discord
-            onClick={() => {}}
+            onClick={() =>
+              window.open(
+                `https://discordapp.com/channels/592761082523680798/592810415193587724`,
+                '_blank'
+              )
+            }
             style={{ marginTop: theme.spacing(1) }}
           >
             <Typography variant="button">MESSAGE</Typography>
