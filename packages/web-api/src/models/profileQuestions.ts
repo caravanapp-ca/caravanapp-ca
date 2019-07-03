@@ -2,13 +2,12 @@ import { model, Schema } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
-  ProfileQuestion,
   ProfileQuestions,
 } from '@caravan/buddy-reading-types';
 import { ProfileQuestionsDoc } from '../../typings';
 
 const profileQuestionSchemaDefinition: SameKeysAs<
-  FilterAutoMongoKeys<ProfileQuestion>
+  FilterAutoMongoKeys<ProfileQuestionsDoc['questions']>
 > = {
   id: { type: String, required: true },
   title: { type: String, required: true },
@@ -16,9 +15,12 @@ const profileQuestionSchemaDefinition: SameKeysAs<
   required: { type: Boolean, required: true },
   min: { type: Number, required: true },
   max: { type: Number, required: true },
+  visible: { type: Boolean, required: true, index: true },
 };
 
-const profileQuestionSchema = new Schema(profileQuestionSchemaDefinition, {});
+const profileQuestionSchema = new Schema(profileQuestionSchemaDefinition, {
+  _id: false,
+});
 
 const profileQuestionsSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<ProfileQuestions>

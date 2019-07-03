@@ -1,23 +1,41 @@
 import express from 'express';
-import User from '../models/user';
+import { check } from 'express-validator';
 import mongoose from 'mongoose';
+import { Omit } from 'utility-types';
+import {
+  User,
+  ReadingSpeed,
+  FilterAutoMongoKeys,
+  UserQA,
+  UserShelfEntry,
+} from '@caravan/buddy-reading-types';
+import GenreModel from '../models/genre';
+import UserModel from '../models/user';
+import { isAuthenticated } from '../middleware/auth';
+import { userSlugExists } from '../services/user';
+import { getGenreDoc } from '../services/genre';
+import { getProfileQuestions } from '../services/profileQuestions';
 
 const router = express.Router();
 
 // Get a user
-router.get('/:id', async (req, res, next) => {
-  const { id } = req.params;
+router.get('/:urlSlug', async (req, res, next) => {
+  const { urlSlug } = req.params;
   try {
-    const user = await User.findById(id);
-    res.json(user);
+    const user = await UserModel.findOne({ urlSlug: { $eq: urlSlug } });
+    if (user) {
+      res.status(200).send(user.toJSON());
+    } else {
+      res.sendStatus(400);
+    }
   } catch (err) {
     const { code } = err;
     switch (code) {
-      case 404:
-        res.status(404).send(`User not found: ${id}`);
-        return;
       default:
-        console.log(`Failed to get user ${id}`, err);
+        console.log(
+          `Failed to get user with slug ${urlSlug}. Code ${code}.`,
+          err
+        );
         return next(err);
     }
   }
@@ -29,7 +47,7 @@ router.post('/users', async (req, res, next) => {
   if (Array.isArray(userIds)) {
     try {
       const userIdsAsObj = userIds.map(uid => mongoose.Types.ObjectId(uid));
-      const users = await User.find({
+      const users = await UserModel.find({
         _id: { $in: userIdsAsObj },
       });
       res.json(users);
@@ -44,31 +62,142 @@ router.post('/users', async (req, res, next) => {
   }
 });
 
-// Create a user
-router.post('/', async (req, res, next) => {
+const READING_SPEEDS: ReadingSpeed[] = ['slow', 'moderate', 'fast'];
+
+router.post('/:urlSlug/available', async (req, res, next) => {
+  const { urlSlug } = req.params;
   try {
-    const user = new User(req.body);
-    const newUser = await user.save();
-    res.status(201).json(newUser);
+    const userExists = await userSlugExists(urlSlug);
+    if (userExists) {
+      res.status(409).send('User already exists.');
+    } else {
+      res.sendStatus(200);
+    }
   } catch (err) {
-    console.log('Failed to create new user', err);
-    return next(err);
+    const { code } = err;
+    switch (code) {
+      default:
+        console.log(
+          `Failed to get user with slug ${urlSlug}. Code ${code}.`,
+          err
+        );
+        return next(err);
+    }
   }
 });
 
-// Modify a club
-router.put('/:id', async (req, res, next) => {
-  const editedClub = req.body;
-  const { id } = req.params;
-  try {
-    const doc = await User.findByIdAndUpdate(id, editedClub, {
-      new: true,
-    }).exec();
-    res.sendStatus(200);
-  } catch (err) {
-    console.log(`Failed to modify user ${id}`, err);
-    return next(err);
+// TODO: Consider moving the update validation to the mongoose level
+// Modify a user
+router.put(
+  '/',
+  isAuthenticated,
+  check(['bio'], 'Bio must not be more than 150 characters')
+    .isString()
+    .isLength({ max: 150 })
+    .optional(),
+  check(['goodreadsUrl', 'website', 'photoUrl', 'smallPhotoUrl'])
+    .isURL()
+    .optional(),
+  check('name')
+    .isString()
+    .isLength({ min: 2, max: 100 }),
+  check(
+    'readingSpeed',
+    `Reading speed must be one of ${READING_SPEEDS.join(',')}`
+  ).isIn(READING_SPEEDS),
+  check('age', 'Must be a valid age')
+    .isInt({ min: 13, max: 150 })
+    .optional(),
+  check('gender')
+    .isString()
+    .isLength({ min: 1, max: 50 })
+    .optional(),
+  check('location')
+    .isString()
+    .isLength({ max: 300 })
+    .optional(),
+  check('selectedGenres').isArray(),
+  check('shelf').exists(),
+  async (req, res, next) => {
+    const { userId } = req.session;
+    const user: User = req.body;
+
+    const genreDoc = await getGenreDoc();
+    if (!genreDoc) {
+      res.status(500).send('No genres found, oops!');
+      return;
+    }
+
+    const userShelf = user.shelf;
+    if (!userShelf.notStarted || userShelf.notStarted.length > 500) {
+      throw new Error(
+        'Shelf object is missing the notStarted key, or you passed over 500 entries!'
+      );
+    }
+    if (!userShelf.read || userShelf.read.length > 5000) {
+      throw new Error(
+        'Shelf object is missing the read key, or you passed over 5000 entries!'
+      );
+    }
+
+    const userGenres = user.selectedGenres
+      .map(g => {
+        const validGenre = genreDoc.genres[g.key];
+        if (validGenre) {
+          const newValidUserGenre: { key: string; name: string } = {
+            key: g.name,
+            name: validGenre.name,
+          };
+          return newValidUserGenre;
+        }
+        throw new Error(`Unknown genre: ${g.key}, ${g.name}`);
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    const questionDoc = await getProfileQuestions();
+    if (!questionDoc) {
+      res.status(500).send('No questions found, oops!');
+      return;
+    }
+
+    const userQA = user.questions.map(q => {
+      const validQuestion = questionDoc.questions.find(f => f.id === q.id);
+      if (validQuestion) {
+        const newUserQA: UserQA = {
+          ...q,
+          title: validQuestion.title,
+        };
+        return newUserQA;
+      }
+      throw new Error(`Unknown question: ${q.id}, ${q.title}`);
+    });
+
+    const newUser: Omit<
+      FilterAutoMongoKeys<User>,
+      'isBot' | 'smallPhotoUrl' | 'discordId'
+    > = {
+      age: user.age,
+      bio: user.bio,
+      gender: user.gender,
+      goodreadsUrl: user.goodreadsUrl,
+      location: user.location,
+      name: user.name,
+      photoUrl: user.photoUrl,
+      readingSpeed: user.readingSpeed,
+      urlSlug: user.urlSlug,
+      website: user.website,
+      selectedGenres: userGenres,
+      questions: userQA,
+      shelf: userShelf,
+    };
+    try {
+      const userDoc = await UserModel.findByIdAndUpdate(userId, newUser);
+      res.status(200).send(userDoc);
+    } catch (err) {
+      console.error('Failed to save user data', err);
+      res.status(400).send('Failed to save user data');
+    }
   }
-});
+);
 
 export default router;

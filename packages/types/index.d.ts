@@ -69,13 +69,34 @@ declare module '@caravan/buddy-reading-types' {
     genres: string[];
   }
 
+  export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {
+    readingState: ReadingState;
+    clubId?: string;
+    club?: Club;
+  }
+
+  export interface UserSelectedGenre {
+    key: string;
+    name: string;
+  }
+
   export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
     discordId: string;
+    goodreadsUrl?: string;
+    website?: string;
     name?: string;
     photoUrl?: string;
-    readingSpeed?: string;
+    smallPhotoUrl?: string;
+    readingSpeed?: ReadingSpeed;
+    age?: number;
+    gender?: string;
+    location?: string;
     isBot: boolean;
+    urlSlug: string;
+    selectedGenres: UserSelectedGenre[];
+    questions: UserQA[];
+    shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
   }
 
   export interface Genres {
@@ -92,6 +113,14 @@ declare module '@caravan/buddy-reading-types' {
     subgenres: string[];
   }
 
+  export interface UserQA {
+    id: string;
+    title: string;
+    answer: string;
+    userVisible: boolean;
+    sort: number;
+  }
+
   export interface ProfileQuestions {
     _id: string;
     questions: ProfileQuestion[];
@@ -106,9 +135,25 @@ declare module '@caravan/buddy-reading-types' {
     max: number;
   }
 
+  export type EditableUserField =
+    | 'bio'
+    | 'goodreadsUrl'
+    | 'website'
+    | 'name'
+    | 'photoUrl'
+    | 'readingSpeed'
+    | 'age'
+    | 'gender'
+    | 'location'
+    | 'selectedGenres'
+    | 'questions'
+    | 'shelf';
+
   export type ChannelSource = 'discord';
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';
+
+  export type UserShelfReadingState = 'notStarted' | 'read';
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
 

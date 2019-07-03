@@ -20,7 +20,6 @@ import {
   readingSpeedIcons,
   readingSpeedLabels,
 } from '../../components/reading-speed-avatars-icons-labels';
-import './ClubCards.css';
 import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({
@@ -34,7 +33,10 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
   },
   cardContent: {
+    position: 'relative',
+    zIndex: 1,
     flexGrow: 1,
+    backgroundColor: '#FFFFFF',
   },
   iconWithLabel: {
     display: 'flex',

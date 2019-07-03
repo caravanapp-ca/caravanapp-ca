@@ -1,20 +1,19 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import {
   FilterAutoMongoKeys,
   Session,
   User,
 } from '@caravan/buddy-reading-types';
-import { UserDoc } from '../../typings';
 import { isAuthenticated } from '../middleware/auth';
 import {
   DiscordOAuth2Url,
-  DiscordUserResponseData,
   OAuth2TokenResponseData,
   ReadingDiscordBot,
 } from '../services/discord';
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
-import { RequiredKeys } from 'utility-types';
+import { generateSlugIds } from '../common/url';
+import { getAvailableSlugIds } from '../services/user';
 
 const router = express.Router();
 
@@ -60,6 +59,26 @@ router.post('/discord/disconnect', isAuthenticated, async (req, res, next) => {
   destroySession(req, res);
 });
 
+// TODO: remove - function used to generate slugs for all users.
+// router.post('/init-slugs', async (req, res) => {
+//   const users = await UserModel.find({});
+//   const discordClient = ReadingDiscordBot.getInstance();
+//   const guild = discordClient.guilds.first();
+//   users.forEach(async user => {
+//     if (!user.urlSlug) {
+//       const discordMember = guild.members.find(m => m.id === user.discordId);
+//       const slugs = generateSlugIds(discordMember.displayName);
+//       const availableSlugs = await getAvailableSlugIds(slugs);
+//       await UserModel.updateOne(
+//         { _id: user.id },
+//         {
+//           urlSlug: availableSlugs[0],
+//         }
+//       );
+//     }
+//   });
+// });
+
 router.get('/discord/callback', async (req, res) => {
   const { code, error, error_description, state } = req.query;
   if (error) {
@@ -87,11 +106,34 @@ router.get('/discord/callback', async (req, res) => {
   if (userDoc) {
     // Update the user, but lazy now. // THIS COMMENT IS OLD, NOT NECESSARY NOW?
   } else {
-    const userInstance = {
-      discordId: discordUserData.id,
-    };
-    const userModel = new UserModel(userInstance);
-    userDoc = await userModel.save();
+    const slugs = generateSlugIds(discordUserData.username);
+    const availableSlugs = await getAvailableSlugIds(slugs);
+    let currentSlugdId = 0;
+    while (!userDoc && currentSlugdId < availableSlugs.length) {
+      const userInstance: Pick<
+        User,
+        'discordId' | 'urlSlug' | 'selectedGenres' | 'questions'
+      > = {
+        discordId: discordUserData.id,
+        urlSlug: availableSlugs[currentSlugdId],
+        selectedGenres: [],
+        questions: [],
+      };
+      const userModel = new UserModel(userInstance);
+      // TODO: handle slug failure due to time windowing
+      try {
+        userDoc = await userModel.save();
+      } catch (err) {
+        userDoc = undefined;
+        console.log(err);
+      }
+      currentSlugdId++;
+    }
+    if (!userDoc || currentSlugdId - 1 < availableSlugs.length) {
+      throw new Error(
+        `User creation failed. UserDoc: ${userDoc}, Discord: ${discordUserData.id}`
+      );
+    }
   }
 
   try {

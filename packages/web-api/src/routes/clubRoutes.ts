@@ -8,13 +8,14 @@ import {
   VoiceChannel,
   GuildMember,
 } from 'discord.js';
-import { check, validationResult } from 'express-validator/check';
+import { check, validationResult } from 'express-validator';
 import {
   Club,
   FilterAutoMongoKeys,
   ReadingState,
   Services,
   ShelfEntry,
+  User,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
@@ -37,6 +38,17 @@ const getCountableMembersInChannel = (
     isInChannel(m, club)
   );
 
+const getUserChannels = (guild: Guild, discordId: string) => {
+  const channels = guild.channels.filter(c => {
+    const cTyped = c as TextChannel | VoiceChannel;
+    return (
+      (c.type === 'text' || c.type === 'voice') &&
+      cTyped.members.some(m => m.id === discordId)
+    );
+  });
+  return channels;
+};
+
 async function getChannelMembers(guild: Guild, club: ClubDoc) {
   let discordChannel = guild.channels.find(c => c.id === club.channelId);
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
@@ -57,17 +69,14 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
       const user = users.find(u => u.discordId === mem.id);
       if (user) {
         const result = {
-          bio: user.bio,
+          ...user.toObject(),
           discordUsername: mem.user.username,
           discordId: mem.id,
-          name: user.name,
           photoUrl:
             user.photoUrl ||
             mem.user.avatarURL ||
             mem.user.displayAvatarURL ||
             mem.user.defaultAvatarURL,
-          readingSpeed: user.readingSpeed,
-          userId: user.id,
         };
         return result;
       } else {
@@ -143,7 +152,7 @@ router.get('/:id', async (req, res, next) => {
   try {
     const club = await ClubModel.findById(id);
     if (!club) {
-      res.status(404).send(null);
+      res.sendStatus(404);
       return;
     }
     if (club.channelSource === 'discord') {
@@ -181,7 +190,7 @@ router.get('/:id', async (req, res, next) => {
     if (err.name) {
       switch (err.name) {
         case 'CastError':
-          res.status(404).send(null);
+          res.sendStatus(404);
           return;
         default:
           break;
@@ -191,6 +200,98 @@ router.get('/:id', async (req, res, next) => {
     return next(err);
   }
 });
+
+// Gets all of the clubs the specified user is currently in
+router.post('/getUserClubs', async (req, res, next) => {
+  const user: User = req.body.user;
+  // TODO: Validation that object passed is actually of User type
+  if (user.discordId) {
+    const client = ReadingDiscordBot.getInstance();
+    const guild = client.guilds.first();
+    const { discordId } = user;
+    const channels = getUserChannels(guild, discordId);
+    const channelIds = channels.map(c => c.id);
+    try {
+      const clubs = await ClubModel.find({
+        channelSource: 'discord',
+        channelId: {
+          $in: channelIds,
+        },
+      });
+      if (!clubs) {
+        res.sendStatus(404);
+        return;
+      }
+      res.status(200).json(clubs);
+    } catch (err) {
+      console.log('Failed to get clubs for user ' + user._id);
+      return next(err);
+    }
+  }
+});
+
+// Return clubs from array of clubId's.
+router.post(
+  '/clubsById',
+  check('clubIds').isArray(),
+  async (req, res, next) => {
+    const { clubIds } = req.body;
+    try {
+      const clubs = await ClubModel.find({
+        _id: {
+          $in: clubIds,
+        },
+      });
+      if (!clubs) {
+        res.sendStatus(404);
+        return;
+      }
+      const client = ReadingDiscordBot.getInstance();
+      const guild = client.guilds.first();
+      const guildMembersPromises: Promise<{
+        club: ClubDoc;
+        guildMembers: any[];
+      }>[] = [];
+      let guildErr: Error | null = null;
+      clubs.forEach(c => {
+        if (c.channelSource === 'discord') {
+          guildMembersPromises.push(
+            getChannelMembers(guild, c).then(r => {
+              return { club: c, guildMembers: r };
+            })
+          );
+        } else {
+          guildErr = new Error(
+            `Error: unknown channelSource: ${c.channelSource}`
+          );
+        }
+      });
+      if (guildErr) {
+        res
+          .status(500)
+          // TODO: Check if it's appropriate to send errors like this.
+          .send(guildErr);
+        return;
+      }
+
+      const allGuildMembers = await Promise.all(guildMembersPromises);
+      const clubsWithMemberObjs = allGuildMembers.map(gmObj => {
+        if (gmObj.club.channelSource === 'discord') {
+          return {
+            ...gmObj.club.toObject(),
+            members: gmObj.guildMembers,
+            guildId: guild.id,
+          };
+        }
+        // TODO: Add other channel sources
+      });
+      res.status(200).send(clubsWithMemberObjs);
+    } catch (err) {
+      console.log('Failed to get clubs.', err);
+      return next(err);
+    }
+  }
+);
 
 router.get('/my-clubs', isAuthenticated, async (req, res, next) => {
   const discordId = req.user.discordId;

@@ -1,6 +1,7 @@
 import express from 'express';
 import { Services, ProfileQuestions } from '@caravan/buddy-reading-types';
 import { getProfileQuestions } from '../services/profileQuestions';
+import { ProfileQuestionsDoc } from '../../typings';
 
 const router = express.Router();
 
@@ -11,9 +12,12 @@ router.get('/questions', async (req, res, next) => {
       res.status(500).send('No profile questions found, oops!');
       return;
     }
-    const obj: ProfileQuestions = profileQuestionsDoc.toObject();
+    // ProfileQuestionsDoc is not the correct type since it doesn't
+    // have the Document obj properties, but good enough for now.
+    const obj: ProfileQuestionsDoc = profileQuestionsDoc.toObject();
+    const filtered = obj.questions.filter(q => q.visible);
     const resData: Services.GetProfileQuestions = {
-      questions: obj.questions,
+      questions: filtered,
     };
     res.status(200).json(resData);
   } catch (err) {

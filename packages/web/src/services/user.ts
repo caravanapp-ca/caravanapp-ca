@@ -16,3 +16,21 @@ export async function getUsersById(userIds: Array<String>) {
   const users = res.data;
   return users;
 }
+
+export async function isSlugAvailable(slug: string) {
+  try {
+    const res = await axios.post<string>(`${userRoute}/${slug}/available`);
+    if (res.status === 200) {
+      return { available: true, err: null };
+    } else {
+      return { available: false, err: null };
+    }
+  } catch (err) {
+    const { response } = err;
+    if (response.status === 409) {
+      return { available: false, err: null };
+    } else {
+      return { available: false, err: err.message };
+    }
+  }
+}

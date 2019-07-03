@@ -7,19 +7,19 @@ import {
 } from 'react-router-dom';
 import qs from 'query-string';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider } from '@material-ui/styles';
 import Footer from './components/Footer';
-import Home from './views/home/Home';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
-import FindBooks from './views/books/FindBooks';
-import useInitializeUser from './common/useInitializeUser';
-import UpdateBook from './views/club/UpdateBook';
-import Privacy from './views/privacy/Privacy';
+import Home from './views/home/Home';
 import Onboarding from './views/onboarding/Onboarding';
-import { KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
+import FindBooks from './views/books/FindBooks';
+import Privacy from './views/privacy/Privacy';
+import UpdateBook from './views/club/UpdateBook';
+import User from './views/user/User';
+import { ThemeProvider } from '@material-ui/styles';
+import { clearAuthState, KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
-import { clearAuthState } from './common/localStorage';
+import useInitializeUser from './common/useInitializeUser';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 
@@ -78,6 +78,7 @@ export function App(props: AppProps) {
               path="/onboarding"
               render={props => <Onboarding {...props} user={user} />}
             />
+            <Route path="/user/:id" component={User} />
             <Route exact path="/findbooks" component={FindBooks} />
             <Route exact path="/privacy" component={Privacy} />
           </Switch>

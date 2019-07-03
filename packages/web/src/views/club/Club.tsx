@@ -44,7 +44,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {},
     root: {
+      position: 'relative',
+      zIndex: 1,
       flexGrow: 1,
+      backgroundColor: '#FFFFFF',
     },
     button: {
       margin: theme.spacing(1),

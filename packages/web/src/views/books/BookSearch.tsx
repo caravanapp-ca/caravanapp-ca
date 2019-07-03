@@ -6,6 +6,7 @@ import {
   InputBase,
   IconButton,
   Popover,
+  Typography,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import SearchResultCards from '../books/SearchResultCards';
@@ -33,6 +34,11 @@ const useStyles = makeStyles(theme => ({
   iconButton: {},
   bookListContainer: {
     marginTop: theme.spacing(1),
+  },
+  searchResultsContainer: {
+    padding: 0,
+    maxHeight: 384,
+    overflow: 'auto',
   },
 }));
 
@@ -166,7 +172,7 @@ export default function BookSearch(props: BookSearchProps) {
   return (
     <>
       <div className={classes.root}>
-        <Paper className={classes.searchBarContainer}>
+        <Paper className={classes.searchBarContainer} ref={searchRef}>
           <IconButton
             className={classes.iconButton}
             aria-label="Menu"
@@ -182,7 +188,6 @@ export default function BookSearch(props: BookSearchProps) {
             inputProps={{ 'aria-label': 'Add a Book' }}
             onChange={e => setBookSearchQuery(e.target.value)}
             onKeyDown={handleOnKeyDown}
-            ref={searchRef}
           />
         </Paper>
         {searchResults && showPopper && (
@@ -199,13 +204,29 @@ export default function BookSearch(props: BookSearchProps) {
               horizontal: 'center',
             }}
           >
-            <Container maxWidth="sm" style={{ padding: 0 }}>
+            <Container className={classes.searchResultsContainer}>
               <BookList
                 data={
                   getShelfFromGoogleBooks(searchResults.items) as ShelfEntry[]
                 }
                 secondary={'add'}
                 onAdd={onAddBook}
+                footerElement={
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    style={{
+                      fontStyle: 'italic',
+                      textAlign: 'center',
+                      marginLeft: 16,
+                      marginRight: 16,
+                    }}
+                  >
+                    {
+                      "Don't see what you're looking for? Try more precise search terms."
+                    }
+                  </Typography>
+                }
               />
             </Container>
           </Popover>

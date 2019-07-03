@@ -4,6 +4,7 @@ import { List, Avatar, IconButton } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
+import AdapterLink from '../../../components/AdapterLink';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
@@ -27,11 +28,15 @@ export default function MemberList(props: MemberListProps) {
     <List dense={false}>
       {members.map(m => (
         <ListElementAvatar
+          button={m.urlSlug ? true : undefined}
+          link={m.urlSlug ? `user/${m.urlSlug}` : undefined}
           key={m.userId}
           avatarElement={
             m.photoUrl ? (
               <Avatar alt={m.name || m.discordUsername} src={m.photoUrl} />
-            ) : null
+            ) : (
+              undefined
+            )
           }
           primaryText={m.name || m.discordUsername}
           secondaryElement={
@@ -39,7 +44,9 @@ export default function MemberList(props: MemberListProps) {
               <IconButton edge="end" aria-label="Star" disabled={true}>
                 <StarIcon />
               </IconButton>
-            ) : null
+            ) : (
+              undefined
+            )
           }
         />
       ))}
