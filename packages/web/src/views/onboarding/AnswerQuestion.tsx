@@ -72,11 +72,6 @@ export default function AnswerQuestion(props: AnswerQuestionProps) {
       <Card className={classes.card}>
         <CardHeader
           title={`${props.question}...`}
-          action={
-            <div>
-              <EditIcon />
-            </div>
-          }
           classes={{ title: classes.questionText, root: classes.cardHeader }}
         />
         <CardContent>
