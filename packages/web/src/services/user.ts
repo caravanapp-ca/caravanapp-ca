@@ -3,26 +3,15 @@ import { ReadingSpeed, User } from '@caravan/buddy-reading-types';
 
 const userRoute = '/api/user';
 
-interface UpdateUserProps {
-  notStartedShelf: User['shelf']['notStarted'];
-  readingSpeed: ReadingSpeed;
-  selectedGenres: User['selectedGenres'];
-  questions: User['questions'];
-  onboardingVersion: number;
+export async function getMe() {
+  const res = await axios.get<User | null>(`${userRoute}/@me`);
+  return res;
 }
 
 export async function getUser(userId: string) {
   const res = await axios.get<User | null>(`${userRoute}/${userId}`);
   const user = res.data;
   return user;
-}
-
-export async function getUsersById(userIds: Array<String>) {
-  const res = await axios.post<Array<User> | null>(`${userRoute}/users`, {
-    userIds: userIds,
-  });
-  const users = res.data;
-  return users;
 }
 
 export async function isSlugAvailable(slug: string) {
@@ -41,6 +30,13 @@ export async function isSlugAvailable(slug: string) {
       return { available: false, err: err.message };
     }
   }
+}
+
+interface UpdateUserProps {
+  notStartedShelf: User['shelf']['notStarted'];
+  readingSpeed: ReadingSpeed;
+  selectedGenres: User['selectedGenres'];
+  questions: User['questions'];
 }
 
 export async function updateUserProfile({

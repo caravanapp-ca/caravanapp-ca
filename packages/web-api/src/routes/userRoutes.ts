@@ -1,6 +1,5 @@
 import express from 'express';
 import { check } from 'express-validator';
-import mongoose from 'mongoose';
 import { Omit } from 'utility-types';
 import {
   User,
@@ -10,13 +9,33 @@ import {
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
-import { userSlugExists } from '../services/user';
+import { userSlugExists, getMe } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc } from '../../typings';
 import { checkObjectIdIsValid } from '../common/mongoose';
 
 const router = express.Router();
+
+// Get me, includes more sensitive stuff
+router.get('/@me', async (req, res, next) => {
+  const { userId } = req.session;
+  try {
+    const user = await getMe(userId);
+    if (user) {
+      res.status(200).send(user.toJSON());
+    } else {
+      res.sendStatus(401);
+    }
+  } catch (err) {
+    const { code } = err;
+    switch (code) {
+      default:
+        console.log(`Failed to get me ${userId}. Code ${code}.`, err);
+        return next(err);
+    }
+  }
+});
 
 // Get a user
 router.get('/:urlSlugOrId', async (req, res, next) => {
@@ -41,27 +60,6 @@ router.get('/:urlSlugOrId', async (req, res, next) => {
         console.log(`Failed to get user ${urlSlugOrId}. Code ${code}.`, err);
         return next(err);
     }
-  }
-});
-
-// Get users by array of userIds
-router.post('/users', async (req, res, next) => {
-  const { userIds } = req.body;
-  if (Array.isArray(userIds)) {
-    try {
-      const userIdsAsObj = userIds.map(uid => mongoose.Types.ObjectId(uid));
-      const users = await UserModel.find({
-        _id: { $in: userIdsAsObj },
-      });
-      res.json(users);
-    } catch (err) {
-      console.error(err);
-      return next(err);
-    }
-  } else {
-    res
-      .status(400)
-      .send('Error: `userIds` must be an array of user id strings');
   }
 });
 
@@ -187,7 +185,11 @@ router.put(
     console.log(userQA);
     const newUser: Omit<
       FilterAutoMongoKeys<User>,
-      'isBot' | 'smallPhotoUrl' | 'discordId' | 'onboardingVersion'
+      | 'isBot'
+      | 'smallPhotoUrl'
+      | 'discordId'
+      | 'discordUsername'
+      | 'onboardingVersion'
     > = {
       age: user.age,
       bio: user.bio,
