@@ -19,7 +19,7 @@ import User from './views/user/User';
 import { ThemeProvider } from '@material-ui/styles';
 import { clearAuthState, KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
-import useInitializeUser from './common/useInitializeUser';
+import useUser from './common/useInitializeUser';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 
@@ -33,7 +33,7 @@ const HomeRedirect = () => {
 };
 
 export function App(props: AppProps) {
-  const user = useInitializeUser();
+  const user = useUser();
 
   // Handle the `state` query to verify login
   useEffect(() => {

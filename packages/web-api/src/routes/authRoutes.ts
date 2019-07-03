@@ -13,7 +13,7 @@ import {
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
 import { generateSlugIds } from '../common/url';
-import { getAvailableSlugIds } from '../services/user';
+import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
 
 const router = express.Router();
 
@@ -100,9 +100,7 @@ router.get('/discord/callback', async (req, res) => {
   const discordClient = ReadingDiscordBot.getInstance();
   const guild = discordClient.guilds.first();
 
-  let userDoc = await UserModel.findOne({
-    discordId: discordUserData.id,
-  });
+  let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {
     // Update the user, but lazy now. // THIS COMMENT IS OLD, NOT NECESSARY NOW?
   } else {

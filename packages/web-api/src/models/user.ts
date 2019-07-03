@@ -5,9 +5,9 @@ import {
   SameKeysAs,
   UserQA,
   UserShelfEntry,
-  Club,
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings';
+import { Omit } from 'utility-types';
 
 const selectedGenreDefinition: SameKeysAs<User['selectedGenres'][0]> = {
   key: { type: String, required: true },
@@ -60,7 +60,9 @@ const mapUserShelfSchema = new Schema(mapUserShelfDefinition, {
   _id: false,
 });
 
-const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
+const definition: SameKeysAs<
+  Omit<FilterAutoMongoKeys<User>, 'discordUsername'>
+> = {
   bio: { type: String },
   discordId: { type: String, required: true, unique: true, index: true },
   goodreadsUrl: { type: String },

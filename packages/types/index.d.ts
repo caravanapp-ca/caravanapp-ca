@@ -83,6 +83,7 @@ declare module '@caravan/buddy-reading-types' {
   export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
     discordId: string;
+    discordUsername?: string;
     goodreadsUrl?: string;
     website?: string;
     name?: string;
