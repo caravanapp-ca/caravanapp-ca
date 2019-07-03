@@ -37,6 +37,7 @@ interface UpdateUserProps {
   readingSpeed: ReadingSpeed;
   selectedGenres: User['selectedGenres'];
   questions: User['questions'];
+  onboardingVersion: number;
 }
 
 export async function updateUserProfile({
