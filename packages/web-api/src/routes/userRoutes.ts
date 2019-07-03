@@ -13,6 +13,8 @@ import { isAuthenticated } from '../middleware/auth';
 import { userSlugExists } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
+import { UserDoc } from '../../typings';
+import { checkObjectIdIsValid } from '../common/mongoose';
 
 const router = express.Router();
 
@@ -20,10 +22,13 @@ const router = express.Router();
 router.get('/:urlSlugOrId', async (req, res, next) => {
   const { urlSlugOrId } = req.params;
   try {
-    const user = await UserModel.findOne().or([
-      { urlSlug: urlSlugOrId },
-      { _id: urlSlugOrId },
-    ]);
+    let user: UserDoc;
+    const isObjId = checkObjectIdIsValid(urlSlugOrId);
+    if (!isObjId) {
+      user = await UserModel.findOne({ urlSlug: urlSlugOrId });
+    } else {
+      user = await UserModel.findById(urlSlugOrId);
+    }
     if (user) {
       res.status(200).send(user.toJSON());
     } else {
