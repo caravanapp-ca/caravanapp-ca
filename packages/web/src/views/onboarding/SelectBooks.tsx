@@ -93,12 +93,13 @@ interface SelectBookProps {
   onContinue: () => void;
   onSubmitSelectedBooks: (selectedBooks: ShelfEntry[]) => void;
   selectedBooks: ShelfEntry[];
+  continuing: boolean;
 }
 
 export default function SelectBooks(props: SelectBookProps) {
   const classes = useStyles();
 
-  const { selectedBooks } = props;
+  const { selectedBooks, continuing } = props;
 
   const minimumRequired = 3;
 
@@ -152,13 +153,16 @@ export default function SelectBooks(props: SelectBookProps) {
               justifyContent: 'flex-end',
             }}
           >
-            <Fab
-              disabled={selectedBooks.length < 3}
-              color="primary"
-              onClick={() => props.onContinue()}
-            >
-              <ForwardIcon />
-            </Fab>
+            {!continuing && (
+              <Fab
+                disabled={selectedBooks.length < 3}
+                color="primary"
+                onClick={() => props.onContinue()}
+              >
+                <ForwardIcon />
+              </Fab>
+            )}
+            {continuing && <CircularProgress />}
           </div>
         </div>
       </Container>

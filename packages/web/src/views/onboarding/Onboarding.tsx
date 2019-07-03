@@ -156,9 +156,12 @@ export default function Onboarding(props: OnboardingProps) {
     </Button>
   );
 
-  const [continuing, setContinuing] = React.useState(false);
+  const [
+    continuingToProfileQuestions,
+    setContinuingToProfileQuestions,
+  ] = React.useState(false);
 
-  const [currentPage, setCurrentPage] = React.useState(2);
+  const [currentPage, setCurrentPage] = React.useState(5);
 
   const [
     selectedReadingPreferences,
@@ -196,6 +199,10 @@ export default function Onboarding(props: OnboardingProps) {
 
   const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
 
+  const [writingOnboardingToDB, setWritingOnboardingToDB] = React.useState(
+    false
+  );
+
   useEffect(() => {
     const getProfileQuestions = async () => {
       const response = await getAllProfileQuestions();
@@ -203,7 +210,6 @@ export default function Onboarding(props: OnboardingProps) {
         const { data } = response;
         setProfileQuestions(data);
         setUnansweredProfileQuestions(data.questions);
-        console.log(data);
       }
     };
     getProfileQuestions();
@@ -290,7 +296,6 @@ export default function Onboarding(props: OnboardingProps) {
       };
       newAnswers = [...answers, newAnswer];
       setAnswers(newAnswers);
-      console.log(newAnswers);
       setCurrentAnswer('');
       setCurrentPage(2);
     }
@@ -309,8 +314,8 @@ export default function Onboarding(props: OnboardingProps) {
     setSelectedBooks(selectedBooks);
   }
 
-  function continueToClubsPage() {
-    setCurrentPage(6);
+  function writeOnboardingDataToDB() {
+    setWritingOnboardingToDB(true);
   }
 
   return (
@@ -319,7 +324,7 @@ export default function Onboarding(props: OnboardingProps) {
         <>
           <Header centerComponent={centerComponentReadingPreferences} />
           <ReadingPreferences
-            continuing={continuing}
+            continuing={continuingToProfileQuestions}
             onContinue={continueToQuestionsPage}
             user={props.user}
             selectedGenres={selectedGenres}
@@ -336,7 +341,7 @@ export default function Onboarding(props: OnboardingProps) {
             leftComponent={leftComponentAboutYou}
           />
           <AboutYou
-            continuing={continuing}
+            continuing={continuingToProfileQuestions}
             onContinue={continueToBooksPage}
             questions={profileQuestions.questions}
             user={props.user}
@@ -380,7 +385,8 @@ export default function Onboarding(props: OnboardingProps) {
             leftComponent={leftComponentAddBooks}
           />
           <SelectBooks
-            onContinue={continueToClubsPage}
+            onContinue={writeOnboardingDataToDB}
+            continuing={writingOnboardingToDB}
             onSubmitSelectedBooks={onSubmitSelectedBooks}
             selectedBooks={selectedBooks}
           />
