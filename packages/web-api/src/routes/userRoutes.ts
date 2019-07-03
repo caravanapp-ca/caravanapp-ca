@@ -7,9 +7,7 @@ import {
   ReadingSpeed,
   FilterAutoMongoKeys,
   UserQA,
-  UserShelfEntry,
 } from '@caravan/buddy-reading-types';
-import GenreModel from '../models/genre';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { userSlugExists } from '../services/user';
@@ -19,10 +17,13 @@ import { getProfileQuestions } from '../services/profileQuestions';
 const router = express.Router();
 
 // Get a user
-router.get('/:urlSlug', async (req, res, next) => {
-  const { urlSlug } = req.params;
+router.get('/:urlSlugOrId', async (req, res, next) => {
+  const { urlSlugOrId } = req.params;
   try {
-    const user = await UserModel.findOne({ urlSlug: { $eq: urlSlug } });
+    const user = await UserModel.findOne().or([
+      { urlSlug: urlSlugOrId },
+      { _id: urlSlugOrId },
+    ]);
     if (user) {
       res.status(200).send(user.toJSON());
     } else {
@@ -32,10 +33,7 @@ router.get('/:urlSlug', async (req, res, next) => {
     const { code } = err;
     switch (code) {
       default:
-        console.log(
-          `Failed to get user with slug ${urlSlug}. Code ${code}.`,
-          err
-        );
+        console.log(`Failed to get user ${urlSlugOrId}. Code ${code}.`, err);
         return next(err);
     }
   }
