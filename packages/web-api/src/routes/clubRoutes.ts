@@ -97,7 +97,7 @@ router.get('/', async (req, res, next) => {
       query.readingSpeed = { $eq: readingSpeed };
     }
     const size = Number.parseInt(pageSize || 0);
-    const limit = Math.min(Math.max(size, 10), 25);
+    const limit = Math.min(Math.max(size, 10), 50);
     const clubs = await ClubModel.find(query)
       .limit(limit)
       .sort({ createdAt: -1 })
