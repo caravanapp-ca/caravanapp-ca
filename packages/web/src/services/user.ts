@@ -34,3 +34,13 @@ export async function isSlugAvailable(slug: string) {
     }
   }
 }
+
+export async function modifyUser(user: User) {
+  try {
+    const res = await axios.put(userRoute, user);
+    return res.status;
+  } catch (err) {
+    throw new Error(err);
+    return;
+  }
+}

@@ -62,10 +62,22 @@ export const errorTheme = (outerTheme: Theme) =>
   ({
     ...outerTheme,
     palette: {
-      ...outerTheme.palette,
       primary: outerTheme.palette.error,
     },
   } as Theme);
+
+export const successTheme = responsiveFontSizes(
+  // @ts-ignore
+  createMuiTheme({
+    ...themeObj,
+    palette: {
+      ...themeObj.palette,
+      primary: {
+        main: '#4CAF50',
+      },
+    },
+  })
+);
 
 export const washedTheme = responsiveFontSizes(
   // @ts-ignore
@@ -74,7 +86,6 @@ export const washedTheme = responsiveFontSizes(
     palette: {
       ...themeObj.palette,
       primary: {
-        ...themeObj.palette.primary,
         main: '#EEF0F8',
       },
     },

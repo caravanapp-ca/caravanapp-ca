@@ -25,7 +25,7 @@ import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import EditIcon from '@material-ui/icons/Create';
 import SaveIcon from '@material-ui/icons/Save';
-import { getUser } from '../../services/user';
+import { getUser, modifyUser } from '../../services/user';
 import { isMe } from '../../common/localStorage';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
@@ -99,6 +99,7 @@ export default function UserView(props: UserViewProps) {
     notStarted: [],
     read: [],
   });
+  const [shelfModified, setShelfModified] = React.useState<boolean>(false);
   const [userClubs, setUserClubs] = React.useState<Club[]>([]);
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
@@ -253,6 +254,7 @@ export default function UserView(props: UserViewProps) {
         writeChange = true;
       } else if (field === 'shelf') {
         setUserShelf(newValue);
+        setShelfModified(true);
       } else if (field === 'questions') {
         setUserQuestionsWkspc(newValue);
       }
@@ -263,15 +265,31 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
-  const onSaveClick = () => {
-    if (userQuestionsWkspc.length > 0) {
-      const userCopy: User = { ...user, questions: userQuestionsWkspc };
-      setUser(userCopy);
-      if (questions) {
-        const initQuestions = sortQuestions(userCopy, questions);
-        setInitQuestions(initQuestions);
+  const onSaveClick = async () => {
+    let userToSend = user;
+    if (userQuestionsWkspc.length > 0 || shelfModified) {
+      let userCopy: User = { ...user };
+      if (userQuestionsWkspc.length > 0) {
+        userCopy = { ...user, questions: userQuestionsWkspc };
+        if (questions) {
+          const initQuestions = sortQuestions(userCopy, questions);
+          setInitQuestions(initQuestions);
+        }
+        setUserQuestionsWkspc([]);
       }
-      setUserQuestionsWkspc([]);
+      if (shelfModified) {
+        userCopy = { ...user, shelf: userShelf };
+        setShelfModified(false);
+      }
+      setUser(userCopy);
+      userToSend = userCopy;
+    }
+    const res = await modifyUser(userToSend);
+    if (res === 200) {
+      console.log('User updated successfully!');
+      // Display snackbar with Changes Updated Successfully
+    } else {
+      // TODO: determine routing based on other values of res
     }
     setIsEditing(false);
   };
