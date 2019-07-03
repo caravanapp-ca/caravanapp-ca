@@ -26,6 +26,9 @@ export interface ClubWithCurrentlyReading {
 }
 
 const useStyles = makeStyles(theme => ({
+  button: {
+    margin: theme.spacing(1),
+  },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 6),
@@ -57,18 +60,26 @@ export default function Home(props: HomeProps) {
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
+  const [afterQuery, setAfterQuery] = React.useState<string | undefined>(
+    undefined
+  );
+  const [canLoadMore, setCanLoadMore] = React.useState(true);
+
   useEffect(() => {
-    const getClubs = async () => {
-      const responseData = await getAllClubs();
-      if (responseData) {
-        const clubsWCR = transformClubsToWithCurrentlyReading(
-          responseData.clubs
+    (async () => {
+      const pageSize = 10;
+      const res = await getAllClubs(afterQuery, pageSize);
+      if (res.data) {
+        const newClubsWCR = transformClubsToWithCurrentlyReading(
+          res.data.clubs
         );
-        setClubsWCR(clubsWCR);
+        if (newClubsWCR.length < pageSize) {
+          setCanLoadMore(false);
+        }
+        setClubsWCR(c => [...c, ...newClubsWCR]);
       }
-    };
-    getClubs();
-  }, []);
+    })();
+  }, [afterQuery]);
 
   function transformClubsToWithCurrentlyReading(
     clubs: Services.GetClubs['clubs']
@@ -173,6 +184,28 @@ export default function Home(props: HomeProps) {
           </div>
         )}
         <ClubCards clubsWCR={clubsWCR} user={props.user} />
+        {canLoadMore && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'column',
+            }}
+          >
+            <Button
+              color="primary"
+              className={classes.button}
+              variant="outlined"
+              onClick={() =>
+                setAfterQuery(clubsWCR[clubsWCR.length - 1].club._id)
+              }
+            >
+              <Typography variant="button" style={{ textAlign: 'center' }}>
+                LOAD MORE...
+              </Typography>
+            </Button>
+          </div>
+        )}
       </main>
       <DiscordLoginModal
         onCloseLoginDialog={onCloseLoginModal}
