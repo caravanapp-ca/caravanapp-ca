@@ -97,6 +97,7 @@ declare module '@caravan/buddy-reading-types' {
     selectedGenres: UserSelectedGenre[];
     questions: UserQA[];
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
+    onboardingVersion: number;
   }
 
   export interface Genres {

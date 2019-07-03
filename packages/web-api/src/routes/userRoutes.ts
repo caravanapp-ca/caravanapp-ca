@@ -9,7 +9,7 @@ import {
   UserQA,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
-import { isAuthenticated } from '../middleware/auth';
+import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import { userSlugExists } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
@@ -88,7 +88,7 @@ router.post('/:urlSlug/available', async (req, res, next) => {
 // Modify a user
 router.put(
   '/',
-  isAuthenticated,
+  isAuthenticatedButNotNecessarilyOnboarded,
   check(['bio'], 'Bio must not be more than 150 characters')
     .isString()
     .isLength({ max: 150 })
@@ -116,6 +116,10 @@ router.put(
     .optional(),
   check('selectedGenres').isArray(),
   check('shelf').exists(),
+  check('questions').isArray(),
+  check('onboarding')
+    .isBoolean()
+    .optional(),
   async (req, res, next) => {
     const { userId } = req.session;
     const user: User = req.body;

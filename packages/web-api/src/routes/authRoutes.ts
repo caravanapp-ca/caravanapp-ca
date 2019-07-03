@@ -4,7 +4,10 @@ import {
   Session,
   User,
 } from '@caravan/buddy-reading-types';
-import { isAuthenticated } from '../middleware/auth';
+import {
+  isOnboarded,
+  isAuthenticatedButNotNecessarilyOnboarded,
+} from '../middleware/auth';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
@@ -53,11 +56,15 @@ router.get('/logout', async (req, res) => {
   res.redirect('/');
 });
 
-router.post('/discord/disconnect', isAuthenticated, async (req, res, next) => {
-  const { token } = req.session;
-  await SessionModel.findOneAndDelete({ accessToken: token });
-  destroySession(req, res);
-});
+router.post(
+  '/discord/disconnect',
+  isAuthenticatedButNotNecessarilyOnboarded,
+  async (req, res, next) => {
+    const { token } = req.session;
+    await SessionModel.findOneAndDelete({ accessToken: token });
+    destroySession(req, res);
+  }
+);
 
 // TODO: remove - function used to generate slugs for all users.
 // router.post('/init-slugs', async (req, res) => {

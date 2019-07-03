@@ -5,7 +5,6 @@ import {
   SameKeysAs,
   UserQA,
   UserShelfEntry,
-  Club,
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings';
 
@@ -80,6 +79,7 @@ const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
     type: mapUserShelfSchema,
     required: true,
   },
+  onboardingVersion: { type: Number, required: true, default: 0 },
 };
 
 const userSchema = new Schema<UserDoc>(definition, {
