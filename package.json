@@ -7,8 +7,10 @@
     "lint": "lerna run lint",
     "start": "cd ./packages/web-api && npm start",
     "deploy:production": "yarn build && yarn deploy-only:production",
+    "deploy-no-promote:production": "yarn build && gcloud app deploy app.production.yaml --no-promote",
     "deploy:staging": "yarn build && yarn deploy-only:staging",
     "deploy-only:production": "gcloud app deploy app.production.yaml",
+    "deploy-only-no-promote:production": "gcloud app deploy app.production.yaml --no-promote",
     "deploy-only:staging": "gcloud app deploy app.staging.yaml"
   },
   "dependencies": {
