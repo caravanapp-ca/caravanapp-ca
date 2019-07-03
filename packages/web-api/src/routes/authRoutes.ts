@@ -115,16 +115,17 @@ router.get('/discord/callback', async (req, res) => {
   } else {
     const slugs = generateSlugIds(discordUserData.username);
     const availableSlugs = await getAvailableSlugIds(slugs);
-    let currentSlugdId = 0;
-    while (!userDoc && currentSlugdId < availableSlugs.length) {
+    let currentSlugId = 0;
+    while (!userDoc && currentSlugId < availableSlugs.length) {
       const userInstance: Pick<
         User,
-        'discordId' | 'urlSlug' | 'selectedGenres' | 'questions'
+        'discordId' | 'urlSlug' | 'selectedGenres' | 'questions' | 'shelf'
       > = {
         discordId: discordUserData.id,
-        urlSlug: availableSlugs[currentSlugdId],
+        urlSlug: availableSlugs[currentSlugId],
         selectedGenres: [],
         questions: [],
+        shelf: { notStarted: [], read: [] },
       };
       const userModel = new UserModel(userInstance);
       // TODO: handle slug failure due to time windowing
@@ -134,9 +135,9 @@ router.get('/discord/callback', async (req, res) => {
         userDoc = undefined;
         console.log(err);
       }
-      currentSlugdId++;
+      currentSlugId++;
     }
-    if (!userDoc || currentSlugdId - 1 < availableSlugs.length) {
+    if (!userDoc || currentSlugId - 1 < availableSlugs.length) {
       throw new Error(
         `User creation failed. UserDoc: ${userDoc}, Discord: ${discordUserData.id}`
       );

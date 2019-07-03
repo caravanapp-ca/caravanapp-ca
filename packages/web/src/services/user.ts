@@ -8,6 +8,7 @@ interface UpdateUserProps {
   readingSpeed: ReadingSpeed;
   selectedGenres: User['selectedGenres'];
   questions: User['questions'];
+  onboardingVersion: number;
 }
 
 export async function getUser(userId: string) {
@@ -43,14 +44,19 @@ export async function isSlugAvailable(slug: string) {
 }
 
 export async function updateUserProfile({
-  selectedGenres,
   notStartedShelf,
   readingSpeed,
+  selectedGenres,
   questions,
+  onboardingVersion,
 }: UpdateUserProps) {
   const body: Pick<
     User,
-    'questions' | 'readingSpeed' | 'selectedGenres' | 'shelf'
+    | 'questions'
+    | 'readingSpeed'
+    | 'selectedGenres'
+    | 'shelf'
+    | 'onboardingVersion'
   > = {
     selectedGenres: selectedGenres,
     shelf: {
@@ -59,11 +65,11 @@ export async function updateUserProfile({
     },
     readingSpeed: readingSpeed,
     questions: questions,
+    onboardingVersion: onboardingVersion,
   };
-
-  const res = await axios.put(`${userRoute}`, {
-    body,
-  });
+  console.log('Awaiting axios now');
+  console.log(`${userRoute}`);
+  const res = await axios.put(`${userRoute}`, body);
 
   return res;
 }

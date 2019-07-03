@@ -122,19 +122,21 @@ router.put(
   check('selectedGenres').isArray(),
   check('shelf').exists(),
   check('questions').isArray(),
-  check('onboarding')
-    .isBoolean()
+  check('onboardingVersion')
+    .isNumeric()
     .optional(),
   async (req, res, next) => {
     const { userId } = req.session;
     const user: User = req.body;
-
+    console.log('got user');
+    console.log(user);
     const genreDoc = await getGenreDoc();
     if (!genreDoc) {
       res.status(500).send('No genres found, oops!');
       return;
     }
-
+    console.log('got genre doc');
+    console.log(genreDoc);
     const userShelf = user.shelf;
     if (!userShelf.notStarted || userShelf.notStarted.length > 500) {
       throw new Error(
@@ -146,7 +148,8 @@ router.put(
         'Shelf object is missing the read key, or you passed over 5000 entries!'
       );
     }
-
+    console.log('got user shelf');
+    console.log(userShelf);
     const userGenres = user.selectedGenres
       .map(g => {
         const validGenre = genreDoc.genres[g.key];
@@ -160,13 +163,15 @@ router.put(
         throw new Error(`Unknown genre: ${g.key}, ${g.name}`);
       })
       .sort((a, b) => a.name.localeCompare(b.name));
-
+    console.log('got user genres');
+    console.log(userGenres);
     const questionDoc = await getProfileQuestions();
     if (!questionDoc) {
       res.status(500).send('No questions found, oops!');
       return;
     }
-
+    console.log('got question doc');
+    console.log(questionDoc);
     const userQA = user.questions.map(q => {
       const validQuestion = questionDoc.questions.find(f => f.id === q.id);
       if (validQuestion) {
@@ -178,10 +183,11 @@ router.put(
       }
       throw new Error(`Unknown question: ${q.id}, ${q.title}`);
     });
-
+    console.log('got user QA');
+    console.log(userQA);
     const newUser: Omit<
       FilterAutoMongoKeys<User>,
-      'isBot' | 'smallPhotoUrl' | 'discordId'
+      'isBot' | 'smallPhotoUrl' | 'discordId' | 'onboardingVersion'
     > = {
       age: user.age,
       bio: user.bio,
@@ -198,7 +204,20 @@ router.put(
       shelf: userShelf,
     };
     try {
-      const userDoc = await UserModel.findByIdAndUpdate(userId, newUser);
+      let userDoc = await UserModel.findByIdAndUpdate(userId, newUser);
+      console.log('got await user doc');
+      console.log(userDoc);
+      console.log('trying res send 200');
+      if (
+        userDoc &&
+        userDoc.onboardingVersion === 0 &&
+        user.onboardingVersion === 1
+      ) {
+        // Can do extra on-boarding behind-the-scenes logic here onInit, but for now not necessary...
+        // Perhaps send email or whatever.
+        userDoc.onboardingVersion = 1;
+        userDoc = await userDoc.save();
+      }
       res.status(200).send(userDoc);
     } catch (err) {
       console.error('Failed to save user data', err);

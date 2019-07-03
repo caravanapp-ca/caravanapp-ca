@@ -17,9 +17,6 @@ export async function isOnboarded(
       err.status = 401;
       return next(err);
       // Will coerce !0 to true, !1 to false, !undefined to true
-    } else if (!userDoc.onboardingVersion) {
-      res.redirect('/onboarding');
-      return;
     } else {
       req.user = userDoc;
       next();

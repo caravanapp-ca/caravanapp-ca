@@ -11,6 +11,7 @@ import {
   Genres,
   ProfileQuestions,
   UserQA,
+  UserSelectedGenre,
 } from '@caravan/buddy-reading-types';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
@@ -44,6 +45,7 @@ import {
 } from '../../components/reading-speed-avatars-icons-labels';
 import { getAllProfileQuestions } from '../../services/profile';
 import { updateUserProfile } from '../../services/user';
+import { generateKeyPair } from 'crypto';
 
 const theme = createMuiTheme({
   palette: {
@@ -63,6 +65,8 @@ interface OnboardingRouteParams {
 interface OnboardingProps extends RouteComponentProps<OnboardingRouteParams> {
   user: User | null;
 }
+
+type SubmissionState = 'notSubmitted' | 'submitted' | 'success' | 'failure';
 
 export default function Onboarding(props: OnboardingProps) {
   const classes = useStyles();
@@ -158,7 +162,7 @@ export default function Onboarding(props: OnboardingProps) {
     setContinuingToProfileQuestions,
   ] = React.useState(false);
 
-  const [currentPage, setCurrentPage] = React.useState(5);
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   const [
     selectedReadingPreferences,
@@ -171,7 +175,9 @@ export default function Onboarding(props: OnboardingProps) {
     'moderate'
   );
 
-  const [selectedGenres, setSelectedGenres] = React.useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = React.useState<
+    UserSelectedGenre[]
+  >([]);
 
   const [
     profileQuestions,
@@ -196,8 +202,8 @@ export default function Onboarding(props: OnboardingProps) {
 
   const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
 
-  const [writingOnboardingToDB, setWritingOnboardingToDB] = React.useState(
-    false
+  const [submitState, setSubmitState] = React.useState<SubmissionState>(
+    'notSubmitted'
   );
 
   useEffect(() => {
@@ -213,10 +219,22 @@ export default function Onboarding(props: OnboardingProps) {
   }, []);
 
   useEffect(() => {
+    switch (submitState) {
+      case 'success':
+        props.history.replace('/clubs');
+        break;
+      case 'failure':
+        // TODO: handle errors for onboarding submission
+        console.error('error in submission');
+        break;
+      default:
+        break;
+    }
+  }, [submitState]);
+
+  useEffect(() => {
     const getUnansweredProfileQuestions = async () => {
       if (profileQuestions) {
-        console.log(answers);
-        console.log(unansweredProfileQuestions);
         // Get all the ids of the questions they've answered and add them to an array
         const answeredIds: string[] = [];
         for (let i = 0; i < answers.length; i++) {
@@ -232,13 +250,21 @@ export default function Onboarding(props: OnboardingProps) {
     getUnansweredProfileQuestions();
   }, [answers]);
 
-  function onGenreSelected(genre: string, selected: boolean) {
+  function onGenreSelected(
+    genreKey: string,
+    genreName: string,
+    selected: boolean
+  ) {
     if (selected) {
-      let newGenres: string[];
-      newGenres = [...selectedGenres, genre];
+      let newGenres: UserSelectedGenre[];
+      const addedGenre: UserSelectedGenre = {
+        key: genreKey,
+        name: genreName,
+      };
+      newGenres = [...selectedGenres, addedGenre];
       setSelectedGenres(newGenres);
     } else {
-      const updatedGenres = selectedGenres.filter(g => g !== genre);
+      const updatedGenres = selectedGenres.filter(g => g.key !== genreKey);
       setSelectedGenres(updatedGenres);
     }
   }
@@ -269,7 +295,7 @@ export default function Onboarding(props: OnboardingProps) {
         title,
       };
       newAnswers = [...answers, newAnswer];
-      console.log('newAnswers');
+      console.log('newanswers');
       console.log(newAnswers);
       setAnswers(newAnswers);
     } else {
@@ -277,7 +303,7 @@ export default function Onboarding(props: OnboardingProps) {
       for (let i = 0; i < updatedAnswers.length; i++) {
         updatedAnswers[i].sort = i;
       }
-      console.log('updatedAnswers');
+      console.log('updatedanswers');
       console.log(updatedAnswers);
       setAnswers(updatedAnswers);
     }
@@ -315,6 +341,8 @@ export default function Onboarding(props: OnboardingProps) {
       setAnswers(newAnswers);
       setCurrentAnswer('');
       setCurrentPage(2);
+      console.log('newanswers');
+      console.log(newAnswers);
     }
   }
 
@@ -331,14 +359,24 @@ export default function Onboarding(props: OnboardingProps) {
     setSelectedBooks(selectedBooks);
   }
 
-  function writeOnboardingDataToDB() {
-    setWritingOnboardingToDB(true);
-    // const res = await updateUserProfile(
-    //   selectedGenres,
-    //   selectedBooks,
-    //   selectedSpeed,
-    //   answers
-    // );
+  async function submitOnboarding() {
+    setSubmitState('submitted');
+    console.log('submitState');
+    console.log(submitState);
+    console.log('Updating profile now');
+    const res = await updateUserProfile({
+      selectedGenres,
+      notStartedShelf: selectedBooks,
+      readingSpeed: selectedSpeed,
+      questions: answers,
+      onboardingVersion: 1,
+    });
+    if (res.status >= 200 && res.status < 300) {
+      setSubmitState('success');
+    } else {
+      setSubmitState('failure');
+    }
+    console.log(res);
   }
 
   return (
@@ -408,8 +446,8 @@ export default function Onboarding(props: OnboardingProps) {
             leftComponent={leftComponentAddBooks}
           />
           <SelectBooks
-            onContinue={writeOnboardingDataToDB}
-            continuing={writingOnboardingToDB}
+            onContinue={submitOnboarding}
+            continuing={submitState === 'submitted'}
             onSubmitSelectedBooks={onSubmitSelectedBooks}
             selectedBooks={selectedBooks}
           />

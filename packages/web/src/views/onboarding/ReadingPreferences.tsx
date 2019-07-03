@@ -8,6 +8,7 @@ import {
   Services,
   Genre,
   Genres,
+  UserSelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
@@ -99,8 +100,12 @@ interface ReadingPreferencesProps {
   user: User | null;
   onContinue: () => void;
   continuing: boolean;
-  selectedGenres: string[];
-  onGenreSelected: (genre: string, selected: boolean) => void;
+  selectedGenres: UserSelectedGenre[];
+  onGenreSelected: (
+    genreKey: string,
+    genreName: string,
+    selected: boolean
+  ) => void;
   selectedSpeed: string;
   onSetSelectedSpeed: (speed: ReadingSpeed) => void;
 }
@@ -201,11 +206,12 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
           <Typography className={classes.sectionHeader} variant="subtitle1">
             Select some genres you're interested in reading.
           </Typography>
-          {/* <div className={classes.genreContainer}> */}
           <Grid container spacing={3}>
             {genreDoc &&
               genreDoc.mainGenres.map((genreKey: string) => {
-                const genreSelected = props.selectedGenres.includes(genreKey);
+                const genreSelected = props.selectedGenres
+                  .map(g => g.key)
+                  .includes(genreKey);
                 return (
                   <Grid item lg={3} md={4} xs={6} key={genreKey}>
                     <Button
@@ -213,7 +219,11 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
                       color={genreSelected ? 'primary' : 'default'}
                       variant="contained"
                       onClick={() =>
-                        props.onGenreSelected(genreKey, !genreSelected)
+                        props.onGenreSelected(
+                          genreKey,
+                          genreDoc.genres[genreKey].name,
+                          !genreSelected
+                        )
                       }
                     >
                       {genreDoc.genres[genreKey].name}
