@@ -35,7 +35,6 @@ import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
 import { getClubsById, getUserClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
-import { AxiosResponse } from 'axios';
 import { getAllProfileQuestions } from '../../services/profile';
 
 interface UserRouteParams {
@@ -265,12 +264,12 @@ export default function UserView(props: UserViewProps) {
   const onSaveClick = () => {
     if (userQuestionsWkspc.length > 0) {
       const userCopy: User = { ...user, questions: userQuestionsWkspc };
+      setUser(userCopy);
       if (questions) {
         const initQuestions = sortQuestions(userCopy, questions);
         setInitQuestions(initQuestions);
       }
       setUserQuestionsWkspc([]);
-      setUser(userCopy);
     }
     setIsEditing(false);
   };
@@ -372,7 +371,14 @@ export default function UserView(props: UserViewProps) {
               initQuestions={initQuestions || undefined}
             />
           )}
-          {tabValue === 1 && <UserShelf user={user} shelf={userShelf} />}
+          {tabValue === 1 && (
+            <UserShelf
+              user={user}
+              shelf={userShelf}
+              isEditing={isEditing}
+              onEdit={onEdit}
+            />
+          )}
         </>
       </Container>
     </>

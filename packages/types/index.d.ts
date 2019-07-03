@@ -75,6 +75,8 @@ declare module '@caravan/buddy-reading-types' {
     club?: Club;
   }
 
+  export type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
+
   export interface UserSelectedGenre {
     key: string;
     name: string;

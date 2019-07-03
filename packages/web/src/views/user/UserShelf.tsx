@@ -1,12 +1,13 @@
 import React from 'react';
 import {
   User,
-  UserShelfEntry,
-  ReadingState,
+  EditableUserField,
+  UserShelfType,
 } from '@caravan/buddy-reading-types';
 import { Typography, makeStyles } from '@material-ui/core';
 import BookList from '../club/shelf-view/BookList';
 import clsx from 'clsx';
+import UserShelfEditable from './UserShelfEditable';
 
 const useStyles = makeStyles(theme => ({
   sectionContainer: {
@@ -20,16 +21,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
-
 interface UserShelfProps {
   user: User;
   shelf: UserShelfType;
+  isEditing: boolean;
+  onEdit: (field: EditableUserField, newValue: any) => void;
 }
 
 export default function UserShelf(props: UserShelfProps) {
   const classes = useStyles();
-  const { user, shelf } = props;
+  const { user, shelf, isEditing, onEdit } = props;
   return (
     <div>
       {shelf.current.length > 0 && (
@@ -45,7 +46,15 @@ export default function UserShelf(props: UserShelfProps) {
           <Typography variant="h6" className={classes.sectionLabel}>
             Wants to Read
           </Typography>
-          <BookList data={shelf.notStarted} />
+          {(!isEditing || !onEdit) && <BookList data={shelf.notStarted} />}
+          {isEditing && onEdit && (
+            <UserShelfEditable
+              user={user}
+              shelf={shelf}
+              isEditing={isEditing}
+              onEdit={onEdit}
+            />
+          )}
         </div>
       )}
       {shelf.notStarted.length > 0 && (
