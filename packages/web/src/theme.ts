@@ -17,9 +17,6 @@ const themeObj = {
       light: '#FFFFA8',
       dark: '#CABF45',
     },
-    error: {
-      main: '#B00020',
-    },
     link: {
       main: '#0365D6',
     },

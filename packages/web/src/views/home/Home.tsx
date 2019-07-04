@@ -44,6 +44,22 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+export function transformClubsToWithCurrentlyReading(
+  clubs: Services.GetClubs['clubs']
+): ClubWithCurrentlyReading[] {
+  const clubsWCR: ClubWithCurrentlyReading[] = clubs.map(club => {
+    const currentlyReading = club.shelf.find(
+      book => book.readingState === 'current'
+    );
+    if (currentlyReading) {
+      return { club, currentlyReading };
+    } else {
+      return { club, currentlyReading: null };
+    }
+  });
+  return clubsWCR;
+}
+
 export default function Home(props: HomeProps) {
   const classes = useStyles();
   const [clubsWCR, setClubsWCR] = React.useState<ClubWithCurrentlyReading[]>(
@@ -80,22 +96,6 @@ export default function Home(props: HomeProps) {
       }
     })();
   }, [afterQuery]);
-
-  function transformClubsToWithCurrentlyReading(
-    clubs: Services.GetClubs['clubs']
-  ): ClubWithCurrentlyReading[] {
-    const clubsWCR: ClubWithCurrentlyReading[] = clubs.map(club => {
-      const currentlyReading = club.shelf.find(
-        book => book.readingState === 'current'
-      );
-      if (currentlyReading) {
-        return { club, currentlyReading };
-      } else {
-        return { club, currentlyReading: null };
-      }
-    });
-    return clubsWCR;
-  }
 
   function onCloseLoginModal() {
     setLoginModalShown(false);

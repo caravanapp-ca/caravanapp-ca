@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, SyntheticEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
@@ -29,13 +29,21 @@ import { getUser, modifyUser } from '../../services/user';
 import { isMe } from '../../common/localStorage';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
 import UserAvatar from './UserAvatar';
 import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
+import UserClubs from './UserClubs';
 import { getClubsById, getUserClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
+import {
+  ClubWithCurrentlyReading,
+  transformClubsToWithCurrentlyReading,
+} from '../home/Home';
 
 interface UserRouteParams {
   id: string;
@@ -100,7 +108,9 @@ export default function UserView(props: UserViewProps) {
     read: [],
   });
   const [shelfModified, setShelfModified] = React.useState<boolean>(false);
-  const [userClubs, setUserClubs] = React.useState<Club[]>([]);
+  const [userClubsWCR, setUserClubsWCR] = React.useState<
+    ClubWithCurrentlyReading[]
+  >([]);
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
   const [tabValue, setTabValue] = React.useState(0);
@@ -120,6 +130,14 @@ export default function UserView(props: UserViewProps) {
     initAnsweredQs: [],
     initUnansweredQs: [],
   });
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'success',
+    }
+  );
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -134,11 +152,15 @@ export default function UserView(props: UserViewProps) {
         getGenres();
         getQuestions(user);
 
-        getUserClubs(user).then(clubs => {
+        getUserClubs(user).then(res => {
+          if (!res.data) {
+            // TODO: Error checking
+          }
+          const clubs = res.data;
           getUserShelf(user, clubs).then(shelf => {
             setUserShelf(shelf);
           });
-          setUserClubs(clubs);
+          setUserClubsWCR(transformClubsToWithCurrentlyReading(clubs));
         });
       }
       setUser(user);
@@ -198,7 +220,7 @@ export default function UserView(props: UserViewProps) {
     return initQuestions;
   }
 
-  async function getUserShelf(user: User, clubs: Club[]) {
+  async function getUserShelf(user: User, clubs: Services.GetClubs['clubs']) {
     const userShelf: UserShelfType = {
       current: [],
       notStarted: [],
@@ -286,13 +308,21 @@ export default function UserView(props: UserViewProps) {
     }
     const res = await modifyUser(userToSend);
     if (res === 200) {
-      console.log('User updated successfully!');
-      // Display snackbar with Changes Updated Successfully
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'success',
+        message: 'Successfully updated your profile!',
+      });
     } else {
       // TODO: determine routing based on other values of res
     }
     setIsEditing(false);
   };
+
+  function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
+  }
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -379,6 +409,7 @@ export default function UserView(props: UserViewProps) {
       >
         <Tab label="Bio" />
         <Tab label="Shelf" />
+        <Tab label="Clubs" />
       </Tabs>
       <Container maxWidth={'md'}>
         <>
@@ -399,8 +430,10 @@ export default function UserView(props: UserViewProps) {
               onEdit={onEdit}
             />
           )}
+          {tabValue === 2 && <UserClubs clubsWCR={userClubsWCR} user={user} />}
         </>
       </Container>
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }

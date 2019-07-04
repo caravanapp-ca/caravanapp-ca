@@ -21,6 +21,9 @@
     "editor.rulers": [120],
     "editor.tabSize": 2,
     "typescript.tsdk": "./node_modules/typescript/lib",
-    "cSpell.words": ["workspaces"]
+    "cSpell.words": [
+      "Snackbar",
+      "workspaces"
+    ]
   }
 }

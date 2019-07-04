@@ -55,12 +55,11 @@ export async function getClubsById(clubIds: string[]) {
 }
 
 export async function getUserClubs(user: User) {
-  const res = await axios.post<Services.GetClubById[]>(
+  const res = await axios.post<Services.GetClubs['clubs']>(
     `${clubRoute}/getUserClubs`,
     { user }
   );
-  const clubs = res.data;
-  return clubs;
+  return res;
 }
 
 export async function modifyMyClubMembership(
