@@ -1,6 +1,5 @@
 import React from 'react';
-import { TextField, makeStyles, IconButton } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
+import { TextField, makeStyles } from '@material-ui/core';
 
 interface QuestionAnswerProps {
   questionKey: string;

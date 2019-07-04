@@ -5,22 +5,12 @@ import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import Grid from '@material-ui/core/Grid';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Clear';
-import { getAllProfileQuestions } from '../../services/profile';
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import AdapterLink from '../../components/AdapterLink';
 
 const theme = createMuiTheme({
   palette: {

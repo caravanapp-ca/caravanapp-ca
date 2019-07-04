@@ -4,7 +4,6 @@ import {
   User,
   ReadingState,
   UserShelfEntry,
-  Club,
   EditableUserField,
   Services,
   ProfileQuestion,
@@ -143,6 +142,18 @@ export default function UserView(props: UserViewProps) {
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
+  const getQuestions = async (user: User) => {
+    const res = await getAllProfileQuestions();
+    if (res.status === 200) {
+      const questions = res.data;
+      setQuestions(questions);
+      const initQuestions = sortQuestions(user, questions);
+      setInitQuestions(initQuestions);
+    } else {
+      // TODO: error handling
+    }
+  };
+
   useEffect(() => {
     getUser(userId).then(user => {
       if (user) {
@@ -186,18 +197,6 @@ export default function UserView(props: UserViewProps) {
     const res = await getAllGenres();
     if (res.status === 200) {
       setGenres(res.data);
-    } else {
-      // TODO: error handling
-    }
-  }
-
-  async function getQuestions(user: User) {
-    const res = await getAllProfileQuestions();
-    if (res.status === 200) {
-      const questions = res.data;
-      setQuestions(questions);
-      const initQuestions = sortQuestions(user, questions);
-      setInitQuestions(initQuestions);
     } else {
       // TODO: error handling
     }
@@ -308,7 +307,7 @@ export default function UserView(props: UserViewProps) {
       userToSend = userCopy;
     }
     const res = await modifyUser(userToSend);
-    if (res === 200) {
+    if (res.status === 200) {
       setSnackbarProps({
         ...snackbarProps,
         isOpen: true,

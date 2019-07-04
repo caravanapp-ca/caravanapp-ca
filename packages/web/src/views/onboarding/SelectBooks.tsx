@@ -1,26 +1,12 @@
 import React from 'react';
-import { User, Services, ShelfEntry } from '@caravan/buddy-reading-types';
+import { ShelfEntry } from '@caravan/buddy-reading-types';
 import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import CardContent from '@material-ui/core/CardContent';
-import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
-import Grid from '@material-ui/core/Grid';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Clear';
-import { getAllProfileQuestions } from '../../services/profile';
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import AdapterLink from '../../components/AdapterLink';
 import BookSearch from '../books/BookSearch';
 
 const theme = createMuiTheme({
@@ -96,12 +82,12 @@ interface SelectBookProps {
   continuing: boolean;
 }
 
+const minimumRequired = 3;
+
 export default function SelectBooks(props: SelectBookProps) {
   const classes = useStyles();
 
   const { selectedBooks, continuing } = props;
-
-  const minimumRequired = 3;
 
   return (
     <>
@@ -113,12 +99,15 @@ export default function SelectBooks(props: SelectBookProps) {
       <div className={classes.progressFraction}>
         {selectedBooks.length < minimumRequired && (
           <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
-            Minimum {minimumRequired}, recommended 10
+            Minimum {minimumRequired}, but the more the merrier!
           </Typography>
         )}
         {selectedBooks.length >= minimumRequired && (
           <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
-            Keep going! The bigger the shelf the better 😊
+            Keep going! The bigger the shelf the better{' '}
+            <span role="img" aria-label="slight smile">
+              😊
+            </span>
           </Typography>
         )}
       </div>

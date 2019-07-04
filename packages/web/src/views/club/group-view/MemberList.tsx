@@ -4,7 +4,6 @@ import { List, Avatar, IconButton } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
-import AdapterLink from '../../../components/AdapterLink';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 

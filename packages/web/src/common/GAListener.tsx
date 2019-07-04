@@ -1,5 +1,5 @@
 import History from 'history';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import ReactGA from 'react-ga';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
@@ -16,12 +16,16 @@ const sendPageView = (location: History.Location) => {
 export const GAListener = withRouter(
   ({ trackingId, history, children }: GAListenerProps) => {
     useEffect(() => {
-      if (trackingId) {
+      if (trackingId && history) {
         ReactGA.initialize(trackingId);
         sendPageView(history.location);
-        history.listen(sendPageView);
+        const unregisterListener = history.listen(sendPageView);
+        // Cleanup for effect from first render
+        return () => {
+          unregisterListener();
+        };
       }
-    }, []);
+    }, [trackingId, history]);
     return children;
   }
 );

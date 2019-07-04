@@ -134,8 +134,11 @@ export default function ProfileQuestionsCarousel(
               <Card className={classes.finishedCard}>
                 <CardContent className={classes.finishedCardContent}>
                   <Typography variant="h5" style={{ fontWeight: 600 }}>
-                    You've answered them all 🎊 Your profile is officially a
-                    work of art.
+                    You've answered them all{' '}
+                    <span role="img" aria-label="Congrats">
+                      🎊
+                    </span>{' '}
+                    Your profile is officially a work of art.
                     <br /> <br />
                     Sit back and bask in the glory that is your 100% completed,
                     exquisite masterpiece of a profile.

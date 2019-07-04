@@ -1,12 +1,8 @@
 import React, { useEffect } from 'react';
 import {
   User,
-  ShelfEntry,
   ReadingSpeed,
-  GroupVibe,
   Services,
-  Genre,
-  Genres,
   UserSelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { Fab } from '@material-ui/core';
@@ -15,18 +11,10 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import AdapterLink from '../../components/AdapterLink';
-import Header from '../../components/Header';
-import { saveReadingPreferences } from '../../services/onboarding';
 import { getAllGenres } from '../../services/genre';
 import {
   readingSpeedIcons,
@@ -108,16 +96,7 @@ interface ReadingPreferencesProps {
 export default function ReadingPreferences(props: ReadingPreferencesProps) {
   const classes = useStyles();
 
-  const centerComponent = (
-    <Typography variant="h6">Reading Preferences</Typography>
-  );
-
   const [genreDoc, setGenres] = React.useState<Services.GetGenres | null>(null);
-
-  const [
-    selectedReadingPreferences,
-    setSelectedReadingPreferences,
-  ] = React.useState<Services.ReadingPreferencesResult | null>(null);
 
   const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 

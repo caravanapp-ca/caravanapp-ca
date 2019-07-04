@@ -13,6 +13,13 @@ import InfoIcon from '@material-ui/icons/Info';
 import CloseIcon from '@material-ui/icons/Close';
 import WarningIcon from '@material-ui/icons/Warning';
 
+export const variantIcon = {
+  success: CheckCircleIcon,
+  warning: WarningIcon,
+  error: ErrorIcon,
+  info: InfoIcon,
+};
+
 interface MySnackBarContentWrapperProps {
   variant: keyof typeof variantIcon;
   handleClose: (event?: SyntheticEvent, reason?: string) => void;
@@ -44,13 +51,6 @@ const useStyles1 = makeStyles((theme: Theme) => ({
     alignItems: 'center',
   },
 }));
-
-export const variantIcon = {
-  success: CheckCircleIcon,
-  warning: WarningIcon,
-  error: ErrorIcon,
-  info: InfoIcon,
-};
 
 export default function MySnackbarContentWrapper(
   props: MySnackBarContentWrapperProps

@@ -11,7 +11,6 @@ import {
   TextField,
 } from '@material-ui/core';
 import MessageIcon from '@material-ui/icons/Message';
-import AdapterLink from '../../components/AdapterLink';
 
 interface UserNameplateProps {
   user: User;
