@@ -222,7 +222,19 @@ router.post('/getUserClubs', async (req, res, next) => {
         res.sendStatus(404);
         return;
       }
-      res.status(200).json(clubs);
+      const clubsWithMemberCount = clubs.map(cl => {
+        let memberCount = 0;
+        if (cl.channelSource === 'discord') {
+          const channel = channels.find(ch => ch.id === cl.channelId) as
+            | TextChannel
+            | VoiceChannel;
+          if (channel) {
+            memberCount = channel.members.size;
+          }
+        }
+        return { ...cl.toObject(), memberCount };
+      });
+      res.status(200).json(clubsWithMemberCount);
     } catch (err) {
       console.log('Failed to get clubs for user ' + user._id);
       return next(err);

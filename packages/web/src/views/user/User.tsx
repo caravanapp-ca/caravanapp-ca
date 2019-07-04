@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, SyntheticEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
@@ -25,18 +25,25 @@ import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import EditIcon from '@material-ui/icons/Create';
 import SaveIcon from '@material-ui/icons/Save';
-import { getUser } from '../../services/user';
+import { getUser, modifyUser } from '../../services/user';
 import { isMe } from '../../common/localStorage';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
 import UserAvatar from './UserAvatar';
 import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
+import UserClubs from './UserClubs';
 import { getClubsById, getUserClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
-import { AxiosResponse } from 'axios';
 import { getAllProfileQuestions } from '../../services/profile';
+import {
+  ClubWithCurrentlyReading,
+  transformClubsToWithCurrentlyReading,
+} from '../home/Home';
 
 interface UserRouteParams {
   id: string;
@@ -100,12 +107,18 @@ export default function UserView(props: UserViewProps) {
     notStarted: [],
     read: [],
   });
-  const [userClubs, setUserClubs] = React.useState<Club[]>([]);
+  const [shelfModified, setShelfModified] = React.useState<boolean>(false);
+  const [userClubsWCR, setUserClubsWCR] = React.useState<
+    ClubWithCurrentlyReading[]
+  >([]);
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
   const [tabValue, setTabValue] = React.useState(0);
   const [scrolled, setScrolled] = React.useState(0);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
+  const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
+    []
+  );
   const [
     questions,
     setQuestions,
@@ -117,6 +130,14 @@ export default function UserView(props: UserViewProps) {
     initAnsweredQs: [],
     initUnansweredQs: [],
   });
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'success',
+    }
+  );
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -131,22 +152,20 @@ export default function UserView(props: UserViewProps) {
         getGenres();
         getQuestions(user);
 
-        getUserClubs(user).then(clubs => {
+        getUserClubs(user).then(res => {
+          if (!res.data) {
+            // TODO: Error checking
+          }
+          const clubs = res.data;
           getUserShelf(user, clubs).then(shelf => {
             setUserShelf(shelf);
           });
-          setUserClubs(clubs);
+          setUserClubsWCR(transformClubsToWithCurrentlyReading(clubs));
         });
       }
       setUser(user);
     });
   }, [userId]);
-
-  useEffect(() => {
-    if (user && questions) {
-      sortQuestions(user, questions);
-    }
-  }, [user && user.questions, questions]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 
@@ -201,7 +220,7 @@ export default function UserView(props: UserViewProps) {
     return initQuestions;
   }
 
-  async function getUserShelf(user: User, clubs: Club[]) {
+  async function getUserShelf(user: User, clubs: Services.GetClubs['clubs']) {
     const userShelf: UserShelfType = {
       current: [],
       notStarted: [],
@@ -253,8 +272,13 @@ export default function UserView(props: UserViewProps) {
         typeof newValue === 'string'
       ) {
         writeChange = true;
-      } else if (field === 'selectedGenres' || field === 'questions') {
+      } else if (field === 'selectedGenres') {
         writeChange = true;
+      } else if (field === 'shelf') {
+        setUserShelf(newValue);
+        setShelfModified(true);
+      } else if (field === 'questions') {
+        setUserQuestionsWkspc(newValue);
       }
       if (writeChange) {
         const userCopy: User = { ...user, [field]: newValue };
@@ -262,6 +286,43 @@ export default function UserView(props: UserViewProps) {
       }
     }
   };
+
+  const onSaveClick = async () => {
+    let userToSend = user;
+    if (userQuestionsWkspc.length > 0 || shelfModified) {
+      let userCopy: User = { ...user };
+      if (userQuestionsWkspc.length > 0) {
+        userCopy = { ...user, questions: userQuestionsWkspc };
+        if (questions) {
+          const initQuestions = sortQuestions(userCopy, questions);
+          setInitQuestions(initQuestions);
+        }
+        setUserQuestionsWkspc([]);
+      }
+      if (shelfModified) {
+        userCopy = { ...user, shelf: userShelf };
+        setShelfModified(false);
+      }
+      setUser(userCopy);
+      userToSend = userCopy;
+    }
+    const res = await modifyUser(userToSend);
+    if (res === 200) {
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'success',
+        message: 'Successfully updated your profile!',
+      });
+    } else {
+      // TODO: determine routing based on other values of res
+    }
+    setIsEditing(false);
+  };
+
+  function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
+  }
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -294,7 +355,7 @@ export default function UserView(props: UserViewProps) {
           edge="start"
           color="inherit"
           aria-label="More"
-          onClick={() => setIsEditing(false)}
+          onClick={() => onSaveClick()}
         >
           <SaveIcon />
         </IconButton>
@@ -348,6 +409,7 @@ export default function UserView(props: UserViewProps) {
       >
         <Tab label="Bio" />
         <Tab label="Shelf" />
+        <Tab label="Clubs" />
       </Tabs>
       <Container maxWidth={'md'}>
         <>
@@ -360,9 +422,18 @@ export default function UserView(props: UserViewProps) {
               initQuestions={initQuestions || undefined}
             />
           )}
-          {tabValue === 1 && <UserShelf user={user} shelf={userShelf} />}
+          {tabValue === 1 && (
+            <UserShelf
+              user={user}
+              shelf={userShelf}
+              isEditing={isEditing}
+              onEdit={onEdit}
+            />
+          )}
+          {tabValue === 2 && <UserClubs clubsWCR={userClubsWCR} user={user} />}
         </>
       </Container>
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }

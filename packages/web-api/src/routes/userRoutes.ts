@@ -137,7 +137,9 @@ router.put(
     .isNumeric()
     .optional(),
   async (req, res, next) => {
-    const { userId } = req.session;
+    const userId = '5d0eb02837cff574b9f3add6';
+    // TODO: Uncomment this and delete line 2 below.
+    // const { userId } = req.session;
     const user: User = req.body;
 
     const genreDoc = await getGenreDoc();
@@ -173,7 +175,7 @@ router.put(
         const validGenre = genreDoc.genres[g.key];
         if (validGenre) {
           const newValidUserGenre: { key: string; name: string } = {
-            key: g.name,
+            key: g.key,
             name: validGenre.name,
           };
           return newValidUserGenre;

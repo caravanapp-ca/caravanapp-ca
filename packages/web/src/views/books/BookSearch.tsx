@@ -47,7 +47,7 @@ interface BookSearchProps {
     selectedBooks: ShelfEntry[],
     bookToRead: ShelfEntry | null
   ) => void;
-  maxSelected: number;
+  maxSelected?: number;
   radioValue?: string;
   primary?: 'radio';
   secondary?: 'delete';
@@ -60,12 +60,13 @@ export default function BookSearch(props: BookSearchProps) {
   const classes = useStyles();
   const {
     onSubmitBooks,
-    maxSelected,
     radioValue,
     primary,
     secondary,
     initialSelectedBooks,
   } = props;
+
+  const maxSelected = props.maxSelected || 1000;
 
   const [bookSearchQuery, setBookSearchQuery] = React.useState<string>('');
   const [

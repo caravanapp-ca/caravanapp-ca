@@ -22,7 +22,7 @@ interface BookListProps {
   onClick?: any;
   onRadioPress?: (value: string) => void;
   radioValue?: string;
-  onDelete?: (id: string) => void;
+  onDelete?: (id: string, index: number) => void;
   onAdd?: (book: ShelfEntry) => void;
   footerElement?: JSX.Element;
 }
@@ -64,8 +64,8 @@ export default function BookList(props: BookListProps) {
       return (
         <IconButton
           className={classes.button}
-          value={b._id}
-          onClick={() => onDelete(b._id)}
+          value={b._id || index}
+          onClick={() => onDelete(b._id, index)}
         >
           <DeleteIcon />
         </IconButton>

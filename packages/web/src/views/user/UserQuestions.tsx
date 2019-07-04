@@ -50,8 +50,9 @@ export default function UserQuestions(props: UserQuestionsProps) {
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
   const onQuestionsEdit = (
-    questionKey: string,
-    newAnswer: string,
+    answer: string,
+    isNew: boolean,
+    index: number,
     visible: boolean,
     sort: number
   ) => {
@@ -59,29 +60,22 @@ export default function UserQuestions(props: UserQuestionsProps) {
       return;
     }
     let userQuestionsNew;
-    const existingQAIndex = user.questions.findIndex(q => q.id === questionKey);
-    if (existingQAIndex === -1) {
-      const newQuestion = initQuestions.initUnansweredQs.find(
-        q => q.id === questionKey
-      );
-      if (newQuestion && newQuestion.max > newAnswer.length) {
-        userQuestionsNew = [...user.questions];
+    if (isNew) {
+      const newQuestion = initQuestions.initUnansweredQs[index];
+      if (newQuestion && newQuestion.max > answer.length) {
+        userQuestionsNew = [...initQuestions.initAnsweredQs];
         userQuestionsNew.push({
           id: newQuestion.id,
           title: newQuestion.title,
-          answer: newAnswer,
+          answer: answer,
           userVisible: visible,
           sort,
         });
-        userQuestionsNew.sort((a, b) => b.sort - a.sort);
       }
     } else {
-      const newObj = { ...user.questions[existingQAIndex], answer: newAnswer };
-      userQuestionsNew = [
-        ...user.questions.slice(0, existingQAIndex),
-        newObj,
-        ...user.questions.slice(existingQAIndex + 1),
-      ];
+      const newObj = { ...initQuestions.initAnsweredQs[index], answer: answer };
+      userQuestionsNew = [...initQuestions.initAnsweredQs];
+      userQuestionsNew[index] = newObj;
     }
     if (userQuestionsNew) {
       onEdit('questions', userQuestionsNew);
@@ -105,11 +99,13 @@ export default function UserQuestions(props: UserQuestionsProps) {
           </Typography>
           <Grid container className={classes.root} spacing={2}>
             {/* TODO: Need a row for every 45 chars. Can pass numRows, defaults to 4. */}
-            {initQuestions.initAnsweredQs.map(q => (
+            {initQuestions.initAnsweredQs.map((q, i) => (
               <Grid item xs={12} sm={6}>
                 <QuestionAnswer
                   key={q.id}
                   questionKey={q.id}
+                  isNew={false}
+                  index={i}
                   question={q.title}
                   answer={q.answer}
                   isEditing={isEditing}
@@ -126,13 +122,16 @@ export default function UserQuestions(props: UserQuestionsProps) {
             </Typography>
             <Grid container className={classes.root} spacing={2}>
               {/* TODO: Need a row for every 45 chars. Can pass numRows, defaults to 4. */}
-              {initQuestions.initUnansweredQs.map(q => (
+              {initQuestions.initUnansweredQs.map((q, i) => (
                 <Grid item xs={12} sm={6}>
                   <QuestionAnswer
                     key={q.id}
                     questionKey={q.id}
+                    isNew={true}
+                    index={i}
                     question={q.title}
                     answer={''}
+                    placeholder={q.subtitle}
                     isEditing={isEditing}
                     onEdit={onQuestionsEdit}
                   />
@@ -148,11 +147,13 @@ export default function UserQuestions(props: UserQuestionsProps) {
       <>
         <Grid container className={classes.root} spacing={2}>
           {/* TODO: Need a row for every 45 chars. Can pass numRows, defaults to 4. */}
-          {questionsToShow.map(q => (
+          {questionsToShow.map((q, i) => (
             <Grid item xs={12} sm={6}>
               <QuestionAnswer
                 key={q.id}
                 questionKey={q.id}
+                isNew={false}
+                index={i}
                 question={q.title}
                 answer={q.answer}
                 isEditing={isEditing}

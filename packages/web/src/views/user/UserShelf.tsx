@@ -1,12 +1,13 @@
 import React from 'react';
 import {
   User,
-  UserShelfEntry,
-  ReadingState,
+  EditableUserField,
+  UserShelfType,
 } from '@caravan/buddy-reading-types';
 import { Typography, makeStyles } from '@material-ui/core';
 import BookList from '../club/shelf-view/BookList';
 import clsx from 'clsx';
+import UserShelfEditable from './UserShelfEditable';
 
 const useStyles = makeStyles(theme => ({
   sectionContainer: {
@@ -20,20 +21,26 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
-
 interface UserShelfProps {
   user: User;
   shelf: UserShelfType;
+  isEditing: boolean;
+  onEdit: (field: 'shelf', newValue: any) => void;
 }
 
 export default function UserShelf(props: UserShelfProps) {
   const classes = useStyles();
-  const { user, shelf } = props;
+  const { user, shelf, isEditing, onEdit } = props;
   return (
     <div>
       {shelf.current.length > 0 && (
-        <div className={classes.sectionContainer}>
+        <div
+          className={
+            shelf.notStarted.length > 0
+              ? classes.sectionContainer
+              : clsx(classes.sectionContainer, classes.sectionContainerEnd)
+          }
+        >
           <Typography variant="h6" className={classes.sectionLabel}>
             Currently Reading
           </Typography>
@@ -41,14 +48,40 @@ export default function UserShelf(props: UserShelfProps) {
         </div>
       )}
       {shelf.notStarted.length > 0 && (
-        <div className={classes.sectionContainer}>
+        <div
+          className={
+            shelf.read.length > 0
+              ? classes.sectionContainer
+              : clsx(classes.sectionContainer, classes.sectionContainerEnd)
+          }
+        >
           <Typography variant="h6" className={classes.sectionLabel}>
             Wants to Read
           </Typography>
-          <BookList data={shelf.notStarted} />
+          {(!isEditing || !onEdit) && <BookList data={shelf.notStarted} />}
         </div>
       )}
-      {shelf.notStarted.length > 0 && (
+      {isEditing && onEdit && (
+        <div
+          className={
+            shelf.read.length > 0
+              ? classes.sectionContainer
+              : clsx(classes.sectionContainer, classes.sectionContainerEnd)
+          }
+        >
+          {shelf.notStarted.length === 0 && (
+            <Typography variant="h6" className={classes.sectionLabel}>
+              Wants to Read
+            </Typography>
+          )}
+          <UserShelfEditable
+            readingState={'notStarted'}
+            shelf={shelf}
+            onEdit={onEdit}
+          />
+        </div>
+      )}
+      {shelf.read.length > 0 && (
         <div
           className={clsx(
             classes.sectionContainer,
@@ -58,7 +91,14 @@ export default function UserShelf(props: UserShelfProps) {
           <Typography variant="h6" className={classes.sectionLabel}>
             Previously Read
           </Typography>
-          <BookList data={shelf.read} />
+          {(!isEditing || !onEdit) && <BookList data={shelf.read} />}
+          {isEditing && onEdit && (
+            <UserShelfEditable
+              readingState={'read'}
+              shelf={shelf}
+              onEdit={onEdit}
+            />
+          )}
         </div>
       )}
     </div>

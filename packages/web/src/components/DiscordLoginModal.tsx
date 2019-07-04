@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -53,12 +53,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function DiscordLoginModal(props: LoginModalProps) {
   const classes = useStyles();
+  const theme = useTheme();
   const { onCloseLoginDialog, open } = props;
 
   return (
     <Dialog open={open} onClose={onCloseLoginDialog}>
-      <DialogTitle id="alert-dialog-title">
-        {'Find your reading community'}
+      <DialogTitle color={theme.palette.primary.main} id="alert-dialog-title">
+        Join our Community!
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
