@@ -29,7 +29,7 @@ export default function MemberList(props: MemberListProps) {
       {members.map(m => (
         <ListElementAvatar
           button={m.urlSlug ? true : undefined}
-          link={m.urlSlug ? `user/${m.urlSlug}` : undefined}
+          link={m.urlSlug ? `/user/${m.urlSlug}` : undefined}
           key={m.userId}
           avatarElement={
             m.photoUrl ? (
