@@ -221,7 +221,9 @@ export default function Onboarding(props: OnboardingProps) {
   useEffect(() => {
     switch (submitState) {
       case 'success':
-        props.history.replace('/clubs');
+        // Not history replace since have to reload the user object,
+        // which isn't done using history.replace
+        window.location.replace('/clubs');
         break;
       case 'failure':
         // TODO: handle errors for onboarding submission
@@ -376,7 +378,6 @@ export default function Onboarding(props: OnboardingProps) {
     } else {
       setSubmitState('failure');
     }
-    console.log(res);
   }
 
   return (

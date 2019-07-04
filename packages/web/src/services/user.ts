@@ -64,8 +64,7 @@ export async function updateUserProfile({
     questions: questions,
     onboardingVersion: onboardingVersion,
   };
-  console.log('Awaiting axios now');
-  console.log(`${userRoute}`);
+
   const res = await axios.put(`${userRoute}`, body);
 
   return res;

@@ -3,6 +3,9 @@ import { ReadingDiscordBot } from './discord';
 import { UserDoc } from '../../typings';
 
 const mutateUserDiscordContent = (userDoc: UserDoc) => {
+  if (!userDoc) {
+    return;
+  }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
   const guildMember = guild.members.find(m => m.id === userDoc.id);

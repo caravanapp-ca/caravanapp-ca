@@ -151,6 +151,8 @@ declare module '@caravan/buddy-reading-types' {
     | 'questions'
     | 'shelf';
 
+  export type BookSource = 'unknown' | 'google' | 'wattpad' | 'amazon';
+
   export type ChannelSource = 'discord';
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';

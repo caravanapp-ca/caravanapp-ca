@@ -135,7 +135,7 @@ router.get('/discord/callback', async (req, res) => {
       }
       currentSlugId++;
     }
-    if (!userDoc || currentSlugId - 1 < availableSlugs.length) {
+    if (!userDoc || currentSlugId + 1 > availableSlugs.length) {
       throw new Error(
         `User creation failed. UserDoc: ${userDoc}, Discord: ${discordUserData.id}`
       );

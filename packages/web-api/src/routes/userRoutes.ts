@@ -1,19 +1,23 @@
 import express from 'express';
 import { check } from 'express-validator';
 import { Omit } from 'utility-types';
+import mongoose from 'mongoose';
 import {
   User,
   ReadingSpeed,
   FilterAutoMongoKeys,
   UserQA,
+  UserShelfEntry,
+  ShelfEntry,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import { userSlugExists, getMe } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
-import { UserDoc } from '../../typings';
-import { checkObjectIdIsValid } from '../common/mongoose';
+import { UserDoc, ShelfEntryDoc } from '../../typings';
+import { checkObjectIdIsValid, createBookId } from '../common/mongoose';
+import { Mongoose } from 'mongoose';
 
 const router = express.Router();
 
@@ -87,6 +91,10 @@ router.post('/:urlSlug/available', async (req, res, next) => {
   }
 });
 
+interface ShelfEntryWithObjId extends Omit<ShelfEntry, '_id'> {
+  _id: mongoose.Types.ObjectId;
+}
+
 // TODO: Consider moving the update validation to the mongoose level
 // Modify a user
 router.put(
@@ -101,7 +109,8 @@ router.put(
     .optional(),
   check('name')
     .isString()
-    .isLength({ min: 2, max: 100 }),
+    .isLength({ min: 2, max: 100 })
+    .optional(),
   check(
     'readingSpeed',
     `Reading speed must be one of ${READING_SPEEDS.join(',')}`
@@ -117,8 +126,12 @@ router.put(
     .isString()
     .isLength({ max: 300 })
     .optional(),
-  check('selectedGenres').isArray(),
-  check('shelf').exists(),
+  check('selectedGenres')
+    .isArray()
+    .optional(),
+  check('shelf')
+    .exists()
+    .optional(),
   check('questions').isArray(),
   check('onboardingVersion')
     .isNumeric()
@@ -126,15 +139,13 @@ router.put(
   async (req, res, next) => {
     const { userId } = req.session;
     const user: User = req.body;
-    console.log('got user');
-    console.log(user);
+
     const genreDoc = await getGenreDoc();
     if (!genreDoc) {
       res.status(500).send('No genres found, oops!');
       return;
     }
-    console.log('got genre doc');
-    console.log(genreDoc);
+
     const userShelf = user.shelf;
     if (!userShelf.notStarted || userShelf.notStarted.length > 500) {
       throw new Error(
@@ -146,8 +157,17 @@ router.put(
         'Shelf object is missing the read key, or you passed over 5000 entries!'
       );
     }
-    console.log('got user shelf');
-    console.log(userShelf);
+    userShelf.notStarted.forEach(
+      b =>
+        //@ts-ignore
+        (b.genres = b.genres || []) && (b._id = createBookId(b._id, 'google'))
+    );
+    userShelf.read.forEach(
+      b =>
+        //@ts-ignore
+        (b.genres = b.genres || []) && (b._id = createBookId(b._id, 'google'))
+    );
+
     const userGenres = user.selectedGenres
       .map(g => {
         const validGenre = genreDoc.genres[g.key];
@@ -161,15 +181,13 @@ router.put(
         throw new Error(`Unknown genre: ${g.key}, ${g.name}`);
       })
       .sort((a, b) => a.name.localeCompare(b.name));
-    console.log('got user genres');
-    console.log(userGenres);
+
     const questionDoc = await getProfileQuestions();
     if (!questionDoc) {
       res.status(500).send('No questions found, oops!');
       return;
     }
-    console.log('got question doc');
-    console.log(questionDoc);
+
     const userQA = user.questions.map(q => {
       const validQuestion = questionDoc.questions.find(f => f.id === q.id);
       if (validQuestion) {
@@ -181,15 +199,15 @@ router.put(
       }
       throw new Error(`Unknown question: ${q.id}, ${q.title}`);
     });
-    console.log('got user QA');
-    console.log(userQA);
-    const newUser: Omit<
+
+    const newUserButWithPossibleNullValues: Omit<
       FilterAutoMongoKeys<User>,
       | 'isBot'
       | 'smallPhotoUrl'
       | 'discordId'
       | 'discordUsername'
       | 'onboardingVersion'
+      | 'urlSlug'
     > = {
       age: user.age,
       bio: user.bio,
@@ -199,17 +217,22 @@ router.put(
       name: user.name,
       photoUrl: user.photoUrl,
       readingSpeed: user.readingSpeed,
-      urlSlug: user.urlSlug,
       website: user.website,
       selectedGenres: userGenres,
       questions: userQA,
       shelf: userShelf,
     };
+
+    const writeableObj: any = newUserButWithPossibleNullValues;
+    Object.keys(writeableObj).forEach(key => {
+      switch (key) {
+        default:
+          writeableObj[key] == null && delete writeableObj[key];
+      }
+    });
+
     try {
-      let userDoc = await UserModel.findByIdAndUpdate(userId, newUser);
-      console.log('got await user doc');
-      console.log(userDoc);
-      console.log('trying res send 200');
+      let userDoc = await UserModel.findByIdAndUpdate(userId, writeableObj);
       if (
         userDoc &&
         userDoc.onboardingVersion === 0 &&

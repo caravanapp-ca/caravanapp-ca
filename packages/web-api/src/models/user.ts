@@ -47,13 +47,11 @@ const userShelfEntryDefinition: SameKeysAs<
   readingState: { type: String, required: true },
 };
 
-const userShelfEntrySchema = new Schema(userShelfEntryDefinition, {
-  _id: false,
-});
+const userShelfEntrySchema = new Schema(userShelfEntryDefinition);
 
 const mapUserShelfDefinition: any = {
-  notStarted: { type: [userShelfEntrySchema], required: true, default: [] },
-  read: { type: [userShelfEntrySchema], required: true, default: [] },
+  notStarted: { type: [userShelfEntrySchema], required: true },
+  read: { type: [userShelfEntrySchema], required: true },
 };
 
 const mapUserShelfSchema = new Schema(mapUserShelfDefinition, {
@@ -71,7 +69,7 @@ const definition: SameKeysAs<
   selectedGenres: { type: [selectedGenreSchema], required: true, default: [] },
   photoUrl: { type: String },
   smallPhotoUrl: { type: String },
-  readingSpeed: { type: String },
+  readingSpeed: { type: String, default: 'moderate' },
   age: { type: Number },
   gender: { type: String },
   location: { type: String },
@@ -79,8 +77,12 @@ const definition: SameKeysAs<
   urlSlug: { type: String, required: true, unique: true, index: true },
   questions: { type: [questionsSchema], required: true, default: [] },
   shelf: {
-    type: mapUserShelfSchema,
+    type: { mapUserShelfSchema },
     required: true,
+    default: {
+      notStarted: [],
+      read: [],
+    },
   },
   onboardingVersion: { type: Number, required: true, default: 0 },
 };
