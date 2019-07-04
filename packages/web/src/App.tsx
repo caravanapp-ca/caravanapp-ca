@@ -84,6 +84,21 @@ export function App(props: AppProps) {
               }
             />
             <Route
+              exact
+              path="/onboarding"
+              render={props => <Onboarding {...props} user={user} />}
+            />
+            <Route
+              exact
+              path="/findbooks"
+              render={props => forceOnboard(user, <FindBooks />)}
+            />
+            <Route
+              exact
+              path="/privacy"
+              render={props => forceOnboard(user, <Privacy />)}
+            />
+            <Route
               path="/clubs/:id/updatebook"
               render={props =>
                 forceOnboard(user, <UpdateBook {...props} user={user} />)
@@ -96,22 +111,10 @@ export function App(props: AppProps) {
               }
             />
             <Route
-              path="/onboarding"
-              render={props => <Onboarding {...props} user={user} />}
-            />
-            <Route
               path="/user/:id"
-              render={props => forceOnboard(user, <UserView {...props} />)}
-            />
-            <Route
-              exact
-              path="/findbooks"
-              render={props => forceOnboard(user, <FindBooks />)}
-            />
-            <Route
-              exact
-              path="/privacy"
-              render={props => forceOnboard(user, <Privacy />)}
+              render={props =>
+                forceOnboard(user, <UserView {...props} user={user} />)
+              }
             />
           </Switch>
           <Footer />

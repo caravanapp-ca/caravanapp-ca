@@ -12,7 +12,7 @@ import {
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
-import { userSlugExists, getMe } from '../services/user';
+import { userSlugExists, getMe, getUser } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc, ShelfEntryDoc } from '../../typings';
@@ -45,13 +45,7 @@ router.get('/@me', async (req, res, next) => {
 router.get('/:urlSlugOrId', async (req, res, next) => {
   const { urlSlugOrId } = req.params;
   try {
-    let user: UserDoc;
-    const isObjId = checkObjectIdIsValid(urlSlugOrId);
-    if (!isObjId) {
-      user = await UserModel.findOne({ urlSlug: urlSlugOrId });
-    } else {
-      user = await UserModel.findById(urlSlugOrId);
-    }
+    const user = await getUser(urlSlugOrId);
     if (user) {
       res.status(200).send(user.toJSON());
     } else {
@@ -137,9 +131,7 @@ router.put(
     .isNumeric()
     .optional(),
   async (req, res, next) => {
-    const userId = '5d0eb02837cff574b9f3add6';
-    // TODO: Uncomment this and delete line 2 below.
-    // const { userId } = req.session;
+    const { userId } = req.session;
     const user: User = req.body;
 
     const genreDoc = await getGenreDoc();

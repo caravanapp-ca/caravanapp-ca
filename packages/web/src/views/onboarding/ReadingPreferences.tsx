@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
   ShelfEntry,
@@ -91,10 +90,6 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
   },
 }));
-
-interface ReadingPreferencesRouteParams {
-  id: string;
-}
 
 interface ReadingPreferencesProps {
   user: User | null;
