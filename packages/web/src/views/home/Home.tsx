@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@material-ui/core/Tooltip';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
@@ -109,25 +110,29 @@ export default function Home(props: HomeProps) {
     />
   );
 
-  const rightComponent = props.user ? (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Add"
-      component={AdapterLink}
-      to="/clubs/create"
-    >
-      <AddIcon />
-    </IconButton>
-  ) : (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Add"
-      onClick={() => setLoginModalShown(true)}
-    >
-      <AddIcon />
-    </IconButton>
+  const rightComponent = (
+    <Tooltip title="Create club" aria-label="Create club">
+      {props.user ? (
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="Add"
+          component={AdapterLink}
+          to="/clubs/create"
+        >
+          <AddIcon />
+        </IconButton>
+      ) : (
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="Add"
+          onClick={() => setLoginModalShown(true)}
+        >
+          <AddIcon />
+        </IconButton>
+      )}
+    </Tooltip>
   );
 
   return (
