@@ -21,7 +21,8 @@ export default function HeaderTitle(props: HeaderTitleProps) {
   return (
     <Typography variant="h5" color="textPrimary">
       {title}
-      <span className={classes.accentTextStyle}>.</span>
+      {/* Uncomment to re-add purple period. */}
+      {/* <span className={classes.accentTextStyle}>.</span> */}
     </Typography>
   );
 }

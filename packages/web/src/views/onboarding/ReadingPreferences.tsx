@@ -19,17 +19,9 @@ import { getAllGenres } from '../../services/genre';
 import {
   readingSpeedIcons,
   readingSpeedLabels,
-  readingSpeedSubtitles,
 } from '../../components/reading-speed-avatars-icons-labels';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: purple,
-    secondary: {
-      main: '#7289da',
-    },
-  },
-});
+import ListElementAvatar from '../../components/ListElementAvatar';
+import GenreChip from '../../components/GenreChip';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -116,8 +108,10 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
       <div className={classes.hero}>
         <Typography variant="h5">Welcome to</Typography>
         <div style={{ display: 'flex' }}>
-          <Typography variant="h3">Caravan</Typography>
-          <Typography variant="h3" color="primary">
+          <Typography variant="h2" style={{ fontWeight: 600 }}>
+            Caravan
+          </Typography>
+          <Typography variant="h2" color="primary" style={{ fontWeight: 600 }}>
             .
           </Typography>
         </div>
@@ -126,7 +120,7 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
       <div className={classes.heroInfo}>
         <Typography variant="h6">
           To get started, let us know your reading preferences to help us find
-          groups you'll love.
+          clubs you'll love.
         </Typography>
       </div>
       <Container className={classes.formContainer} maxWidth="md">
@@ -141,37 +135,21 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
             }}
           >
             {readingSpeeds.map(speed => (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                {readingSpeedIcons(speed, 'icon')}
-                <Radio
-                  checked={props.selectedSpeed === speed}
-                  onChange={() => props.onSetSelectedSpeed(speed)}
-                  value={speed}
-                  color="primary"
-                  style={{ marginLeft: 8 }}
-                />
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography
-                    style={{
-                      marginLeft: 8,
-                      fontWeight: 'bold',
-                      marginRight: 8,
-                    }}
-                    variant="h6"
-                  >
-                    {readingSpeedLabels(speed)}{' '}
-                  </Typography>
-                  <Typography variant="subtitle2">
-                    {readingSpeedSubtitles(speed)}
-                  </Typography>
-                </div>
-              </div>
+              <ListElementAvatar
+                key={speed}
+                primaryElement={
+                  <Radio
+                    checked={props.selectedSpeed === speed}
+                    onChange={() => props.onSetSelectedSpeed(speed)}
+                    value={speed}
+                    name={`radio-button-${speed}`}
+                    color="primary"
+                  />
+                }
+                avatarElement={readingSpeedIcons(speed, 'avatar')}
+                primaryText={readingSpeedLabels(speed)}
+                secondaryText={readingSpeedLabels(speed, 'description')}
+              />
             ))}
           </div>
         </div>
@@ -180,32 +158,30 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
           <Typography className={classes.sectionHeader} variant="subtitle1">
             Select some genres you're interested in reading.
           </Typography>
-          <Grid container spacing={3}>
+          <div>
             {genreDoc &&
               genreDoc.mainGenres.map((genreKey: string) => {
                 const genreSelected = props.selectedGenres
                   .map(g => g.key)
                   .includes(genreKey);
                 return (
-                  <Grid item lg={3} md={4} xs={6} key={genreKey}>
-                    <Button
-                      className={classes.button}
-                      color={genreSelected ? 'primary' : 'default'}
-                      variant="contained"
-                      onClick={() =>
-                        props.onGenreSelected(
-                          genreKey,
-                          genreDoc.genres[genreKey].name,
-                          !genreSelected
-                        )
-                      }
-                    >
-                      {genreDoc.genres[genreKey].name}
-                    </Button>
-                  </Grid>
+                  <GenreChip
+                    key={genreKey}
+                    genreKey={genreKey}
+                    name={genreDoc.genres[genreKey].name}
+                    active={genreSelected}
+                    clickable={true}
+                    onClick={() =>
+                      props.onGenreSelected(
+                        genreKey,
+                        genreDoc.genres[genreKey].name,
+                        !genreSelected
+                      )
+                    }
+                  />
                 );
               })}
-          </Grid>
+          </div>
         </div>
 
         <div className={classes.sectionContainer}>

@@ -23,6 +23,7 @@ import SelectBooks from './SelectBooks';
 import JoinClubs from './JoinClubs';
 import { getAllProfileQuestions } from '../../services/profile';
 import { updateUserProfile } from '../../services/user';
+import HeaderTitle from '../../components/HeaderTitle';
 
 interface OnboardingRouteParams {
   id: string;
@@ -35,26 +36,18 @@ interface OnboardingProps extends RouteComponentProps<OnboardingRouteParams> {
 type SubmissionState = 'notSubmitted' | 'submitted' | 'success' | 'failure';
 
 const centerComponentReadingPreferences = (
-  <Typography variant="h6">Reading Preferences</Typography>
+  <HeaderTitle title="Reading Preferences" />
 );
 
-const centerComponentAboutYou = <Typography variant="h6">About You</Typography>;
+const centerComponentAboutYou = <HeaderTitle title="About You" />;
 
-const centerComponentSelectPrompt = (
-  <Typography variant="h6">Select a Prompt</Typography>
-);
+const centerComponentSelectPrompt = <HeaderTitle title="Select a Prompt" />;
 
-const centerComponentAnswerQuestion = (
-  <Typography variant="h6">Write Answer</Typography>
-);
+const centerComponentAnswerQuestion = <HeaderTitle title="Write Answer" />;
 
-const centerComponentAddBooks = (
-  <Typography variant="h6">Add to Your Shelf</Typography>
-);
+const centerComponentAddBooks = <HeaderTitle title="Add to Your Shelf" />;
 
-const centerComponentJoinClubs = (
-  <Typography variant="h6">Join or Start Clubs</Typography>
-);
+const centerComponentJoinClubs = <HeaderTitle title="Join or Start Clubs" />;
 
 export default function Onboarding(props: OnboardingProps) {
   const leftComponentAboutYou = (
