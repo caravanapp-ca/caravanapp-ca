@@ -212,12 +212,12 @@ export default function AboutYou(props: AboutYouProps) {
       </div>
       <div className={classes.progressFraction}>
         {answers.length < minimumRequired && (
-          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
+          <Typography style={{ fontWeight: 600 }} color="textSecondary">
             Minimum {minimumRequired}
           </Typography>
         )}
         {answers.length >= minimumRequired && (
-          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
+          <Typography style={{ fontWeight: 600 }} color="textSecondary">
             Keep answering to fill out your profile!
           </Typography>
         )}

@@ -100,12 +100,12 @@ export default function SelectBooks(props: SelectBookProps) {
       </div>
       <div className={classes.progressFraction}>
         {selectedBooks.length < minimumRequired && (
-          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
+          <Typography style={{ fontWeight: 600 }} color="textSecondary">
             Minimum {minimumRequired}, but the more the merrier!
           </Typography>
         )}
         {selectedBooks.length >= minimumRequired && (
-          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
+          <Typography style={{ fontWeight: 600 }} color="textSecondary">
             Keep going! The bigger the shelf the better{' '}
             <span role="img" aria-label="slight smile">
               😊
