@@ -7,6 +7,7 @@ import {
 } from '@caravan/buddy-reading-types';
 import { Grid, makeStyles, Button, Typography } from '@material-ui/core';
 import QuestionAnswer from '../../components/QuestionAnswer';
+import { UserQAwMinMax } from './User';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,9 +34,10 @@ interface UserQuestionsProps {
   onEdit: (field: 'questions', newValue: any) => void;
   questions?: Services.GetProfileQuestions;
   initQuestions?: {
-    initAnsweredQs: UserQA[];
+    initAnsweredQs: UserQAwMinMax[];
     initUnansweredQs: ProfileQuestion[];
   };
+  userQuestionsWkspc: UserQA[];
 }
 
 export default function UserQuestions(props: UserQuestionsProps) {
@@ -46,25 +48,47 @@ export default function UserQuestions(props: UserQuestionsProps) {
     isEditing,
     onEdit,
     initQuestions,
+    userQuestionsWkspc,
   } = props;
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
-  const onQuestionsEdit = (
-    answer: string,
-    isNew: boolean,
+  const onQuestionsEdit2 = (
+    id: string,
     index: number,
+    answer: string,
     visible: boolean,
     sort: number
   ) => {
     if (!initQuestions) {
       return;
     }
-    let userQuestionsNew;
-    if (isNew) {
+    const existingQAIndex = userQuestionsWkspc.findIndex(qa => qa.id === id);
+    if (existingQAIndex === -1 && answer.length === 0) {
+      // Do nothing
+      return;
+    }
+    let userQuestionsWkspcNew;
+    if (existingQAIndex >= 0) {
+      // Question already answered.
+      if (answer.length === 0) {
+        // Delete the existing answer
+        userQuestionsWkspcNew = [...userQuestionsWkspc];
+        userQuestionsWkspcNew.splice(existingQAIndex, 1);
+      } else {
+        // Modify the existing answer
+        const editedQuestion = {
+          ...userQuestionsWkspc[existingQAIndex],
+          answer: answer,
+        };
+        userQuestionsWkspcNew = [...userQuestionsWkspc];
+        userQuestionsWkspcNew[existingQAIndex] = editedQuestion;
+      }
+    } else {
+      // New question
       const newQuestion = initQuestions.initUnansweredQs[index];
       if (newQuestion && newQuestion.max > answer.length) {
-        userQuestionsNew = [...initQuestions.initAnsweredQs];
-        userQuestionsNew.push({
+        userQuestionsWkspcNew = [...userQuestionsWkspc];
+        userQuestionsWkspcNew.push({
           id: newQuestion.id,
           title: newQuestion.title,
           answer: answer,
@@ -72,13 +96,9 @@ export default function UserQuestions(props: UserQuestionsProps) {
           sort,
         });
       }
-    } else {
-      const newObj = { ...initQuestions.initAnsweredQs[index], answer: answer };
-      userQuestionsNew = [...initQuestions.initAnsweredQs];
-      userQuestionsNew[index] = newObj;
     }
-    if (userQuestionsNew) {
-      onEdit('questions', userQuestionsNew);
+    if (userQuestionsWkspcNew) {
+      onEdit('questions', userQuestionsWkspcNew);
     }
   };
 
@@ -98,7 +118,6 @@ export default function UserQuestions(props: UserQuestionsProps) {
             Your Answers
           </Typography>
           <Grid container className={classes.root} spacing={2}>
-            {/* TODO: Need a row for every 45 chars. Can pass numRows, defaults to 4. */}
             {initQuestions.initAnsweredQs.map((q, i) => (
               <Grid item xs={12} sm={6}>
                 <QuestionAnswer
@@ -108,8 +127,10 @@ export default function UserQuestions(props: UserQuestionsProps) {
                   index={i}
                   question={q.title}
                   answer={q.answer}
+                  maxLength={q.max}
+                  minLength={q.min}
                   isEditing={isEditing}
-                  onEdit={onQuestionsEdit}
+                  onEdit={onQuestionsEdit2}
                 />
               </Grid>
             ))}
@@ -121,7 +142,6 @@ export default function UserQuestions(props: UserQuestionsProps) {
               New Questions
             </Typography>
             <Grid container className={classes.root} spacing={2}>
-              {/* TODO: Need a row for every 45 chars. Can pass numRows, defaults to 4. */}
               {initQuestions.initUnansweredQs.map((q, i) => (
                 <Grid item xs={12} sm={6}>
                   <QuestionAnswer
@@ -130,10 +150,11 @@ export default function UserQuestions(props: UserQuestionsProps) {
                     isNew={true}
                     index={i}
                     question={q.title}
-                    answer={''}
                     placeholder={q.subtitle}
+                    maxLength={q.max}
+                    minLength={q.min}
                     isEditing={isEditing}
-                    onEdit={onQuestionsEdit}
+                    onEdit={onQuestionsEdit2}
                   />
                 </Grid>
               ))}
@@ -146,7 +167,6 @@ export default function UserQuestions(props: UserQuestionsProps) {
     return (
       <>
         <Grid container className={classes.root} spacing={2}>
-          {/* TODO: Need a row for every 45 chars. Can pass numRows, defaults to 4. */}
           {questionsToShow.map((q, i) => (
             <Grid item xs={12} sm={6}>
               <QuestionAnswer
@@ -157,7 +177,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
                 question={q.title}
                 answer={q.answer}
                 isEditing={isEditing}
-                onEdit={onQuestionsEdit}
+                onEdit={onQuestionsEdit2}
               />
             </Grid>
           ))}

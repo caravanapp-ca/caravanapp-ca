@@ -4,7 +4,6 @@ import {
   User,
   ReadingState,
   UserShelfEntry,
-  Club,
   EditableUserField,
   Services,
   ProfileQuestion,
@@ -44,6 +43,14 @@ import {
   ClubWithCurrentlyReading,
   transformClubsToWithCurrentlyReading,
 } from '../home/Home';
+import validURL from '../../functions/validURL';
+
+interface MinMax {
+  min: number;
+  max: number;
+}
+
+export interface UserQAwMinMax extends UserQA, MinMax {}
 
 interface UserRouteParams {
   id: string;
@@ -96,6 +103,21 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const validationParams = {
+  name: {
+    length: {
+      min: 2,
+      max: 100,
+    },
+  },
+  bio: {
+    length: {
+      min: 0,
+      max: 150,
+    },
+  },
+};
+
 export default function UserView(props: UserViewProps) {
   const classes = useStyles();
   const theme = useTheme();
@@ -124,7 +146,7 @@ export default function UserView(props: UserViewProps) {
     setQuestions,
   ] = React.useState<Services.GetProfileQuestions | null>(null);
   const [initQuestions, setInitQuestions] = React.useState<{
-    initAnsweredQs: UserQA[];
+    initAnsweredQs: UserQAwMinMax[];
     initUnansweredQs: ProfileQuestion[];
   }>({
     initAnsweredQs: [],
@@ -191,6 +213,7 @@ export default function UserView(props: UserViewProps) {
   }
 
   async function getQuestions(user: User) {
+    setUserQuestionsWkspc(user.questions);
     const res = await getAllProfileQuestions();
     if (res.status === 200) {
       const questions = res.data;
@@ -204,7 +227,7 @@ export default function UserView(props: UserViewProps) {
 
   function sortQuestions(user: User, questions: Services.GetProfileQuestions) {
     const initUnansweredQs: ProfileQuestion[] = [];
-    const initAnsweredQs: UserQA[] = [];
+    const initAnsweredQs: UserQAwMinMax[] = [];
     const initQuestions = {
       initUnansweredQs,
       initAnsweredQs,
@@ -212,7 +235,7 @@ export default function UserView(props: UserViewProps) {
     questions.questions.forEach(q => {
       const uq = user.questions.find(uq => uq.id === q.id);
       if (uq) {
-        initQuestions.initAnsweredQs.push(uq);
+        initQuestions.initAnsweredQs.push({ ...uq, min: q.min, max: q.max });
       } else {
         initQuestions.initUnansweredQs.push(q);
       }
@@ -328,6 +351,59 @@ export default function UserView(props: UserViewProps) {
     setTabValue(newValue);
   };
 
+  const formValidated = (): boolean => {
+    return nameValidated()[0] && bioValidated()[0] && websiteValidated()[0];
+  };
+
+  const nameValidated = (): [boolean, string] => {
+    const { length } = validationParams.name;
+    if (!user) {
+      return [false, 'Whoops! We seem to be missing your user data.'];
+    }
+    if (!user.name) {
+      return [false, 'Please provide a name!'];
+    }
+    if (user.name.length < length.min || user.name.length > length.max) {
+      return [
+        false,
+        `Length must be between ${length.min} and ${length.max} characters.`,
+      ];
+    }
+    return [true, 'All good!'];
+  };
+
+  const bioValidated = (): [boolean, string] => {
+    const { length } = validationParams.bio;
+    if (!user) {
+      return [false, 'Whoops! We seem to be missing your user data.'];
+    }
+    if (
+      user.bio &&
+      (user.bio.length < length.min || user.bio.length > length.max)
+    ) {
+      return [
+        false,
+        `Length must be between ${length.min} and ${length.max} characters.`,
+      ];
+    }
+    return [true, 'All good!'];
+  };
+
+  const websiteValidated = (): [boolean, string] => {
+    if (!user) {
+      return [false, 'Whoops! We seem to be missing your user data.'];
+    }
+    if (user.website && user.website.length > 0 && !validURL(user.website)) {
+      return [false, 'Please provide a valid URL!'];
+    }
+    return [true, 'All good!'];
+  };
+
+  // const QAValidated = (): [boolean, [boolean, string][]] => {
+  //   // TODO: Can use this later if we want to validate QA answers beyond min/max length.
+  //   return [true, [true, "All good!"]];
+  // }
+
   const leftComponent = (
     <IconButton
       edge="start"
@@ -355,6 +431,7 @@ export default function UserView(props: UserViewProps) {
           edge="start"
           color="inherit"
           aria-label="More"
+          disabled={!formValidated()}
           onClick={() => onSaveClick()}
         >
           <SaveIcon />
@@ -395,6 +472,7 @@ export default function UserView(props: UserViewProps) {
             userIsMe={userIsMe}
             isEditing={isEditing}
             onEdit={onEdit}
+            valid={[nameValidated(), bioValidated(), websiteValidated()]}
           />
         </div>
       </div>
@@ -419,7 +497,8 @@ export default function UserView(props: UserViewProps) {
               isEditing={isEditing}
               onEdit={onEdit}
               genres={genres || undefined}
-              initQuestions={initQuestions || undefined}
+              initQuestions={initQuestions}
+              userQuestionsWkspc={userQuestionsWkspc}
             />
           )}
           {tabValue === 1 && (

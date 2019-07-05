@@ -1,6 +1,5 @@
 import React from 'react';
-import { TextField, makeStyles, IconButton } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
+import { TextField, makeStyles } from '@material-ui/core';
 
 interface QuestionAnswerProps {
   questionKey: string;
@@ -9,15 +8,16 @@ interface QuestionAnswerProps {
   question: string;
   answer?: string;
   placeholder?: string;
+  minLength?: number;
+  maxLength?: number;
   isEditing: boolean;
   onEdit?: (
-    answer: string,
-    isNew: boolean,
+    id: string,
     index: number,
+    answer: string,
     visible: boolean,
     sort: number
   ) => void;
-  numRows?: number;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -44,19 +44,29 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
     question,
     answer,
     placeholder,
+    minLength,
+    maxLength,
     isEditing,
     onEdit,
-    numRows,
   } = props;
+  const ref = React.createRef<HTMLDivElement>();
   const classes = useStyles();
+  const [focused, setFocused] = React.useState<boolean>(false);
+  const [currValue, setCurrValue] = React.useState<string>(answer || '');
   return (
     <TextField
+      ref={ref}
       onChange={
         onEdit && isEditing
           ? // TODO: Add support for visible, and sort here (params 3-4)
-            e => onEdit(e.target.value, isNew, index, true, 0)
+            e => {
+              onEdit(questionKey, index, e.target.value, true, 0);
+              setCurrValue(e.target.value);
+            }
           : undefined
       }
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       disabled={!(onEdit && isEditing)}
       InputProps={{
         classes: {
@@ -65,6 +75,7 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
           notchedOutline: classes.notchedOutline,
         },
       }}
+      inputProps={{ maxLength }}
       InputLabelProps={{
         classes: {
           disabled: classes.disabledLabel,
@@ -74,7 +85,13 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
       label={question}
       defaultValue={answer}
       placeholder={placeholder}
-      rows={numRows || 4}
+      rows={4}
+      rowsMax={7}
+      helperText={
+        focused && maxLength
+          ? `${maxLength - currValue.length} chars remaining`
+          : ' '
+      }
       fullWidth
       multiline
       margin="normal"

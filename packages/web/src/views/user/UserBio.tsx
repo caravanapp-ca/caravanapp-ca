@@ -11,6 +11,7 @@ import UserReadingSpeed from './UserReadingSpeed';
 import UserGenres from './UserGenres';
 import UserQuestions from './UserQuestions';
 import clsx from 'clsx';
+import { UserQAwMinMax } from './User';
 
 const useStyles = makeStyles(theme => ({
   sectionContainer: {
@@ -30,13 +31,21 @@ interface UserBioProps {
   onEdit: (field: EditableUserField, newValue: any) => void;
   genres?: Services.GetGenres;
   initQuestions?: {
-    initAnsweredQs: UserQA[];
+    initAnsweredQs: UserQAwMinMax[];
     initUnansweredQs: ProfileQuestion[];
   };
+  userQuestionsWkspc: UserQA[];
 }
 
 export default function UserBio(props: UserBioProps) {
-  const { user, isEditing, onEdit, genres, initQuestions } = props;
+  const {
+    user,
+    isEditing,
+    onEdit,
+    genres,
+    initQuestions,
+    userQuestionsWkspc,
+  } = props;
   const classes = useStyles();
 
   return (
@@ -69,7 +78,8 @@ export default function UserBio(props: UserBioProps) {
           numQuestionsToPreview={4}
           isEditing={isEditing}
           onEdit={onEdit}
-          initQuestions={initQuestions || undefined}
+          initQuestions={initQuestions}
+          userQuestionsWkspc={userQuestionsWkspc}
         />
       </div>
     </>

@@ -23,6 +23,7 @@
     "typescript.tsdk": "./node_modules/typescript/lib",
     "cSpell.words": [
       "Snackbar",
+      "Wkspc",
       "workspaces"
     ]
   }

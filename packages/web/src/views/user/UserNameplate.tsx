@@ -11,13 +11,13 @@ import {
   TextField,
 } from '@material-ui/core';
 import MessageIcon from '@material-ui/icons/Message';
-import AdapterLink from '../../components/AdapterLink';
 
 interface UserNameplateProps {
   user: User;
   userIsMe: boolean;
   isEditing: boolean;
   onEdit: (field: 'name' | 'bio' | 'website', newValue: string) => void;
+  valid: [boolean, string][];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,7 +42,27 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { user, userIsMe, isEditing, onEdit } = props;
+  const { user, userIsMe, isEditing, onEdit, valid } = props;
+  const [focused, setFocused] = React.useState<{
+    name: boolean;
+    bio: boolean;
+    website: boolean;
+  }>({
+    name: false,
+    bio: false,
+    website: false,
+  });
+
+  const lengths = {
+    name: {
+      min: 2,
+      max: 100,
+    },
+    bio: {
+      min: 0,
+      max: 150,
+    },
+  };
 
   // TODO: Add userIsMe to if statement after testing
   if (isEditing && onEdit) {
@@ -51,6 +71,19 @@ export default function UserNameplate(props: UserNameplateProps) {
         <TextField
           id="display-name"
           label="Display Name"
+          inputProps={{ maxLength: lengths.name.max }}
+          onFocus={() => setFocused({ ...focused, name: true })}
+          onBlur={() => setFocused({ ...focused, name: false })}
+          error={!valid[0][0]}
+          helperText={
+            !valid[0][0]
+              ? valid[0][1]
+              : focused.name
+              ? user && user.name
+                ? `${lengths.name.max - user.name.length} chars remaining`
+                : `Max ${lengths.name.max} chars`
+              : ' '
+          }
           className={classes.textField}
           value={user.name}
           onChange={e => onEdit('name', e.target.value)}
@@ -60,6 +93,21 @@ export default function UserNameplate(props: UserNameplateProps) {
         <TextField
           id="bio"
           label="Bio"
+          multiline
+          rowsMax={2}
+          inputProps={{ maxLength: lengths.bio.max }}
+          onFocus={() => setFocused({ ...focused, bio: true })}
+          onBlur={() => setFocused({ ...focused, bio: false })}
+          error={!valid[1][0]}
+          helperText={
+            !valid[1][0]
+              ? valid[1][1]
+              : focused.bio
+              ? user && user.bio
+                ? `${lengths.bio.max - user.bio.length} chars remaining`
+                : `Max ${lengths.bio.max} chars`
+              : ' '
+          }
           className={classes.textField}
           value={user.bio}
           onChange={e => onEdit('bio', e.target.value)}
@@ -69,6 +117,10 @@ export default function UserNameplate(props: UserNameplateProps) {
         <TextField
           id="website"
           label="Website"
+          onFocus={() => setFocused({ ...focused, website: true })}
+          onBlur={() => setFocused({ ...focused, website: false })}
+          error={!valid[2][0]}
+          helperText={!valid[2][0] ? valid[2][1] : ' '}
           className={classes.textField}
           value={user.website}
           onChange={e => onEdit('website', e.target.value)}
