@@ -6,6 +6,7 @@ import {
   ReadingSpeed,
   GroupVibe,
   Services,
+  FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -106,8 +107,12 @@ export default function CreateClub(props: CreateClubProps) {
   );
   const [selectedGroupName, setSelectedGroupName] = React.useState('');
   const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
-  const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
-  const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
+  const [selectedBooks, setSelectedBooks] = React.useState<
+    FilterAutoMongoKeys<ShelfEntry>[]
+  >([]);
+  const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
+    ShelfEntry
+  > | null>(null);
   const [privateClub] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
@@ -116,8 +121,8 @@ export default function CreateClub(props: CreateClubProps) {
   ] = React.useState<Services.CreateClubResult | null>(null);
 
   function onSubmitSelectedBooks(
-    selectedBooks: ShelfEntry[],
-    bookToRead: ShelfEntry | null
+    selectedBooks: FilterAutoMongoKeys<ShelfEntry>[],
+    bookToRead: FilterAutoMongoKeys<ShelfEntry> | null
   ) {
     setSelectedBooks(selectedBooks);
     setBookToRead(bookToRead);
@@ -134,12 +139,15 @@ export default function CreateClub(props: CreateClubProps) {
       return;
     }
     const selectedBooksWReadingState = selectedBooks.map(book => {
-      if (book._id !== bookToRead._id && book.readingState !== 'notStarted') {
+      if (
+        book.sourceId !== bookToRead.sourceId &&
+        book.readingState !== 'notStarted'
+      ) {
         const bookCopy = { ...book };
         bookCopy.readingState = 'notStarted';
         return bookCopy;
       } else if (
-        book._id === bookToRead._id &&
+        book.sourceId === bookToRead.sourceId &&
         book.readingState !== 'current'
       ) {
         const bookCopy = { ...book };
@@ -207,7 +215,9 @@ export default function CreateClub(props: CreateClubProps) {
           <BookSearch
             onSubmitBooks={onSubmitSelectedBooks}
             maxSelected={20}
-            radioValue={bookToRead && bookToRead._id ? bookToRead._id : 'none'}
+            radioValue={
+              bookToRead && bookToRead.sourceId ? bookToRead.sourceId : 'none'
+            }
             primary={'radio'}
             secondary={'delete'}
           />

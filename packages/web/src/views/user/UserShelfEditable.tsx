@@ -3,6 +3,7 @@ import {
   UserShelfType,
   ShelfEntry,
   UserShelfEntry,
+  FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 import {
   Button,
@@ -35,12 +36,12 @@ export default function UserShelfEditable(props: UserShelfEditableProps) {
   }, [deleteIndexHold]);
 
   const onSubmitBooks = (
-    selectedBooks: ShelfEntry[],
-    bookToRead: ShelfEntry | null
+    selectedBooks: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[],
+    bookToRead: ShelfEntry | FilterAutoMongoKeys<ShelfEntry> | null
   ) => {
     const shelfCopy = {
       ...shelf,
-      [readingState]: selectedBooks as UserShelfEntry[],
+      [readingState]: selectedBooks as FilterAutoMongoKeys<UserShelfEntry>[],
     };
     onEdit('shelf', shelfCopy);
   };

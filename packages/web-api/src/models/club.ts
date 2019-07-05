@@ -4,13 +4,27 @@ import {
   ShelfEntry,
   FilterAutoMongoKeys,
   SameKeysAs,
+  BookSource,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
+import { ALLOWED_BOOK_SOURCES } from '../common/club';
 import { ClubDoc } from '../../typings';
 
 const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
-  amazonId: { type: String },
-  goodReadsId: { type: String },
+  source: {
+    type: String,
+    required: true,
+    index: true,
+    validate: {
+      validator: function(v: BookSource) {
+        return ALLOWED_BOOK_SOURCES[v] === true;
+      },
+      message: function(props: { value: string }) {
+        `${props.value} is not a valid source.`;
+      },
+    },
+  },
+  sourceId: { type: String, required: true, index: true },
   isbn: { type: String },
   readingState: { type: String, required: true },
   startedReading: { type: Date },

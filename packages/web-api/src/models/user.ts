@@ -5,9 +5,11 @@ import {
   SameKeysAs,
   UserQA,
   UserShelfEntry,
+  BookSource,
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings';
 import { Omit } from 'utility-types';
+import { ALLOWED_BOOK_SOURCES } from '../common/club';
 
 const selectedGenreDefinition: SameKeysAs<User['selectedGenres'][0]> = {
   key: { type: String, required: true },
@@ -29,9 +31,21 @@ const questionsSchema = new Schema(questionsDefinition, { _id: false });
 const userShelfEntryDefinition: SameKeysAs<
   FilterAutoMongoKeys<UserShelfEntry>
 > = {
+  source: {
+    type: String,
+    required: true,
+    index: true,
+    validate: {
+      validator: function(v: BookSource) {
+        return ALLOWED_BOOK_SOURCES[v] === true;
+      },
+      message: function(props: { value: string }) {
+        `${props.value} is not a valid source.`;
+      },
+    },
+  },
+  sourceId: { type: String, required: true, index: true },
   // All the same stuff from club shelves
-  amazonId: { type: String },
-  goodReadsId: { type: String },
   isbn: { type: String },
   startedReading: { type: Date },
   finishedReading: { type: Date },

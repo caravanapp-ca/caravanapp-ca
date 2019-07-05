@@ -7,7 +7,7 @@ import {
 import { ProfileQuestionsDoc } from '../../typings';
 
 const profileQuestionSchemaDefinition: SameKeysAs<
-  FilterAutoMongoKeys<ProfileQuestionsDoc['questions']>
+  FilterAutoMongoKeys<ProfileQuestionsDoc['questions'][0]>
 > = {
   id: { type: String, required: true },
   title: { type: String, required: true },

@@ -1,5 +1,9 @@
 import React from 'react';
-import { ShelfEntry, UserShelfEntry } from '@caravan/buddy-reading-types';
+import {
+  ShelfEntry,
+  UserShelfEntry,
+  FilterAutoMongoKeys,
+} from '@caravan/buddy-reading-types';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListElementBook from '../../../components/ListElementBook';
@@ -16,7 +20,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface BookListProps {
-  data: ShelfEntry[] | UserShelfEntry[];
+  data:
+    | ShelfEntry
+    | UserShelfEntry
+    | FilterAutoMongoKeys<ShelfEntry>[]
+    | FilterAutoMongoKeys<UserShelfEntry>[];
   primary?: 'radio';
   secondary?: 'delete' | 'add';
   onClick?: any;

@@ -15,9 +15,6 @@ import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import { userSlugExists, getMe, getUser } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
-import { UserDoc, ShelfEntryDoc } from '../../typings';
-import { checkObjectIdIsValid, createBookId } from '../common/mongoose';
-import { Mongoose } from 'mongoose';
 
 const router = express.Router();
 
@@ -154,12 +151,13 @@ router.put(
     userShelf.notStarted.forEach(
       b =>
         //@ts-ignore
-        (b.genres = b.genres || []) && (b._id = createBookId(b._id, 'google'))
+        (b.genres = b.genres || []) && (b._id = undefined)
     );
     userShelf.read.forEach(
       b =>
+        (b.genres = b.genres || []) &&
         //@ts-ignore
-        (b.genres = b.genres || []) && (b._id = createBookId(b._id, 'google'))
+        (b._id = b._id ? new mongoose.Types.ObjectId(b._id) : undefined)
     );
 
     const userGenres = user.selectedGenres

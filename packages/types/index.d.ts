@@ -1,15 +1,11 @@
+import { GuildMember } from 'discord.js';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
-import { GuildMember } from 'discord.js';
 
 declare module '@caravan/buddy-reading-types' {
-  type SubtractKeys<T, U> = {
-    [K in keyof T]: K extends keyof U ? never : K
-  }[keyof T];
-  type Subtract<T, U> = { [K in SubtractKeys<T, U>]: T[K] };
-  export type FilterAutoMongoKeys<Base> = Subtract<
-    Subtract<Base, MongoTimestamps>,
-    DocumentFields
+  export type FilterAutoMongoKeys<Base> = Omit<
+    Base,
+    'createdAt' | 'updatedAt' | '__v' | '_id'
   >;
   // TODO: Improve by nesting the SameKeysAs
   export type SameKeysAs<Base> = { [Key in keyof Base]: any };
@@ -56,8 +52,8 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export interface ShelfEntry extends DocumentFields, MongoTimestamps {
-    amazonId?: string;
-    goodReadsId?: string;
+    sourceId: string;
+    source: BookSource;
     isbn?: string;
     readingState: ReadingState;
     startedReading?: Date;
@@ -153,7 +149,13 @@ declare module '@caravan/buddy-reading-types' {
     | 'questions'
     | 'shelf';
 
-  export type BookSource = 'unknown' | 'google' | 'wattpad' | 'amazon';
+  export type BookSource =
+    | 'google'
+    | 'wattpad'
+    | 'amazon'
+    | 'goodreads'
+    | 'custom'
+    | 'unknown';
 
   export type ChannelSource = 'discord';
 
