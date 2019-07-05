@@ -214,7 +214,7 @@ export default function ClubCards(props: ClubCardsProps) {
                       component={AdapterLink}
                       to={`/clubs/${club._id}`}
                     >
-                      <Typography variant="button">INFO</Typography>
+                      <Typography variant="button">VIEW CLUB</Typography>
                     </Button>
                     {/* <Button
                         variant="contained"
