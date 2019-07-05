@@ -6,8 +6,12 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
+import Avatar from '@material-ui/core/Avatar';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import AddIcon from '@material-ui/icons/Add';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
@@ -29,6 +33,15 @@ export interface ClubWithCurrentlyReading {
 const useStyles = makeStyles(theme => ({
   button: {
     margin: theme.spacing(1),
+  },
+  headerAvatar: {
+    marginLeft: 12,
+    width: 32,
+    height: 32,
+  },
+  headerArrowDown: {
+    height: 20,
+    width: 20,
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
@@ -63,17 +76,15 @@ export function transformClubsToWithCurrentlyReading(
 
 export default function Home(props: HomeProps) {
   const classes = useStyles();
+  const { user } = props;
+
   const [clubsWCR, setClubsWCR] = React.useState<ClubWithCurrentlyReading[]>(
     []
   );
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-  useEffect(() => {
-    if (!showWelcomeMessage) {
-      localStorage.setItem(KEY_HIDE_WELCOME_CLUBS, 'yes');
-    }
-  }, [showWelcomeMessage]);
+  const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
@@ -81,6 +92,17 @@ export default function Home(props: HomeProps) {
     undefined
   );
   const [canLoadMore, setCanLoadMore] = React.useState(true);
+
+  const [
+    headerProfileMenuIsOpen,
+    setHeaderProfileMenuOpenState,
+  ] = React.useState(false);
+
+  useEffect(() => {
+    if (!showWelcomeMessage) {
+      localStorage.setItem(KEY_HIDE_WELCOME_CLUBS, 'yes');
+    }
+  }, [showWelcomeMessage]);
 
   useEffect(() => {
     (async () => {
@@ -102,6 +124,20 @@ export default function Home(props: HomeProps) {
     setLoginModalShown(false);
   }
 
+  function handleProfileClick() {
+    setHeaderProfileMenuOpenState(isOpen => !isOpen);
+  }
+
+  function handleProfileMenuClose(event: React.MouseEvent<EventTarget>) {
+    if (
+      headerProfileAnchorRef.current &&
+      headerProfileAnchorRef.current.contains(event.target as HTMLElement)
+    ) {
+      return;
+    }
+    setHeaderProfileMenuOpenState(false);
+  }
+
   const centerComponent = (
     <img
       src={logo}
@@ -111,28 +147,46 @@ export default function Home(props: HomeProps) {
   );
 
   const rightComponent = (
-    <Tooltip title="Create club" aria-label="Create club">
-      {props.user ? (
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="Add"
-          component={AdapterLink}
-          to="/clubs/create"
+    <>
+      <Tooltip title="Create club" aria-label="Create club">
+        {user ? (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="Add"
+            component={AdapterLink}
+            to="/clubs/create"
+          >
+            <AddIcon />
+          </IconButton>
+        ) : (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="Add"
+            onClick={() => setLoginModalShown(true)}
+          >
+            <AddIcon />
+          </IconButton>
+        )}
+      </Tooltip>
+      {user ? (
+        <div
+          onClick={handleProfileClick}
+          style={{ display: 'flex', alignItems: 'center' }}
+          ref={headerProfileAnchorRef}
         >
-          <AddIcon />
-        </IconButton>
+          <Avatar
+            alt={user.name || user.discordUsername}
+            src={user.photoUrl}
+            className={classes.headerAvatar}
+          />
+          <ArrowDropDown className={classes.headerArrowDown} />
+        </div>
       ) : (
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="Add"
-          onClick={() => setLoginModalShown(true)}
-        >
-          <AddIcon />
-        </IconButton>
+        <JoinCaravanButton onClick={() => setLoginModalShown(true)} />
       )}
-    </Tooltip>
+    </>
   );
 
   return (
@@ -169,14 +223,14 @@ export default function Home(props: HomeProps) {
               </Typography>
               <div className={classes.heroButtons}>
                 <Grid container spacing={2} justify="center">
-                  {!props.user && (
+                  {!user && (
                     <Grid item>
                       <JoinCaravanButton
                         onClick={() => setLoginModalShown(true)}
                       />
                     </Grid>
                   )}
-                  {props.user && showWelcomeMessage && (
+                  {user && showWelcomeMessage && (
                     <Grid item>
                       <Button
                         variant="outlined"
@@ -192,7 +246,7 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
-        <ClubCards clubsWCR={clubsWCR} user={props.user} />
+        <ClubCards clubsWCR={clubsWCR} user={user} />
         {canLoadMore && (
           <div
             style={{
@@ -220,6 +274,23 @@ export default function Home(props: HomeProps) {
         onCloseLoginDialog={onCloseLoginModal}
         open={loginModalShown}
       />
+
+      <Menu
+        open={headerProfileMenuIsOpen}
+        anchorEl={headerProfileAnchorRef.current}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        onClose={handleProfileMenuClose}
+      >
+        <MenuItem onClick={handleProfileMenuClose}>Your profile</MenuItem>
+        <MenuItem onClick={handleProfileMenuClose}>Logout</MenuItem>
+      </Menu>
     </>
   );
 }
