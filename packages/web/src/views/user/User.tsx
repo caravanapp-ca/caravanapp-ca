@@ -185,11 +185,10 @@ export default function UserView(props: UserViewProps) {
       if (user) {
         const isUserMe = (props.user && props.user._id === user._id) || false;
         setUserIsMe(isUserMe);
-
-        // TODO: Wrap these in if(isUserMe)
-        getGenres();
-        getQuestions(user);
-
+        if (isUserMe) {
+          getGenres();
+          getQuestions(user);
+        }
         getUserClubs(user).then(res => {
           if (!res.data) {
             // TODO: Error checking
@@ -326,10 +325,11 @@ export default function UserView(props: UserViewProps) {
           setInitQuestions(initQuestions);
         }
         setQuestionsModified(false);
-        setUserQuestionsWkspc([]);
       }
       if (shelfModified) {
-        userCopy = { ...userCopy, shelf: userShelf };
+        const userShelfNoCurrent = { ...userShelf };
+        delete userShelfNoCurrent.current;
+        userCopy = { ...userCopy, shelf: userShelfNoCurrent };
         setShelfModified(false);
       }
       setUser(userCopy);
@@ -435,42 +435,42 @@ export default function UserView(props: UserViewProps) {
   );
 
   const rightComponentFn = () => {
-    // TODO: Uncomment this when done testing.
-    // if (userIsMe) {
-    if (isEditing) {
-      return (
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="More"
-          disabled={!formValidated()}
-          onClick={() => onSaveClick()}
-        >
-          <SaveIcon />
-        </IconButton>
-      );
+    if (!userIsMe) {
+      return;
     } else {
-      return (
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="More"
-          onClick={() => setIsEditing(true)}
-        >
-          <EditIcon />
-        </IconButton>
-      );
+      if (isEditing) {
+        return (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="More"
+            disabled={!formValidated()}
+            onClick={() => onSaveClick()}
+          >
+            <SaveIcon />
+          </IconButton>
+        );
+      } else {
+        return (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="More"
+            onClick={() => setIsEditing(true)}
+          >
+            <EditIcon />
+          </IconButton>
+        );
+      }
     }
-    // }
   };
-  const rightComponent = rightComponentFn();
 
   return (
     <>
       <Header
         leftComponent={leftComponent}
         centerComponent={scrolled > 64 ? centerComponent : undefined}
-        rightComponent={rightComponent}
+        rightComponent={rightComponentFn()}
         showBorder={scrolled > 1 ? true : false}
       />
       <div className={classes.nameplateContainer}>

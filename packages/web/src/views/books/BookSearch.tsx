@@ -11,6 +11,7 @@ import {
   IconButton,
   Popover,
   Typography,
+  useTheme,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { makeStyles } from '@material-ui/core/styles';
@@ -60,6 +61,7 @@ const searchRef = React.createRef();
 
 export default function BookSearch(props: BookSearchProps) {
   const classes = useStyles();
+  const theme = useTheme();
   const {
     onSubmitBooks,
     radioValue,
@@ -102,8 +104,7 @@ export default function BookSearch(props: BookSearchProps) {
 
   function handleOnKeyDown(e: React.KeyboardEvent<any>) {
     if (e.key === 'Enter') {
-      bookSearch(bookSearchQuery);
-      setShowPopper(true);
+      handleSearchClick();
     }
   }
 
@@ -167,10 +168,8 @@ export default function BookSearch(props: BookSearchProps) {
     }
   }
 
-  function handleSearchClick(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    bookSearch(bookSearchQuery);
+  async function handleSearchClick() {
+    await bookSearch(bookSearchQuery);
     setShowPopper(true);
   }
 
@@ -223,13 +222,13 @@ export default function BookSearch(props: BookSearchProps) {
                     style={{
                       fontStyle: 'italic',
                       textAlign: 'center',
-                      marginLeft: 16,
-                      marginRight: 16,
+                      marginLeft: theme.spacing(1),
+                      marginRight: theme.spacing(1),
                     }}
                   >
-                    {
-                      "Don't see what you're looking for? Try more precise search terms."
-                    }
+                    {searchResults.totalItems > 0
+                      ? "Don't see what you're looking for? Try more precise search terms."
+                      : "We didn't find anything for these search terms. Try again!"}
                   </Typography>
                 }
               />

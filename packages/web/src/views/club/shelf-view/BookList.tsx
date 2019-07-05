@@ -49,13 +49,13 @@ export default function BookList(props: BookListProps) {
     footerElement,
   } = props;
 
-  function radio(b: ShelfEntry, index: number): JSX.Element {
+  function radio(b: FilterAutoMongoKeys<ShelfEntry>, index: number): JSX.Element {
     if (onRadioPress && radioValue) {
       return (
         <Radio
-          checked={radioValue === b._id}
+          checked={radioValue === b.sourceId}
           onChange={(e, checked) => onRadioPress(e.target.value)}
-          value={b._id}
+          value={b.sourceId}
           name={`radio-button-${b.title}`}
           color="primary"
         />
@@ -67,13 +67,16 @@ export default function BookList(props: BookListProps) {
     }
   }
 
-  function deleteIcon(b: ShelfEntry, index: number): JSX.Element {
+  function deleteIcon(
+    b: FilterAutoMongoKeys<ShelfEntry>,
+    index: number
+  ): JSX.Element {
     if (onDelete) {
       return (
         <IconButton
           className={classes.button}
-          value={b._id || index}
-          onClick={() => onDelete(b._id, index)}
+          value={b.sourceId || index}
+          onClick={() => onDelete(b.sourceId, index)}
         >
           <DeleteIcon />
         </IconButton>

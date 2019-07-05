@@ -10,7 +10,7 @@ import {
   Theme,
   TextField,
 } from '@material-ui/core';
-import MessageIcon from '@material-ui/icons/Message';
+import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
 
 interface UserNameplateProps {
   user: User;
@@ -63,6 +63,11 @@ export default function UserNameplate(props: UserNameplateProps) {
       max: 150,
     },
   };
+
+  const msgBtnLabel: string = user.discordUsername
+    ? `MESSAGE ${user.discordUsername}`
+    : 'MESSAGE';
+  const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
   // TODO: Add userIsMe to if statement after testing
   if (isEditing && onEdit) {
@@ -151,8 +156,14 @@ export default function UserNameplate(props: UserNameplateProps) {
             }
             style={{ marginTop: theme.spacing(1) }}
           >
-            <Typography variant="button">MESSAGE</Typography>
-            <MessageIcon className={classes.rightIcon} />
+            <Typography variant="button">{msgBtnLabelCaps}</Typography>
+            <DiscordLogo
+              style={{
+                marginLeft: theme.spacing(1),
+                height: 28,
+                width: 28,
+              }}
+            />
           </Button>
         )}
       </>

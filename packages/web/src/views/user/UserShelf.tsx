@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  User,
-  EditableUserField,
-  UserShelfType,
-} from '@caravan/buddy-reading-types';
+import { User, UserShelfType } from '@caravan/buddy-reading-types';
 import { Typography, makeStyles } from '@material-ui/core';
 import BookList from '../club/shelf-view/BookList';
 import clsx from 'clsx';
