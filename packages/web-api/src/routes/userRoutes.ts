@@ -7,7 +7,6 @@ import {
   ReadingSpeed,
   FilterAutoMongoKeys,
   UserQA,
-  UserShelfEntry,
   ShelfEntry,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
@@ -93,7 +92,10 @@ interface ShelfEntryWithObjId extends Omit<ShelfEntry, '_id'> {
 // Modify a user
 router.put(
   '/',
-  isAuthenticatedButNotNecessarilyOnboarded,
+
+  // TODO: ADD THIS BACK
+  // isAuthenticatedButNotNecessarilyOnboarded,
+
   check(['bio'], 'Bio must not be more than 150 characters')
     .isString()
     .isLength({ max: 150 })
@@ -131,9 +133,11 @@ router.put(
     .isNumeric()
     .optional(),
   async (req, res, next) => {
-    const { userId } = req.session;
-    const user: User = req.body;
+    // TODO: Uncomment this and delete line 2 below
+    // const { userId } = req.session;
+    const userId = '5d0eb02837cff574b9f3add6';
 
+    const user: User = req.body;
     const genreDoc = await getGenreDoc();
     if (!genreDoc) {
       res.status(500).send('No genres found, oops!');

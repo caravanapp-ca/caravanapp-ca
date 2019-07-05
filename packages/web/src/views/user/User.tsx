@@ -142,6 +142,9 @@ export default function UserView(props: UserViewProps) {
   const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
     []
   );
+  const [questionsModified, setQuestionsModified] = React.useState<boolean>(
+    false
+  );
   const [
     questions,
     setQuestions,
@@ -226,6 +229,7 @@ export default function UserView(props: UserViewProps) {
   }
 
   function sortQuestions(user: User, questions: Services.GetProfileQuestions) {
+    setUserQuestionsWkspc(user.questions);
     const initUnansweredQs: ProfileQuestion[] = [];
     const initAnsweredQs: UserQAwMinMax[] = [];
     const initQuestions = {
@@ -301,6 +305,7 @@ export default function UserView(props: UserViewProps) {
         setUserShelf(newValue);
         setShelfModified(true);
       } else if (field === 'questions') {
+        setQuestionsModified(true);
         setUserQuestionsWkspc(newValue);
       }
       if (writeChange) {
@@ -312,18 +317,19 @@ export default function UserView(props: UserViewProps) {
 
   const onSaveClick = async () => {
     let userToSend = user;
-    if (userQuestionsWkspc.length > 0 || shelfModified) {
+    if (questionsModified || shelfModified) {
       let userCopy: User = { ...user };
-      if (userQuestionsWkspc.length > 0) {
-        userCopy = { ...user, questions: userQuestionsWkspc };
+      if (questionsModified) {
+        userCopy = { ...userCopy, questions: userQuestionsWkspc };
         if (questions) {
           const initQuestions = sortQuestions(userCopy, questions);
           setInitQuestions(initQuestions);
         }
+        setQuestionsModified(false);
         setUserQuestionsWkspc([]);
       }
       if (shelfModified) {
-        userCopy = { ...user, shelf: userShelf };
+        userCopy = { ...userCopy, shelf: userShelf };
         setShelfModified(false);
       }
       setUser(userCopy);
@@ -339,6 +345,12 @@ export default function UserView(props: UserViewProps) {
       });
     } else {
       // TODO: determine routing based on other values of res
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'warning',
+        message: 'We ran into some trouble saving your profile.',
+      });
     }
     setIsEditing(false);
   };
