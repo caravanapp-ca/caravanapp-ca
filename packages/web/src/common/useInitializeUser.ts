@@ -4,39 +4,28 @@ import { getCookie } from './cookies';
 import { KEY_USER } from './localStorage';
 import { getUser } from '../services/user';
 
-function useInitializeUser() {
+function useUser() {
   const [user, setUser] = useState<User | null>(null);
-  const [checkedStore, setCheckedStore] = useState(false);
   useEffect(() => {
-    const processUser = async () => {
-      if (!user) {
-        const hydratedUserJson = window.localStorage.getItem(KEY_USER);
-        if (!hydratedUserJson) {
-          const userId = getCookie('userId');
-          if (userId) {
-            // Getting user data for the first time after login
-            const user = await getUser(userId);
-            if (user) {
-              const dehydratedUser = JSON.stringify(user);
-              window.localStorage.setItem(KEY_USER, dehydratedUser);
-              setUser(user);
-            } else {
-              console.info('Are you having fun messing with cookies? :)');
-            }
-          } else if (!checkedStore) {
-            window.localStorage.removeItem(KEY_USER);
-            setCheckedStore(true);
+    if (!user) {
+      // July 03rd, 2019; we decided not to put user stuff into local storage
+      // Can add back in later, but to reduce complexity, not now.
+      window.localStorage.removeItem(KEY_USER);
+      const userId = getCookie('userId');
+      if (userId) {
+        // Getting user data for the first time after login
+        getUser(userId).then(user => {
+          if (user) {
+            setUser(user);
+          } else {
+            console.info('Are you having fun messing with cookies? :)');
           }
-        } else {
-          const hydratedUser = JSON.parse(hydratedUserJson);
-          setUser(hydratedUser);
-        }
+        });
       }
-    };
-    processUser();
-  }, [user, checkedStore]);
+    }
+  }, [user]);
 
   return user;
 }
 
-export default useInitializeUser;
+export default useUser;

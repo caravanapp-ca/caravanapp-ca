@@ -1,13 +1,9 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
-  ShelfEntry,
   ReadingSpeed,
-  GroupVibe,
   Services,
-  Genre,
-  Genres,
+  UserSelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
@@ -15,18 +11,10 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import AdapterLink from '../../components/AdapterLink';
-import Header from '../../components/Header';
-import { saveReadingPreferences } from '../../services/onboarding';
 import { getAllGenres } from '../../services/genre';
 import {
   readingSpeedIcons,
@@ -91,16 +79,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ReadingPreferencesRouteParams {
-  id: string;
-}
-
 interface ReadingPreferencesProps {
   user: User | null;
   onContinue: () => void;
   continuing: boolean;
-  selectedGenres: string[];
-  onGenreSelected: (genre: string, selected: boolean) => void;
+  selectedGenres: UserSelectedGenre[];
+  onGenreSelected: (
+    genreKey: string,
+    genreName: string,
+    selected: boolean
+  ) => void;
   selectedSpeed: string;
   onSetSelectedSpeed: (speed: ReadingSpeed) => void;
 }
@@ -108,16 +96,7 @@ interface ReadingPreferencesProps {
 export default function ReadingPreferences(props: ReadingPreferencesProps) {
   const classes = useStyles();
 
-  const centerComponent = (
-    <Typography variant="h6">Reading Preferences</Typography>
-  );
-
   const [genreDoc, setGenres] = React.useState<Services.GetGenres | null>(null);
-
-  const [
-    selectedReadingPreferences,
-    setSelectedReadingPreferences,
-  ] = React.useState<Services.ReadingPreferencesResult | null>(null);
 
   const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 
@@ -201,11 +180,12 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
           <Typography className={classes.sectionHeader} variant="subtitle1">
             Select some genres you're interested in reading.
           </Typography>
-          {/* <div className={classes.genreContainer}> */}
           <Grid container spacing={3}>
             {genreDoc &&
               genreDoc.mainGenres.map((genreKey: string) => {
-                const genreSelected = props.selectedGenres.includes(genreKey);
+                const genreSelected = props.selectedGenres
+                  .map(g => g.key)
+                  .includes(genreKey);
                 return (
                   <Grid item lg={3} md={4} xs={6} key={genreKey}>
                     <Button
@@ -213,7 +193,11 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
                       color={genreSelected ? 'primary' : 'default'}
                       variant="contained"
                       onClick={() =>
-                        props.onGenreSelected(genreKey, !genreSelected)
+                        props.onGenreSelected(
+                          genreKey,
+                          genreDoc.genres[genreKey].name,
+                          !genreSelected
+                        )
                       }
                     >
                       {genreDoc.genres[genreKey].name}

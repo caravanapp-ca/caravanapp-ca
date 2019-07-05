@@ -4,7 +4,6 @@ import { List, Avatar, IconButton } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
-import AdapterLink from '../../../components/AdapterLink';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
@@ -29,7 +28,7 @@ export default function MemberList(props: MemberListProps) {
       {members.map(m => (
         <ListElementAvatar
           button={m.urlSlug ? true : undefined}
-          link={m.urlSlug ? `user/${m.urlSlug}` : undefined}
+          link={m.urlSlug ? `/user/${m.urlSlug}` : undefined}
           key={m.userId}
           avatarElement={
             m.photoUrl ? (

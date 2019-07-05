@@ -4,7 +4,10 @@ import {
   Session,
   User,
 } from '@caravan/buddy-reading-types';
-import { isAuthenticated } from '../middleware/auth';
+import {
+  isOnboarded,
+  isAuthenticatedButNotNecessarilyOnboarded,
+} from '../middleware/auth';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
@@ -13,7 +16,7 @@ import {
 import SessionModel from '../models/session';
 import UserModel from '../models/user';
 import { generateSlugIds } from '../common/url';
-import { getAvailableSlugIds } from '../services/user';
+import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
 
 const router = express.Router();
 
@@ -53,11 +56,15 @@ router.get('/logout', async (req, res) => {
   res.redirect('/');
 });
 
-router.post('/discord/disconnect', isAuthenticated, async (req, res, next) => {
-  const { token } = req.session;
-  await SessionModel.findOneAndDelete({ accessToken: token });
-  destroySession(req, res);
-});
+router.post(
+  '/discord/disconnect',
+  isAuthenticatedButNotNecessarilyOnboarded,
+  async (req, res, next) => {
+    const { token } = req.session;
+    await SessionModel.findOneAndDelete({ accessToken: token });
+    destroySession(req, res);
+  }
+);
 
 // TODO: remove - function used to generate slugs for all users.
 // router.post('/init-slugs', async (req, res) => {
@@ -100,24 +107,23 @@ router.get('/discord/callback', async (req, res) => {
   const discordClient = ReadingDiscordBot.getInstance();
   const guild = discordClient.guilds.first();
 
-  let userDoc = await UserModel.findOne({
-    discordId: discordUserData.id,
-  });
+  let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {
     // Update the user, but lazy now. // THIS COMMENT IS OLD, NOT NECESSARY NOW?
   } else {
     const slugs = generateSlugIds(discordUserData.username);
     const availableSlugs = await getAvailableSlugIds(slugs);
-    let currentSlugdId = 0;
-    while (!userDoc && currentSlugdId < availableSlugs.length) {
+    let currentSlugId = 0;
+    while (!userDoc && currentSlugId < availableSlugs.length) {
       const userInstance: Pick<
         User,
-        'discordId' | 'urlSlug' | 'selectedGenres' | 'questions'
+        'discordId' | 'urlSlug' | 'selectedGenres' | 'questions' | 'shelf'
       > = {
         discordId: discordUserData.id,
-        urlSlug: availableSlugs[currentSlugdId],
+        urlSlug: availableSlugs[currentSlugId],
         selectedGenres: [],
         questions: [],
+        shelf: { notStarted: [], read: [] },
       };
       const userModel = new UserModel(userInstance);
       // TODO: handle slug failure due to time windowing
@@ -127,9 +133,9 @@ router.get('/discord/callback', async (req, res) => {
         userDoc = undefined;
         console.log(err);
       }
-      currentSlugdId++;
+      currentSlugId++;
     }
-    if (!userDoc || currentSlugdId - 1 < availableSlugs.length) {
+    if (!userDoc || currentSlugId + 1 > availableSlugs.length) {
       throw new Error(
         `User creation failed. UserDoc: ${userDoc}, Discord: ${discordUserData.id}`
       );

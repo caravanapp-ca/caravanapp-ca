@@ -1,26 +1,16 @@
 import React from 'react';
-import { User, Services } from '@caravan/buddy-reading-types';
+import { User, Services, UserQA } from '@caravan/buddy-reading-types';
 import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import Grid from '@material-ui/core/Grid';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Clear';
-import { getAllProfileQuestions } from '../../services/profile';
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import AdapterLink from '../../components/AdapterLink';
 
 const theme = createMuiTheme({
   palette: {
@@ -105,20 +95,23 @@ interface AboutYouProps {
   onContinue: () => void;
   continuing: boolean;
   questions: Services.GetProfileQuestions['questions'];
-  answers: QA[];
-  onUpdateAnswers: (qKey: string, answer: string, added: boolean) => void;
+  answers: UserQA[];
+  onUpdateAnswers: (
+    title: string,
+    userVisible: boolean,
+    sort: number,
+    qKey: string,
+    answer: string,
+    added: boolean
+  ) => void;
   onAddQuestion: () => void;
 }
 
 const defaultQuestions = {
   question: 'Select a prompt',
   answer: 'And write your answer',
+  userVisible: true,
 };
-
-interface QA {
-  qid: string;
-  answer: string;
-}
 
 export default function AboutYou(props: AboutYouProps) {
   const classes = useStyles();
@@ -130,8 +123,10 @@ export default function AboutYou(props: AboutYouProps) {
 
   const questionCard = (
     title: string,
-    subtitle: string,
+    userVisible: boolean,
+    sort: number,
     key: string,
+    answer: string,
     answered: boolean
   ) => {
     return (
@@ -166,7 +161,7 @@ export default function AboutYou(props: AboutYouProps) {
                 answered ? classes.answerText : classes.defaultAnswerText
               }
             >
-              {subtitle}
+              {answer}
             </Typography>
           </CardContent>
           <div className={classes.fabContainer}>
@@ -174,7 +169,14 @@ export default function AboutYou(props: AboutYouProps) {
               color={answered ? 'inherit' : 'primary'}
               onClick={() =>
                 answered
-                  ? props.onUpdateAnswers(key, subtitle, false)
+                  ? props.onUpdateAnswers(
+                      title,
+                      userVisible,
+                      sort,
+                      key,
+                      answer,
+                      false
+                    )
                   : props.onAddQuestion()
               }
             >
@@ -191,8 +193,10 @@ export default function AboutYou(props: AboutYouProps) {
     defaultAnswerCards.push(
       questionCard(
         defaultQuestions.question,
-        defaultQuestions.answer,
+        true,
+        0,
         `${i}`,
+        defaultQuestions.answer,
         false
       )
     );
@@ -220,12 +224,19 @@ export default function AboutYou(props: AboutYouProps) {
       </div>
       <Container className={classes.formContainer} maxWidth="md">
         <Grid container spacing={2}>
-          {answers.map(a => {
-            const question = questions.find(q => a.qid === q.id);
+          {answers.map((a, index) => {
+            const question = questions.find(q => a.id === q.id);
             if (!question) {
-              throw new Error(`Unknown question: ${a.qid}`);
+              throw new Error(`Unknown question: ${a.id}`);
             }
-            return questionCard(question.title, a.answer, a.qid, true);
+            return questionCard(
+              question.title,
+              true,
+              index,
+              a.id,
+              a.answer,
+              true
+            );
           })}
           {defaultAnswerCards}
         </Grid>

@@ -25,7 +25,6 @@ import BackIcon from '@material-ui/icons/ArrowBackIos';
 import EditIcon from '@material-ui/icons/Create';
 import SaveIcon from '@material-ui/icons/Save';
 import { getUser, modifyUser } from '../../services/user';
-import { isMe } from '../../common/localStorage';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
 import CustomSnackbar, {
@@ -56,7 +55,9 @@ interface UserRouteParams {
   id: string;
 }
 
-interface UserViewProps extends RouteComponentProps<UserRouteParams> {}
+interface UserViewProps extends RouteComponentProps<UserRouteParams> {
+  user: User | null;
+}
 
 type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
 
@@ -164,10 +165,22 @@ export default function UserView(props: UserViewProps) {
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
+  const getQuestions = async (user: User) => {
+    const res = await getAllProfileQuestions();
+    if (res.status === 200) {
+      const questions = res.data;
+      setQuestions(questions);
+      const initQuestions = sortQuestions(user, questions);
+      setInitQuestions(initQuestions);
+    } else {
+      // TODO: error handling
+    }
+  };
+
   useEffect(() => {
     getUser(userId).then(user => {
       if (user) {
-        const isUserMe = isMe(user._id);
+        const isUserMe = (props.user && props.user._id === user._id) || false;
         setUserIsMe(isUserMe);
 
         // TODO: Wrap these in if(isUserMe)
@@ -187,7 +200,7 @@ export default function UserView(props: UserViewProps) {
       }
       setUser(user);
     });
-  }, [userId]);
+  }, [userId, props.user]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 
@@ -207,19 +220,6 @@ export default function UserView(props: UserViewProps) {
     const res = await getAllGenres();
     if (res.status === 200) {
       setGenres(res.data);
-    } else {
-      // TODO: error handling
-    }
-  }
-
-  async function getQuestions(user: User) {
-    setUserQuestionsWkspc(user.questions);
-    const res = await getAllProfileQuestions();
-    if (res.status === 200) {
-      const questions = res.data;
-      setQuestions(questions);
-      const initQuestions = sortQuestions(user, questions);
-      setInitQuestions(initQuestions);
     } else {
       // TODO: error handling
     }
@@ -330,7 +330,7 @@ export default function UserView(props: UserViewProps) {
       userToSend = userCopy;
     }
     const res = await modifyUser(userToSend);
-    if (res === 200) {
+    if (res.status === 200) {
       setSnackbarProps({
         ...snackbarProps,
         isOpen: true,

@@ -5,9 +5,9 @@ import {
   SameKeysAs,
   UserQA,
   UserShelfEntry,
-  Club,
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings';
+import { Omit } from 'utility-types';
 
 const selectedGenreDefinition: SameKeysAs<User['selectedGenres'][0]> = {
   key: { type: String, required: true },
@@ -47,20 +47,20 @@ const userShelfEntryDefinition: SameKeysAs<
   readingState: { type: String, required: true },
 };
 
-const userShelfEntrySchema = new Schema(userShelfEntryDefinition, {
-  _id: false,
-});
+const userShelfEntrySchema = new Schema(userShelfEntryDefinition);
 
 const mapUserShelfDefinition: any = {
-  notStarted: { type: [userShelfEntrySchema], required: true, default: [] },
-  read: { type: [userShelfEntrySchema], required: true, default: [] },
+  notStarted: { type: [userShelfEntrySchema], required: true },
+  read: { type: [userShelfEntrySchema], required: true },
 };
 
 const mapUserShelfSchema = new Schema(mapUserShelfDefinition, {
   _id: false,
 });
 
-const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
+const definition: SameKeysAs<
+  Omit<FilterAutoMongoKeys<User>, 'discordUsername'>
+> = {
   bio: { type: String },
   discordId: { type: String, required: true, unique: true, index: true },
   goodreadsUrl: { type: String },
@@ -69,7 +69,7 @@ const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
   selectedGenres: { type: [selectedGenreSchema], required: true, default: [] },
   photoUrl: { type: String },
   smallPhotoUrl: { type: String },
-  readingSpeed: { type: String },
+  readingSpeed: { type: String, default: 'moderate' },
   age: { type: Number },
   gender: { type: String },
   location: { type: String },
@@ -77,9 +77,14 @@ const definition: SameKeysAs<FilterAutoMongoKeys<User>> = {
   urlSlug: { type: String, required: true, unique: true, index: true },
   questions: { type: [questionsSchema], required: true, default: [] },
   shelf: {
-    type: mapUserShelfSchema,
+    type: { mapUserShelfSchema },
     required: true,
+    default: {
+      notStarted: [],
+      read: [],
+    },
   },
+  onboardingVersion: { type: Number, required: true, default: 0 },
 };
 
 const userSchema = new Schema<UserDoc>(definition, {

@@ -7,6 +7,8 @@ import {
 } from 'react-router-dom';
 import qs from 'query-string';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@material-ui/styles';
+import { User } from '@caravan/buddy-reading-types';
 import Footer from './components/Footer';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
@@ -15,11 +17,10 @@ import Onboarding from './views/onboarding/Onboarding';
 import FindBooks from './views/books/FindBooks';
 import Privacy from './views/privacy/Privacy';
 import UpdateBook from './views/club/UpdateBook';
-import User from './views/user/User';
-import { ThemeProvider } from '@material-ui/styles';
+import UserView from './views/user/User';
 import { clearAuthState, KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
-import useInitializeUser from './common/useInitializeUser';
+import useUser from './common/useInitializeUser';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 
@@ -32,8 +33,15 @@ const HomeRedirect = () => {
   return <Redirect to="/clubs" />;
 };
 
+const forceOnboard = (user: User | null, route: JSX.Element) => {
+  if (user && user.onboardingVersion === 0) {
+    return <Redirect to="/onboarding" />;
+  }
+  return route;
+};
+
 export function App(props: AppProps) {
-  const user = useInitializeUser();
+  const user = useUser();
 
   // Handle the `state` query to verify login
   useEffect(() => {
@@ -49,38 +57,65 @@ export function App(props: AppProps) {
       clearAuthState();
     }
   }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <GAListener trackingId={trackingId}>
           <Switch>
-            <Route exact path="/" component={HomeRedirect} />
+            <Route
+              exact
+              path="/"
+              render={props => forceOnboard(user, HomeRedirect())}
+            />
             <Route
               exact
               path="/clubs"
-              render={props => <Home {...props} user={user} />}
+              render={props =>
+                forceOnboard(user, <Home {...props} user={user} />)
+              }
             />
             <Route
               exact
               path="/clubs/create"
-              render={props => <CreateClub {...props} user={user} />}
+              render={props =>
+                forceOnboard(user, <CreateClub {...props} user={user} />)
+              }
             />
             <Route
-              path="/clubs/:id/updatebook"
-              render={props => <UpdateBook {...props} user={user} />}
-            />
-            <Route
-              path="/clubs/:id"
-              render={props => <Club {...props} user={user} />}
-            />
-            <Route
+              exact
               path="/onboarding"
               render={props => <Onboarding {...props} user={user} />}
             />
-            <Route path="/user/:id" component={User} />
-            <Route exact path="/findbooks" component={FindBooks} />
-            <Route exact path="/privacy" component={Privacy} />
+            <Route
+              exact
+              path="/findbooks"
+              render={props => forceOnboard(user, <FindBooks />)}
+            />
+            <Route
+              exact
+              path="/privacy"
+              render={props => forceOnboard(user, <Privacy />)}
+            />
+            <Route
+              path="/clubs/:id/updatebook"
+              render={props =>
+                forceOnboard(user, <UpdateBook {...props} user={user} />)
+              }
+            />
+            <Route
+              path="/clubs/:id"
+              render={props =>
+                forceOnboard(user, <Club {...props} user={user} />)
+              }
+            />
+            <Route
+              path="/user/:id"
+              render={props =>
+                forceOnboard(user, <UserView {...props} user={user} />)
+              }
+            />
           </Switch>
           <Footer />
         </GAListener>

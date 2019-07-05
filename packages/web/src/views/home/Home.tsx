@@ -102,7 +102,11 @@ export default function Home(props: HomeProps) {
   }
 
   const centerComponent = (
-    <img src={logo} style={{ height: 20, objectFit: 'contain' }} />
+    <img
+      src={logo}
+      alt="Caravan logo"
+      style={{ height: 20, objectFit: 'contain' }}
+    />
   );
 
   const rightComponent = props.user ? (

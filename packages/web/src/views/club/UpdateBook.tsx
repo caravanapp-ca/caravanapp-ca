@@ -1,11 +1,6 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps, Redirect } from 'react-router-dom';
-import {
-  User,
-  ShelfEntry,
-  GoogleBooks,
-  Services,
-} from '@caravan/buddy-reading-types';
+import { RouteComponentProps } from 'react-router-dom';
+import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   IconButton,
@@ -15,8 +10,7 @@ import {
   Box,
   Container,
 } from '@material-ui/core';
-import { MoreVert, ArrowBackIos } from '@material-ui/icons';
-import AdapterLink from '../../components/AdapterLink';
+import { ArrowBackIos } from '@material-ui/icons';
 import Header from '../../components/Header';
 import BookList from './shelf-view/BookList';
 import BookSearch from '../books/BookSearch';
@@ -69,13 +63,6 @@ export default function UpdateBook(props: UpdateBookProps) {
   const [searchedBooks, setSearchedBooks] = React.useState<ShelfEntry[]>([]);
   const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
   const [newBookForShelf, setNewBookForShelf] = React.useState<boolean>(false);
-  const [backToClub, setBackToClub] = React.useState<boolean>(false);
-
-  useEffect(() => {
-    if (club && (!user || user._id !== club.ownerId)) {
-      setBackToClub(true);
-    }
-  }, [club, user]);
 
   useEffect(() => {
     const getClubFun = async () => {
@@ -177,11 +164,6 @@ export default function UpdateBook(props: UpdateBookProps) {
     searchLabel =
       "Search for a new book to set as your current read. Any books you don't select will be added to your club's Want to Read list.";
   }
-
-  // TODO: remove this
-  // if (backToClub) {
-  //   return <Redirect to={`/clubs/${clubId}`} />;
-  // }
 
   return (
     <div>

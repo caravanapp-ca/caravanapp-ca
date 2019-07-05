@@ -2,57 +2,26 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
-  ProfileQuestion,
   ShelfEntry,
   ReadingSpeed,
-  GroupVibe,
   Services,
-  Genre,
-  Genres,
   ProfileQuestions,
+  UserQA,
+  UserSelectedGenre,
 } from '@caravan/buddy-reading-types';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
-import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import Radio from '@material-ui/core/Radio';
-import purple from '@material-ui/core/colors/purple';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import { saveReadingPreferences } from '../../services/onboarding';
 import ReadingPreferences from './ReadingPreferences';
 import AboutYou from './AboutYou';
 import AnswerQuestion from './AnswerQuestion';
 import ProfileQuestionsCarousel from '../../components/ProfileQuestionsCarousel';
 import SelectBooks from './SelectBooks';
 import JoinClubs from './JoinClubs';
-import { getAllGenres } from '../../services/genre';
-import {
-  readingSpeedIcons,
-  readingSpeedLabels,
-  readingSpeedSubtitles,
-} from '../../components/reading-speed-avatars-icons-labels';
 import { getAllProfileQuestions } from '../../services/profile';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: purple,
-    secondary: {
-      main: '#7289da',
-    },
-  },
-});
-
-const useStyles = makeStyles(theme => ({}));
+import { updateUserProfile } from '../../services/user';
 
 interface OnboardingRouteParams {
   id: string;
@@ -62,38 +31,31 @@ interface OnboardingProps extends RouteComponentProps<OnboardingRouteParams> {
   user: User | null;
 }
 
-interface QA {
-  qid: string;
-  answer: string;
-}
+type SubmissionState = 'notSubmitted' | 'submitted' | 'success' | 'failure';
+
+const centerComponentReadingPreferences = (
+  <Typography variant="h6">Reading Preferences</Typography>
+);
+
+const centerComponentAboutYou = <Typography variant="h6">About You</Typography>;
+
+const centerComponentSelectPrompt = (
+  <Typography variant="h6">Select a Prompt</Typography>
+);
+
+const centerComponentAnswerQuestion = (
+  <Typography variant="h6">Write Answer</Typography>
+);
+
+const centerComponentAddBooks = (
+  <Typography variant="h6">Add to Your Shelf</Typography>
+);
+
+const centerComponentJoinClubs = (
+  <Typography variant="h6">Join or Start Clubs</Typography>
+);
 
 export default function Onboarding(props: OnboardingProps) {
-  const classes = useStyles();
-
-  const centerComponentReadingPreferences = (
-    <Typography variant="h6">Reading Preferences</Typography>
-  );
-
-  const centerComponentAboutYou = (
-    <Typography variant="h6">About You</Typography>
-  );
-
-  const centerComponentSelectPrompt = (
-    <Typography variant="h6">Select a Prompt</Typography>
-  );
-
-  const centerComponentAnswerQuestion = (
-    <Typography variant="h6">Write Answer</Typography>
-  );
-
-  const centerComponentAddBooks = (
-    <Typography variant="h6">Add to Your Shelf</Typography>
-  );
-
-  const centerComponentJoinClubs = (
-    <Typography variant="h6">Join or Start Clubs</Typography>
-  );
-
   const leftComponentAboutYou = (
     <IconButton
       edge="start"
@@ -117,7 +79,7 @@ export default function Onboarding(props: OnboardingProps) {
   );
 
   const leftComponentAnswerQuestion = (
-    <Button color="primary" onClick={() => onCancelAnswer()}>
+    <Button color="primary" onClick={onCancelAnswer}>
       <Typography style={{ fontWeight: 600 }}>Cancel</Typography>
     </Button>
   );
@@ -156,25 +118,15 @@ export default function Onboarding(props: OnboardingProps) {
     </Button>
   );
 
-  const [
-    continuingToProfileQuestions,
-    setContinuingToProfileQuestions,
-  ] = React.useState(false);
-
-  const [currentPage, setCurrentPage] = React.useState(5);
-
-  const [
-    selectedReadingPreferences,
-    setSelectedReadingPreferences,
-  ] = React.useState<Services.ReadingPreferencesResult | null>(null);
-
-  const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   const [selectedSpeed, setSelectedSpeed] = React.useState<ReadingSpeed>(
     'moderate'
   );
 
-  const [selectedGenres, setSelectedGenres] = React.useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = React.useState<
+    UserSelectedGenre[]
+  >([]);
 
   const [
     profileQuestions,
@@ -186,7 +138,7 @@ export default function Onboarding(props: OnboardingProps) {
     setUnansweredProfileQuestions,
   ] = React.useState<ProfileQuestions['questions']>([]);
 
-  const [answers, setAnswers] = React.useState<QA[]>([]);
+  const [answers, setAnswers] = React.useState<UserQA[]>([]);
 
   const [questionBeingAnsweredId, setQuestionBeingAnsweredId] = React.useState<
     string | null
@@ -199,8 +151,8 @@ export default function Onboarding(props: OnboardingProps) {
 
   const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
 
-  const [writingOnboardingToDB, setWritingOnboardingToDB] = React.useState(
-    false
+  const [submitState, setSubmitState] = React.useState<SubmissionState>(
+    'notSubmitted'
   );
 
   useEffect(() => {
@@ -216,14 +168,28 @@ export default function Onboarding(props: OnboardingProps) {
   }, []);
 
   useEffect(() => {
+    switch (submitState) {
+      case 'success':
+        // Not history replace since have to reload the user object,
+        // which isn't done using history.replace
+        window.location.replace('/clubs');
+        break;
+      case 'failure':
+        // TODO: handle errors for onboarding submission
+        console.error('error in submission');
+        break;
+      default:
+        break;
+    }
+  }, [submitState]);
+
+  useEffect(() => {
     const getUnansweredProfileQuestions = async () => {
       if (profileQuestions) {
-        console.log(answers);
-        console.log(unansweredProfileQuestions);
         // Get all the ids of the questions they've answered and add them to an array
         const answeredIds: string[] = [];
         for (let i = 0; i < answers.length; i++) {
-          answeredIds.push(answers[i].qid);
+          answeredIds.push(answers[i].id);
         }
         // Make the unanswered questions not include the ids of the questions they've already answered
         const updatedQuestions = profileQuestions.questions.filter(
@@ -235,13 +201,21 @@ export default function Onboarding(props: OnboardingProps) {
     getUnansweredProfileQuestions();
   }, [answers]);
 
-  function onGenreSelected(genre: string, selected: boolean) {
+  function onGenreSelected(
+    genreKey: string,
+    genreName: string,
+    selected: boolean
+  ) {
     if (selected) {
-      let newGenres: string[];
-      newGenres = [...selectedGenres, genre];
+      let newGenres: UserSelectedGenre[];
+      const addedGenre: UserSelectedGenre = {
+        key: genreKey,
+        name: genreName,
+      };
+      newGenres = [...selectedGenres, addedGenre];
       setSelectedGenres(newGenres);
     } else {
-      const updatedGenres = selectedGenres.filter(g => g !== genre);
+      const updatedGenres = selectedGenres.filter(g => g.key !== genreKey);
       setSelectedGenres(updatedGenres);
     }
   }
@@ -254,17 +228,30 @@ export default function Onboarding(props: OnboardingProps) {
     setCurrentPage(2);
   }
 
-  function onUpdateAnswers(qKey: string, answer: string, added: boolean) {
+  function onUpdateAnswers(
+    title: string,
+    userVisible: boolean,
+    sort: number,
+    qKey: string,
+    answer: string,
+    added: boolean
+  ) {
     if (added && profileQuestions) {
-      let newAnswers: QA[];
+      let newAnswers: UserQA[];
       const newAnswer = {
-        qid: qKey,
-        answer: answer,
+        id: qKey,
+        answer,
+        sort,
+        userVisible,
+        title,
       };
       newAnswers = [...answers, newAnswer];
       setAnswers(newAnswers);
     } else {
-      const updatedAnswers = answers.filter(a => a.qid !== qKey);
+      const updatedAnswers = answers.filter(a => a.id !== qKey);
+      for (let i = 0; i < updatedAnswers.length; i++) {
+        updatedAnswers[i].sort = i;
+      }
       setAnswers(updatedAnswers);
     }
   }
@@ -288,11 +275,14 @@ export default function Onboarding(props: OnboardingProps) {
   }
 
   function onSaveAnswer() {
-    if (questionBeingAnsweredId) {
-      let newAnswers: QA[];
+    if (questionBeingAnsweredId && questionBeingAnsweredText) {
+      let newAnswers: UserQA[];
       const newAnswer = {
-        qid: questionBeingAnsweredId,
+        id: questionBeingAnsweredId,
         answer: currentAnswer,
+        sort: answers.length,
+        userVisible: true,
+        title: questionBeingAnsweredText,
       };
       newAnswers = [...answers, newAnswer];
       setAnswers(newAnswers);
@@ -314,8 +304,20 @@ export default function Onboarding(props: OnboardingProps) {
     setSelectedBooks(selectedBooks);
   }
 
-  function writeOnboardingDataToDB() {
-    setWritingOnboardingToDB(true);
+  async function submitOnboarding() {
+    setSubmitState('submitted');
+    const res = await updateUserProfile({
+      selectedGenres,
+      notStartedShelf: selectedBooks,
+      readingSpeed: selectedSpeed,
+      questions: answers,
+      onboardingVersion: 1,
+    });
+    if (res.status >= 200 && res.status < 300) {
+      setSubmitState('success');
+    } else {
+      setSubmitState('failure');
+    }
   }
 
   return (
@@ -324,7 +326,7 @@ export default function Onboarding(props: OnboardingProps) {
         <>
           <Header centerComponent={centerComponentReadingPreferences} />
           <ReadingPreferences
-            continuing={continuingToProfileQuestions}
+            continuing={false}
             onContinue={continueToQuestionsPage}
             user={props.user}
             selectedGenres={selectedGenres}
@@ -341,7 +343,7 @@ export default function Onboarding(props: OnboardingProps) {
             leftComponent={leftComponentAboutYou}
           />
           <AboutYou
-            continuing={continuingToProfileQuestions}
+            continuing={false}
             onContinue={continueToBooksPage}
             questions={profileQuestions.questions}
             user={props.user}
@@ -385,8 +387,8 @@ export default function Onboarding(props: OnboardingProps) {
             leftComponent={leftComponentAddBooks}
           />
           <SelectBooks
-            onContinue={writeOnboardingDataToDB}
-            continuing={writingOnboardingToDB}
+            onContinue={submitOnboarding}
+            continuing={submitState === 'submitted'}
             onSubmitSelectedBooks={onSubmitSelectedBooks}
             selectedBooks={selectedBooks}
           />

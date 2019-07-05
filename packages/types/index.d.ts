@@ -85,6 +85,7 @@ declare module '@caravan/buddy-reading-types' {
   export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
     discordId: string;
+    discordUsername?: string;
     goodreadsUrl?: string;
     website?: string;
     name?: string;
@@ -99,6 +100,7 @@ declare module '@caravan/buddy-reading-types' {
     selectedGenres: UserSelectedGenre[];
     questions: UserQA[];
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
+    onboardingVersion: number;
   }
 
   export interface Genres {
@@ -150,6 +152,8 @@ declare module '@caravan/buddy-reading-types' {
     | 'selectedGenres'
     | 'questions'
     | 'shelf';
+
+  export type BookSource = 'unknown' | 'google' | 'wattpad' | 'amazon';
 
   export type ChannelSource = 'discord';
 
