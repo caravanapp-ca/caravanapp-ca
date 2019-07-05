@@ -5,6 +5,7 @@ import {
   ShelfEntry,
   ReadingSpeed,
   User,
+  FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -76,11 +77,11 @@ export async function modifyMyClubMembership(
 
 export async function updateCurrentlyReadBook(
   clubId: string,
-  newBook: ShelfEntry,
+  newBook: FilterAutoMongoKeys<ShelfEntry> | ShelfEntry,
   newEntry: boolean,
   prevBookId: string,
   finishedPrev: boolean,
-  addToWantToRead: ShelfEntry[]
+  addToWantToRead: FilterAutoMongoKeys<ShelfEntry>[]
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
     newBook,

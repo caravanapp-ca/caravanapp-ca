@@ -8,6 +8,7 @@ import {
   ProfileQuestions,
   UserQA,
   UserSelectedGenre,
+  FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import Button from '@material-ui/core/Button';
@@ -149,7 +150,9 @@ export default function Onboarding(props: OnboardingProps) {
     setQuestionBeingAnsweredText,
   ] = React.useState<string | null>(null);
 
-  const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>([]);
+  const [selectedBooks, setSelectedBooks] = React.useState<
+    FilterAutoMongoKeys<ShelfEntry>[]
+  >([]);
 
   const [submitState, setSubmitState] = React.useState<SubmissionState>(
     'notSubmitted'
@@ -300,7 +303,9 @@ export default function Onboarding(props: OnboardingProps) {
     setCurrentPage(5);
   }
 
-  function onSubmitSelectedBooks(selectedBooks: ShelfEntry[]) {
+  function onSubmitSelectedBooks(
+    selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
+  ) {
     setSelectedBooks(selectedBooks);
   }
 

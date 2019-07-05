@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
-import { GoogleBooks, ShelfEntry } from '@caravan/buddy-reading-types';
+import {
+  GoogleBooks,
+  ShelfEntry,
+  FilterAutoMongoKeys,
+} from '@caravan/buddy-reading-types';
 import {
   Container,
   Paper,
@@ -42,14 +46,14 @@ const useStyles = makeStyles(theme => ({
 
 interface BookSearchProps {
   onSubmitBooks: (
-    selectedBooks: ShelfEntry[],
-    bookToRead: ShelfEntry | null
+    selectedBooks: FilterAutoMongoKeys<ShelfEntry>[],
+    bookToRead: FilterAutoMongoKeys<ShelfEntry> | null
   ) => void;
   maxSelected?: number;
   radioValue?: string;
   primary?: 'radio';
   secondary?: 'delete';
-  initialSelectedBooks?: ShelfEntry[];
+  initialSelectedBooks?: FilterAutoMongoKeys<ShelfEntry>[];
 }
 
 const searchRef = React.createRef();
@@ -72,13 +76,15 @@ export default function BookSearch(props: BookSearchProps) {
     setSearchResults,
   ] = React.useState<GoogleBooks.Books | null>(null);
   const [showPopper, setShowPopper] = React.useState<boolean>(false);
-  const [selectedBooks, setSelectedBooks] = React.useState<ShelfEntry[]>(
-    initialSelectedBooks || []
-  );
+  const [selectedBooks, setSelectedBooks] = React.useState<
+    FilterAutoMongoKeys<ShelfEntry>[]
+  >(initialSelectedBooks || []);
   const [numSelected, setNumSelected] = React.useState<number>(
     (initialSelectedBooks && initialSelectedBooks.length) || 0
   );
-  const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
+  const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
+    ShelfEntry
+  > | null>(null);
 
   useEffect(() => {
     if (!bookSearchQuery || bookSearchQuery.length === 0) {
@@ -106,16 +112,13 @@ export default function BookSearch(props: BookSearchProps) {
   }
 
   function onAddBook(book: GoogleBooks.Item | ShelfEntry) {
-    let bookAsShelfEntry: ShelfEntry;
+    let bookAsShelfEntry: FilterAutoMongoKeys<ShelfEntry>;
     if (instanceOfGB(book)) {
-      bookAsShelfEntry = getShelfFromGoogleBooks(
-        [book],
-        book.id
-      )[0] as ShelfEntry;
+      bookAsShelfEntry = getShelfFromGoogleBooks([book], book.id)[0];
     } else {
       bookAsShelfEntry = book;
     }
-    let newBooks: ShelfEntry[];
+    let newBooks: FilterAutoMongoKeys<ShelfEntry>[];
     if (numSelected === maxSelected) {
       const selectedBooksCopy = [...selectedBooks];
       selectedBooksCopy.shift();
@@ -125,7 +128,10 @@ export default function BookSearch(props: BookSearchProps) {
       setNumSelected(numSelected + 1);
     }
     newBooks = newBooks.map(b => {
-      if (b._id !== bookAsShelfEntry._id && b.readingState === 'current') {
+      if (
+        b.sourceId !== bookAsShelfEntry.sourceId &&
+        b.readingState === 'current'
+      ) {
         const bCopy = { ...b };
         bCopy.readingState = 'notStarted';
         return bCopy;
@@ -141,7 +147,7 @@ export default function BookSearch(props: BookSearchProps) {
 
   function onDeleteSelectedBook(bookId: string) {
     const updatedBooks = selectedBooks.filter(
-      selected => selected._id !== bookId
+      selected => selected.sourceId !== bookId
     );
     if (bookId === radioValue) {
       onSubmitBooks(updatedBooks, null);
@@ -154,7 +160,7 @@ export default function BookSearch(props: BookSearchProps) {
   }
 
   function onChangeBookToRead(bookId: string) {
-    const book = selectedBooks.find(book => book._id === bookId);
+    const book = selectedBooks.find(book => book.sourceId === bookId);
     if (book) {
       setBookToRead(book);
       onSubmitBooks(selectedBooks, book);

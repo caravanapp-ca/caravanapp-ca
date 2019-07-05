@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShelfEntry } from '@caravan/buddy-reading-types';
+import { ShelfEntry, FilterAutoMongoKeys } from '@caravan/buddy-reading-types';
 import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -77,8 +77,10 @@ const useStyles = makeStyles(theme => ({
 
 interface SelectBookProps {
   onContinue: () => void;
-  onSubmitSelectedBooks: (selectedBooks: ShelfEntry[]) => void;
-  selectedBooks: ShelfEntry[];
+  onSubmitSelectedBooks: (
+    selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
+  ) => void;
+  selectedBooks: FilterAutoMongoKeys<ShelfEntry>[];
   continuing: boolean;
 }
 

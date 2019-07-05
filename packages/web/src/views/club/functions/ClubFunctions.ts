@@ -2,6 +2,7 @@ import {
   Club,
   ShelfEntry,
   FilterAutoMongoKeys,
+  ReadingState,
   GoogleBooks,
 } from '@caravan/buddy-reading-types';
 
@@ -30,24 +31,25 @@ export function getShelfFromGoogleBooks(
   currentBookId?: string
 ) {
   const result = selectedBooks.map(book => {
-    let readingState = 'notStarted';
+    let readingState: ReadingState = 'notStarted';
     if (currentBookId && book.id === currentBookId) {
       readingState = 'current';
     }
     const res: FilterAutoMongoKeys<ShelfEntry> = {
-      _id: book.id,
+      source: 'google',
+      sourceId: book.id,
       readingState: readingState,
       title: book.volumeInfo.title,
-      genres: book.volumeInfo.categories,
+      genres: book.volumeInfo.categories || [],
       author: (book.volumeInfo.authors || ['Unknown author']).join(', '),
       isbn:
         'industryIdentifiers' in book.volumeInfo
           ? book.volumeInfo.industryIdentifiers[0].identifier
-          : null,
+          : undefined,
       publishedDate:
         'publishedDate' in book.volumeInfo
           ? book.volumeInfo.publishedDate
-          : null,
+          : undefined,
       coverImageURL:
         'imageLinks' in book.volumeInfo
           ? book.volumeInfo.imageLinks.thumbnail

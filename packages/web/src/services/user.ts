@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { ReadingSpeed, User } from '@caravan/buddy-reading-types';
+import {
+  ReadingSpeed,
+  User,
+  UserShelfEntry,
+  FilterAutoMongoKeys,
+} from '@caravan/buddy-reading-types';
 
 const userRoute = '/api/user';
 
@@ -33,7 +38,7 @@ export async function isSlugAvailable(slug: string) {
 }
 
 interface UpdateUserProps {
-  notStartedShelf: User['shelf']['notStarted'];
+  notStartedShelf: FilterAutoMongoKeys<UserShelfEntry>[];
   readingSpeed: ReadingSpeed;
   selectedGenres: User['selectedGenres'];
   questions: User['questions'];
@@ -49,12 +54,13 @@ export async function updateUserProfile({
 }: UpdateUserProps) {
   const body: Pick<
     User,
-    | 'questions'
-    | 'readingSpeed'
-    | 'selectedGenres'
-    | 'shelf'
-    | 'onboardingVersion'
-  > = {
+    'questions' | 'readingSpeed' | 'selectedGenres' | 'onboardingVersion'
+  > & {
+    shelf: {
+      notStarted: FilterAutoMongoKeys<UserShelfEntry>[];
+      read: FilterAutoMongoKeys<UserShelfEntry>[];
+    };
+  } = {
     selectedGenres: selectedGenres,
     shelf: {
       notStarted: notStartedShelf,
@@ -64,9 +70,7 @@ export async function updateUserProfile({
     questions: questions,
     onboardingVersion: onboardingVersion,
   };
-
   const res = await axios.put(`${userRoute}`, body);
-
   return res;
 }
 
