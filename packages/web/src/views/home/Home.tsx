@@ -106,7 +106,7 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     (async () => {
-      const pageSize = 10;
+      const pageSize = 25;
       const res = await getAllClubs(afterQuery, pageSize);
       if (res.data) {
         const newClubsWCR = transformClubsToWithCurrentlyReading(
@@ -173,7 +173,7 @@ export default function Home(props: HomeProps) {
       {user ? (
         <div
           onClick={handleProfileClick}
-          style={{ display: 'flex', alignItems: 'center' }}
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           ref={headerProfileAnchorRef}
         >
           <Avatar

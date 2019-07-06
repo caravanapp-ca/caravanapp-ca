@@ -136,7 +136,7 @@ export default function ClubComponent(props: ClubProps) {
 
   useEffect(() => {
     if (user && club) {
-      const member = club.members.find(m => m.userId === user._id);
+      const member = club.members.find(m => m._id === user._id);
       if (member) {
         setMembershipStatus(club.ownerId === user._id ? 'owner' : 'member');
       } else {
