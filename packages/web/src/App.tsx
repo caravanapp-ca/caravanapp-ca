@@ -18,7 +18,10 @@ import FindBooks from './views/books/FindBooks';
 import Privacy from './views/privacy/Privacy';
 import UpdateBook from './views/club/UpdateBook';
 import UserView from './views/user/User';
-import { clearAuthState, KEY_DISCORD_OAUTH_STATE } from './common/localStorage';
+import {
+  clearStorageAuthState,
+  KEY_DISCORD_OAUTH_STATE,
+} from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
 import useUser from './common/useInitializeUser';
 import { GAListener } from './common/GAListener';
@@ -54,7 +57,7 @@ export function App(props: AppProps) {
       localStorage.removeItem(KEY_DISCORD_OAUTH_STATE);
     }
     if (!getCookie('token')) {
-      clearAuthState();
+      clearStorageAuthState();
     }
   }, []);
 

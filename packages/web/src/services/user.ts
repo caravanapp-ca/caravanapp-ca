@@ -5,6 +5,8 @@ import {
   UserShelfEntry,
   FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
+import { clearStorageAuthState } from '../common/localStorage';
+import { clearCookieAuthState } from '../common/cookies';
 
 const userRoute = '/api/user';
 
@@ -77,4 +79,10 @@ export async function updateUserProfile({
 export async function modifyUser(user: User) {
   const res = await axios.put(userRoute, user);
   return res;
+}
+
+export async function logout() {
+  clearStorageAuthState();
+  clearCookieAuthState();
+  window.location.href = '/clubs';
 }

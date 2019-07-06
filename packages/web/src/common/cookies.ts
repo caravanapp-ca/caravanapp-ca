@@ -12,3 +12,8 @@ export function setCookie(name: string, value: string, days: number) {
 export function deleteCookie(name: string) {
   setCookie(name, '', -1);
 }
+
+export function clearCookieAuthState() {
+  // Clear all cookies, why not 🤷‍
+  document.cookie.split(';').forEach(cookie => deleteCookie(cookie));
+}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
+import { RouteComponentProps } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -12,8 +12,10 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AddIcon from '@material-ui/icons/Add';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
+import { logout } from '../../services/user';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
@@ -21,7 +23,7 @@ import { getAllClubs } from '../../services/club';
 import ClubCards from './ClubCards';
 import logo from '../../resources/logo.svg';
 
-interface HomeProps {
+interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
 }
 
@@ -136,6 +138,12 @@ export default function Home(props: HomeProps) {
       return;
     }
     setHeaderProfileMenuOpenState(false);
+  }
+
+  function navigateToYourProfile() {
+    if (user) {
+      props.history.push(`/user/${user.urlSlug}`);
+    }
   }
 
   const centerComponent = (
@@ -288,8 +296,8 @@ export default function Home(props: HomeProps) {
         }}
         onClose={handleProfileMenuClose}
       >
-        <MenuItem onClick={handleProfileMenuClose}>Your profile</MenuItem>
-        <MenuItem onClick={handleProfileMenuClose}>Logout</MenuItem>
+        <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
+        <MenuItem onClick={logout}>Logout</MenuItem>
       </Menu>
     </>
   );
