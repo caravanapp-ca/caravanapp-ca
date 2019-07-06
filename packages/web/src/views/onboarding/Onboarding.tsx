@@ -45,7 +45,7 @@ const centerComponentSelectPrompt = <HeaderTitle title="Select a Prompt" />;
 
 const centerComponentAnswerQuestion = <HeaderTitle title="Write Answer" />;
 
-const centerComponentAddBooks = <HeaderTitle title="Add to Your Shelf" />;
+const centerComponentAddBooks = <HeaderTitle title="Shelf" />;
 
 const centerComponentJoinClubs = <HeaderTitle title="Join or Start Clubs" />;
 
@@ -375,6 +375,7 @@ export default function Onboarding(props: OnboardingProps) {
             <AnswerQuestion
               onChangeAnswerText={onChangeAnswerText}
               question={questionBeingAnsweredText}
+              onDone={onSaveAnswer}
             />
           </>
         )}

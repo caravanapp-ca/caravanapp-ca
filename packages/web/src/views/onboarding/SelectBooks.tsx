@@ -88,8 +88,12 @@ const minimumRequired = 3;
 
 export default function SelectBooks(props: SelectBookProps) {
   const classes = useStyles();
-
   const { selectedBooks, continuing } = props;
+
+  let progressText = `Minimum ${minimumRequired}, but the more the merrier!`;
+  if (selectedBooks.length >= minimumRequired) {
+    progressText = 'Keep going! The bigger the shelf the better 😊';
+  }
 
   return (
     <>
@@ -99,19 +103,12 @@ export default function SelectBooks(props: SelectBookProps) {
         </Typography>
       </div>
       <div className={classes.progressFraction}>
-        {selectedBooks.length < minimumRequired && (
-          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
-            Minimum {minimumRequired}, but the more the merrier!
-          </Typography>
-        )}
-        {selectedBooks.length >= minimumRequired && (
-          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
-            Keep going! The bigger the shelf the better{' '}
-            <span role="img" aria-label="slight smile">
-              😊
-            </span>
-          </Typography>
-        )}
+        <Typography
+          style={{ fontWeight: 600, fontStyle: 'italic' }}
+          color="textSecondary"
+        >
+          {progressText}
+        </Typography>
       </div>
       <Container
         style={{
@@ -147,9 +144,16 @@ export default function SelectBooks(props: SelectBookProps) {
             {!continuing && (
               <Fab
                 disabled={selectedBooks.length < 3}
-                color="primary"
+                color="secondary"
                 onClick={() => props.onContinue()}
+                variant="extended"
               >
+                <Typography
+                  style={{ marginRight: theme.spacing(1) }}
+                  variant="button"
+                >
+                  DONE
+                </Typography>
                 <ForwardIcon />
               </Fab>
             )}

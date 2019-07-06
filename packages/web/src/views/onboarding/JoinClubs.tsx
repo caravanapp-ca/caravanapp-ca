@@ -90,7 +90,7 @@ export default function JoinClub(props: JoinClubProps) {
         </Typography>
       </div>
       <div className={classes.progressFraction}>
-        <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
+        <Typography style={{ fontWeight: 600 }} color="textSecondary">
           Join clubs bud
         </Typography>
       </div>

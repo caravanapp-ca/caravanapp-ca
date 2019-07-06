@@ -202,6 +202,11 @@ export default function AboutYou(props: AboutYouProps) {
     );
   }
 
+  let progressLabel = `Minimum ${minimumRequired}`;
+  if (answers.length >= minimumRequired) {
+    progressLabel = 'Keep answering to fill out your profile!';
+  }
+
   return (
     <>
       <div className={classes.hero}>
@@ -211,16 +216,12 @@ export default function AboutYou(props: AboutYouProps) {
         </Typography>
       </div>
       <div className={classes.progressFraction}>
-        {answers.length < minimumRequired && (
-          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
-            Minimum {minimumRequired}
-          </Typography>
-        )}
-        {answers.length >= minimumRequired && (
-          <Typography style={{ fontWeight: 'bold' }} color="textSecondary">
-            Keep answering to fill out your profile!
-          </Typography>
-        )}
+        <Typography
+          style={{ fontWeight: 600, fontStyle: 'italic' }}
+          color="textSecondary"
+        >
+          {progressLabel}
+        </Typography>
       </div>
       <Container className={classes.formContainer} maxWidth="md">
         <Grid container spacing={2}>
@@ -250,7 +251,7 @@ export default function AboutYou(props: AboutYouProps) {
           >
             <Fab
               disabled={props.answers.length < 3}
-              color="primary"
+              color="secondary"
               onClick={() => props.onContinue()}
             >
               <ForwardIcon />

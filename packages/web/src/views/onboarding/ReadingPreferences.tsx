@@ -125,7 +125,7 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
       </div>
       <Container className={classes.formContainer} maxWidth="md">
         <div className={classes.sectionContainer}>
-          <Typography variant="subtitle1" className={classes.sectionHeader}>
+          <Typography className={classes.sectionHeader}>
             How fast do you normally read?
           </Typography>
           <div
@@ -155,7 +155,7 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
         </div>
 
         <div className={classes.sectionContainer}>
-          <Typography className={classes.sectionHeader} variant="subtitle1">
+          <Typography className={classes.sectionHeader}>
             Select some genres you're interested in reading.
           </Typography>
           <div>
@@ -196,7 +196,7 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
               <Fab
                 disabled={props.selectedGenres.length === 0}
                 onClick={() => props.onContinue()}
-                color="primary"
+                color="secondary"
               >
                 <ForwardIcon />
               </Fab>

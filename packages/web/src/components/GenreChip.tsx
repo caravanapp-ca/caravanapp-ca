@@ -35,6 +35,11 @@ const useStyles = makeStyles(theme =>
     activeText: {
       color: '#FFFFFF',
     },
+    chipText: {
+      root: {
+        textTransform: 'none',
+      },
+    },
   })
 );
 
@@ -72,6 +77,7 @@ export default function GenreChip(props: GenreChipProps) {
           key={genreKey}
           onClick={() => onClick(genreKey, active)}
         >
+          {/* TODO: Prevent capitalization */}
           <Typography>{name}</Typography>
         </Button>
       </MuiThemeProvider>

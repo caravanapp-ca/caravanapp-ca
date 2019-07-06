@@ -4,9 +4,10 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { Services } from '@caravan/buddy-reading-types';
-import { Typography } from '@material-ui/core';
+import { Typography, Paper, IconButton } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,6 +56,15 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    explanationPaper: {
+      position: 'relative',
+      padding: theme.spacing(2),
+    },
+    explanationDismiss: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+    },
   })
 );
 
@@ -67,26 +77,32 @@ export default function ProfileQuestionsCarousel(
   props: ProfileQuestionsCarouselProps
 ) {
   const classes = useStyles();
-
   const { questions } = props;
+  const [explanationVisible, setExplanationVisible] = React.useState<boolean>(
+    true
+  );
 
   return (
     <main>
       {questions.length > 0 && (
         <Container className={classes.cardGrid} maxWidth="md">
           <Grid container spacing={4}>
-            <Grid item key={'explanation'} xs={12} sm={12}>
-              <Card className={classes.card}>
-                <CardContent>
-                  <div>
-                    <Typography>
-                      Search through the questions below and choose ones you
-                      want to answer!
-                    </Typography>
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
+            {explanationVisible && (
+              <Grid item key={'explanation'} xs={12}>
+                <Paper className={classes.explanationPaper}>
+                  <Typography>
+                    Browse through the questions below and choose the ones you
+                    want to answer!
+                  </Typography>
+                  <IconButton
+                    className={classes.explanationDismiss}
+                    onClick={() => setExplanationVisible(false)}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </Paper>
+              </Grid>
+            )}
             {questions.map(q => {
               return (
                 <Grid item key={q.id} xs={12} sm={6}>
