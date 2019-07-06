@@ -517,6 +517,7 @@ export default function UserView(props: UserViewProps) {
           {tabValue === 1 && (
             <UserShelf
               user={user}
+              userIsMe={userIsMe}
               shelf={userShelf}
               isEditing={isEditing}
               onEdit={onEdit}

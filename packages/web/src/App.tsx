@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -21,16 +21,20 @@ import UserView from './views/user/User';
 import {
   clearStorageAuthState,
   KEY_DISCORD_OAUTH_STATE,
+  KEY_USER,
 } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
 import useUser from './common/useInitializeUser';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
+import { getUser } from './services/user';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
 
 interface AppProps {}
+
+type LoadingStatus = 'loading' | 'loaded' | 'failed';
 
 const HomeRedirect = () => {
   return <Redirect to="/clubs" />;
@@ -44,7 +48,30 @@ const forceOnboard = (user: User | null, route: JSX.Element) => {
 };
 
 export function App(props: AppProps) {
-  const user = useUser();
+  const [user, setUser] = useState<User | null>(null);
+  const [userLoadingStatus, setUserLoadingStatus] = useState<LoadingStatus>(
+    'loading'
+  );
+  useEffect(() => {
+    if (!user) {
+      // July 03rd, 2019; we decided not to put user stuff into local storage
+      // Can add back in later, but to reduce complexity, not now.
+      window.localStorage.removeItem(KEY_USER);
+      const userId = getCookie('userId');
+      if (userId) {
+        // Getting user data for the first time after login
+        setUserLoadingStatus('loading');
+        getUser(userId).then(user => {
+          setUserLoadingStatus('loaded');
+          if (user) {
+            setUser(user);
+          } else {
+            console.info('Are you having fun messing with cookies? :)');
+          }
+        });
+      }
+    }
+  }, [user]);
 
   // Handle the `state` query to verify login
   useEffect(() => {
@@ -60,6 +87,10 @@ export function App(props: AppProps) {
       clearStorageAuthState();
     }
   }, []);
+
+  if (userLoadingStatus === 'loading') {
+    return <div>Loading</div>;
+  }
 
   return (
     <ThemeProvider theme={theme}>

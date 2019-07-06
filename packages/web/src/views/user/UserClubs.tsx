@@ -11,10 +11,8 @@ interface UserClubsProps {
 }
 
 export default function UserClubs(props: UserClubsProps) {
-  // const { clubsWCR, user, userIsMe } = props;
+  const { clubsWCR, user, userIsMe } = props;
   const theme = useTheme();
-  const { user, userIsMe } = props;
-  const clubsWCR: ClubWithCurrentlyReading[] = [];
   if (user && clubsWCR && clubsWCR.length === 0) {
     let noClubsMessage = 'This user has not yet joined any clubs.';
     if (userIsMe) {

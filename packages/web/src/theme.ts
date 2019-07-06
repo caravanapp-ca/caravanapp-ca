@@ -36,7 +36,7 @@ const themeObj = {
       '"Segoe UI Symbol"',
     ].join(','),
   },
-  overrides: {
+  Overrides: {
     MuiCssBaseline: {
       '@global': {
         '@font-face': [montserrat],
@@ -50,10 +50,7 @@ const themeObj = {
   },
 };
 
-const theme = responsiveFontSizes(
-  // @ts-ignore
-  createMuiTheme(themeObj)
-);
+const theme = responsiveFontSizes(createMuiTheme(themeObj));
 
 export const errorTheme = (outerTheme: Theme) =>
   ({
@@ -64,7 +61,6 @@ export const errorTheme = (outerTheme: Theme) =>
   } as Theme);
 
 export const successTheme = responsiveFontSizes(
-  // @ts-ignore
   createMuiTheme({
     ...themeObj,
     palette: {
@@ -77,7 +73,6 @@ export const successTheme = responsiveFontSizes(
 );
 
 export const washedTheme = responsiveFontSizes(
-  // @ts-ignore
   createMuiTheme({
     ...themeObj,
     palette: {
