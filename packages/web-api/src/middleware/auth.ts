@@ -5,7 +5,7 @@ export interface ErrorWithStatus extends Error {
   status?: number;
 }
 
-export async function isOnboarded(
+export async function isAuthenticated(
   req: Request,
   res: Response,
   next: NextFunction

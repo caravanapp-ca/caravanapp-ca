@@ -33,8 +33,6 @@ const trackingId =
 
 interface AppProps {}
 
-type LoadingStatus = 'loading' | 'loaded' | 'failed';
-
 const HomeRedirect = () => {
   return <Redirect to="/clubs" />;
 };

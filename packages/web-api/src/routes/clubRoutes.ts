@@ -20,7 +20,7 @@ import {
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
-import { isOnboarded } from '../middleware/auth';
+import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
 import { ClubDoc, UserDoc } from '../../typings';
 import { getUser } from '../services/user';
@@ -55,7 +55,10 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
   }
-  const guildMembersArr = getCountableMembersInChannel(discordChannel, club).array();
+  const guildMembersArr = getCountableMembersInChannel(
+    discordChannel,
+    club
+  ).array();
   const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
   const users = await UserModel.find({
     discordId: { $in: guildMemberDiscordIds },
@@ -332,7 +335,7 @@ router.post(
   }
 );
 
-router.get('/my-clubs', isOnboarded, async (req, res, next) => {
+router.get('/my-clubs', isAuthenticated, async (req, res, next) => {
   const discordId = req.user.discordId;
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
@@ -370,7 +373,7 @@ interface CreateClubBody
 const knownHttpsRedirects = ['http://books.google.com/books/'];
 
 // Create club
-router.post('/', isOnboarded, async (req, res, next) => {
+router.post('/', isAuthenticated, async (req, res, next) => {
   try {
     const { userId, token } = req.session;
     const discordClient = ReadingDiscordBot.getInstance();
@@ -454,35 +457,61 @@ router.post('/', isOnboarded, async (req, res, next) => {
   }
 });
 
-// Modify a club
-// router.put('/:id', isAuthenticated, async (req, res, next) => {
-//   const editedClub = req.body;
-//   try {
-//     const doc = await ClubModel.findByIdAndUpdate(req.params.id, editedClub, {
-//       new: true,
-//     }).exec();
-//     res.sendStatus(200);
-//   } catch (err) {
-//     console.log(`Failed to modify club ${req.params.id}`, err);
-//     return next(err);
-//   }
-// });
+// Delete a club
+router.delete('/:clubId', isAuthenticated, async (req, res) => {
+  const { user } = req;
+  const { clubId } = req.params;
 
-// // Delete a club
-// router.delete('/:id', isAuthenticated, async (req, res, next) => {
-//   try {
-//     const record = await ClubModel.remove({ _id: req.params.id });
-//     res.sendStatus(204);
-//   } catch (err) {
-//     console.log(`Failed to delete club ${req.params.id}`, err);
-//     return next(err);
-//   }
-// });
+  let club: ClubDoc;
+  try {
+    club = await ClubModel.findById(clubId);
+  } catch (err) {
+    res.status(400).send(`Could not find club ${clubId}`);
+    return;
+  }
+
+  const discordClient = ReadingDiscordBot.getInstance();
+  const guild = discordClient.guilds.first();
+  const channel: GuildChannel = guild.channels.find(
+    c => c.id === club.channelId
+  );
+  if (!channel) {
+    res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
+    return;
+  }
+
+  const memberInChannel = (channel as VoiceChannel | TextChannel).members.find(
+    m => m.id === user.discordId
+  );
+  if (memberInChannel && memberInChannel.hasPermission('MANAGE_CHANNELS')) {
+    try {
+      const deletedChannel = await channel.delete();
+      console.log(
+        `Deleted discord channel {${channel.id}, ${channel.name}} by user ${user.id}`
+      );
+      await ClubModel.deleteOne(clubId);
+      console.log(
+        `Deleted club {${club.id},${club.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+      );
+      res.status(204).send(`Deleted channel ${deletedChannel.id}`);
+    } catch (err) {
+      console.log(
+        `Failed to delete club {${club.id},${club.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+      );
+      res.status(500).send(err);
+    }
+  } else {
+    res.status(401).send("You don't have permission to delete this channel.");
+    console.log(
+      `User ${user.id} failed to authenticate to delete club {${club.id},${club.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+    );
+  }
+});
 
 // Update a club's currently read book
 router.put(
   '/:id/updatebook',
-  isOnboarded,
+  isAuthenticated,
   check(['finishedPrev', 'newEntry']).isBoolean(),
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -601,8 +630,8 @@ router.put(
 
 // Modify current user's club membership
 router.put(
-  '/:id/membership',
-  isOnboarded,
+  '/:clubId/membership',
+  isAuthenticated,
   check('isMember').isBoolean(),
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -611,7 +640,7 @@ router.put(
     }
     const userId = req.user._id;
     const userDiscordId = req.user.discordId;
-    const clubId = req.params.id;
+    const { clubId } = req.params;
     const { isMember } = req.body;
 
     let club: ClubDoc;
