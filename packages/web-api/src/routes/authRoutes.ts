@@ -5,7 +5,6 @@ import {
   User,
 } from '@caravan/buddy-reading-types';
 import {
-  isOnboarded,
   isAuthenticatedButNotNecessarilyOnboarded,
 } from '../middleware/auth';
 import {
@@ -51,20 +50,15 @@ function convertTokenResponseToModel(
   return model;
 }
 
-router.get('/logout', async (req, res) => {
-  destroySession(req, res);
-  res.redirect('/');
-});
-
-router.post(
-  '/discord/disconnect',
-  isAuthenticatedButNotNecessarilyOnboarded,
-  async (req, res, next) => {
-    const { token } = req.session;
-    await SessionModel.findOneAndDelete({ accessToken: token });
-    destroySession(req, res);
-  }
-);
+// router.post(
+//   '/discord/disconnect',
+//   isAuthenticatedButNotNecessarilyOnboarded,
+//   async (req, res, next) => {
+//     const { token } = req.session;
+//     await SessionModel.findOneAndDelete({ accessToken: token });
+//     destroySession(req, res);
+//   }
+// );
 
 // TODO: remove - function used to generate slugs for all users.
 // router.post('/init-slugs', async (req, res) => {
