@@ -108,7 +108,7 @@ const validationParams = {
   name: {
     length: {
       min: 2,
-      max: 100,
+      max: 30,
     },
   },
   bio: {

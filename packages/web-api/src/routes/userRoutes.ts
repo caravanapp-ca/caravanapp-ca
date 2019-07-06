@@ -99,7 +99,7 @@ router.put(
     .optional(),
   check('name')
     .isString()
-    .isLength({ min: 2, max: 100 })
+    .isLength({ min: 2, max: 30 })
     .optional(),
   check(
     'readingSpeed',

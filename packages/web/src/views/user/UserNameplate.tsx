@@ -56,7 +56,7 @@ export default function UserNameplate(props: UserNameplateProps) {
   const lengths = {
     name: {
       min: 2,
-      max: 100,
+      max: 30,
     },
     bio: {
       min: 0,
