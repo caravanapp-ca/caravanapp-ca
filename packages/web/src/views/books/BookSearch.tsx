@@ -43,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     maxHeight: 384,
     overflow: 'auto',
   },
+  googleLogo: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
 interface BookSearchProps {
@@ -192,6 +195,11 @@ export default function BookSearch(props: BookSearchProps) {
             inputProps={{ 'aria-label': 'Add a Book' }}
             onChange={e => setBookSearchQuery(e.target.value)}
             onKeyDown={handleOnKeyDown}
+          />
+          <img
+            src="https://books.google.com/googlebooks/images/poweredby.png"
+            aria-label="Powered by Google"
+            className={classes.googleLogo}
           />
         </Paper>
         {searchResults && showPopper && (
