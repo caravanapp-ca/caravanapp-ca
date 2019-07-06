@@ -52,13 +52,17 @@ const themeObj = {
 
 const theme = responsiveFontSizes(createMuiTheme(themeObj));
 
-export const errorTheme = (outerTheme: Theme) =>
-  ({
-    ...outerTheme,
+export const errorTheme = responsiveFontSizes(
+  createMuiTheme({
+    ...themeObj,
     palette: {
-      primary: outerTheme.palette.error,
+      ...themeObj.palette,
+      primary: {
+        main: theme.palette.error.main,
+      },
     },
-  } as Theme);
+  })
+);
 
 export const successTheme = responsiveFontSizes(
   createMuiTheme({
