@@ -180,6 +180,7 @@ declare module '@caravan/buddy-reading-types' {
         _id: string;
         name: string;
         ownerId: string;
+        guildId: string;
         shelf: any[];
         bio?: string;
         maxMembers: number;

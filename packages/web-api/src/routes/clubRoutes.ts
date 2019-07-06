@@ -55,10 +55,9 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
   }
-  const guildMembersArr = getCountableMembersInChannel(
-    discordChannel,
-    club
-  ).array();
+  const guildMembersArr = getCountableMembersInChannel(discordChannel, club)
+    .array()
+    .sort((a, b) => a.joinedTimestamp - b.joinedTimestamp);
   const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
   const users = await UserModel.find({
     discordId: { $in: guildMemberDiscordIds },
@@ -69,8 +68,9 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     .map(mem => {
       const user = users.find(u => u.discordId === mem.id);
       if (user) {
+        const userObj: User = user.toObject();
         const result = {
-          ...user.toObject(),
+          ...userObj,
           discordUsername: mem.user.username,
           discordId: mem.id,
           photoUrl:
@@ -125,17 +125,33 @@ router.get('/', async (req, res, next) => {
     const client = ReadingDiscordBot.getInstance();
     const guild = client.guilds.first();
     const clubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
-      .map(club => {
+      .map(clubDoc => {
         let discordChannel: GuildChannel | null = guild.channels.find(
-          c => c.id === club.channelId
+          c => c.id === clubDoc.channelId
         );
         if (!discordChannel) {
           return null;
         }
-        const memberCount = getCountableMembersInChannel(discordChannel, club)
-          .size;
+        const memberCount = getCountableMembersInChannel(
+          discordChannel,
+          clubDoc
+        ).size;
+        const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
+          createdAt: string;
+          updatedAt: string;
+        } = {
+          ...clubDoc.toObject(),
+          createdAt:
+            clubDoc.createdAt instanceof Date
+              ? clubDoc.createdAt.toISOString()
+              : clubDoc.createdAt,
+          updatedAt:
+            clubDoc.updatedAt instanceof Date
+              ? clubDoc.updatedAt.toISOString()
+              : clubDoc.updatedAt,
+        };
         const obj: Services.GetClubs['clubs'][0] = {
-          ...club.toObject(),
+          ...club,
           guildId: guild.id,
           memberCount,
         };
@@ -156,40 +172,45 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
-    const club = await ClubModel.findById(id);
-    if (!club) {
+    const clubDoc = await ClubModel.findById(id);
+    if (!clubDoc) {
       res.sendStatus(404);
       return;
     }
-    if (club.channelSource === 'discord') {
+    if (clubDoc.channelSource === 'discord') {
       const client = ReadingDiscordBot.getInstance();
       const guild = client.guilds.first();
-      const guildMembers = await getChannelMembers(guild, club);
+      const guildMembers = await getChannelMembers(guild, clubDoc);
 
       const clubWithDiscord: Services.GetClubById = {
-        _id: club.id,
-        name: club.name,
-        ownerId: club.ownerId,
-        ownerDiscordId: club.ownerDiscordId,
-        shelf: club.shelf,
-        bio: club.bio,
+        _id: clubDoc.id,
+        name: clubDoc.name,
+        ownerId: clubDoc.ownerId,
+        ownerDiscordId: clubDoc.ownerDiscordId,
+        shelf: clubDoc.shelf,
+        bio: clubDoc.bio,
         members: guildMembers,
-        maxMembers: club.maxMembers,
-        vibe: club.vibe,
-        readingSpeed: club.readingSpeed,
+        maxMembers: clubDoc.maxMembers,
+        vibe: clubDoc.vibe,
+        readingSpeed: clubDoc.readingSpeed,
         guildId: guild.id,
-        channelSource: club.channelSource,
-        channelId: club.channelId,
-        private: club.private,
-        //TODO: Later
-        createdAt: (club as any).createdAt,
-        updatedAt: (club as any).updatedAt,
+        channelSource: clubDoc.channelSource,
+        channelId: clubDoc.channelId,
+        private: clubDoc.private,
+        createdAt:
+          clubDoc.createdAt instanceof Date
+            ? clubDoc.createdAt.toISOString()
+            : clubDoc.createdAt,
+        updatedAt:
+          clubDoc.updatedAt instanceof Date
+            ? clubDoc.updatedAt.toISOString()
+            : clubDoc.updatedAt,
       };
       res.status(200).send(clubWithDiscord);
     } else {
       res
         .status(500)
-        .send(`Error: unknown channelSource: ${club.channelSource}`);
+        .send(`Error: unknown channelSource: ${clubDoc.channelSource}`);
       return;
     }
   } catch (err) {
