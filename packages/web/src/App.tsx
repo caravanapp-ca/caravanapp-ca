@@ -24,7 +24,6 @@ import {
   KEY_USER,
 } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
-import useUser from './common/useInitializeUser';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 import { getUser } from './services/user';
@@ -54,18 +53,23 @@ export function App(props: AppProps) {
   );
   useEffect(() => {
     if (!user) {
-      // July 03rd, 2019; we decided not to put user stuff into local storage
-      // Can add back in later, but to reduce complexity, not now.
-      window.localStorage.removeItem(KEY_USER);
+      const cachedUserStr = localStorage.getItem(KEY_USER);
+      let cachedUser: User | null = null;
+      if (cachedUserStr) {
+        cachedUser = JSON.parse(cachedUserStr);
+        setUser(cachedUser);
+        // Getting user data for the first time after login
+        setUserLoadingStatus('loaded');
+      }
       const userId = getCookie('userId');
       if (userId) {
-        // Getting user data for the first time after login
-        setUserLoadingStatus('loading');
         getUser(userId).then(user => {
           setUserLoadingStatus('loaded');
           if (user) {
             setUser(user);
+            localStorage.setItem(KEY_USER, JSON.stringify(user));
           } else {
+            localStorage.removeItem(KEY_USER);
             console.info('Are you having fun messing with cookies? :)');
           }
         });
@@ -87,10 +91,6 @@ export function App(props: AppProps) {
       clearStorageAuthState();
     }
   }, []);
-
-  if (userLoadingStatus === 'loading') {
-    return <div>Loading</div>;
-  }
 
   return (
     <ThemeProvider theme={theme}>
