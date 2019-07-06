@@ -70,8 +70,11 @@ export async function modifyMyClubMembership(
   const res = await axios.put(`${clubRoute}/${clubId}/membership`, {
     isMember,
   });
-  // Contains the Member object for the added user. May be of use later.
-  // const data = res.data;
+  return res;
+}
+
+export async function deleteClub(clubId: string) {
+  const res = await axios.delete(`${clubRoute}/${clubId}`);
   return res;
 }
 

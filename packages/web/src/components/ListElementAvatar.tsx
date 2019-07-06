@@ -3,7 +3,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import PersonIcon from '@material-ui/icons/Person';
 import AdapterLink from './AdapterLink';
 
 export interface ListElementAvatarProps {
@@ -36,17 +35,11 @@ export default function ListElementAvatar(props: ListElementAvatarProps) {
     >
       {primaryElement}
       <ListItemAvatar>
-        {avatarElement ? (
-          avatarElement
-        ) : (
-          <Avatar>
-            <PersonIcon />
-          </Avatar>
-        )}
+        {avatarElement ? avatarElement : undefined}
       </ListItemAvatar>
       <ListItemText
-        primary={primaryText ? primaryText : 'Group member'}
-        secondary={secondaryText ? secondaryText : null}
+        primary={primaryText ? primaryText : undefined}
+        secondary={secondaryText ? secondaryText : undefined}
       />
       {secondaryElement}
     </ListItem>

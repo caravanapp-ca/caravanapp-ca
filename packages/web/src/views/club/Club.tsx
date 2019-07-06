@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { useEffect, SyntheticEvent } from 'react';
+import { RouteComponentProps, Redirect } from 'react-router-dom';
 import {
   ShelfEntry,
   User,
@@ -29,7 +29,11 @@ import {
   Theme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
-import { getClub, modifyMyClubMembership } from '../../services/club';
+import {
+  getClub,
+  modifyMyClubMembership,
+  deleteClub,
+} from '../../services/club';
 import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
@@ -41,6 +45,9 @@ import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
 import { errorTheme } from '../../theme';
 import ClubDisbandDialog from './ClubDisbandDialog';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -103,6 +110,8 @@ const showJoinClub = (
   club.maxMembers > club.members.length;
 const showOpenChat = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'owner' || memberStatus === 'member';
+const showInviteFriends = (memberStatus: LoadableMemberStatus) =>
+  memberStatus === 'owner' || memberStatus === 'member';
 const showUpdateBook = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'owner';
 const showDisbandClub = (memberStatus: LoadableMemberStatus) =>
@@ -143,6 +152,15 @@ export default function ClubComponent(props: ClubProps) {
   const [memberStatus, setMembershipStatus] = React.useState<
     LoadableMemberStatus
   >('loading');
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'info',
+      message: 'Copied link to clipboard!',
+    }
+  );
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -206,6 +224,10 @@ export default function ClubComponent(props: ClubProps) {
     <HeaderTitle title="Club Homepage" />
   );
 
+  function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
+  }
+
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
@@ -217,9 +239,26 @@ export default function ClubComponent(props: ClubProps) {
     }
   };
 
-  const disbandClub = () => {
+  const disbandClub = async () => {
     setDisbandDialogVisible(false);
-    // TODO: Call service to disband club.
+    const res = await deleteClub(clubId);
+    if (res.status === 204) {
+      // club successfully deleted
+      return <Redirect to="/clubs" />;
+    } else {
+      // club not deleted successfully
+      // TODO: show warning snackbar indicating club could not be deleted
+    }
+  };
+
+  const copyToClipboard = (str: string) => {
+    const el = document.createElement('textarea');
+    el.value = str;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setSnackbarProps({ ...snackbarProps, isOpen: true });
   };
 
   async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
@@ -312,6 +351,21 @@ export default function ClubComponent(props: ClubProps) {
                       style={{ textAlign: 'center' }}
                     >
                       OPEN CHAT IN APP
+                    </Typography>
+                  </Button>
+                )}
+                {showInviteFriends(memberStatus) && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={() => copyToClipboard(window.location.href)}
+                  >
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
+                    >
+                      INVITE TO CLUB
                     </Typography>
                   </Button>
                 )}
@@ -410,6 +464,7 @@ export default function ClubComponent(props: ClubProps) {
         onCancel={() => setDisbandDialogVisible(false)}
         onDisbandSelect={() => disbandClub()}
       />
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }
