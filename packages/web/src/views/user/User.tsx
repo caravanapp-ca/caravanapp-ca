@@ -506,6 +506,7 @@ export default function UserView(props: UserViewProps) {
           {tabValue === 0 && (
             <UserBio
               user={user}
+              userIsMe={userIsMe}
               isEditing={isEditing}
               onEdit={onEdit}
               genres={genres || undefined}
@@ -521,7 +522,13 @@ export default function UserView(props: UserViewProps) {
               onEdit={onEdit}
             />
           )}
-          {tabValue === 2 && <UserClubs clubsWCR={userClubsWCR} user={user} />}
+          {tabValue === 2 && (
+            <UserClubs
+              clubsWCR={userClubsWCR}
+              user={user}
+              userIsMe={userIsMe}
+            />
+          )}
         </>
       </Container>
       <CustomSnackbar {...snackbarProps} />

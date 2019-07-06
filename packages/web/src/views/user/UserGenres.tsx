@@ -1,10 +1,11 @@
 import React from 'react';
 import { User, Services } from '@caravan/buddy-reading-types';
 import GenreChip from '../../components/GenreChip';
-import { makeStyles, Button } from '@material-ui/core';
+import { makeStyles, Button, Typography } from '@material-ui/core';
 
 interface UserGenresProps {
   user: User;
+  userIsMe: boolean;
   isEditing: boolean;
   onEdit: (
     field: 'selectedGenres',
@@ -29,8 +30,21 @@ const useStyles = makeStyles(theme => ({
 
 export default function UserGenres(props: UserGenresProps) {
   const classes = useStyles();
-  const { user, isEditing, onEdit, genres } = props;
+  const { user, userIsMe, isEditing, onEdit, genres } = props;
   const [showAll, setShowAll] = React.useState<boolean>(false);
+
+  if (user && !isEditing && user.selectedGenres.length === 0) {
+    let noGenresMessage = 'This user has not yet selected any genres.';
+    if (userIsMe) {
+      noGenresMessage =
+        "You haven't selected any genres yet! Click edit in the top right to add some!";
+    }
+    return (
+      <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
+        {noGenresMessage}
+      </Typography>
+    );
+  }
 
   const onGenreClick = (key: string, currActive: boolean) => {
     if (!currActive && genres) {
@@ -53,7 +67,7 @@ export default function UserGenres(props: UserGenresProps) {
       <>
         <div className={classes.showMoreContainer}>
           <Button color="primary" onClick={() => setShowAll(false)}>
-            DONE
+            COLLAPSE
           </Button>
         </div>
         <div className={classes.genresContainer}>

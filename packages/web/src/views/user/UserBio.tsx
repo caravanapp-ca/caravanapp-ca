@@ -27,6 +27,7 @@ const useStyles = makeStyles(theme => ({
 
 interface UserBioProps {
   user: User;
+  userIsMe: boolean;
   isEditing: boolean;
   onEdit: (field: EditableUserField, newValue: any) => void;
   genres?: Services.GetGenres;
@@ -40,6 +41,7 @@ interface UserBioProps {
 export default function UserBio(props: UserBioProps) {
   const {
     user,
+    userIsMe,
     isEditing,
     onEdit,
     genres,
@@ -54,7 +56,12 @@ export default function UserBio(props: UserBioProps) {
         <Typography variant="h6" className={classes.sectionLabel}>
           Reading Speed
         </Typography>
-        <UserReadingSpeed user={user} isEditing={isEditing} onEdit={onEdit} />
+        <UserReadingSpeed
+          user={user}
+          userIsMe={userIsMe}
+          isEditing={isEditing}
+          onEdit={onEdit}
+        />
       </div>
       <div className={classes.sectionContainer}>
         <Typography variant="h6" className={classes.sectionLabel}>
@@ -62,6 +69,7 @@ export default function UserBio(props: UserBioProps) {
         </Typography>
         <UserGenres
           user={user}
+          userIsMe={userIsMe}
           isEditing={isEditing}
           onEdit={onEdit}
           genres={genres || undefined}
@@ -75,6 +83,7 @@ export default function UserBio(props: UserBioProps) {
         </Typography>
         <UserQuestions
           user={user}
+          userIsMe={userIsMe}
           numQuestionsToPreview={4}
           isEditing={isEditing}
           onEdit={onEdit}

@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
 
 interface UserQuestionsProps {
   user: User;
+  userIsMe: boolean;
   numQuestionsToPreview: number;
   isEditing: boolean;
   onEdit: (field: 'questions', newValue: any) => void;
@@ -44,6 +45,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
   const classes = useStyles();
   const {
     user,
+    userIsMe,
     numQuestionsToPreview,
     isEditing,
     onEdit,
@@ -51,6 +53,19 @@ export default function UserQuestions(props: UserQuestionsProps) {
     userQuestionsWkspc,
   } = props;
   const [expanded, setExpanded] = React.useState<boolean>(false);
+
+  if (user && !isEditing && user.questions.length === 0) {
+    let noQAMessage = 'This user has not yet answered any questions.';
+    if (userIsMe) {
+      noQAMessage =
+        "You haven't answered any questions yet! Click edit in the top right to express yourself!";
+    }
+    return (
+      <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
+        {noQAMessage}
+      </Typography>
+    );
+  }
 
   const onQuestionsEdit2 = (
     id: string,
