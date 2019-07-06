@@ -20,6 +20,7 @@ import JoinCaravanButton from '../../components/JoinCaravanButton';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { getAllClubs } from '../../services/club';
+import { Service } from '../../common/service';
 import ClubCards from './ClubCards';
 import logo from '../../resources/logo.svg';
 
@@ -80,9 +81,9 @@ export default function Home(props: HomeProps) {
   const classes = useStyles();
   const { user } = props;
 
-  const [clubsWCR, setClubsWCR] = React.useState<ClubWithCurrentlyReading[]>(
-    []
-  );
+  const [clubsWCRResult, setClubsWCRResult] = React.useState<
+    Service<ClubWithCurrentlyReading[]>
+  >({ status: 'loading' });
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
@@ -93,7 +94,7 @@ export default function Home(props: HomeProps) {
   const [afterQuery, setAfterQuery] = React.useState<string | undefined>(
     undefined
   );
-  const [canLoadMore, setCanLoadMore] = React.useState(true);
+  const [showLoadMore, setShowLoadMore] = React.useState(false);
 
   const [
     headerProfileMenuIsOpen,
@@ -114,10 +115,16 @@ export default function Home(props: HomeProps) {
         const newClubsWCR = transformClubsToWithCurrentlyReading(
           res.data.clubs
         );
-        if (newClubsWCR.length < pageSize) {
-          setCanLoadMore(false);
+        if (newClubsWCR.length === pageSize) {
+          setShowLoadMore(true);
         }
-        setClubsWCR(c => [...c, ...newClubsWCR]);
+        setClubsWCRResult(s => ({
+          status: 'loaded',
+          payload:
+            s.status === 'loaded'
+              ? [...s.payload, ...newClubsWCR]
+              : newClubsWCR,
+        }));
       }
     })();
   }, [afterQuery]);
@@ -254,8 +261,10 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
-        <ClubCards clubsWCR={clubsWCR} user={user} />
-        {canLoadMore && (
+        {clubsWCRResult.status === 'loaded' && (
+          <ClubCards clubsWCR={clubsWCRResult.payload} user={user} />
+        )}
+        {clubsWCRResult.status === 'loaded' && showLoadMore && (
           <div
             style={{
               display: 'flex',
@@ -268,7 +277,10 @@ export default function Home(props: HomeProps) {
               className={classes.button}
               variant="outlined"
               onClick={() =>
-                setAfterQuery(clubsWCR[clubsWCR.length - 1].club._id)
+                setAfterQuery(
+                  clubsWCRResult.payload[clubsWCRResult.payload.length - 1].club
+                    ._id
+                )
               }
             >
               <Typography variant="button" style={{ textAlign: 'center' }}>

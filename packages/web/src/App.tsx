@@ -48,9 +48,6 @@ const forceOnboard = (user: User | null, route: JSX.Element) => {
 
 export function App(props: AppProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [userLoadingStatus, setUserLoadingStatus] = useState<LoadingStatus>(
-    'loading'
-  );
   useEffect(() => {
     if (!user) {
       const cachedUserStr = localStorage.getItem(KEY_USER);
@@ -58,13 +55,10 @@ export function App(props: AppProps) {
       if (cachedUserStr) {
         cachedUser = JSON.parse(cachedUserStr);
         setUser(cachedUser);
-        // Getting user data for the first time after login
-        setUserLoadingStatus('loaded');
       }
       const userId = getCookie('userId');
       if (userId) {
         getUser(userId).then(user => {
-          setUserLoadingStatus('loaded');
           if (user) {
             setUser(user);
             localStorage.setItem(KEY_USER, JSON.stringify(user));
