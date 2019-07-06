@@ -77,11 +77,11 @@ export function App(props: AppProps) {
     if (queries && queries.state) {
       // Someone tampered with the login, remove token
       if (queries.state !== localStorage.getItem(KEY_DISCORD_OAUTH_STATE)) {
-        deleteCookie('token');
+        deleteCookie('userId');
       }
       localStorage.removeItem(KEY_DISCORD_OAUTH_STATE);
     }
-    if (!getCookie('token')) {
+    if (!getCookie('userId')) {
       clearStorageAuthState();
     }
   }, []);
