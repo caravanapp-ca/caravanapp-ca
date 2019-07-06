@@ -144,7 +144,7 @@ export default function UserNameplate(props: UserNameplateProps) {
         <Typography variant="body1">
           <Link onClick={() => window.open(user.website)}>{user.website}</Link>
         </Typography>
-        {!userIsMe && (
+        {user && !userIsMe && (
           <Button
             variant="outlined"
             color="primary"
