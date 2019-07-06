@@ -1,6 +1,6 @@
 import React from 'react';
 import { User, UserShelfType } from '@caravan/buddy-reading-types';
-import { Typography, makeStyles } from '@material-ui/core';
+import { Typography, makeStyles, useTheme, Container } from '@material-ui/core';
 import BookList from '../club/shelf-view/BookList';
 import clsx from 'clsx';
 import UserShelfEditable from './UserShelfEditable';
@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
 
 interface UserShelfProps {
   user: User;
+  userIsMe: boolean;
   shelf: UserShelfType;
   isEditing: boolean;
   onEdit: (field: 'shelf', newValue: any) => void;
@@ -26,7 +27,35 @@ interface UserShelfProps {
 
 export default function UserShelf(props: UserShelfProps) {
   const classes = useStyles();
-  const { user, shelf, isEditing, onEdit } = props;
+  const theme = useTheme();
+  const { user, userIsMe, shelf, isEditing, onEdit } = props;
+  if (
+    user &&
+    !isEditing &&
+    shelf.current.length + shelf.notStarted.length + shelf.read.length === 0
+  ) {
+    let noShelfMessage =
+      'This user has not yet added any books to their shelf.';
+    if (userIsMe) {
+      noShelfMessage =
+        'Aghast! Your shelf is empty! Click edit in the top right to save yourself from this embarrassment!';
+    }
+    return (
+      <Container maxWidth="md">
+        <Typography
+          color="textSecondary"
+          style={{
+            textAlign: 'center',
+            fontStyle: 'italic',
+            marginTop: theme.spacing(4),
+            marginBottom: theme.spacing(4),
+          }}
+        >
+          {noShelfMessage}
+        </Typography>
+      </Container>
+    );
+  }
   return (
     <div>
       {shelf.current.length > 0 && (

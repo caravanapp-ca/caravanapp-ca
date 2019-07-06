@@ -135,20 +135,7 @@ export default function ClubComponent(props: ClubProps) {
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
-    if (user && club) {
-      const member = club.members.find(m => m._id === user._id);
-      if (member) {
-        setMembershipStatus(club.ownerId === user._id ? 'owner' : 'member');
-      } else {
-        setMembershipStatus('notMember');
-      }
-    } else {
-      setMembershipStatus('notMember');
-    }
-  }, [club, user]);
-
-  useEffect(() => {
-    const getClubFun = async () => {
+    async function getClubFun() {
       try {
         const club = await getClub(clubId);
         setClub(club);
@@ -161,17 +148,33 @@ export default function ClubComponent(props: ClubProps) {
         console.error(err);
         setLoadedClub(true);
       }
-    };
+    }
     getClubFun();
-  }, [clubId, memberStatus]);
+  }, [clubId]);
+
+  useEffect(() => {
+    if (club) {
+      if (user) {
+        // TODO: Investigate this line of code breaking the world
+        //        setMembershipStatus('member');
+        const member = club.members.find(m => m._id === user._id);
+        if (member) {
+          setMembershipStatus(club.ownerId === user._id ? 'owner' : 'member');
+        } else {
+          setMembershipStatus('notMember');
+        }
+      } else {
+        setMembershipStatus('notMember');
+      }
+    }
+  }, [club, user]);
 
   const leftComponent = (
     <IconButton
       edge="start"
       color="inherit"
       aria-label="Back"
-      component={AdapterLink}
-      to="/"
+      onClick={() => props.history.goBack()}
     >
       <BackIcon />
     </IconButton>
