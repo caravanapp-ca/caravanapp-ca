@@ -22,7 +22,8 @@ import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isOnboarded } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
-import { ClubDoc } from '../../typings';
+import { ClubDoc, UserDoc } from '../../typings';
+import { getUser } from '../services/user';
 
 const router = express.Router();
 
@@ -91,20 +92,25 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
 }
 
 // TODO: Need to add checks here: Is the club full? Is the club private? => Don't return
-// TODO: Paginate/feed-ify
 router.get('/', async (req, res, next) => {
   const { after, pageSize, readingSpeed } = req.query;
+  const { userId } = req.session;
+  let user: UserDoc | undefined;
+  if (userId) {
+    user = await getUser(userId);
+  }
   try {
     // Calculate number of documents to skip
     const query: any = {
       private: false,
     };
     if (after) {
-      query._id = { $gt: after };
+      query._id = { $lt: after };
     }
     if (readingSpeed) {
       query.readingSpeed = { $eq: readingSpeed };
     }
+
     const size = Number.parseInt(pageSize || 0);
     const limit = Math.min(Math.max(size, 10), 25);
     const clubs = await ClubModel.find(query)

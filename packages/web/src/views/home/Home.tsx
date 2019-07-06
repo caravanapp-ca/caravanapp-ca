@@ -106,7 +106,7 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     (async () => {
-      const pageSize = 10;
+      const pageSize = 25;
       const res = await getAllClubs(afterQuery, pageSize);
       if (res.data) {
         const newClubsWCR = transformClubsToWithCurrentlyReading(
