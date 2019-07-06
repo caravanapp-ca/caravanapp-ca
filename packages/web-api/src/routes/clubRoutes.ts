@@ -55,9 +55,7 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
   }
-  const guildMembersArr = getCountableMembersInChannel(discordChannel, club)
-    .array()
-    .sort((a, b) => a.joinedTimestamp - b.joinedTimestamp);
+  const guildMembersArr = getCountableMembersInChannel(discordChannel, club).array();
   const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
   const users = await UserModel.find({
     discordId: { $in: guildMemberDiscordIds },
@@ -71,6 +69,7 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
         const userObj: User = user.toObject();
         const result = {
           ...userObj,
+          name: userObj.name ? userObj.name : mem.user.username,
           discordUsername: mem.user.username,
           discordId: mem.id,
           photoUrl:
@@ -87,7 +86,8 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
         return null;
       }
     })
-    .filter(g => g !== null);
+    .filter(g => g !== null)
+    .sort((a, b) => a.name.localeCompare(b.name));
   return guildMembers;
 }
 
