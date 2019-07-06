@@ -173,7 +173,7 @@ export default function Home(props: HomeProps) {
       {user ? (
         <div
           onClick={handleProfileClick}
-          style={{ display: 'flex', alignItems: 'center' }}
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           ref={headerProfileAnchorRef}
         >
           <Avatar
