@@ -18,5 +18,5 @@ steps:
   - name: gcr.io/cloud-builders/yarn
     args: ['build']
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'app.production.yaml', '--no-promote']
+    args: ['app', 'deploy', 'app.production.yaml']
 timeout: '1600s'
