@@ -1,7 +1,6 @@
 runtime: nodejs10
 env: standard
 instance_class: F1
-version: staging
 handlers:
   - url: .*
     script: auto
