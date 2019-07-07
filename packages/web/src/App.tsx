@@ -44,6 +44,13 @@ const forceOnboard = (user: User | null, route: JSX.Element) => {
   return route;
 };
 
+const forceOutOfOnboard = (user: User | null, route: JSX.Element) => {
+  if (!user || user.onboardingVersion === 1) {
+    return <Redirect to="/clubs" />;
+  }
+  return route;
+};
+
 export function App(props: AppProps) {
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
@@ -112,7 +119,9 @@ export function App(props: AppProps) {
             <Route
               exact
               path="/onboarding"
-              render={props => <Onboarding {...props} user={user} />}
+              render={props =>
+                forceOutOfOnboard(user, <Onboarding {...props} user={user} />)
+              }
             />
             <Route
               exact
