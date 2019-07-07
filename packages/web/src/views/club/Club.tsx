@@ -1,5 +1,5 @@
 import React, { useEffect, SyntheticEvent } from 'react';
-import { RouteComponentProps, Redirect } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import {
   ShelfEntry,
   User,
@@ -242,16 +242,16 @@ export default function ClubComponent(props: ClubProps) {
     const res = await deleteClub(clubId);
     if (res.status === 204) {
       // club successfully deleted
-      return <Redirect to="/clubs" />;
+      props.history.replace('/clubs');
     } else {
       // club not deleted successfully
-      setSnackbarProps({
-        ...snackbarProps,
+      setSnackbarProps(s => ({
+        ...s,
         isOpen: true,
         variant: 'warning',
         message:
           'Whoops! Something has gone wrong and Caravan was unable to delete your club.',
-      });
+      }));
     }
   };
 
@@ -471,7 +471,7 @@ export default function ClubComponent(props: ClubProps) {
       <ClubDisbandDialog
         open={disbandDialogVisible}
         onCancel={() => setDisbandDialogVisible(false)}
-        onDisbandSelect={() => disbandClub()}
+        onDisbandSelect={disbandClub}
       />
       <CustomSnackbar {...snackbarProps} />
     </>
