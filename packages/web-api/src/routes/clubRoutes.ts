@@ -462,9 +462,9 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   const { user } = req;
   const { clubId } = req.params;
 
-  let club: ClubDoc;
+  let clubDoc: ClubDoc;
   try {
-    club = await ClubModel.findById(clubId);
+    clubDoc = await ClubModel.findById(clubId);
   } catch (err) {
     res.status(400).send(`Could not find club ${clubId}`);
     return;
@@ -473,7 +473,7 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   const discordClient = ReadingDiscordBot.getInstance();
   const guild = discordClient.guilds.first();
   const channel: GuildChannel = guild.channels.find(
-    c => c.id === club.channelId
+    c => c.id === clubDoc.channelId
   );
   if (!channel) {
     res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
@@ -489,21 +489,21 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
       console.log(
         `Deleted discord channel {${channel.id}, ${channel.name}} by user ${user.id}`
       );
-      await ClubModel.deleteOne(clubId);
+      clubDoc = await clubDoc.remove();
       console.log(
-        `Deleted club {${club.id},${club.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+        `Deleted club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
       );
       res.status(204).send(`Deleted channel ${deletedChannel.id}`);
     } catch (err) {
       console.log(
-        `Failed to delete club {${club.id},${club.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+        `Failed to delete club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
       );
       res.status(500).send(err);
     }
   } else {
     res.status(401).send("You don't have permission to delete this channel.");
     console.log(
-      `User ${user.id} failed to authenticate to delete club {${club.id},${club.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+      `User ${user.id} failed to authenticate to delete club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
     );
   }
 });
