@@ -12,6 +12,7 @@ import userRoutes from './routes/userRoutes';
 import bookRoutes from './routes/bookRoutes';
 import profileRoutes from './routes/profileRoutes';
 import testRoutes from './routes/testRoutes';
+import discordRoutes from './routes/discordRoutes';
 
 import {
   connect as connectToDb,
@@ -62,6 +63,7 @@ import { ReadingDiscordBot } from './services/discord';
   app.use('/api/user', userRoutes);
   app.use('/api/books', bookRoutes);
   app.use('/api/profile', profileRoutes);
+  app.use('/api/discord', discordRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

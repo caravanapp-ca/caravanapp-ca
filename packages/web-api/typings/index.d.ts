@@ -8,6 +8,7 @@ import {
   Genres,
   ProfileQuestions,
   MongoTimestamps,
+  ProfileQuestion,
 } from '@caravan/buddy-reading-types';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
@@ -24,8 +25,9 @@ export interface GenreDoc extends Document, Omit<Genres, '_id'> {
 export interface ProfileQuestionsDoc
   extends Document,
     MongoTimestamps,
-    Omit<ProfileQuestions, '_id'> {
+    Omit<ProfileQuestions, '_id' | 'questions'> {
   _id: MongooseTypes.ObjectId;
+  questions: (ProfileQuestion & { visible: boolean })[];
 }
 
 export interface GroupMemberDoc

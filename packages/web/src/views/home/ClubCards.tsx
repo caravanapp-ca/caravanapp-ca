@@ -20,7 +20,6 @@ import {
   readingSpeedIcons,
   readingSpeedLabels,
 } from '../../components/reading-speed-avatars-icons-labels';
-import './ClubCards.css';
 import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({
@@ -34,7 +33,10 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
   },
   cardContent: {
+    position: 'relative',
+    zIndex: 1,
     flexGrow: 1,
+    backgroundColor: '#FFFFFF',
   },
   iconWithLabel: {
     display: 'flex',
@@ -179,17 +181,6 @@ export default function ClubCards(props: ClubCardsProps) {
                           {`${club.memberCount}/${club.maxMembers}`}
                         </Typography>
                       </div>
-                      {club.vibe && (
-                        <div className={classes.iconWithLabel}>
-                          {groupVibeIcons(club.vibe, 'icon')}
-                          <Typography
-                            variant="subtitle1"
-                            className={classes.iconLabel}
-                          >
-                            {groupVibeLabels(club.vibe)}
-                          </Typography>
-                        </div>
-                      )}
                       {club.readingSpeed && (
                         <div className={classes.iconWithLabel}>
                           {readingSpeedIcons(club.readingSpeed, 'icon')}
@@ -198,6 +189,17 @@ export default function ClubCards(props: ClubCardsProps) {
                             className={classes.iconLabel}
                           >
                             {readingSpeedLabels(club.readingSpeed)}
+                          </Typography>
+                        </div>
+                      )}
+                      {club.vibe && (
+                        <div className={classes.iconWithLabel}>
+                          {groupVibeIcons(club.vibe, 'icon')}
+                          <Typography
+                            variant="subtitle1"
+                            className={classes.iconLabel}
+                          >
+                            {groupVibeLabels(club.vibe)}
                           </Typography>
                         </div>
                       )}
@@ -212,7 +214,7 @@ export default function ClubCards(props: ClubCardsProps) {
                       component={AdapterLink}
                       to={`/clubs/${club._id}`}
                     >
-                      <Typography variant="button">INFO</Typography>
+                      <Typography variant="button">VIEW CLUB</Typography>
                     </Button>
                     {/* <Button
                         variant="contained"

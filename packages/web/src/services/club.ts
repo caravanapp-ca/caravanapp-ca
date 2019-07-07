@@ -4,6 +4,8 @@ import {
   ChannelSource,
   ShelfEntry,
   ReadingSpeed,
+  User,
+  FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -42,6 +44,25 @@ export async function getClub(clubId: string) {
   return club;
 }
 
+export async function getClubsById(clubIds: string[]) {
+  const res = await axios.post<Services.GetClubById[]>(
+    `${clubRoute}/clubsById`,
+    {
+      clubIds,
+    }
+  );
+  const clubs = res.data;
+  return clubs;
+}
+
+export async function getUserClubs(user: User) {
+  const res = await axios.post<Services.GetClubs['clubs']>(
+    `${clubRoute}/getUserClubs`,
+    { user }
+  );
+  return res;
+}
+
 export async function modifyMyClubMembership(
   clubId: string,
   isMember: boolean
@@ -49,18 +70,21 @@ export async function modifyMyClubMembership(
   const res = await axios.put(`${clubRoute}/${clubId}/membership`, {
     isMember,
   });
-  // Contains the Member object for the added user. May be of use later.
-  // const data = res.data;
+  return res;
+}
+
+export async function deleteClub(clubId: string) {
+  const res = await axios.delete(`${clubRoute}/${clubId}`);
   return res;
 }
 
 export async function updateCurrentlyReadBook(
   clubId: string,
-  newBook: ShelfEntry,
+  newBook: FilterAutoMongoKeys<ShelfEntry> | ShelfEntry,
   newEntry: boolean,
   prevBookId: string,
   finishedPrev: boolean,
-  addToWantToRead: ShelfEntry[]
+  addToWantToRead: FilterAutoMongoKeys<ShelfEntry>[]
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
     newBook,

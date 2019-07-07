@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, SyntheticEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   ShelfEntry,
@@ -28,7 +28,11 @@ import {
   Theme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
-import { getClub, modifyMyClubMembership } from '../../services/club';
+import {
+  getClub,
+  modifyMyClubMembership,
+  deleteClub,
+} from '../../services/club';
 import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
@@ -39,12 +43,19 @@ import ClubLeaveDialog from './ClubLeaveDialog';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
 import { errorTheme } from '../../theme';
+import ClubDisbandDialog from './ClubDisbandDialog';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {},
     root: {
+      position: 'relative',
+      zIndex: 1,
       flexGrow: 1,
+      backgroundColor: '#FFFFFF',
     },
     button: {
       margin: theme.spacing(1),
@@ -57,14 +68,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     contentContainer: {
       flexGrow: 1,
-      padding: theme.spacing(2),
     },
     buttonsContainer: {
-      display: 'flex',
       width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
       marginTop: theme.spacing(3),
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
     },
     fabContainer: {
       display: 'flex',
@@ -97,7 +109,11 @@ const showJoinClub = (
   club.maxMembers > club.members.length;
 const showOpenChat = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'owner' || memberStatus === 'member';
+const showInviteFriends = (memberStatus: LoadableMemberStatus) =>
+  memberStatus === 'owner' || memberStatus === 'member';
 const showUpdateBook = (memberStatus: LoadableMemberStatus) =>
+  memberStatus === 'owner';
+const showDisbandClub = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'owner';
 const showLeaveClub = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'member';
@@ -123,29 +139,31 @@ export default function ClubComponent(props: ClubProps) {
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
-  const [loginDialogVisible, setLoginDialogVisible] = React.useState(false);
-  const [leaveDialogVisible, setLeaveDialogVisible] = React.useState(false);
+  const [loginDialogVisible, setLoginDialogVisible] = React.useState<boolean>(
+    false
+  );
+  const [leaveDialogVisible, setLeaveDialogVisible] = React.useState<boolean>(
+    false
+  );
+  const [disbandDialogVisible, setDisbandDialogVisible] = React.useState<
+    boolean
+  >(false);
   const [memberStatus, setMembershipStatus] = React.useState<
     LoadableMemberStatus
   >('loading');
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'info',
+    }
+  );
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
-    if (user && club) {
-      const member = club.members.find(m => m.userId === user._id);
-      if (member) {
-        setMembershipStatus(club.ownerId === user._id ? 'owner' : 'member');
-      } else {
-        setMembershipStatus('notMember');
-      }
-    } else {
-      setMembershipStatus('notMember');
-    }
-  }, [club, user]);
-
-  useEffect(() => {
-    const getClubFun = async () => {
+    async function getClubFun() {
       try {
         const club = await getClub(clubId);
         setClub(club);
@@ -158,17 +176,41 @@ export default function ClubComponent(props: ClubProps) {
         console.error(err);
         setLoadedClub(true);
       }
-    };
+    }
     getClubFun();
-  }, [clubId, memberStatus]);
+  }, [clubId]);
+
+  useEffect(() => {
+    if (club) {
+      if (user) {
+        // TODO: Investigate this line of code breaking the world
+        // setMembershipStatus('member');
+        const member = club.members.find(m => m._id === user._id);
+        if (member) {
+          setMembershipStatus(club.ownerId === user._id ? 'owner' : 'member');
+        } else {
+          setMembershipStatus('notMember');
+        }
+      } else {
+        setMembershipStatus('notMember');
+      }
+    }
+  }, [club, user]);
+
+  if (loadedClub && !club) {
+    return (
+      <Container maxWidth="md">
+        <Typography>Whoops! It doesn't look like this club exists!</Typography>
+      </Container>
+    );
+  }
 
   const leftComponent = (
     <IconButton
       edge="start"
       color="inherit"
       aria-label="Back"
-      component={AdapterLink}
-      to="/"
+      onClick={() => props.history.goBack()}
     >
       <BackIcon />
     </IconButton>
@@ -180,6 +222,10 @@ export default function ClubComponent(props: ClubProps) {
     <HeaderTitle title="Club Homepage" />
   );
 
+  function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
+  }
+
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
@@ -189,6 +235,39 @@ export default function ClubComponent(props: ClubProps) {
     if (confirm) {
       addOrRemoveMeFromClub('remove');
     }
+  };
+
+  const disbandClub = async () => {
+    setDisbandDialogVisible(false);
+    const res = await deleteClub(clubId);
+    if (res.status === 204) {
+      // club successfully deleted
+      props.history.replace('/clubs');
+    } else {
+      // club not deleted successfully
+      setSnackbarProps(s => ({
+        ...s,
+        isOpen: true,
+        variant: 'warning',
+        message:
+          'Whoops! Something has gone wrong and Caravan was unable to delete your club.',
+      }));
+    }
+  };
+
+  const copyToClipboard = (str: string) => {
+    const el = document.createElement('textarea');
+    el.value = str;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'info',
+      message: 'Copied link to clipboard!',
+    });
   };
 
   async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
@@ -234,66 +313,40 @@ export default function ClubComponent(props: ClubProps) {
               {tabValue === 1 && <ShelfView shelf={club.shelf} />}
               <div className={classes.buttonsContainer}>
                 {showJoinClub(memberStatus, club) && (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      className={classes.button}
-                      onClick={() =>
-                        props.user
-                          ? addOrRemoveMeFromClub('add')
-                          : setLoginDialogVisible(true)
-                      }
-                      disabled={false}
-                      //TODO make this disabled be based on max members vs actual members
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={() =>
+                      props.user
+                        ? addOrRemoveMeFromClub('add')
+                        : setLoginDialogVisible(true)
+                    }
+                    disabled={false}
+                    //TODO make this disabled be based on max members vs actual members
+                  >
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
                     >
-                      <Typography
-                        variant="button"
-                        style={{ textAlign: 'center' }}
-                      >
-                        JOIN CLUB
-                      </Typography>
-                    </Button>
-                    <div className={classes.fabContainer}>
-                      <Fab
-                        color="secondary"
-                        className={classes.fab}
-                        onClick={() =>
-                          props.user
-                            ? addOrRemoveMeFromClub('add')
-                            : setLoginDialogVisible(true)
-                        }
-                      >
-                        <JoinIcon />
-                      </Fab>
-                    </div>
-                  </>
+                      JOIN CLUB
+                    </Typography>
+                  </Button>
                 )}
                 {showOpenChat(memberStatus) && (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      className={classes.button}
-                      onClick={() => openChat(club, false)}
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={() => openChat(club, false)}
+                  >
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
                     >
-                      <Typography
-                        variant="button"
-                        style={{ textAlign: 'center' }}
-                      >
-                        OPEN CHAT IN WEB
-                      </Typography>
-                    </Button>
-                    <div className={classes.fabContainer}>
-                      <Fab
-                        color="secondary"
-                        className={classes.fab}
-                        onClick={() => openChat(club, false)}
-                      >
-                        <ChatIcon />
-                      </Fab>
-                    </div>
-                  </>
+                      OPEN CHAT IN WEB
+                    </Typography>
+                  </Button>
                 )}
                 {showOpenChat(memberStatus) && (
                   <Button
@@ -307,6 +360,37 @@ export default function ClubComponent(props: ClubProps) {
                       style={{ textAlign: 'center' }}
                     >
                       OPEN CHAT IN APP
+                    </Typography>
+                  </Button>
+                )}
+                {showInviteFriends(memberStatus) && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={() => copyToClipboard(window.location.href)}
+                  >
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
+                    >
+                      INVITE TO CLUB
+                    </Typography>
+                  </Button>
+                )}
+                {showUpdateBook(memberStatus) && (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    className={classes.button}
+                    component={AdapterLink}
+                    to={`${clubId}/updatebook`}
+                  >
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
+                    >
+                      UPDATE BOOK
                     </Typography>
                   </Button>
                 )}
@@ -327,30 +411,52 @@ export default function ClubComponent(props: ClubProps) {
                     </Button>
                   </MuiThemeProvider>
                 )}
-                {showUpdateBook(memberStatus) && (
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    className={classes.button}
-                    component={AdapterLink}
-                    to={`${clubId}/updatebook`}
-                  >
-                    <Typography
-                      variant="button"
-                      style={{ textAlign: 'center' }}
+                {showDisbandClub(memberStatus) && (
+                  <MuiThemeProvider theme={errorTheme}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      className={classes.button}
+                      onClick={() => setDisbandDialogVisible(true)}
                     >
-                      UPDATE BOOK
-                    </Typography>
-                  </Button>
+                      <Typography
+                        variant="button"
+                        style={{ textAlign: 'center' }}
+                      >
+                        DISBAND CLUB
+                      </Typography>
+                    </Button>
+                  </MuiThemeProvider>
                 )}
               </div>
             </div>
           </Container>
-        </div>
-      )}
-      {loadedClub && !club && (
-        <div>
-          <Typography>It does not appear that this club exists!</Typography>
+          {showJoinClub(memberStatus, club) && (
+            <div className={classes.fabContainer}>
+              <Fab
+                color="secondary"
+                className={classes.fab}
+                onClick={() =>
+                  props.user
+                    ? addOrRemoveMeFromClub('add')
+                    : setLoginDialogVisible(true)
+                }
+              >
+                <JoinIcon />
+              </Fab>
+            </div>
+          )}
+          {showOpenChat(memberStatus) && (
+            <div className={classes.fabContainer}>
+              <Fab
+                color="secondary"
+                className={classes.fab}
+                onClick={() => openChat(club, false)}
+              >
+                <ChatIcon />
+              </Fab>
+            </div>
+          )}
         </div>
       )}
       <DiscordLoginModal
@@ -362,6 +468,12 @@ export default function ClubComponent(props: ClubProps) {
         onCancel={() => handleClubLeaveDialog(false)}
         onConfirm={() => handleClubLeaveDialog(true)}
       />
+      <ClubDisbandDialog
+        open={disbandDialogVisible}
+        onCancel={() => setDisbandDialogVisible(false)}
+        onDisbandSelect={disbandClub}
+      />
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps, Redirect } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
   ShelfEntry,
-  GoogleBooks,
   Services,
+  FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -15,8 +15,7 @@ import {
   Box,
   Container,
 } from '@material-ui/core';
-import { MoreVert, ArrowBackIos } from '@material-ui/icons';
-import AdapterLink from '../../components/AdapterLink';
+import { ArrowBackIos } from '@material-ui/icons';
 import Header from '../../components/Header';
 import BookList from './shelf-view/BookList';
 import BookSearch from '../books/BookSearch';
@@ -66,16 +65,13 @@ export default function UpdateBook(props: UpdateBookProps) {
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [wantToRead, setWantToRead] = React.useState<ShelfEntry[]>([]);
-  const [searchedBooks, setSearchedBooks] = React.useState<ShelfEntry[]>([]);
-  const [bookToRead, setBookToRead] = React.useState<ShelfEntry | null>(null);
+  const [searchedBooks, setSearchedBooks] = React.useState<
+    FilterAutoMongoKeys<ShelfEntry>[]
+  >([]);
+  const [bookToRead, setBookToRead] = React.useState<
+    ShelfEntry | FilterAutoMongoKeys<ShelfEntry> | null
+  >(null);
   const [newBookForShelf, setNewBookForShelf] = React.useState<boolean>(false);
-  const [backToClub, setBackToClub] = React.useState<boolean>(false);
-
-  useEffect(() => {
-    if (club && (!user || user._id !== club.ownerId)) {
-      setBackToClub(true);
-    }
-  }, [club, user]);
 
   useEffect(() => {
     const getClubFun = async () => {
@@ -98,8 +94,8 @@ export default function UpdateBook(props: UpdateBookProps) {
   }, [clubId]);
 
   function onSubmitSelectedBooks(
-    selectedBooks: ShelfEntry[],
-    bookToRead: ShelfEntry | null
+    selectedBooks: FilterAutoMongoKeys<ShelfEntry>[],
+    bookToRead: FilterAutoMongoKeys<ShelfEntry> | null
   ) {
     setSearchedBooks(selectedBooks);
     setBookToRead(bookToRead);
@@ -111,7 +107,7 @@ export default function UpdateBook(props: UpdateBookProps) {
       return;
     }
     const addToWantToRead = searchedBooks.filter(
-      book => book._id !== bookToRead._id
+      book => book.sourceId !== bookToRead.sourceId
     );
     const result = await updateCurrentlyReadBook(
       clubId,
@@ -131,7 +127,7 @@ export default function UpdateBook(props: UpdateBookProps) {
   }
 
   function onWantToReadSelect(bookId: string) {
-    const getBookToRead = wantToRead.find(book => book._id === bookId);
+    const getBookToRead = wantToRead.find(book => book.sourceId === bookId);
     if (getBookToRead) {
       setBookToRead(getBookToRead);
       setNewBookForShelf(false);
@@ -178,10 +174,6 @@ export default function UpdateBook(props: UpdateBookProps) {
       "Search for a new book to set as your current read. Any books you don't select will be added to your club's Want to Read list.";
   }
 
-  if (backToClub) {
-    return <Redirect to={`/clubs/${clubId}`} />;
-  }
-
   return (
     <div>
       <Header
@@ -219,10 +211,12 @@ export default function UpdateBook(props: UpdateBookProps) {
               </Typography>
               <BookList
                 data={wantToRead}
-                primary={'radio'}
+                primary="radio"
                 onRadioPress={onWantToReadSelect}
                 radioValue={
-                  bookToRead && bookToRead._id ? bookToRead._id : 'none'
+                  bookToRead && bookToRead.sourceId
+                    ? bookToRead.sourceId
+                    : 'none'
                 }
               />
             </div>
@@ -233,10 +227,12 @@ export default function UpdateBook(props: UpdateBookProps) {
             </Typography>
             <BookSearch
               onSubmitBooks={onSubmitSelectedBooks}
-              maxSelected={3}
+              maxSelected={9}
               radioValue={
-                bookToRead && bookToRead._id ? bookToRead._id : 'none'
+                bookToRead && bookToRead.sourceId ? bookToRead.sourceId : 'none'
               }
+              primary="radio"
+              secondary="delete"
             />
           </div>
           <div className={classes.saveButtonContainer}>

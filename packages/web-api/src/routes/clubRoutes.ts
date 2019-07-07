@@ -8,20 +8,22 @@ import {
   VoiceChannel,
   GuildMember,
 } from 'discord.js';
-import { check, validationResult } from 'express-validator/check';
+import { check, validationResult } from 'express-validator';
 import {
   Club,
   FilterAutoMongoKeys,
   ReadingState,
   Services,
   ShelfEntry,
+  User,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
-import { ClubDoc } from '../../typings';
+import { ClubDoc, UserDoc } from '../../typings';
+import { getUser } from '../services/user';
 
 const router = express.Router();
 
@@ -36,6 +38,17 @@ const getCountableMembersInChannel = (
   (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
     isInChannel(m, club)
   );
+
+const getUserChannels = (guild: Guild, discordId: string) => {
+  const channels = guild.channels.filter(c => {
+    const cTyped = c as TextChannel | VoiceChannel;
+    return (
+      (c.type === 'text' || c.type === 'voice') &&
+      cTyped.members.some(m => m.id === discordId)
+    );
+  });
+  return channels;
+};
 
 async function getChannelMembers(guild: Guild, club: ClubDoc) {
   let discordChannel = guild.channels.find(c => c.id === club.channelId);
@@ -56,18 +69,17 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     .map(mem => {
       const user = users.find(u => u.discordId === mem.id);
       if (user) {
+        const userObj: User = user.toObject();
         const result = {
-          bio: user.bio,
+          ...userObj,
+          name: userObj.name ? userObj.name : mem.user.username,
           discordUsername: mem.user.username,
           discordId: mem.id,
-          name: user.name,
           photoUrl:
             user.photoUrl ||
             mem.user.avatarURL ||
             mem.user.displayAvatarURL ||
             mem.user.defaultAvatarURL,
-          readingSpeed: user.readingSpeed,
-          userId: user.id,
         };
         return result;
       } else {
@@ -77,25 +89,31 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
         return null;
       }
     })
-    .filter(g => g !== null);
+    .filter(g => g !== null)
+    .sort((a, b) => a.name.localeCompare(b.name));
   return guildMembers;
 }
 
 // TODO: Need to add checks here: Is the club full? Is the club private? => Don't return
-// TODO: Paginate/feed-ify
 router.get('/', async (req, res, next) => {
   const { after, pageSize, readingSpeed } = req.query;
+  const { userId } = req.session;
+  let user: UserDoc | undefined;
+  if (userId) {
+    user = await getUser(userId);
+  }
   try {
     // Calculate number of documents to skip
     const query: any = {
       private: false,
     };
     if (after) {
-      query._id = { $gt: after };
+      query._id = { $lt: after };
     }
     if (readingSpeed) {
       query.readingSpeed = { $eq: readingSpeed };
     }
+
     const size = Number.parseInt(pageSize || 0);
     const limit = Math.min(Math.max(size, 10), 50);
     const clubs = await ClubModel.find(query)
@@ -110,17 +128,33 @@ router.get('/', async (req, res, next) => {
     const client = ReadingDiscordBot.getInstance();
     const guild = client.guilds.first();
     const clubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
-      .map(club => {
+      .map(clubDoc => {
         let discordChannel: GuildChannel | null = guild.channels.find(
-          c => c.id === club.channelId
+          c => c.id === clubDoc.channelId
         );
         if (!discordChannel) {
           return null;
         }
-        const memberCount = getCountableMembersInChannel(discordChannel, club)
-          .size;
+        const memberCount = getCountableMembersInChannel(
+          discordChannel,
+          clubDoc
+        ).size;
+        const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
+          createdAt: string;
+          updatedAt: string;
+        } = {
+          ...clubDoc.toObject(),
+          createdAt:
+            clubDoc.createdAt instanceof Date
+              ? clubDoc.createdAt.toISOString()
+              : clubDoc.createdAt,
+          updatedAt:
+            clubDoc.updatedAt instanceof Date
+              ? clubDoc.updatedAt.toISOString()
+              : clubDoc.updatedAt,
+        };
         const obj: Services.GetClubs['clubs'][0] = {
-          ...club.toObject(),
+          ...club,
           guildId: guild.id,
           memberCount,
         };
@@ -141,47 +175,52 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
-    const club = await ClubModel.findById(id);
-    if (!club) {
-      res.status(404).send(null);
+    const clubDoc = await ClubModel.findById(id);
+    if (!clubDoc) {
+      res.sendStatus(404);
       return;
     }
-    if (club.channelSource === 'discord') {
+    if (clubDoc.channelSource === 'discord') {
       const client = ReadingDiscordBot.getInstance();
       const guild = client.guilds.first();
-      const guildMembers = await getChannelMembers(guild, club);
+      const guildMembers = await getChannelMembers(guild, clubDoc);
 
       const clubWithDiscord: Services.GetClubById = {
-        _id: club.id,
-        name: club.name,
-        ownerId: club.ownerId,
-        ownerDiscordId: club.ownerDiscordId,
-        shelf: club.shelf,
-        bio: club.bio,
+        _id: clubDoc.id,
+        name: clubDoc.name,
+        ownerId: clubDoc.ownerId,
+        ownerDiscordId: clubDoc.ownerDiscordId,
+        shelf: clubDoc.shelf,
+        bio: clubDoc.bio,
         members: guildMembers,
-        maxMembers: club.maxMembers,
-        vibe: club.vibe,
-        readingSpeed: club.readingSpeed,
+        maxMembers: clubDoc.maxMembers,
+        vibe: clubDoc.vibe,
+        readingSpeed: clubDoc.readingSpeed,
         guildId: guild.id,
-        channelSource: club.channelSource,
-        channelId: club.channelId,
-        private: club.private,
-        //TODO: Later
-        createdAt: (club as any).createdAt,
-        updatedAt: (club as any).updatedAt,
+        channelSource: clubDoc.channelSource,
+        channelId: clubDoc.channelId,
+        private: clubDoc.private,
+        createdAt:
+          clubDoc.createdAt instanceof Date
+            ? clubDoc.createdAt.toISOString()
+            : clubDoc.createdAt,
+        updatedAt:
+          clubDoc.updatedAt instanceof Date
+            ? clubDoc.updatedAt.toISOString()
+            : clubDoc.updatedAt,
       };
       res.status(200).send(clubWithDiscord);
     } else {
       res
         .status(500)
-        .send(`Error: unknown channelSource: ${club.channelSource}`);
+        .send(`Error: unknown channelSource: ${clubDoc.channelSource}`);
       return;
     }
   } catch (err) {
     if (err.name) {
       switch (err.name) {
         case 'CastError':
-          res.status(404).send(null);
+          res.sendStatus(404);
           return;
         default:
           break;
@@ -191,6 +230,110 @@ router.get('/:id', async (req, res, next) => {
     return next(err);
   }
 });
+
+// Gets all of the clubs the specified user is currently in
+router.post('/getUserClubs', async (req, res, next) => {
+  const user: User = req.body.user;
+  // TODO: Validation that object passed is actually of User type
+  if (user.discordId) {
+    const client = ReadingDiscordBot.getInstance();
+    const guild = client.guilds.first();
+    const { discordId } = user;
+    const channels = getUserChannels(guild, discordId);
+    const channelIds = channels.map(c => c.id);
+    try {
+      const clubs = await ClubModel.find({
+        channelSource: 'discord',
+        channelId: {
+          $in: channelIds,
+        },
+      });
+      if (!clubs) {
+        res.sendStatus(404);
+        return;
+      }
+      const clubsWithMemberCount = clubs.map(cl => {
+        let memberCount = 0;
+        if (cl.channelSource === 'discord') {
+          const channel = channels.find(ch => ch.id === cl.channelId) as
+            | TextChannel
+            | VoiceChannel;
+          if (channel) {
+            memberCount = channel.members.size;
+          }
+        }
+        return { ...cl.toObject(), memberCount };
+      });
+      res.status(200).json(clubsWithMemberCount);
+    } catch (err) {
+      console.log('Failed to get clubs for user ' + user._id);
+      return next(err);
+    }
+  }
+});
+
+// Return clubs from array of clubId's.
+router.post(
+  '/clubsById',
+  check('clubIds').isArray(),
+  async (req, res, next) => {
+    const { clubIds } = req.body;
+    try {
+      const clubs = await ClubModel.find({
+        _id: {
+          $in: clubIds,
+        },
+      });
+      if (!clubs) {
+        res.sendStatus(404);
+        return;
+      }
+      const client = ReadingDiscordBot.getInstance();
+      const guild = client.guilds.first();
+      const guildMembersPromises: Promise<{
+        club: ClubDoc;
+        guildMembers: any[];
+      }>[] = [];
+      let guildErr: Error | null = null;
+      clubs.forEach(c => {
+        if (c.channelSource === 'discord') {
+          guildMembersPromises.push(
+            getChannelMembers(guild, c).then(r => {
+              return { club: c, guildMembers: r };
+            })
+          );
+        } else {
+          guildErr = new Error(
+            `Error: unknown channelSource: ${c.channelSource}`
+          );
+        }
+      });
+      if (guildErr) {
+        res
+          .status(500)
+          // TODO: Check if it's appropriate to send errors like this.
+          .send(guildErr);
+        return;
+      }
+
+      const allGuildMembers = await Promise.all(guildMembersPromises);
+      const clubsWithMemberObjs = allGuildMembers.map(gmObj => {
+        if (gmObj.club.channelSource === 'discord') {
+          return {
+            ...gmObj.club.toObject(),
+            members: gmObj.guildMembers,
+            guildId: guild.id,
+          };
+        }
+        // TODO: Add other channel sources
+      });
+      res.status(200).send(clubsWithMemberObjs);
+    } catch (err) {
+      console.log('Failed to get clubs.', err);
+      return next(err);
+    }
+  }
+);
 
 router.get('/my-clubs', isAuthenticated, async (req, res, next) => {
   const discordId = req.user.discordId;
@@ -314,30 +457,56 @@ router.post('/', isAuthenticated, async (req, res, next) => {
   }
 });
 
-// Modify a club
-// router.put('/:id', isAuthenticated, async (req, res, next) => {
-//   const editedClub = req.body;
-//   try {
-//     const doc = await ClubModel.findByIdAndUpdate(req.params.id, editedClub, {
-//       new: true,
-//     }).exec();
-//     res.sendStatus(200);
-//   } catch (err) {
-//     console.log(`Failed to modify club ${req.params.id}`, err);
-//     return next(err);
-//   }
-// });
+// Delete a club
+router.delete('/:clubId', isAuthenticated, async (req, res) => {
+  const { user } = req;
+  const { clubId } = req.params;
 
-// // Delete a club
-// router.delete('/:id', isAuthenticated, async (req, res, next) => {
-//   try {
-//     const record = await ClubModel.remove({ _id: req.params.id });
-//     res.sendStatus(204);
-//   } catch (err) {
-//     console.log(`Failed to delete club ${req.params.id}`, err);
-//     return next(err);
-//   }
-// });
+  let clubDoc: ClubDoc;
+  try {
+    clubDoc = await ClubModel.findById(clubId);
+  } catch (err) {
+    res.status(400).send(`Could not find club ${clubId}`);
+    return;
+  }
+
+  const discordClient = ReadingDiscordBot.getInstance();
+  const guild = discordClient.guilds.first();
+  const channel: GuildChannel = guild.channels.find(
+    c => c.id === clubDoc.channelId
+  );
+  if (!channel) {
+    res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
+    return;
+  }
+
+  const memberInChannel = (channel as VoiceChannel | TextChannel).members.find(
+    m => m.id === user.discordId
+  );
+  if (memberInChannel && memberInChannel.hasPermission('MANAGE_CHANNELS')) {
+    try {
+      const deletedChannel = await channel.delete();
+      console.log(
+        `Deleted discord channel {${channel.id}, ${channel.name}} by user ${user.id}`
+      );
+      clubDoc = await clubDoc.remove();
+      console.log(
+        `Deleted club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+      );
+      res.status(204).send(`Deleted channel ${deletedChannel.id}`);
+    } catch (err) {
+      console.log(
+        `Failed to delete club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+      );
+      res.status(500).send(err);
+    }
+  } else {
+    res.status(401).send("You don't have permission to delete this channel.");
+    console.log(
+      `User ${user.id} failed to authenticate to delete club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
+    );
+  }
+});
 
 // Update a club's currently read book
 router.put(
@@ -461,7 +630,7 @@ router.put(
 
 // Modify current user's club membership
 router.put(
-  '/:id/membership',
+  '/:clubId/membership',
   isAuthenticated,
   check('isMember').isBoolean(),
   async (req, res, next) => {
@@ -471,7 +640,7 @@ router.put(
     }
     const userId = req.user._id;
     const userDiscordId = req.user.discordId;
-    const clubId = req.params.id;
+    const { clubId } = req.params;
     const { isMember } = req.body;
 
     let club: ClubDoc;

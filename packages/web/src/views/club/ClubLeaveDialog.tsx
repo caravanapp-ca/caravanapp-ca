@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
     transform: 'translate(-50%, -50%)',
   },
   dialogTitle: {
-    fontWeight: 'bold',
+    fontWeight: 600,
     fontSize: '50px',
   },
 }));

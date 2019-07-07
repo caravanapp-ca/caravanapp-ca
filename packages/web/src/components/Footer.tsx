@@ -16,7 +16,11 @@ function MadeWithLove() {
       Built with{' '}
       <span role="img" aria-label="love">
         ❤️
-      </span>
+      </span>{' '}
+      for{' '}
+      <span role="img" aria-label="books">
+        📖
+      </span>{' '}
       by the Caravan team.
     </Typography>
   );

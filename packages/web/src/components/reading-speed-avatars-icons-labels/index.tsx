@@ -40,13 +40,25 @@ export function readingSpeedIcons(
   return <></>;
 }
 
-export function readingSpeedLabels(speed: ReadingSpeed): string {
+export function readingSpeedLabels(
+  speed: ReadingSpeed,
+  type?: 'label' | 'description'
+): string {
   switch (speed) {
     case 'fast':
+      if (type === 'description') {
+        return 'Finishes a book every 1-2 weeks';
+      }
       return 'Fast';
     case 'moderate':
+      if (type === 'description') {
+        return 'Finishes a book every 2-4 weeks';
+      }
       return 'Moderate';
     case 'slow':
+      if (type === 'description') {
+        return 'Finishes a book every 4+ weeks';
+      }
       return 'Slow';
   }
 }

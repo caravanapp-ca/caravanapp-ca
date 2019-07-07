@@ -1,15 +1,11 @@
+import { GuildMember } from 'discord.js';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
-import { GuildMember } from 'discord.js';
 
 declare module '@caravan/buddy-reading-types' {
-  type SubtractKeys<T, U> = {
-    [K in keyof T]: K extends keyof U ? never : K
-  }[keyof T];
-  type Subtract<T, U> = { [K in SubtractKeys<T, U>]: T[K] };
-  export type FilterAutoMongoKeys<Base> = Subtract<
-    Subtract<Base, MongoTimestamps>,
-    DocumentFields
+  export type FilterAutoMongoKeys<Base> = Omit<
+    Base,
+    'createdAt' | 'updatedAt' | '__v' | '_id'
   >;
   // TODO: Improve by nesting the SameKeysAs
   export type SameKeysAs<Base> = { [Key in keyof Base]: any };
@@ -56,8 +52,8 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export interface ShelfEntry extends DocumentFields, MongoTimestamps {
-    amazonId?: string;
-    goodReadsId?: string;
+    sourceId: string;
+    source: BookSource;
     isbn?: string;
     readingState: ReadingState;
     startedReading?: Date;
@@ -69,13 +65,38 @@ declare module '@caravan/buddy-reading-types' {
     genres: string[];
   }
 
+  export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {
+    readingState: ReadingState;
+    clubId?: string;
+    club?: Club;
+  }
+
+  export type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
+
+  export interface UserSelectedGenre {
+    key: string;
+    name: string;
+  }
+
   export interface User extends DocumentFields, MongoTimestamps {
     bio?: string;
     discordId: string;
+    discordUsername?: string;
+    goodreadsUrl?: string;
+    website?: string;
     name?: string;
     photoUrl?: string;
-    readingSpeed?: string;
+    smallPhotoUrl?: string;
+    readingSpeed?: ReadingSpeed;
+    age?: number;
+    gender?: string;
+    location?: string;
     isBot: boolean;
+    urlSlug: string;
+    selectedGenres: UserSelectedGenre[];
+    questions: UserQA[];
+    shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
+    onboardingVersion: number;
   }
 
   export interface Genres {
@@ -92,6 +113,14 @@ declare module '@caravan/buddy-reading-types' {
     subgenres: string[];
   }
 
+  export interface UserQA {
+    id: string;
+    title: string;
+    answer: string;
+    userVisible: boolean;
+    sort: number;
+  }
+
   export interface ProfileQuestions {
     _id: string;
     questions: ProfileQuestion[];
@@ -106,9 +135,33 @@ declare module '@caravan/buddy-reading-types' {
     max: number;
   }
 
+  export type EditableUserField =
+    | 'bio'
+    | 'goodreadsUrl'
+    | 'website'
+    | 'name'
+    | 'photoUrl'
+    | 'readingSpeed'
+    | 'age'
+    | 'gender'
+    | 'location'
+    | 'selectedGenres'
+    | 'questions'
+    | 'shelf';
+
+  export type BookSource =
+    | 'google'
+    | 'wattpad'
+    | 'amazon'
+    | 'goodreads'
+    | 'custom'
+    | 'unknown';
+
   export type ChannelSource = 'discord';
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';
+
+  export type UserShelfReadingState = 'notStarted' | 'read';
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
 
@@ -127,6 +180,7 @@ declare module '@caravan/buddy-reading-types' {
         _id: string;
         name: string;
         ownerId: string;
+        guildId: string;
         shelf: any[];
         bio?: string;
         maxMembers: number;

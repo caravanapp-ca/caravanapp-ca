@@ -1,45 +1,27 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
-  ShelfEntry,
   ReadingSpeed,
-  GroupVibe,
   Services,
-  Genre,
-  Genres,
+  UserSelectedGenre,
 } from '@caravan/buddy-reading-types';
+import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import Radio from '@material-ui/core/Radio';
 import purple from '@material-ui/core/colors/purple';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import AdapterLink from '../../components/AdapterLink';
-import Header from '../../components/Header';
-import { saveReadingPreferences } from '../../services/onboarding';
 import { getAllGenres } from '../../services/genre';
 import {
   readingSpeedIcons,
   readingSpeedLabels,
-  readingSpeedSubtitles,
 } from '../../components/reading-speed-avatars-icons-labels';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: purple,
-    secondary: {
-      main: '#7289da',
-    },
-  },
-});
+import ListElementAvatar from '../../components/ListElementAvatar';
+import GenreChip from '../../components/GenreChip';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -89,16 +71,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ReadingPreferencesRouteParams {
-  id: string;
-}
-
 interface ReadingPreferencesProps {
   user: User | null;
-  onContinue: (genres: string[], readingSpeed: string) => void;
+  onContinue: () => void;
   continuing: boolean;
-  selectedGenres: string[];
-  onGenreSelected: (genre: string, selected: boolean) => void;
+  selectedGenres: UserSelectedGenre[];
+  onGenreSelected: (
+    genreKey: string,
+    genreName: string,
+    selected: boolean
+  ) => void;
   selectedSpeed: string;
   onSetSelectedSpeed: (speed: ReadingSpeed) => void;
 }
@@ -106,16 +88,7 @@ interface ReadingPreferencesProps {
 export default function ReadingPreferences(props: ReadingPreferencesProps) {
   const classes = useStyles();
 
-  const centerComponent = (
-    <Typography variant="h6">Reading Preferences</Typography>
-  );
-
   const [genreDoc, setGenres] = React.useState<Services.GetGenres | null>(null);
-
-  const [
-    selectedReadingPreferences,
-    setSelectedReadingPreferences,
-  ] = React.useState<Services.ReadingPreferencesResult | null>(null);
 
   const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 
@@ -135,8 +108,10 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
       <div className={classes.hero}>
         <Typography variant="h5">Welcome to</Typography>
         <div style={{ display: 'flex' }}>
-          <Typography variant="h3">Caravan</Typography>
-          <Typography variant="h3" color="primary">
+          <Typography variant="h2" style={{ fontWeight: 600 }}>
+            Caravan
+          </Typography>
+          <Typography variant="h2" color="primary" style={{ fontWeight: 600 }}>
             .
           </Typography>
         </div>
@@ -145,12 +120,12 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
       <div className={classes.heroInfo}>
         <Typography variant="h6">
           To get started, let us know your reading preferences to help us find
-          groups you'll love.
+          clubs you'll love.
         </Typography>
       </div>
       <Container className={classes.formContainer} maxWidth="md">
         <div className={classes.sectionContainer}>
-          <Typography variant="subtitle1" className={classes.sectionHeader}>
+          <Typography className={classes.sectionHeader}>
             How fast do you normally read?
           </Typography>
           <div
@@ -160,67 +135,53 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
             }}
           >
             {readingSpeeds.map(speed => (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                {readingSpeedIcons(speed, 'icon')}
-                <Radio
-                  checked={props.selectedSpeed === speed}
-                  onChange={() => props.onSetSelectedSpeed(speed)}
-                  value={speed}
-                  color="primary"
-                  style={{ marginLeft: 8 }}
-                />
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography
-                    style={{
-                      marginLeft: 8,
-                      fontWeight: 'bold',
-                      marginRight: 8,
-                    }}
-                    variant="h6"
-                  >
-                    {readingSpeedLabels(speed)}{' '}
-                  </Typography>
-                  <Typography variant="subtitle2">
-                    {readingSpeedSubtitles(speed)}
-                  </Typography>
-                </div>
-              </div>
+              <ListElementAvatar
+                key={speed}
+                primaryElement={
+                  <Radio
+                    checked={props.selectedSpeed === speed}
+                    onChange={() => props.onSetSelectedSpeed(speed)}
+                    value={speed}
+                    name={`radio-button-${speed}`}
+                    color="primary"
+                  />
+                }
+                avatarElement={readingSpeedIcons(speed, 'avatar')}
+                primaryText={readingSpeedLabels(speed)}
+                secondaryText={readingSpeedLabels(speed, 'description')}
+              />
             ))}
           </div>
         </div>
 
         <div className={classes.sectionContainer}>
-          <Typography className={classes.sectionHeader} variant="subtitle1">
+          <Typography className={classes.sectionHeader}>
             Select some genres you're interested in reading.
           </Typography>
-          {/* <div className={classes.genreContainer}> */}
-          <Grid container spacing={3}>
+          <div>
             {genreDoc &&
               genreDoc.mainGenres.map((genreKey: string) => {
-                const genreSelected = props.selectedGenres.includes(genreKey);
-                console.log(genreKey);
+                const genreSelected = props.selectedGenres
+                  .map(g => g.key)
+                  .includes(genreKey);
                 return (
-                  <Grid item lg={3} md={4} xs={6} key={genreKey}>
-                    <Button
-                      className={classes.button}
-                      color={genreSelected ? 'primary' : 'default'}
-                      variant="contained"
-                      onClick={() =>
-                        props.onGenreSelected(genreKey, !genreSelected)
-                      }
-                    >
-                      {genreDoc.genres[genreKey].name}
-                    </Button>
-                  </Grid>
+                  <GenreChip
+                    key={genreKey}
+                    genreKey={genreKey}
+                    name={genreDoc.genres[genreKey].name}
+                    active={genreSelected}
+                    clickable={true}
+                    onClick={() =>
+                      props.onGenreSelected(
+                        genreKey,
+                        genreDoc.genres[genreKey].name,
+                        !genreSelected
+                      )
+                    }
+                  />
                 );
               })}
-          </Grid>
+          </div>
         </div>
 
         <div className={classes.sectionContainer}>
@@ -232,16 +193,13 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
             }}
           >
             {!props.continuing && (
-              <Button
-                variant="contained"
+              <Fab
                 disabled={props.selectedGenres.length === 0}
-                onClick={() =>
-                  props.onContinue(props.selectedGenres, props.selectedSpeed)
-                }
-                color="primary"
+                onClick={() => props.onContinue()}
+                color="secondary"
               >
-                CONTINUE
-              </Button>
+                <ForwardIcon />
+              </Fab>
             )}
             {props.continuing && <CircularProgress />}
           </div>

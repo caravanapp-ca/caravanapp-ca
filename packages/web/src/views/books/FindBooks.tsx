@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   },
   headerTitle: {
     flexGrow: 1,
-    fontWeight: 'bold',
+    fontWeight: 600,
   },
   moreButton: {
     marginLeft: theme.spacing(2),
@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
   },
   doneButton: {
     fontSize: '20px',
-    fontWeight: 'bold',
+    fontWeight: 600,
     color: 'white',
     backgroundColor: '#7289da',
     borderRadius: 30,

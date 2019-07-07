@@ -11,6 +11,7 @@ interface HeaderProps {
   rightComponent?: JSX.Element;
   centerComponent?: JSX.Element;
   children?: React.ReactElement;
+  showBorder?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -57,7 +58,7 @@ function ElevationScroll(props: ScrollProps) {
 
 export default function ButtonAppBar(props: HeaderProps) {
   const classes = useStyles();
-  const { leftComponent, centerComponent, rightComponent } = props;
+  const { leftComponent, centerComponent, rightComponent, showBorder } = props;
 
   return (
     <ElevationScroll {...props}>
@@ -87,7 +88,7 @@ export default function ButtonAppBar(props: HeaderProps) {
             </Grid>
           </Grid>
         </Toolbar>
-        <div className={classes.bottomBorder} />
+        {showBorder !== false && <div className={classes.bottomBorder} />}
       </AppBar>
     </ElevationScroll>
   );
