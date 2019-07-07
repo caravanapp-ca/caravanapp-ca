@@ -13,11 +13,26 @@ const DiscordClientSecret = process.env.DISCORD_CLIENT_SECRET;
 const DiscordBase64Credentials = btoa(
   `${DiscordClientId}:${DiscordClientSecret}`
 );
-const DiscordOAuth2Url = (state: string) =>
-  `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${DiscordRedirectUri}&response_type=code&scope=${DiscordPermissions}&state=${state}`;
-const GetDiscordTokenCallbackUri = (code: string, redirectUri?: string) =>
-  `${DiscordApiUrl}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri ||
+
+const getDiscordRedirectUri = (host: string) => {
+  if (process.env.GAE_ENV === 'production') {
+    // For max security, do no accept header as part of redirect url in production
+    return DiscordRedirectUri;
+  }
+  // In staging environments and local environments, meh.
+  const prefix = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  return encodeURIComponent(`${prefix}://${host}/api/auth/discord/callback`);
+};
+
+const DiscordOAuth2Url = (state: string, host: string) => {
+  const redirectUri = getDiscordRedirectUri(host);
+  return `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${DiscordPermissions}&state=${state}`;
+};
+const GetDiscordTokenCallbackUri = (code: string, host: string) => {
+  const redirectUri = getDiscordRedirectUri(host);
+  return `${DiscordApiUrl}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri ||
     DiscordRedirectUri}`;
+};
 const GetDiscordTokenRefreshCallbackUri = (refreshToken: string) =>
   `${DiscordApiUrl}/oauth2/token?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissions}`;
 
@@ -74,8 +89,8 @@ const ReadingDiscordBot = (() => {
       return userResponse.data as DiscordUserResponseData;
     },
 
-    getToken: async (code: string, redirectUri?: string) => {
-      const tokenUri = GetDiscordTokenCallbackUri(code, redirectUri);
+    getToken: async (code: string, host: string) => {
+      const tokenUri = GetDiscordTokenCallbackUri(code, host);
       const tokenResponse = await fetch(tokenUri, {
         method: 'POST',
         headers: {

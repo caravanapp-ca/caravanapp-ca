@@ -28,7 +28,7 @@ router.get('/discord/login', (req, res) => {
     res.status(400).send('OAuth2 state required.');
     return;
   }
-  res.redirect(DiscordOAuth2Url(state));
+  res.redirect(DiscordOAuth2Url(state, req.headers.host));
 });
 
 function convertTokenResponseToModel(
@@ -85,18 +85,10 @@ router.get('/discord/callback', async (req, res) => {
     return;
   }
   let successfulAuthentication = true;
-  let tokenResponseData: OAuth2TokenResponseData;
-  if (process.env.GAE_ENV === 'production') {
-    // For max security, do no accept header as part of redirect url in production
-    tokenResponseData = await ReadingDiscordBot.getToken(code);
-  } else {
-    // In staging environments and local environments, meh.
-    const prefix = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const host = encodeURIComponent(
-      `${prefix}://${req.headers.host}/api/auth/discord/callback`
-    );
-    tokenResponseData = await ReadingDiscordBot.getToken(code, host);
-  }
+  let tokenResponseData = await ReadingDiscordBot.getToken(
+    code,
+    req.headers.host
+  );
 
   if (tokenResponseData.error) {
     const encodedErrorMessage = encodeURIComponent(
