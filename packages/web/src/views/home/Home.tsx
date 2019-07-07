@@ -153,6 +153,13 @@ export default function Home(props: HomeProps) {
     }
   }
 
+  function openChat() {
+    window.open(
+      'https://discordapp.com/channels/592761082523680798/592761082523680806',
+      '_blank'
+    );
+  }
+
   const centerComponent = (
     <img
       src={logo}
@@ -251,14 +258,9 @@ export default function Home(props: HomeProps) {
                         <Button
                           variant="contained"
                           color="secondary"
-                          onClick={() =>
-                            window.open(
-                              'https://discordapp.com/channels/592761082523680798/592810790168428564',
-                              '_blank'
-                            )
-                          }
+                          onClick={() => openChat()}
                         >
-                          <Typography variant="button">GO TO CHAT</Typography>
+                          <Typography variant="button">OPEN CHAT</Typography>
                         </Button>
                       </Grid>
                       <Grid item>
@@ -325,7 +327,8 @@ export default function Home(props: HomeProps) {
         onClose={handleProfileMenuClose}
       >
         <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
-        <MenuItem onClick={logout}>Logout</MenuItem>
+        <MenuItem onClick={() => openChat()}>Open chat</MenuItem>
+        <MenuItem onClick={logout}>Log out</MenuItem>
       </Menu>
     </>
   );

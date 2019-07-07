@@ -344,7 +344,7 @@ export default function ClubComponent(props: ClubProps) {
                       variant="button"
                       style={{ textAlign: 'center' }}
                     >
-                      GO TO CHAT IN WEB
+                      OPEN CHAT IN WEB
                     </Typography>
                   </Button>
                 )}
@@ -359,7 +359,7 @@ export default function ClubComponent(props: ClubProps) {
                       variant="button"
                       style={{ textAlign: 'center' }}
                     >
-                      GO TO CHAT IN APP
+                      OPEN CHAT IN APP
                     </Typography>
                   </Button>
                 )}
