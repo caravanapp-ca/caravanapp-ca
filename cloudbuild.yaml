@@ -17,6 +17,6 @@ steps:
       - 'PORT=3001'
   - name: gcr.io/cloud-builders/yarn
     args: ['build']
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'app.production.yaml', ' --no-promote']
+  - name: gcr.io/cloud-builders/yarn
+    args: ['deploy-only-no-promote:production']
 timeout: '1600s'
