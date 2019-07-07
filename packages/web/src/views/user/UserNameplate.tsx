@@ -156,14 +156,14 @@ export default function UserNameplate(props: UserNameplateProps) {
             }
             style={{ marginTop: theme.spacing(1) }}
           >
-            <Typography variant="button">{msgBtnLabelCaps}</Typography>
             <DiscordLogo
               style={{
-                marginLeft: theme.spacing(1),
+                marginRight: theme.spacing(1),
                 height: 28,
                 width: 28,
               }}
             />
+            <Typography variant="button">{msgBtnLabelCaps}</Typography>
           </Button>
         )}
       </>

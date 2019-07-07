@@ -17,7 +17,6 @@ import {
   useMediaQuery,
   Fab,
   IconButton,
-  Grid,
 } from '@material-ui/core';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ChatIcon from '@material-ui/icons/Chat';
@@ -158,7 +157,6 @@ export default function ClubComponent(props: ClubProps) {
       isOpen: false,
       handleClose: onSnackbarClose,
       variant: 'info',
-      message: 'Copied link to clipboard!',
     }
   );
 
@@ -247,7 +245,13 @@ export default function ClubComponent(props: ClubProps) {
       return <Redirect to="/clubs" />;
     } else {
       // club not deleted successfully
-      // TODO: show warning snackbar indicating club could not be deleted
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'warning',
+        message:
+          'Whoops! Something has gone wrong and Caravan was unable to delete your club.',
+      });
     }
   };
 
@@ -258,7 +262,12 @@ export default function ClubComponent(props: ClubProps) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    setSnackbarProps({ ...snackbarProps, isOpen: true });
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'info',
+      message: 'Copied link to clipboard!',
+    });
   };
 
   async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
@@ -335,7 +344,7 @@ export default function ClubComponent(props: ClubProps) {
                       variant="button"
                       style={{ textAlign: 'center' }}
                     >
-                      OPEN CHAT IN WEB
+                      GO TO CHAT IN WEB
                     </Typography>
                   </Button>
                 )}
@@ -350,7 +359,7 @@ export default function ClubComponent(props: ClubProps) {
                       variant="button"
                       style={{ textAlign: 'center' }}
                     >
-                      OPEN CHAT IN APP
+                      GO TO CHAT IN APP
                     </Typography>
                   </Button>
                 )}

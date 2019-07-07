@@ -246,15 +246,31 @@ export default function Home(props: HomeProps) {
                     </Grid>
                   )}
                   {user && showWelcomeMessage && (
-                    <Grid item>
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => setShowWelcomeMessage(false)}
-                      >
-                        <Typography variant="button">CLOSE</Typography>
-                      </Button>
-                    </Grid>
+                    <>
+                      <Grid item>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() =>
+                            window.open(
+                              'https://discordapp.com/channels/592761082523680798/592810790168428564',
+                              '_blank'
+                            )
+                          }
+                        >
+                          <Typography variant="button">GO TO CHAT</Typography>
+                        </Button>
+                      </Grid>
+                      <Grid item>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => setShowWelcomeMessage(false)}
+                        >
+                          <Typography variant="button">CLOSE</Typography>
+                        </Button>
+                      </Grid>
+                    </>
                   )}
                 </Grid>
               </div>
