@@ -189,12 +189,17 @@ export default function BookSearch(props: BookSearchProps) {
           </IconButton>
           <InputBase
             className={classes.input}
-            placeholder="Search Google Books"
+            placeholder="Add a book"
             fullWidth
             value={bookSearchQuery}
             inputProps={{ 'aria-label': 'Add a Book' }}
             onChange={e => setBookSearchQuery(e.target.value)}
             onKeyDown={handleOnKeyDown}
+          />
+          <img
+            src="https://books.google.com/googlebooks/images/poweredby.png"
+            aria-label="Powered by Google"
+            className={classes.googleLogo}
           />
         </Paper>
         {searchResults && showPopper && (
