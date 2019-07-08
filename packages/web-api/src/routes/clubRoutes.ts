@@ -106,7 +106,7 @@ router.get('/', async (req, res, next) => {
   try {
     // Calculate number of documents to skip
     const query: any = {
-      unlisted: false,
+      unlisted: { $eq: false },
     };
     if (after) {
       query._id = { $lt: after };
@@ -114,7 +114,6 @@ router.get('/', async (req, res, next) => {
     if (readingSpeed) {
       query.readingSpeed = { $eq: readingSpeed };
     }
-
     const size = Number.parseInt(pageSize || 0);
     const limit = Math.min(Math.max(size, 10), 50);
     const clubs = await ClubModel.find(query)

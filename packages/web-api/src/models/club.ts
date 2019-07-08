@@ -51,7 +51,7 @@ const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   ownerDiscordId: { type: String },
   channelSource: { type: String, required: true }, // discord always for now
   channelId: { type: String, required: true },
-  unlisted: { type: String, required: true },
+  unlisted: { type: Boolean, required: true },
 };
 
 const clubSchema = new Schema<ClubDoc>(definition, {
