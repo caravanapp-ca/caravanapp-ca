@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import { Fab } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -23,6 +24,7 @@ import { getAllClubs } from '../../services/club';
 import { Service } from '../../common/service';
 import ClubCards from './ClubCards';
 import logo from '../../resources/logo.svg';
+import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -174,7 +176,7 @@ export default function Home(props: HomeProps) {
         {user ? (
           <IconButton
             edge="start"
-            color="inherit"
+            color="primary"
             aria-label="Add"
             component={AdapterLink}
             to="/clubs/create"
@@ -184,7 +186,7 @@ export default function Home(props: HomeProps) {
         ) : (
           <IconButton
             edge="start"
-            color="inherit"
+            color="primary"
             aria-label="Add"
             onClick={() => setLoginModalShown(true)}
           >
@@ -210,7 +212,11 @@ export default function Home(props: HomeProps) {
           <ArrowDropDown className={classes.headerArrowDown} />
         </div>
       ) : (
-        <JoinCaravanButton onClick={() => setLoginModalShown(true)} />
+        <Tooltip title="View profile" aria-label="View profile">
+          <IconButton onClick={() => setLoginModalShown(true)}>
+            <GenericGroupMemberAvatar />
+          </IconButton>
+        </Tooltip>
       )}
     </>
   );
