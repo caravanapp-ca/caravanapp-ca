@@ -28,6 +28,7 @@ import BookList from './shelf-view/BookList';
 import BookSearch from '../books/BookSearch';
 import { updateCurrentlyReadBook, getClub } from '../../services/club';
 import { getCurrentBook, getWantToRead } from './functions/ClubFunctions';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import HeaderTitle from '../../components/HeaderTitle';
 
 interface UpdateBookRouteParams {
@@ -225,17 +226,7 @@ export default function UpdateBook(props: UpdateBookProps) {
 
   const centerComponent = <HeaderTitle title="Manage Shelf" />;
 
-  // const rightComponent = (
-  //   <IconButton
-  //     edge="start"
-  //     color="inherit"
-  //     aria-label="More"
-  //     component={AdapterLink}
-  //     to="/"
-  //   >
-  //     <MoreVert />
-  //   </IconButton>
-  // );
+  const rightComponent = <ProfileHeaderIcon user={user} />;
 
   let searchLabel =
     "Or you can search for another book. Any books you don't select will be added to your club's Want to Read list.";
@@ -249,7 +240,7 @@ export default function UpdateBook(props: UpdateBookProps) {
       <Header
         leftComponent={leftComponent}
         centerComponent={centerComponent}
-        // rightComponent={rightComponent}
+        rightComponent={rightComponent}
       />
       <Container className={classes.container} maxWidth={'md'}>
         <Box>

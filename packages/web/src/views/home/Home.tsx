@@ -2,21 +2,16 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import { Fab } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import AddIcon from '@material-ui/icons/Add';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import { logout } from '../../services/user';
+import { washedTheme } from '../../theme';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
@@ -24,7 +19,7 @@ import { getAllClubs } from '../../services/club';
 import { Service } from '../../common/service';
 import ClubCards from './ClubCards';
 import logo from '../../resources/logo.svg';
-import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -41,8 +36,8 @@ const useStyles = makeStyles(theme => ({
   },
   headerAvatar: {
     marginLeft: 12,
-    width: 32,
-    height: 32,
+    width: 48,
+    height: 48,
   },
   headerArrowDown: {
     height: 20,
@@ -60,6 +55,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     margin: theme.spacing(1),
+  },
+  createClubIconCircle: {
+    backgroundColor: washedTheme.palette.primary.main,
+    marginRight: 16,
   },
 }));
 
@@ -89,7 +88,6 @@ export default function Home(props: HomeProps) {
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-  const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
@@ -97,11 +95,6 @@ export default function Home(props: HomeProps) {
     undefined
   );
   const [showLoadMore, setShowLoadMore] = React.useState(false);
-
-  const [
-    headerProfileMenuIsOpen,
-    setHeaderProfileMenuOpenState,
-  ] = React.useState(false);
 
   useEffect(() => {
     if (!showWelcomeMessage) {
@@ -111,7 +104,7 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     (async () => {
-      const pageSize = 50;
+      const pageSize = 24;
       const res = await getAllClubs(afterQuery, pageSize);
       if (res.data) {
         const newClubsWCR = transformClubsToWithCurrentlyReading(
@@ -133,26 +126,6 @@ export default function Home(props: HomeProps) {
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
-  }
-
-  function handleProfileClick() {
-    setHeaderProfileMenuOpenState(isOpen => !isOpen);
-  }
-
-  function handleProfileMenuClose(event: React.MouseEvent<EventTarget>) {
-    if (
-      headerProfileAnchorRef.current &&
-      headerProfileAnchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
-    setHeaderProfileMenuOpenState(false);
-  }
-
-  function navigateToYourProfile() {
-    if (user) {
-      props.history.push(`/user/${user.urlSlug}`);
-    }
   }
 
   function openChat() {
@@ -180,6 +153,7 @@ export default function Home(props: HomeProps) {
             aria-label="Add"
             component={AdapterLink}
             to="/clubs/create"
+            className={classes.createClubIconCircle}
           >
             <AddIcon />
           </IconButton>
@@ -189,35 +163,13 @@ export default function Home(props: HomeProps) {
             color="primary"
             aria-label="Add"
             onClick={() => setLoginModalShown(true)}
+            className={classes.createClubIconCircle}
           >
             <AddIcon />
           </IconButton>
         )}
       </Tooltip>
-      {user ? (
-        <div
-          onClick={handleProfileClick}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-          }}
-          ref={headerProfileAnchorRef}
-        >
-          <Avatar
-            alt={user.name || user.discordUsername}
-            src={user.photoUrl}
-            className={classes.headerAvatar}
-          />
-          <ArrowDropDown className={classes.headerArrowDown} />
-        </div>
-      ) : (
-        <Tooltip title="View profile" aria-label="View profile">
-          <IconButton onClick={() => setLoginModalShown(true)}>
-            <GenericGroupMemberAvatar />
-          </IconButton>
-        </Tooltip>
-      )}
+      <ProfileHeaderIcon user={user} />
     </>
   );
 
@@ -322,24 +274,6 @@ export default function Home(props: HomeProps) {
         onCloseLoginDialog={onCloseLoginModal}
         open={loginModalShown}
       />
-
-      <Menu
-        open={headerProfileMenuIsOpen}
-        anchorEl={headerProfileAnchorRef.current}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        onClose={handleProfileMenuClose}
-      >
-        <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
-        <MenuItem onClick={() => openChat()}>Open chat</MenuItem>
-        <MenuItem onClick={logout}>Log out</MenuItem>
-      </Menu>
     </>
   );
 }
