@@ -223,11 +223,7 @@ export default function ClubComponent(props: ClubProps) {
     <HeaderTitle title="Club Homepage" />
   );
 
-  const rightComponent = (
-    <>
-      <ProfileHeaderIcon user={user} />
-    </>
-  );
+  const rightComponent = <ProfileHeaderIcon user={user} />;
 
   function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });

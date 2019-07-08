@@ -226,11 +226,7 @@ export default function UpdateBook(props: UpdateBookProps) {
 
   const centerComponent = <HeaderTitle title="Manage Shelf" />;
 
-  const rightComponent = (
-    <>
-      <ProfileHeaderIcon user={user} />
-    </>
-  );
+  const rightComponent = <ProfileHeaderIcon user={user} />;
 
   let searchLabel =
     "Or you can search for another book. Any books you don't select will be added to your club's Want to Read list.";
