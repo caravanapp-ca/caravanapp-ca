@@ -84,9 +84,9 @@ export default function UpdateBook(props: UpdateBookProps) {
   const clubId = props.match.params.id;
   const user = props.user;
 
-  const [currBookAction, setCurrBookAction] = React.useState<
-    ReadingState | 'delete'
-  >('current');
+  const [currBookAction, setCurrBookAction] = React.useState<CurrBookAction>(
+    'current'
+  );
   const [madeSavableMods, setMadeSavableMods] = React.useState<boolean>(false);
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
@@ -145,13 +145,14 @@ export default function UpdateBook(props: UpdateBookProps) {
     const addToWantToRead = searchedBooks.filter(
       book => book.sourceId !== bookToRead.sourceId
     );
-    let wantToReadCopy = [...wantToRead];
+    let newWantToRead = wantToRead
+      .concat(searchedBooks)
+      .filter(b => b.sourceId !== bookToRead.sourceId);
     if (!newBookForShelf) {
-      wantToReadCopy = wantToReadCopy.filter(
+      newWantToRead = newWantToRead.filter(
         b => b.sourceId !== bookToRead.sourceId
       );
     }
-    const newWantToRead = [...wantToReadCopy, ...addToWantToRead];
     const res = await updateCurrentlyReadBook(
       clubId,
       bookToRead,

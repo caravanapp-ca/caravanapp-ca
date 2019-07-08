@@ -514,6 +514,9 @@ router.put(
   '/:id/updatebook',
   isAuthenticated,
   check('newEntry').isBoolean(),
+  check('prevBookId').isString(),
+  check('currBookAction').isString(),
+  check('wantToRead').isArray(),
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
