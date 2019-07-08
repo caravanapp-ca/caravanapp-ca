@@ -90,7 +90,7 @@ export default function ProfileQuestionsCarousel(
             {explanationVisible && (
               <Grid item key={'explanation'} xs={12}>
                 <Paper className={classes.explanationPaper}>
-                  <Typography>
+                  <Typography style={{ width: '95%' }}>
                     Browse through the questions below and choose the ones you
                     want to answer!
                   </Typography>
