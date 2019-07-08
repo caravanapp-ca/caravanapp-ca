@@ -25,8 +25,7 @@ import { getAllClubs } from '../../services/club';
 import { Service } from '../../common/service';
 import ClubCards from './ClubCards';
 import logo from '../../resources/logo.svg';
-import GenericGroupMemberIcon from '../../components/misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
-import c from '../c';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -65,10 +64,7 @@ const useStyles = makeStyles(theme => ({
   },
   createClubIconCircle: {
     backgroundColor: washedTheme.palette.primary.main,
-  },
-  profileIconCircle: {
-    backgroundColor: washedTheme.palette.primary.main,
-    margin: 16,
+    marginRight: 16,
   },
 }));
 
@@ -205,35 +201,8 @@ export default function Home(props: HomeProps) {
           </IconButton>
         )}
       </Tooltip>
-      {user ? (
-        <div
-          onClick={handleProfileClick}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-          }}
-          ref={headerProfileAnchorRef}
-        >
-          <Avatar
-            alt={user.name || user.discordUsername}
-            src={user.photoUrl}
-            className={classes.headerAvatar}
-          />
-          <ArrowDropDown className={classes.headerArrowDown} />
-        </div>
-      ) : (
-        <Tooltip title="View profile" aria-label="View profile">
-          <IconButton
-            onClick={() => setLoginModalShown(true)}
-            className={classes.profileIconCircle}
-          >
-            <GenericGroupMemberIcon color="primary" />
-          </IconButton>
-        </Tooltip>
-      )}
+      <ProfileHeaderIcon user={user} />
     </>
-
   );
 
   return (
@@ -338,7 +307,7 @@ export default function Home(props: HomeProps) {
         open={loginModalShown}
       />
 
-      <Menu
+      {/* <Menu
         open={headerProfileMenuIsOpen}
         anchorEl={headerProfileAnchorRef.current}
         anchorOrigin={{
@@ -354,7 +323,7 @@ export default function Home(props: HomeProps) {
         <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
         <MenuItem onClick={() => openChat()}>Open chat</MenuItem>
         <MenuItem onClick={logout}>Log out</MenuItem>
-      </Menu>
+      </Menu> */}
     </>
   );
 }

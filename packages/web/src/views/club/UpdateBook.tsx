@@ -21,6 +21,7 @@ import BookList from './shelf-view/BookList';
 import BookSearch from '../books/BookSearch';
 import { updateCurrentlyReadBook, getClub } from '../../services/club';
 import { getCurrentBook, getWantToRead } from './functions/ClubFunctions';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 
 interface UpdateBookRouteParams {
   id: string;
@@ -147,17 +148,11 @@ export default function UpdateBook(props: UpdateBookProps) {
 
   const centerComponent = <Typography variant="h6">Update Book</Typography>;
 
-  // const rightComponent = (
-  //   <IconButton
-  //     edge="start"
-  //     color="inherit"
-  //     aria-label="More"
-  //     component={AdapterLink}
-  //     to="/"
-  //   >
-  //     <MoreVert />
-  //   </IconButton>
-  // );
+  const rightComponent = (
+    <>
+      <ProfileHeaderIcon user={user} />
+    </>
+  );
 
   let finishedLabel;
   if (currBook) {
@@ -179,7 +174,7 @@ export default function UpdateBook(props: UpdateBookProps) {
       <Header
         leftComponent={leftComponent}
         centerComponent={centerComponent}
-        // rightComponent={rightComponent}
+        rightComponent={rightComponent}
       />
       <Container className={classes.container} maxWidth={'md'}>
         <Box>
