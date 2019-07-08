@@ -117,7 +117,7 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
         onClose={handleProfileMenuClose}
       >
         <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
-        <MenuItem onClick={() => openChat()}>Open chat</MenuItem>
+        <MenuItem onClick={openChat}>Open chat</MenuItem>
         <MenuItem onClick={logout}>Log out</MenuItem>
       </Menu>
       <DiscordLoginModal
