@@ -4,6 +4,7 @@ import { check } from 'express-validator';
 import { isAuthenticated } from '../middleware/auth';
 import SessionModel from '../models/session';
 import { ReadingDiscordBot } from '../services/discord';
+import { hasScope } from '../common/discordbot';
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.post(
     }
     if (sessionDoc.client !== 'discordBot') {
       console.warn(
-        `Unauthorized client for posting message by user {id: ${req.user.id}, name: ${req.user.name}}`
+        `Unauthorized client for sending discord bot message by user {id: ${req.user.id}, name: ${req.user.name}}`
       );
       res
         .status(401)
@@ -34,9 +35,16 @@ router.post(
     const isExpired = Date.now() > sessionDoc.accessTokenExpiresAt;
     if (isExpired) {
       console.warn(
-        `Expired access token for posting discord bot message by user {id: ${req.user.id}, name: ${req.user.name}}`
+        `Expired access token for sending discord bot message by user {id: ${req.user.id}, name: ${req.user.name}}`
       );
       res.status(401).send('Unauthorized: expired access token.');
+      return;
+    }
+    if (!hasScope(sessionDoc.scope, 'sendMessage')) {
+      console.warn(
+        `Unauthorized scope for sending discord bot message by user {id: ${req.user.id}, name: ${req.user.name}}`
+      );
+      res.status(401).send('Unauthorized: do not have sendMessage scope.');
       return;
     }
     const client = ReadingDiscordBot.getInstance();
