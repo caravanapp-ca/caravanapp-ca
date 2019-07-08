@@ -48,14 +48,14 @@ const useStyles = makeStyles(theme => ({
   },
   button: {},
   container: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(4),
   },
   sectionContainer: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(4),
   },
   saveButtonContainer: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
     width: '100%',
     alignItems: 'center',
   },
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
   },
   formControl: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(4),
   },
   group: {
     margin: theme.spacing(1, 0),
@@ -245,7 +245,7 @@ export default function UpdateBook(props: UpdateBookProps) {
       <Container className={classes.container} maxWidth={'md'}>
         <Box>
           {currBook && (
-            <>
+            <div className={classes.sectionContainer}>
               <Typography className={classes.instructionText}>
                 Your club is currently reading:
               </Typography>
@@ -287,7 +287,7 @@ export default function UpdateBook(props: UpdateBookProps) {
                   />
                 </RadioGroup>
               </FormControl>
-            </>
+            </div>
           )}
           {wantToRead.length > 0 && (
             <div className={classes.sectionContainer}>
