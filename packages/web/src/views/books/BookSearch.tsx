@@ -18,6 +18,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { searchGoogleBooks } from '../../services/book';
 import BookList from '../club/shelf-view/BookList';
 import { getShelfFromGoogleBooks } from '../club/functions/ClubFunctions';
+import googleLogo from '../../resources/google-logo.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,6 +46,7 @@ const useStyles = makeStyles(theme => ({
   },
   googleLogo: {
     marginRight: theme.spacing(1),
+    height: 24,
   },
 }));
 
@@ -197,8 +199,8 @@ export default function BookSearch(props: BookSearchProps) {
             onKeyDown={handleOnKeyDown}
           />
           <img
-            src="https://books.google.com/googlebooks/images/poweredby.png"
-            aria-label="Powered by Google"
+            src={googleLogo}
+            aria-label="Google"
             className={classes.googleLogo}
           />
         </Paper>
