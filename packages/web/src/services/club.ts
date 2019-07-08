@@ -6,6 +6,7 @@ import {
   ReadingSpeed,
   User,
   FilterAutoMongoKeys,
+  CurrBookAction,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -82,22 +83,18 @@ export async function updateCurrentlyReadBook(
   clubId: string,
   newBook: FilterAutoMongoKeys<ShelfEntry> | ShelfEntry,
   newEntry: boolean,
-  prevBookId: string,
-  finishedPrev: boolean,
-  addToWantToRead: FilterAutoMongoKeys<ShelfEntry>[]
+  prevBookId: string | null,
+  currBookAction: CurrBookAction,
+  wantToRead: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
     newBook,
     newEntry,
     prevBookId,
-    finishedPrev,
-    addToWantToRead,
+    currBookAction,
+    wantToRead,
   });
-  if (res.status === 200) {
-    return res.data;
-  } else {
-    return res.status;
-  }
+  return res;
 }
 
 export async function createClub(props: CreateClubProps) {

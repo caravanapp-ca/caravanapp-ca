@@ -134,7 +134,7 @@ export function App(props: AppProps) {
               render={props => forceOnboard(user, <Privacy />)}
             />
             <Route
-              path="/clubs/:id/updatebook"
+              path="/clubs/:id/manage-shelf"
               render={props =>
                 forceOnboard(user, <UpdateBook {...props} user={user} />)
               }
