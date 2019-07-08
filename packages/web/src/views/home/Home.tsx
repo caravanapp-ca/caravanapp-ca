@@ -88,7 +88,6 @@ export default function Home(props: HomeProps) {
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-  const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
@@ -96,11 +95,6 @@ export default function Home(props: HomeProps) {
     undefined
   );
   const [showLoadMore, setShowLoadMore] = React.useState(false);
-
-  const [
-    headerProfileMenuIsOpen,
-    setHeaderProfileMenuOpenState,
-  ] = React.useState(false);
 
   useEffect(() => {
     if (!showWelcomeMessage) {
@@ -132,26 +126,6 @@ export default function Home(props: HomeProps) {
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
-  }
-
-  function handleProfileClick() {
-    setHeaderProfileMenuOpenState(isOpen => !isOpen);
-  }
-
-  function handleProfileMenuClose(event: React.MouseEvent<EventTarget>) {
-    if (
-      headerProfileAnchorRef.current &&
-      headerProfileAnchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
-    setHeaderProfileMenuOpenState(false);
-  }
-
-  function navigateToYourProfile() {
-    if (user) {
-      props.history.push(`/user/${user.urlSlug}`);
-    }
   }
 
   function openChat() {

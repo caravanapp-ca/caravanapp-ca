@@ -1,10 +1,4 @@
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  Menu,
-  MenuItem,
-} from '@material-ui/core';
+import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
