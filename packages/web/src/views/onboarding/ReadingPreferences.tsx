@@ -22,6 +22,7 @@ import {
 } from '../../components/reading-speed-avatars-icons-labels';
 import ListElementAvatar from '../../components/ListElementAvatar';
 import GenreChip from '../../components/GenreChip';
+import logo from '../../resources/logo.svg';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -108,12 +109,17 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
       <div className={classes.hero}>
         <Typography variant="h5">Welcome to</Typography>
         <div style={{ display: 'flex' }}>
-          <Typography variant="h2" style={{ fontWeight: 600 }}>
+          {/* <Typography variant="h2" style={{ fontWeight: 600 }}>
             Caravan
-          </Typography>
-          <Typography variant="h2" color="primary" style={{ fontWeight: 600 }}>
+          </Typography> */}
+          <img
+            src={logo}
+            alt="Caravan logo"
+            style={{ height: 50, objectFit: 'contain' }}
+          />
+          {/* <Typography variant="h2" color="primary" style={{ fontWeight: 600 }}>
             .
-          </Typography>
+          </Typography> */}
         </div>
       </div>
 
