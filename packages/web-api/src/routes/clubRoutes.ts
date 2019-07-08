@@ -116,7 +116,7 @@ router.get('/', async (req, res, next) => {
     }
 
     const size = Number.parseInt(pageSize || 0);
-    const limit = Math.min(Math.max(size, 10), 25);
+    const limit = Math.min(Math.max(size, 10), 50);
     const clubs = await ClubModel.find(query)
       .limit(limit)
       .sort({ createdAt: -1 })
@@ -278,6 +278,11 @@ router.post(
   '/clubsById',
   check('clubIds').isArray(),
   async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      return res.status(422).json({ errors: errorArr });
+    }
     const { clubIds } = req.body;
     try {
       const clubs = await ClubModel.find({

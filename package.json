@@ -6,6 +6,7 @@
     "test": "lerna run test",
     "lint": "lerna run lint",
     "start": "cd ./packages/web-api && npm start",
+    "create-env": "printenv > ./packages/web-api/.env",
     "deploy:production": "yarn build && yarn deploy-only:production",
     "deploy-no-promote:production": "yarn build && gcloud app deploy app.production.yaml --no-promote",
     "deploy:staging": "yarn build && yarn deploy-only:staging",

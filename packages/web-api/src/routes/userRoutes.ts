@@ -1,5 +1,5 @@
 import express from 'express';
-import { check } from 'express-validator';
+import { check, validationResult } from 'express-validator';
 import { Omit } from 'utility-types';
 import mongoose from 'mongoose';
 import {
@@ -81,10 +81,6 @@ router.post('/:urlSlug/available', async (req, res, next) => {
   }
 });
 
-interface ShelfEntryWithObjId extends Omit<ShelfEntry, '_id'> {
-  _id: mongoose.Types.ObjectId;
-}
-
 // TODO: Consider moving the update validation to the mongoose level
 // Modify a user
 router.put(
@@ -127,24 +123,59 @@ router.put(
     .isNumeric()
     .optional(),
   async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      console.warn(
+        `User {id: ${req.user.id}, name: ${
+          req.user.name
+        }} failed user update.\n${errorArr.toString()}\n${req.body}`
+      );
+      res.status(422).json({ errors: errorArr });
+      return;
+    }
     const { userId } = req.session;
     const user: User = req.body;
-    const genreDoc = await getGenreDoc();
+    const [genreDoc, questionDoc] = await Promise.all([
+      getGenreDoc(),
+      getProfileQuestions(),
+    ]);
+    if (!questionDoc) {
+      res.status(500).send('No questions found, oops!');
+      return;
+    }
     if (!genreDoc) {
       res.status(500).send('No genres found, oops!');
       return;
     }
 
+    const notStartedLimit = 500;
     const userShelf = user.shelf;
-    if (!userShelf.notStarted || userShelf.notStarted.length > 500) {
-      throw new Error(
-        'Shelf object is missing the notStarted key, or you passed over 500 entries!'
+    if (
+      !userShelf.notStarted ||
+      userShelf.notStarted.length > notStartedLimit
+    ) {
+      console.warn(
+        `User {id: ${req.user.id}, name: ${req.user.name}} missing notStarted key, or passed over ${notStartedLimit} entries.`
       );
+      res
+        .status(400)
+        .send(
+          `Shelf object is missing the notStarted key, or you passed over ${notStartedLimit} entries!`
+        );
+      return;
     }
-    if (!userShelf.read || userShelf.read.length > 5000) {
-      throw new Error(
-        'Shelf object is missing the read key, or you passed over 5000 entries!'
+    const readLimit = 1000;
+    if (!userShelf.read || userShelf.read.length > readLimit) {
+      console.warn(
+        `User {id: ${req.user.id}, name: ${req.user.name}} shelf object is missing the read key, or passed over ${readLimit} entries!`
       );
+      res
+        .status(400)
+        .send(
+          `Shelf object is missing the read key, or you passed over ${readLimit} entries!`
+        );
+      return;
     }
     userShelf.notStarted.forEach(
       b =>
@@ -158,37 +189,44 @@ router.put(
         (b._id = b._id ? new mongoose.Types.ObjectId(b._id) : undefined)
     );
 
-    const userGenres = user.selectedGenres
-      .map(g => {
-        const validGenre = genreDoc.genres[g.key];
-        if (validGenre) {
-          const newValidUserGenre: { key: string; name: string } = {
-            key: g.key,
-            name: validGenre.name,
-          };
-          return newValidUserGenre;
-        }
-        throw new Error(`Unknown genre: ${g.key}, ${g.name}`);
-      })
-      .sort((a, b) => a.name.localeCompare(b.name));
+    let userGenres: {
+      key: string;
+      name: string;
+    }[];
+    let userQA: UserQA[];
+    try {
+      userGenres = user.selectedGenres
+        .map(g => {
+          const validGenre = genreDoc.genres[g.key];
+          if (validGenre) {
+            const newValidUserGenre: { key: string; name: string } = {
+              key: g.key,
+              name: validGenre.name,
+            };
+            return newValidUserGenre;
+          }
+          throw new Error(`Unknown genre: ${g.key}, ${g.name}`);
+        })
+        .sort((a, b) => a.name.localeCompare(b.name));
 
-    const questionDoc = await getProfileQuestions();
-    if (!questionDoc) {
-      res.status(500).send('No questions found, oops!');
+      userQA = user.questions.map(q => {
+        const validQuestion = questionDoc.questions.find(f => f.id === q.id);
+        if (validQuestion) {
+          const newUserQA: UserQA = {
+            ...q,
+            title: validQuestion.title,
+          };
+          return newUserQA;
+        }
+        throw new Error(`Unknown question: ${q.id}, ${q.title}`);
+      });
+    } catch (err) {
+      console.warn(
+        `User {id: ${req.user.id}, name: ${req.user.name}} update user QA/genre issue:\n${err}`
+      );
+      res.status(400).send(err);
       return;
     }
-
-    const userQA = user.questions.map(q => {
-      const validQuestion = questionDoc.questions.find(f => f.id === q.id);
-      if (validQuestion) {
-        const newUserQA: UserQA = {
-          ...q,
-          title: validQuestion.title,
-        };
-        return newUserQA;
-      }
-      throw new Error(`Unknown question: ${q.id}, ${q.title}`);
-    });
 
     const newUserButWithPossibleNullValues: Omit<
       FilterAutoMongoKeys<User>,
@@ -222,7 +260,9 @@ router.put(
     });
 
     try {
-      let userDoc = await UserModel.findByIdAndUpdate(userId, writeableObj);
+      let userDoc = await UserModel.findByIdAndUpdate(userId, writeableObj, {
+        new: true,
+      });
       if (
         userDoc &&
         userDoc.onboardingVersion === 0 &&

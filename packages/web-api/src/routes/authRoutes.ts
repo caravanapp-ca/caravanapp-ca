@@ -5,9 +5,6 @@ import {
   User,
 } from '@caravan/buddy-reading-types';
 import {
-  isAuthenticatedButNotNecessarilyOnboarded,
-} from '../middleware/auth';
-import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
   ReadingDiscordBot,
@@ -30,7 +27,7 @@ router.get('/discord/login', (req, res) => {
     res.status(400).send('OAuth2 state required.');
     return;
   }
-  res.redirect(DiscordOAuth2Url(state));
+  res.redirect(DiscordOAuth2Url(state, req.headers.host));
 });
 
 function convertTokenResponseToModel(
@@ -87,13 +84,18 @@ router.get('/discord/callback', async (req, res) => {
     return;
   }
   let successfulAuthentication = true;
-  let tokenResponseData = await ReadingDiscordBot.getToken(code);
+  let tokenResponseData = await ReadingDiscordBot.getToken(
+    code,
+    req.headers.host
+  );
+
   if (tokenResponseData.error) {
     const encodedErrorMessage = encodeURIComponent(
       tokenResponseData.error_description
     );
     destroySession(req, res);
     res.redirect(`/?error=${encodedErrorMessage}`);
+    console.error(`Failed to authenticate: ${encodedErrorMessage}`);
     return;
   }
   let { access_token: accessToken } = tokenResponseData;
@@ -123,9 +125,12 @@ router.get('/discord/callback', async (req, res) => {
       // TODO: handle slug failure due to time windowing
       try {
         userDoc = await userModel.save();
+        console.log(
+          `Created new user: {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
+        );
       } catch (err) {
         userDoc = undefined;
-        console.log(err);
+        console.error(`Failed to create user: `, err);
       }
       currentSlugId++;
     }
@@ -139,12 +144,22 @@ router.get('/discord/callback', async (req, res) => {
   try {
     const currentSessionModel = await SessionModel.findOne({ accessToken });
     if (currentSessionModel) {
+      if (currentSessionModel.client !== 'discord') {
+        return res
+          .status(401)
+          .send(
+            `Unauthorized: invalid source for session ${currentSessionModel.client}`
+          );
+      }
       const accessTokenExpiresAt: number = currentSessionModel.get(
         'accessTokenExpiresAt'
       );
       const isExpired = Date.now() > accessTokenExpiresAt;
       if (isExpired) {
         // Begin token refresh
+        console.log(
+          `Refreshing access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
+        );
         const refreshToken: string = currentSessionModel.get('refreshToken');
         tokenResponseData = await ReadingDiscordBot.refreshAccessToken(
           refreshToken
@@ -156,6 +171,9 @@ router.get('/discord/callback', async (req, res) => {
           userDoc.id
         );
         currentSessionModel.update(modelInstance).exec();
+        console.log(
+          `Updated access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
+        );
       }
       // else validated
     } else {
@@ -167,12 +185,18 @@ router.get('/discord/callback', async (req, res) => {
       );
       const sessionModel = new SessionModel(modelInstance);
       const sessionSaveResult = sessionModel.save();
+      console.log(
+        `Created a new session for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
+      );
     }
   } catch (err) {
     // to check if it fails here
     const encodedErrorMessage = encodeURIComponent(err);
     destroySession(req, res);
     res.redirect(`/?error=${encodedErrorMessage}`);
+    console.error(
+      `Failed to manage session on Discord callback {id: ${userDoc.id}, discordId: ${userDoc.discordId}}. Error: ${encodedErrorMessage}.`
+    );
     return;
   }
 
@@ -180,6 +204,9 @@ router.get('/discord/callback', async (req, res) => {
     const result = await guild.addMember(discordUserData.id, {
       accessToken,
     });
+    console.log(
+      `Added user {id: ${userDoc.id}, discordId: ${userDoc.discordId}} to guild ${guild.id}.`
+    );
   } catch (err) {
     console.error(`Couldn't add user to guild: ${userDoc.id}`);
     successfulAuthentication = false;
@@ -190,6 +217,9 @@ router.get('/discord/callback', async (req, res) => {
     req.session.userId = userDoc.id;
     res.cookie('userId', userDoc.id);
     res.redirect(`/?state=${state}`);
+    console.log(
+      `Successful authentication {id: ${userDoc.id}, discordId: ${userDoc.discordId}}.`
+    );
   } else {
     destroySession(req, res);
     res.redirect(`/?error=Could+not+authenticate`);

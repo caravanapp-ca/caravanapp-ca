@@ -134,7 +134,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
           </Typography>
           <Grid container className={classes.root} spacing={2}>
             {initQuestions.initAnsweredQs.map((q, i) => (
-              <Grid item xs={12} sm={6}>
+              <Grid item key={q.id} xs={12} sm={6}>
                 <QuestionAnswer
                   key={q.id}
                   questionKey={q.id}
@@ -158,7 +158,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
             </Typography>
             <Grid container className={classes.root} spacing={2}>
               {initQuestions.initUnansweredQs.map((q, i) => (
-                <Grid item xs={12} sm={6}>
+                <Grid key={q.id} item xs={12} sm={6}>
                   <QuestionAnswer
                     key={q.id}
                     questionKey={q.id}
@@ -183,7 +183,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
       <>
         <Grid container className={classes.root} spacing={2}>
           {questionsToShow.map((q, i) => (
-            <Grid item xs={12} sm={6}>
+            <Grid key={q.id} item xs={12} sm={6}>
               <QuestionAnswer
                 key={q.id}
                 questionKey={q.id}
