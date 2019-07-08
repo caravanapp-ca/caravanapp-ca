@@ -17,7 +17,7 @@ router.post(
       return res.status(422).json({ errors: errorArr });
     }
     const { channelId } = req.params;
-    const accessToken: string = req.body;
+    const accessToken: string = req.body.accessToken;
     const sessionDoc = await SessionModel.findOne({ accessToken });
     if (!sessionDoc) {
       console.warn(`Failed attempt at posting message by user`);
