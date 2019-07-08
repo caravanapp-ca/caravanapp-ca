@@ -94,7 +94,7 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   return guildMembers;
 }
 
-// TODO: Need to add checks here: Is the club full? Is the club private? => Don't return
+// TODO: Need to add checks here: Is the club full? Is the club unlisted? => Don't return
 router.get('/', async (req, res, next) => {
   const { after, pageSize, readingSpeed } = req.query;
   const { userId } = req.session;
@@ -105,7 +105,7 @@ router.get('/', async (req, res, next) => {
   try {
     // Calculate number of documents to skip
     const query: any = {
-      private: false,
+      unlisted: false,
     };
     if (after) {
       query._id = { $lt: after };
@@ -199,7 +199,7 @@ router.get('/:id', async (req, res, next) => {
         guildId: guild.id,
         channelSource: clubDoc.channelSource,
         channelId: clubDoc.channelId,
-        private: clubDoc.private,
+        unlisted: clubDoc.unlisted,
         createdAt:
           clubDoc.createdAt instanceof Date
             ? clubDoc.createdAt.toISOString()
@@ -231,9 +231,15 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-// Gets all of the clubs the specified user is currently in
-router.post('/getUserClubs', async (req, res, next) => {
-  const user: User = req.body.user;
+// Gets all of the clubs the specified user is currently in.
+// Will get unlisted clubs iff the request is made by the user.
+router.get('/user/:userId', async (req, res, next) => {
+  const { after, pageSize, readingSpeed } = req.query;
+  const { userId } = req.params;
+  let user: UserDoc | undefined;
+  if (userId) {
+    user = await getUser(userId);
+  }
   // TODO: Validation that object passed is actually of User type
   if (user.discordId) {
     const client = ReadingDiscordBot.getInstance();
@@ -340,32 +346,6 @@ router.post(
   }
 );
 
-router.get('/my-clubs', isAuthenticated, async (req, res, next) => {
-  const discordId = req.user.discordId;
-  const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
-
-  const relevantChannels: GuildChannel[] = [];
-
-  guild.channels.forEach(channel => {
-    switch (channel.type) {
-      case 'text':
-        const textChannel = channel as TextChannel;
-        if (textChannel.members.has(discordId)) {
-          relevantChannels.push(textChannel);
-        }
-      case 'voice':
-        const voiceChannel = channel as VoiceChannel;
-        if (voiceChannel.members.has(discordId)) {
-          relevantChannels.push(voiceChannel);
-        }
-      default:
-        return;
-    }
-  });
-  res.status(200).json(relevantChannels);
-});
-
 interface CreateChannelInput {
   nsfw?: boolean;
   invitedUsers?: string[];
@@ -392,7 +372,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       } as ChannelCreationOverwrites;
     });
 
-    // Make all channels private (might have to handle Genre channels differently in the future)
+    // Make all channels unlisted (might have to handle Genre channels differently in the future)
     channelCreationOverwrites.push({
       id: guild.defaultRole.id,
       deny: ['VIEW_CHANNEL'],
@@ -435,7 +415,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       ownerDiscordId: req.user.discordId,
       channelSource: body.channelSource,
       channelId: channel.id,
-      private: body.private,
+      unlisted: body.unlisted,
       vibe: body.vibe,
     };
 

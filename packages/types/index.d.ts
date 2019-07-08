@@ -32,7 +32,7 @@ declare module '@caravan/buddy-reading-types' {
     readingSpeed?: ReadingSpeed;
     channelSource: ChannelSource;
     channelId: string;
-    private: boolean;
+    unlisted: boolean;
   }
 
   export interface GroupMember extends DocumentFields, MongoTimestamps {
@@ -191,7 +191,7 @@ declare module '@caravan/buddy-reading-types' {
         channelId: string;
         createdAt: string;
         updatedAt: string;
-        private: boolean;
+        unlisted: boolean;
       }[];
     }
     export interface GetClubById {
@@ -210,7 +210,7 @@ declare module '@caravan/buddy-reading-types' {
       channelId: string;
       createdAt: string;
       updatedAt: string;
-      private: boolean;
+      unlisted: boolean;
     }
     export interface CreateClubResult {
       club: Club;

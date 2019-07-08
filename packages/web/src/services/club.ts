@@ -18,7 +18,7 @@ interface CreateClubProps {
   vibe: string;
   readingSpeed: string;
   channelSource: ChannelSource;
-  private: boolean;
+  unlisted: boolean;
 }
 
 export async function getAllClubs(
@@ -55,10 +55,9 @@ export async function getClubsById(clubIds: string[]) {
   return clubs;
 }
 
-export async function getUserClubs(user: User) {
-  const res = await axios.post<Services.GetClubs['clubs']>(
-    `${clubRoute}/getUserClubs`,
-    { user }
+export async function getUserClubs(userId: string) {
+  const res = await axios.get<Services.GetClubs['clubs']>(
+    `${clubRoute}/user/${userId}`
   );
   return res;
 }
@@ -108,7 +107,7 @@ export async function createClub(props: CreateClubProps) {
     maxMembers: props.maxMembers,
     vibe: props.vibe,
     readingSpeed: props.readingSpeed,
-    private: props.private,
+    unlisted: props.unlisted,
     channelSource: props.channelSource,
   };
 

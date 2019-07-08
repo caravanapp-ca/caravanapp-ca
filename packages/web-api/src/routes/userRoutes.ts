@@ -7,7 +7,6 @@ import {
   ReadingSpeed,
   FilterAutoMongoKeys,
   UserQA,
-  ShelfEntry,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
