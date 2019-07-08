@@ -2,21 +2,15 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import { Fab } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import AddIcon from '@material-ui/icons/Add';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import { logout } from '../../services/user';
 import { washedTheme } from '../../theme';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
@@ -306,24 +300,6 @@ export default function Home(props: HomeProps) {
         onCloseLoginDialog={onCloseLoginModal}
         open={loginModalShown}
       />
-
-      {/* <Menu
-        open={headerProfileMenuIsOpen}
-        anchorEl={headerProfileAnchorRef.current}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        onClose={handleProfileMenuClose}
-      >
-        <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
-        <MenuItem onClick={() => openChat()}>Open chat</MenuItem>
-        <MenuItem onClick={logout}>Log out</MenuItem>
-      </Menu> */}
     </>
   );
 }
