@@ -16,6 +16,7 @@ import {
   Services,
   ShelfEntry,
   User,
+  CurrBookAction,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
@@ -516,7 +517,10 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
 router.put(
   '/:id/updatebook',
   isAuthenticated,
-  check(['finishedPrev', 'newEntry']).isBoolean(),
+  check('newEntry').isBoolean(),
+  check('prevBookId').isString(),
+  check('currBookAction').isString(),
+  check('wantToRead').isArray(),
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -528,107 +532,128 @@ router.put(
       newBook,
       newEntry,
       prevBookId,
-      finishedPrev,
-      addToWantToRead,
+      currBookAction,
+      wantToRead,
     } = req.body;
-    let addToWantToReadArr = addToWantToRead as ShelfEntry[];
-    const prevCondition = {
-      _id: clubId,
-      'shelf._id': prevBookId,
-    };
-    let newReadState: ReadingState = 'read';
-    if (!finishedPrev) {
-      newReadState = 'notStarted';
-    }
-    const prevUpdate = {
-      $set: {
-        'shelf.$.readingState': newReadState,
-      },
-    };
-    let resultPrev;
-    try {
-      resultPrev = await ClubModel.findOneAndUpdate(prevCondition, prevUpdate, {
-        new: true,
-      });
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-    let newCondition, newUpdate;
-    if (!newEntry) {
-      newCondition = {
-        _id: clubId,
-        'shelf._id': newBook._id,
-      };
+    let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
+    let resultPrev, resultNew;
+    if (prevBookId && currBookAction !== 'current') {
+      switch (currBookAction as CurrBookAction) {
+        case 'delete':
+          resultPrev = await ClubModel.update(
+            { _id: clubId },
+            { $pull: { shelf: { _id: prevBookId } } }
+          );
+          break;
+        case 'notStarted':
+        case 'read':
+          const prevCondition = {
+            _id: clubId,
+            'shelf._id': prevBookId,
+          };
+          const prevUpdate = {
+            'shelf.$.readingState': currBookAction,
+            'shelf.$.updatedAt': new Date(),
+          };
+          try {
+            resultPrev = await ClubModel.findOneAndUpdate(
+              prevCondition,
+              prevUpdate,
+              {
+                new: true,
+              }
+            );
+          } catch (err) {
+            return res.status(400).send(err);
+          }
+          break;
+        default:
+          return res
+            .status(400)
+            .send('Invalid value passed for currBookAction!');
+      }
+      let newCondition, newUpdate;
       const newReadingState: ReadingState = 'current';
-      newUpdate = {
-        $set: {
-          'shelf.$.readingState': newReadingState,
-          'shelf.$.updatedAt': new Date(),
-        },
-      };
-    } else {
-      newCondition = {
-        _id: clubId,
-      };
-      newUpdate = {
-        $addToSet: {
-          shelf: {
-            author: newBook.author,
-            coverImageURL: newBook.coverImageURL,
-            readingState: 'current',
-            title: newBook.title,
-            isbn: newBook.isbn,
-            publishedDate: new Date(newBook.publishedDate),
-            createdAt: new Date(),
-            updatedAt: new Date(),
+      if (!newEntry) {
+        newCondition = {
+          _id: clubId,
+          'shelf._id': newBook._id,
+        };
+        newUpdate = {
+          $set: {
+            'shelf.$.readingState': newReadingState,
+            'shelf.$.updatedAt': new Date(),
           },
-        },
-      };
-    }
-    let resultNew;
-    try {
-      resultNew = await ClubModel.findOneAndUpdate(newCondition, newUpdate, {
-        new: true,
-      });
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-    let resultAdd;
-    if (addToWantToReadArr.length > 0) {
-      const updateObject = addToWantToReadArr.map(b => ({
-        author: b.author,
-        coverImageURL: b.coverImageURL,
-        readingState: 'notStarted',
-        title: b.title,
-        isbn: b.isbn,
-        publishedDate: new Date(b.publishedDate),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }));
-      const addCondition = {
-        _id: clubId,
-      };
-      const addUpdate = {
-        $push: {
-          shelf: {
-            $each: updateObject,
+        };
+      } else {
+        newCondition = {
+          _id: clubId,
+        };
+        newUpdate = {
+          $addToSet: {
+            shelf: {
+              ...newBook,
+              readingState: newReadingState,
+              publishedDate: newBook.publishedDate
+                ? new Date(newBook.publishedDate)
+                : undefined,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
           },
-        },
-      };
+        };
+      }
       try {
-        resultAdd = await ClubModel.findOneAndUpdate(addCondition, addUpdate, {
+        resultNew = await ClubModel.findOneAndUpdate(newCondition, newUpdate, {
           new: true,
         });
-        if (resultPrev && resultNew && resultAdd) {
-          return res.status(200).send({ resultAdd });
-        }
       } catch (err) {
         return res.status(400).send(err);
       }
     }
-    if (resultPrev && resultNew) {
+    let resultWTR;
+    // TODO: typing here is a bitch.
+    let updateObject: any[] = [];
+    if (wantToReadArr.length > 0) {
+      const wtrReadingState: ReadingState = 'notStarted';
+      updateObject = wantToReadArr.map(b => {
+        return {
+          ...b,
+          readingState: wtrReadingState,
+          publishedDate: b.publishedDate
+            ? new Date(b.publishedDate)
+            : undefined,
+          updatedAt: new Date(),
+        };
+      });
+    }
+    const wtrCondition = {
+      _id: clubId,
+    };
+    const wtrUpdate = {
+      $push: { shelf: { $each: updateObject } },
+    };
+    try {
+      let removeWTR = await ClubModel.update(
+        { _id: clubId },
+        {
+          $pull: {
+            shelf: { readingState: 'notStarted', _id: { $ne: prevBookId } },
+          },
+        }
+      );
+      resultWTR = await ClubModel.findOneAndUpdate(wtrCondition, wtrUpdate, {
+        new: true,
+      });
+    } catch (err) {
+      return res.status(400).send(err);
+    }
+    if (resultWTR) {
+      return res.status(200).send({ resultWTR });
+    } else if (resultNew) {
       return res.status(200).send({ resultNew });
     }
+    return res.sendStatus(400);
   }
 );
 

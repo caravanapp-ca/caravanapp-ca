@@ -165,6 +165,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
 
+  export type CurrBookAction = ReadingState | 'delete';
+
   export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
 
   export type GroupVibe =

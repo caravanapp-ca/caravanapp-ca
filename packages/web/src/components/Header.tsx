@@ -1,5 +1,12 @@
 import React from 'react';
-import { AppBar, Toolbar, useScrollTrigger, Grid } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  useScrollTrigger,
+  Grid,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 interface ScrollProps {
@@ -26,20 +33,53 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       backgroundColor: theme.palette.primary.main,
     },
-    toolBarLeftContainer: {
+    toolBarContainer: {
       display: 'flex',
       flexGrow: 1,
-      justifyContent: 'flex-start',
+      flexDirection: 'row',
+      alignItems: 'center',
     },
-    toolBarCenterContainer: {
+    toolBarLeftContainerMobile: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      marginRight: 16,
+    },
+    toolBarCenterContainerMobile: {
       display: 'flex',
       flexGrow: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-Start',
+    },
+    toolBarRightContainerMobile: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      marginLeft: 16,
+    },
+    toolBarLeftContainerDesktop: {
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-Start',
+    },
+    toolBarCenterContainerDesktop: {
+      display: 'flex',
+      flex: 4,
+      flexDirection: 'row',
+      alignItems: 'center',
       justifyContent: 'center',
     },
-    toolBarRightContainer: {
+    toolBarRightContainerDesktop: {
       display: 'flex',
-      flexGrow: 1,
+      flex: 1,
+      flexDirection: 'row',
       justifyContent: 'flex-end',
+      alignItems: 'center',
     },
   })
 );
@@ -58,35 +98,43 @@ function ElevationScroll(props: ScrollProps) {
 
 export default function ButtonAppBar(props: HeaderProps) {
   const classes = useStyles();
+  const theme = useTheme();
   const { leftComponent, centerComponent, rightComponent, showBorder } = props;
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
     <ElevationScroll {...props}>
       <AppBar className={classes.appBar} position="sticky">
         <Toolbar>
-          <Grid
-            container
-            spacing={0}
-            direction="row"
-            justify="center"
-            alignItems="center"
-          >
-            <Grid item xs={2}>
-              <div className={classes.toolBarLeftContainer}>
-                {leftComponent}
-              </div>
-            </Grid>
-            <Grid item xs={8}>
-              <div className={classes.toolBarCenterContainer}>
-                {centerComponent}
-              </div>
-            </Grid>
-            <Grid item xs={2}>
-              <div className={classes.toolBarRightContainer}>
-                {rightComponent}
-              </div>
-            </Grid>
-          </Grid>
+          <div className={classes.toolBarContainer}>
+            <div
+              className={
+                screenSmallerThanSm
+                  ? classes.toolBarLeftContainerMobile
+                  : classes.toolBarLeftContainerDesktop
+              }
+            >
+              {leftComponent}
+            </div>
+            <div
+              className={
+                screenSmallerThanSm
+                  ? classes.toolBarCenterContainerMobile
+                  : classes.toolBarCenterContainerDesktop
+              }
+            >
+              {centerComponent}
+            </div>
+            <div
+              className={
+                screenSmallerThanSm
+                  ? classes.toolBarRightContainerMobile
+                  : classes.toolBarRightContainerDesktop
+              }
+            >
+              {rightComponent}
+            </div>
+          </div>
         </Toolbar>
         {showBorder !== false && <div className={classes.bottomBorder} />}
       </AppBar>

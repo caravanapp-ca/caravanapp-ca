@@ -392,13 +392,13 @@ export default function ClubComponent(props: ClubProps) {
                     color="primary"
                     className={classes.button}
                     component={AdapterLink}
-                    to={`${clubId}/updatebook`}
+                    to={`${clubId}/manage-shelf`}
                   >
                     <Typography
                       variant="button"
                       style={{ textAlign: 'center' }}
                     >
-                      UPDATE BOOK
+                      MANAGE SHELF
                     </Typography>
                   </Button>
                 )}
