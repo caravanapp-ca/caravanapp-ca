@@ -145,6 +145,13 @@ router.get('/discord/callback', async (req, res) => {
   try {
     const currentSessionModel = await SessionModel.findOne({ accessToken });
     if (currentSessionModel) {
+      if (currentSessionModel.client !== 'discord') {
+        return res
+          .status(401)
+          .send(
+            `Unauthorized: invalid source for session ${currentSessionModel.client}`
+          );
+      }
       const accessTokenExpiresAt: number = currentSessionModel.get(
         'accessTokenExpiresAt'
       );
