@@ -76,35 +76,33 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
 
   return (
     <>
-      <>
-        {user ? (
-          <div
-            onClick={handleProfileClick}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-            }}
-            ref={headerProfileAnchorRef}
+      {user ? (
+        <div
+          onClick={handleProfileClick}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+          }}
+          ref={headerProfileAnchorRef}
+        >
+          <Avatar
+            alt={user.name || user.discordUsername}
+            src={user.photoUrl}
+            className={classes.headerAvatar}
+          />
+          <ArrowDropDown className={classes.headerArrowDown} />
+        </div>
+      ) : (
+        <Tooltip title="View profile" aria-label="View profile">
+          <IconButton
+            onClick={() => setLoginModalShown(true)}
+            className={classes.profileIconCircle}
           >
-            <Avatar
-              alt={user.name || user.discordUsername}
-              src={user.photoUrl}
-              className={classes.headerAvatar}
-            />
-            <ArrowDropDown className={classes.headerArrowDown} />
-          </div>
-        ) : (
-          <Tooltip title="View profile" aria-label="View profile">
-            <IconButton
-              onClick={() => setLoginModalShown(true)}
-              className={classes.profileIconCircle}
-            >
-              <GenericGroupMemberIcon color="primary" />
-            </IconButton>
-          </Tooltip>
-        )}
-      </>
+            <GenericGroupMemberIcon color="primary" />
+          </IconButton>
+        </Tooltip>
+      )}
       <Menu
         open={headerProfileMenuIsOpen}
         anchorEl={headerProfileAnchorRef.current}
