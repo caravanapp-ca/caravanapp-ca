@@ -145,14 +145,13 @@ export default function UpdateBook(props: UpdateBookProps) {
     const addToWantToRead = searchedBooks.filter(
       book => book.sourceId !== bookToRead.sourceId
     );
-    let newWantToRead = wantToRead
-      .concat(searchedBooks)
-      .filter(b => b.sourceId !== bookToRead.sourceId);
+    let newWantToRead = [...wantToRead];
     if (!newBookForShelf) {
       newWantToRead = newWantToRead.filter(
         b => b.sourceId !== bookToRead.sourceId
       );
     }
+    newWantToRead.concat(searchedBooks);
     const res = await updateCurrentlyReadBook(
       clubId,
       bookToRead,
