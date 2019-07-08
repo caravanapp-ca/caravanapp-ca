@@ -277,6 +277,11 @@ router.post(
   '/clubsById',
   check('clubIds').isArray(),
   async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      return res.status(422).json({ errors: errorArr });
+    }
     const { clubIds } = req.body;
     try {
       const clubs = await ClubModel.find({

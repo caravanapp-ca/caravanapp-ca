@@ -4,7 +4,6 @@ import {
   Session,
   User,
 } from '@caravan/buddy-reading-types';
-import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,

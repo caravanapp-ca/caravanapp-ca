@@ -1,5 +1,5 @@
 import express from 'express';
-import { check } from 'express-validator';
+import { check, validationResult } from 'express-validator';
 import { Omit } from 'utility-types';
 import mongoose from 'mongoose';
 import {
@@ -81,10 +81,6 @@ router.post('/:urlSlug/available', async (req, res, next) => {
   }
 });
 
-interface ShelfEntryWithObjId extends Omit<ShelfEntry, '_id'> {
-  _id: mongoose.Types.ObjectId;
-}
-
 // TODO: Consider moving the update validation to the mongoose level
 // Modify a user
 router.put(
@@ -127,6 +123,11 @@ router.put(
     .isNumeric()
     .optional(),
   async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      return res.status(422).json({ errors: errorArr });
+    }
     const { userId } = req.session;
     const user: User = req.body;
     const genreDoc = await getGenreDoc();

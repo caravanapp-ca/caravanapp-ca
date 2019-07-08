@@ -1,6 +1,6 @@
 import express from 'express';
 import { TextChannel } from 'discord.js';
-import { check } from 'express-validator';
+import { check, validationResult } from 'express-validator';
 import { isAuthenticated } from '../middleware/auth';
 import SessionModel from '../models/session';
 import { ReadingDiscordBot } from '../services/discord';
@@ -13,6 +13,11 @@ router.post(
   isAuthenticated,
   check('accessToken').isString(),
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      return res.status(422).json({ errors: errorArr });
+    }
     const { channelId } = req.params;
     const { accessToken } = req.body;
     const sessionDoc = await SessionModel.findOne({ accessToken });
