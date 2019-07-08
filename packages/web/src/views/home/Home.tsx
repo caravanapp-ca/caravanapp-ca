@@ -110,9 +110,7 @@ export default function Home(props: HomeProps) {
         const newClubsWCR = transformClubsToWithCurrentlyReading(
           res.data.clubs
         );
-        if (newClubsWCR.length === pageSize) {
-          setShowLoadMore(true);
-        }
+        setShowLoadMore(newClubsWCR.length === pageSize);
         setClubsWCRResult(s => ({
           status: 'loaded',
           payload:
