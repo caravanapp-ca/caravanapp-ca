@@ -65,14 +65,18 @@ function convertTokenResponseToModel(
 //   users.forEach(async user => {
 //     if (!user.urlSlug) {
 //       const discordMember = guild.members.find(m => m.id === user.discordId);
-//       const slugs = generateSlugIds(discordMember.displayName);
-//       const availableSlugs = await getAvailableSlugIds(slugs);
-//       await UserModel.updateOne(
-//         { _id: user.id },
-//         {
-//           urlSlug: availableSlugs[0],
-//         }
-//       );
+//       if (discordMember) {
+//         const slugs = generateSlugIds(
+//           discordMember.displayName || discordMember.user.username
+//         );
+//         const availableSlugs = await getAvailableSlugIds(slugs);
+//         await UserModel.updateOne(
+//           { _id: user.id },
+//           {
+//             urlSlug: availableSlugs[0],
+//           }
+//         );
+//       }
 //     }
 //   });
 // });
