@@ -234,47 +234,66 @@ router.get('/:id', async (req, res, next) => {
 // Gets all of the clubs the specified user is currently in.
 // Will get unlisted clubs iff the request is made by the user.
 router.get('/user/:userId', async (req, res, next) => {
-  const { after, pageSize, readingSpeed } = req.query;
+  const { after, pageSize } = req.query;
   const { userId } = req.params;
   let user: UserDoc | undefined;
+
+  const currentUser = req.session.userId
+    ? await UserModel.findById(req.session.userId)
+    : null;
+
   if (userId) {
     user = await getUser(userId);
+  } else {
+    res.status(400).send("Require a user id for get user's clubs");
+    return;
   }
-  // TODO: Validation that object passed is actually of User type
-  if (user.discordId) {
-    const client = ReadingDiscordBot.getInstance();
-    const guild = client.guilds.first();
-    const { discordId } = user;
-    const channels = getUserChannels(guild, discordId);
-    const channelIds = channels.map(c => c.id);
-    try {
-      const clubs = await ClubModel.find({
-        channelSource: 'discord',
-        channelId: {
-          $in: channelIds,
-        },
-      });
-      if (!clubs) {
-        res.sendStatus(404);
-        return;
-      }
-      const clubsWithMemberCount = clubs.map(cl => {
-        let memberCount = 0;
-        if (cl.channelSource === 'discord') {
-          const channel = channels.find(ch => ch.id === cl.channelId) as
-            | TextChannel
-            | VoiceChannel;
-          if (channel) {
-            memberCount = channel.members.size;
-          }
-        }
-        return { ...cl.toObject(), memberCount };
-      });
-      res.status(200).json(clubsWithMemberCount);
-    } catch (err) {
-      console.log('Failed to get clubs for user ' + user._id);
-      return next(err);
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const { discordId } = user;
+  const channels = getUserChannels(guild, discordId);
+  const channelIds = channels.map(c => c.id);
+  try {
+    const clubDocs = await ClubModel.find({
+      channelSource: 'discord',
+      channelId: {
+        $in: channelIds,
+      },
+    });
+    if (!clubDocs) {
+      res.status(404).send(`No clubs exist for user ${userId}`);
+      return;
     }
+    const clubsWithMemberCount = clubDocs
+      .map(clubDoc => {
+        let discordChannel: GuildChannel | null = guild.channels.find(
+          c => c.id === clubDoc.channelId
+        );
+        if (!discordChannel) {
+          return null;
+        }
+
+        // If the club is unlisted
+        if (
+          clubDoc.unlisted &&
+          (!currentUser ||
+            !(discordChannel as TextChannel).members.some(
+              m => m.id === currentUser.discordId
+            ))
+        ) {
+          return null;
+        }
+        const memberCount = getCountableMembersInChannel(
+          discordChannel,
+          clubDoc
+        ).size;
+        return { ...clubDoc.toObject(), memberCount };
+      })
+      .filter(x => x != null);
+    res.status(200).json(clubsWithMemberCount);
+  } catch (err) {
+    console.log('Failed to get clubs for user ' + user._id);
+    return next(err);
   }
 });
 
