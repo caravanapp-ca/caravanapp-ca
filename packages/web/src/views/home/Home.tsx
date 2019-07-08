@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import { Fab } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -16,6 +17,7 @@ import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import { logout } from '../../services/user';
+import { washedTheme } from '../../theme';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
@@ -23,6 +25,8 @@ import { getAllClubs } from '../../services/club';
 import { Service } from '../../common/service';
 import ClubCards from './ClubCards';
 import logo from '../../resources/logo.svg';
+import GenericGroupMemberIcon from '../../components/misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
+import c from '../c';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -39,8 +43,8 @@ const useStyles = makeStyles(theme => ({
   },
   headerAvatar: {
     marginLeft: 12,
-    width: 32,
-    height: 32,
+    width: 48,
+    height: 48,
   },
   headerArrowDown: {
     height: 20,
@@ -58,6 +62,13 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     margin: theme.spacing(1),
+  },
+  createClubIconCircle: {
+    backgroundColor: washedTheme.palette.primary.main,
+  },
+  profileIconCircle: {
+    backgroundColor: washedTheme.palette.primary.main,
+    margin: 16,
   },
 }));
 
@@ -109,7 +120,7 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     (async () => {
-      const pageSize = 50;
+      const pageSize = 25;
       const res = await getAllClubs(afterQuery, pageSize);
       if (res.data) {
         const newClubsWCR = transformClubsToWithCurrentlyReading(
@@ -174,19 +185,21 @@ export default function Home(props: HomeProps) {
         {user ? (
           <IconButton
             edge="start"
-            color="inherit"
+            color="primary"
             aria-label="Add"
             component={AdapterLink}
             to="/clubs/create"
+            className={classes.createClubIconCircle}
           >
             <AddIcon />
           </IconButton>
         ) : (
           <IconButton
             edge="start"
-            color="inherit"
+            color="primary"
             aria-label="Add"
             onClick={() => setLoginModalShown(true)}
+            className={classes.createClubIconCircle}
           >
             <AddIcon />
           </IconButton>
@@ -195,7 +208,11 @@ export default function Home(props: HomeProps) {
       {user ? (
         <div
           onClick={handleProfileClick}
-          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+          }}
           ref={headerProfileAnchorRef}
         >
           <Avatar
@@ -206,9 +223,17 @@ export default function Home(props: HomeProps) {
           <ArrowDropDown className={classes.headerArrowDown} />
         </div>
       ) : (
-        <JoinCaravanButton onClick={() => setLoginModalShown(true)} />
+        <Tooltip title="View profile" aria-label="View profile">
+          <IconButton
+            onClick={() => setLoginModalShown(true)}
+            className={classes.profileIconCircle}
+          >
+            <GenericGroupMemberIcon color="primary" />
+          </IconButton>
+        </Tooltip>
       )}
     </>
+
   );
 
   return (
