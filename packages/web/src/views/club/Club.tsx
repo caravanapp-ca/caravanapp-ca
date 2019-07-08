@@ -83,8 +83,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       position: 'absolute',
-      top: 83,
-      right: 30,
+      top: 84,
+      right: theme.spacing(4),
     },
     fab: {},
   })
