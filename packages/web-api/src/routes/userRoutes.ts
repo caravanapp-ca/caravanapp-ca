@@ -223,7 +223,9 @@ router.put(
     });
 
     try {
-      let userDoc = await UserModel.findByIdAndUpdate(userId, writeableObj);
+      let userDoc = await UserModel.findByIdAndUpdate(userId, writeableObj, {
+        new: true,
+      });
       if (
         userDoc &&
         userDoc.onboardingVersion === 0 &&

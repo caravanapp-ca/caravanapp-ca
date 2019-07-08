@@ -240,6 +240,7 @@ export default function CreateClub(props: CreateClubProps) {
                   flexDirection: 'column',
                   alignItems: 'center',
                 }}
+                key={size.toString()}
               >
                 <Radio
                   checked={selectedGroupSize === size}
@@ -269,6 +270,7 @@ export default function CreateClub(props: CreateClubProps) {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}
+                key={speed}
               >
                 {readingSpeedIcons(speed, 'icon')}
                 <Radio
@@ -302,6 +304,7 @@ export default function CreateClub(props: CreateClubProps) {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}
+                key={vibe}
               >
                 {groupVibeIcons(vibe, 'icon')}
                 <Radio
