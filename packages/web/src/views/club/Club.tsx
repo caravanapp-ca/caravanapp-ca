@@ -219,7 +219,7 @@ export default function ClubComponent(props: ClubProps) {
       edge="start"
       color="inherit"
       aria-label="Back"
-      onClick={() => backButtonAction()}
+      onClick={backButtonAction}
     >
       <BackIcon />
     </IconButton>

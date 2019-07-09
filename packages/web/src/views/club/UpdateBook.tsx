@@ -218,7 +218,7 @@ export default function UpdateBook(props: UpdateBookProps) {
       edge="start"
       color="inherit"
       aria-label="Back"
-      onClick={() => backButtonAction()}
+      onClick={backButtonAction}
     >
       <ArrowBackIos />
     </IconButton>

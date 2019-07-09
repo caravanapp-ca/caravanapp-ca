@@ -432,7 +432,7 @@ export default function UserView(props: UserViewProps) {
       edge="start"
       color="inherit"
       aria-label="Back"
-      onClick={() => backButtonAction()}
+      onClick={backButtonAction}
     >
       <BackIcon />
     </IconButton>
