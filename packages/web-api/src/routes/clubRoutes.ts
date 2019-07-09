@@ -7,6 +7,7 @@ import {
   TextChannel,
   VoiceChannel,
   GuildMember,
+  PermissionResolvable,
 } from 'discord.js';
 import { check, validationResult } from 'express-validator';
 import {
@@ -384,10 +385,23 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     const guild = discordClient.guilds.first();
 
     const body: CreateClubBody = req.body;
-    const channelCreationOverwrites = (body.invitedUsers || []).map(user => {
+    const invitedUsers = body.invitedUsers || [];
+    // Ensure exactly one instance of the owner is here
+    invitedUsers.filter(u => u !== req.user.discordId);
+    invitedUsers.push(req.user.discordId);
+    const channelCreationOverwrites = invitedUsers.map(user => {
+      const allowed: PermissionResolvable = [
+        'VIEW_CHANNEL',
+        'SEND_MESSAGES',
+        'READ_MESSAGES',
+        'SEND_TTS_MESSAGES',
+      ];
+      if (user === req.user.discordId) {
+        allowed.push('MANAGE_MESSAGES');
+      }
       return {
         id: user,
-        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGES'],
+        allow: allowed,
       } as ChannelCreationOverwrites;
     });
 
@@ -438,15 +452,20 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       vibe: body.vibe,
     };
 
-    const addMemberPromise = guild.addMember(req.user.discordId, {
-      accessToken: token,
-    });
+    // const addMemberPromise = guild
+    //   .addMember(req.user.discordId, {
+    //     accessToken: token,
+    //   })
+    //   .then(m => {
+    //     m.permissions.add([
+    //       'MANAGE_MESSAGES',
+    //       'READ_MESSAGES',
+    //       'SEND_MESSAGES',
+    //       'SEND_TTS_MESSAGES',
+    //     ]);
+    //   });
     const club = new ClubModel(clubModelBody);
-    const clubSavePromise = club.save();
-    const [guildMember, newClub] = await Promise.all([
-      addMemberPromise,
-      clubSavePromise,
-    ]);
+    const newClub = await club.save();
 
     const result: Services.CreateClubResult = {
       //@ts-ignore
@@ -679,6 +698,8 @@ router.put(
       return;
     }
 
+    const isOwner = club.ownerId === userId.toHexString();
+
     const discordClient = ReadingDiscordBot.getInstance();
     const guild = discordClient.guilds.first();
     const channel: GuildChannel = guild.channels.find(
@@ -719,11 +740,13 @@ router.put(
           {
             READ_MESSAGES: true,
             SEND_MESSAGES: true,
+            SEND_TTS_MESSAGES: true,
+            MANAGE_MESSAGES: isOwner,
           }
         );
       }
     } else {
-      if (club.ownerId === userId.toHexString()) {
+      if (isOwner) {
         res.status(401).send('An owner cannot leave a club.');
         return;
       }
@@ -736,6 +759,8 @@ router.put(
         {
           READ_MESSAGES: false,
           SEND_MESSAGES: false,
+          SEND_TTS_MESSAGES: false,
+          MANAGE_MESSAGES: false,
         }
       );
     }
