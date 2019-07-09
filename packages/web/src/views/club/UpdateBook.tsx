@@ -205,12 +205,20 @@ export default function UpdateBook(props: UpdateBookProps) {
     }
   }
 
+  function backButtonAction() {
+    if (props.history.length > 1) {
+      props.history.goBack();
+    } else {
+      props.history.replace('/');
+    }
+  }
+
   const leftComponent = (
     <IconButton
       edge="start"
       color="inherit"
       aria-label="Back"
-      onClick={() => props.history.goBack()}
+      onClick={() => backButtonAction()}
     >
       <ArrowBackIos />
     </IconButton>

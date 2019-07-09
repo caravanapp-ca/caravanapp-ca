@@ -419,12 +419,20 @@ export default function UserView(props: UserViewProps) {
   //   return [true, [true, "All good!"]];
   // }
 
+  function backButtonAction() {
+    if (props.history.length > 1) {
+      props.history.goBack();
+    } else {
+      props.history.replace('/');
+    }
+  }
+
   const leftComponent = (
     <IconButton
       edge="start"
       color="inherit"
       aria-label="Back"
-      onClick={() => props.history.goBack()}
+      onClick={() => backButtonAction()}
     >
       <BackIcon />
     </IconButton>
