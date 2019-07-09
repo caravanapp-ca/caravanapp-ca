@@ -91,7 +91,7 @@ router.put(
     .optional(),
   check(['goodreadsUrl', 'website', 'photoUrl', 'smallPhotoUrl'])
     .isURL()
-    .optional(),
+    .optional({ checkFalsy: true }),
   check('name')
     .isString()
     .isLength({ min: 2, max: 30 })
@@ -122,6 +122,9 @@ router.put(
     .isNumeric()
     .optional(),
   async (req, res, next) => {
+    ['goodreadsUrl', 'website', 'photoUrl', 'smallPhotoUrl'].forEach(
+      x => (req.body[x] = x == null || x == '' ? undefined : req.body[x])
+    );
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorArr = errors.array();
