@@ -66,7 +66,6 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     discordId: { $in: guildMemberDiscordIds },
     isBot: { $eq: false },
   });
-
   const guildMembers = guildMembersArr
     .map(mem => {
       const user = users.find(u => u.discordId === mem.id);
@@ -555,40 +554,42 @@ router.put(
     } = req.body;
     let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
     let resultPrev, resultNew;
-    if (prevBookId && currBookAction !== 'current') {
-      switch (currBookAction as CurrBookAction) {
-        case 'delete':
-          resultPrev = await ClubModel.update(
-            { _id: clubId },
-            { $pull: { shelf: { _id: prevBookId } } }
-          );
-          break;
-        case 'notStarted':
-        case 'read':
-          const prevCondition = {
-            _id: clubId,
-            'shelf._id': prevBookId,
-          };
-          const prevUpdate = {
-            'shelf.$.readingState': currBookAction,
-            'shelf.$.updatedAt': new Date(),
-          };
-          try {
-            resultPrev = await ClubModel.findOneAndUpdate(
-              prevCondition,
-              prevUpdate,
-              {
-                new: true,
-              }
+    if (currBookAction !== 'current') {
+      if (prevBookId) {
+        switch (currBookAction as CurrBookAction) {
+          case 'delete':
+            resultPrev = await ClubModel.update(
+              { _id: clubId },
+              { $pull: { shelf: { _id: prevBookId } } }
             );
-          } catch (err) {
-            return res.status(400).send(err);
-          }
-          break;
-        default:
-          return res
-            .status(400)
-            .send('Invalid value passed for currBookAction!');
+            break;
+          case 'notStarted':
+          case 'read':
+            const prevCondition = {
+              _id: clubId,
+              'shelf._id': prevBookId,
+            };
+            const prevUpdate = {
+              'shelf.$.readingState': currBookAction,
+              'shelf.$.updatedAt': new Date(),
+            };
+            try {
+              resultPrev = await ClubModel.findOneAndUpdate(
+                prevCondition,
+                prevUpdate,
+                {
+                  new: true,
+                }
+              );
+            } catch (err) {
+              return res.status(400).send(err);
+            }
+            break;
+          default:
+            return res
+              .status(400)
+              .send('Invalid value passed for currBookAction!');
+        }
       }
       let newCondition, newUpdate;
       const newReadingState: ReadingState = 'current';
@@ -629,7 +630,6 @@ router.put(
         return res.status(400).send(err);
       }
     }
-    let resultWTR;
     // TODO: typing here is a bitch.
     let updateObject: any[] = [];
     if (wantToReadArr.length > 0) {
@@ -651,6 +651,7 @@ router.put(
     const wtrUpdate = {
       $push: { shelf: { $each: updateObject } },
     };
+    let resultWTR;
     try {
       let removeWTR = await ClubModel.update(
         { _id: clubId },

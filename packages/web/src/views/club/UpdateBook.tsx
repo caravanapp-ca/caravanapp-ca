@@ -1,18 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, ChangeEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
   ShelfEntry,
   Services,
   FilterAutoMongoKeys,
-  ReadingState,
   CurrBookAction,
 } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   IconButton,
   Typography,
-  Switch,
   Button,
   Box,
   Container,
@@ -89,8 +87,8 @@ export default function UpdateBook(props: UpdateBookProps) {
     'current'
   );
   const [madeSavableMods, setMadeSavableMods] = React.useState<boolean>(false);
-  const [club, setClub] = React.useState<Services.GetClubById | null>(null);
-  const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
+  const [, setClub] = React.useState<Services.GetClubById | null>(null);
+  const [, setLoadedClub] = React.useState<boolean>(false);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
   const [wantToRead, setWantToRead] = React.useState<
     (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
@@ -143,16 +141,13 @@ export default function UpdateBook(props: UpdateBookProps) {
     if (!bookToRead) {
       return;
     }
-    const addToWantToRead = searchedBooks.filter(
-      book => book.sourceId !== bookToRead.sourceId
-    );
-    let newWantToRead = [...wantToRead];
+    let newWantToRead = wantToRead;
     if (!newBookForShelf) {
       newWantToRead = newWantToRead.filter(
         b => b.sourceId !== bookToRead.sourceId
       );
     }
-    newWantToRead.concat(searchedBooks);
+    newWantToRead = newWantToRead.concat(searchedBooks);
     const res = await updateCurrentlyReadBook(
       clubId,
       bookToRead,
@@ -192,10 +187,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     setMadeSavableMods(true);
   }
 
-  function handleCurrBookActionChange(
-    event: React.ChangeEvent<{}>,
-    value: string
-  ) {
+  function handleCurrBookActionChange(event: ChangeEvent<{}>, value: string) {
     if (value === 'current' && currBook) {
       setBookToRead(currBook);
       if (searchedBooks.length === 0) {
