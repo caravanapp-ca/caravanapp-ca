@@ -83,19 +83,13 @@ export default function UserQuestions(props: UserQuestionsProps) {
     let userQuestionsWkspcNew;
     if (existingQAIndex >= 0) {
       // Question already answered.
-      if (answer.length === 0) {
-        // Delete the existing answer
-        userQuestionsWkspcNew = [...userQuestionsWkspc];
-        userQuestionsWkspcNew.splice(existingQAIndex, 1);
-      } else {
-        // Modify the existing answer
-        const editedQuestion = {
-          ...userQuestionsWkspc[existingQAIndex],
-          answer: answer,
-        };
-        userQuestionsWkspcNew = [...userQuestionsWkspc];
-        userQuestionsWkspcNew[existingQAIndex] = editedQuestion;
-      }
+      // Modify the existing answer
+      const editedQuestion = {
+        ...userQuestionsWkspc[existingQAIndex],
+        answer: answer,
+      };
+      userQuestionsWkspcNew = [...userQuestionsWkspc];
+      userQuestionsWkspcNew[existingQAIndex] = editedQuestion;
     } else {
       // New question
       const newQuestion = initQuestions.initUnansweredQs[index];

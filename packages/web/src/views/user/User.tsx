@@ -319,7 +319,10 @@ export default function UserView(props: UserViewProps) {
     if (questionsModified || shelfModified) {
       let userCopy: User = { ...user };
       if (questionsModified) {
-        userCopy = { ...userCopy, questions: userQuestionsWkspc };
+        const userQuestionsAnswered = userQuestionsWkspc.filter(
+          q => q.answer.split(' ').join('').length !== 0
+        );
+        userCopy = { ...userCopy, questions: userQuestionsAnswered };
         if (questions) {
           const initQuestions = sortQuestions(userCopy, questions);
           setInitQuestions(initQuestions);
