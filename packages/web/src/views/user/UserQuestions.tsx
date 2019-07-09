@@ -55,11 +55,9 @@ export default function UserQuestions(props: UserQuestionsProps) {
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
   if (user && !isEditing && user.questions.length === 0) {
-    let noQAMessage = 'This user has not yet answered any questions.';
-    if (userIsMe) {
-      noQAMessage =
-        "You haven't answered any questions yet! Click edit in the top right to express yourself!";
-    }
+    const noQAMessage = userIsMe
+      ? "You haven't answered any questions yet! Click edit in the top right to express yourself!"
+      : 'This user has not yet answered any questions.';
     return (
       <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
         {noQAMessage}
@@ -67,7 +65,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
     );
   }
 
-  const onQuestionsEdit2 = (
+  const onQuestionsEdit = (
     id: string,
     index: number,
     answer: string,
@@ -139,7 +137,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
                   maxLength={q.max}
                   minLength={q.min}
                   isEditing={isEditing}
-                  onEdit={onQuestionsEdit2}
+                  onEdit={onQuestionsEdit}
                 />
               </Grid>
             ))}
@@ -163,7 +161,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
                     maxLength={q.max}
                     minLength={q.min}
                     isEditing={isEditing}
-                    onEdit={onQuestionsEdit2}
+                    onEdit={onQuestionsEdit}
                   />
                 </Grid>
               ))}
@@ -186,7 +184,7 @@ export default function UserQuestions(props: UserQuestionsProps) {
                 question={q.title}
                 answer={q.answer}
                 isEditing={isEditing}
-                onEdit={onQuestionsEdit2}
+                onEdit={onQuestionsEdit}
               />
             </Grid>
           ))}
