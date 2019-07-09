@@ -189,7 +189,7 @@ export default function UserView(props: UserViewProps) {
           getGenres();
           getQuestions(user);
         }
-        getUserClubs(user).then(res => {
+        getUserClubs(userId).then(res => {
           if (!res.data) {
             // TODO: Error checking
           }
@@ -202,7 +202,7 @@ export default function UserView(props: UserViewProps) {
       }
       setUser(user);
     });
-  }, [userId, props.user]);
+  }, [userId, props.user && props.user._id]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 

@@ -133,7 +133,6 @@ export default function AboutYou(props: AboutYouProps) {
       <Grid
         key={key}
         container
-        lg={12}
         direction="row"
         justify="center"
         alignItems="center"

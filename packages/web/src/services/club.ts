@@ -6,6 +6,7 @@ import {
   ReadingSpeed,
   User,
   FilterAutoMongoKeys,
+  CurrBookAction,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -18,7 +19,7 @@ interface CreateClubProps {
   vibe: string;
   readingSpeed: string;
   channelSource: ChannelSource;
-  private: boolean;
+  unlisted: boolean;
 }
 
 export async function getAllClubs(
@@ -55,10 +56,9 @@ export async function getClubsById(clubIds: string[]) {
   return clubs;
 }
 
-export async function getUserClubs(user: User) {
-  const res = await axios.post<Services.GetClubs['clubs']>(
-    `${clubRoute}/getUserClubs`,
-    { user }
+export async function getUserClubs(userId: string) {
+  const res = await axios.get<Services.GetClubs['clubs']>(
+    `${clubRoute}/user/${userId}`
   );
   return res;
 }
@@ -82,22 +82,18 @@ export async function updateCurrentlyReadBook(
   clubId: string,
   newBook: FilterAutoMongoKeys<ShelfEntry> | ShelfEntry,
   newEntry: boolean,
-  prevBookId: string,
-  finishedPrev: boolean,
-  addToWantToRead: FilterAutoMongoKeys<ShelfEntry>[]
+  prevBookId: string | null,
+  currBookAction: CurrBookAction,
+  wantToRead: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
     newBook,
     newEntry,
     prevBookId,
-    finishedPrev,
-    addToWantToRead,
+    currBookAction,
+    wantToRead,
   });
-  if (res.status === 200) {
-    return res.data;
-  } else {
-    return res.status;
-  }
+  return res;
 }
 
 export async function createClub(props: CreateClubProps) {
@@ -108,7 +104,7 @@ export async function createClub(props: CreateClubProps) {
     maxMembers: props.maxMembers,
     vibe: props.vibe,
     readingSpeed: props.readingSpeed,
-    private: props.private,
+    unlisted: props.unlisted,
     channelSource: props.channelSource,
   };
 

@@ -47,6 +47,7 @@ import ClubDisbandDialog from './ClubDisbandDialog';
 import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,8 +83,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       position: 'absolute',
-      top: theme.spacing(10),
-      right: theme.spacing(3),
+      top: 84,
+      right: theme.spacing(4),
     },
     fab: {},
   })
@@ -222,6 +223,8 @@ export default function ClubComponent(props: ClubProps) {
     <HeaderTitle title="Club Homepage" />
   );
 
+  const rightComponent = <ProfileHeaderIcon user={user} />;
+
   function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
@@ -292,6 +295,7 @@ export default function ClubComponent(props: ClubProps) {
           <Header
             leftComponent={leftComponent}
             centerComponent={centerComponent}
+            rightComponent={rightComponent}
           />
           {currBook && <ClubHero currBook={currBook} />}
           <Paper className={classes.root}>
@@ -384,13 +388,13 @@ export default function ClubComponent(props: ClubProps) {
                     color="primary"
                     className={classes.button}
                     component={AdapterLink}
-                    to={`${clubId}/updatebook`}
+                    to={`${clubId}/manage-shelf`}
                   >
                     <Typography
                       variant="button"
                       style={{ textAlign: 'center' }}
                     >
-                      UPDATE BOOK
+                      MANAGE SHELF
                     </Typography>
                   </Button>
                 )}

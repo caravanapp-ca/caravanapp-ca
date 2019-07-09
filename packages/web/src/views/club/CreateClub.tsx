@@ -113,7 +113,7 @@ export default function CreateClub(props: CreateClubProps) {
   const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
     ShelfEntry
   > | null>(null);
-  const [privateClub] = React.useState(false);
+  const [unlistedClub] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
     createdClub,
@@ -165,7 +165,7 @@ export default function CreateClub(props: CreateClubProps) {
       vibe: selectedGroupVibe,
       readingSpeed: selectedGroupSpeed,
       channelSource: 'discord',
-      private: privateClub,
+      unlisted: unlistedClub,
     };
     setCreatingClub(true);
     const createdClubRes = await createClub(clubObj);
@@ -175,9 +175,9 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }
 
-  // let privateSwitchLabel = 'Anyone can find and join my club.';
-  // if (privateClub) {
-  //   privateSwitchLabel = 'Only friends I share the link with can join my club.';
+  // let unlistedSwitchLabel = 'Anyone can find and join my club.';
+  // if (unlistedClub) {
+  //   unlistedSwitchLabel = 'Only friends I share the link with can join my club.';
   // }
 
   return (
@@ -240,6 +240,7 @@ export default function CreateClub(props: CreateClubProps) {
                   flexDirection: 'column',
                   alignItems: 'center',
                 }}
+                key={size.toString()}
               >
                 <Radio
                   checked={selectedGroupSize === size}
@@ -269,6 +270,7 @@ export default function CreateClub(props: CreateClubProps) {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}
+                key={speed}
               >
                 {readingSpeedIcons(speed, 'icon')}
                 <Radio
@@ -302,6 +304,7 @@ export default function CreateClub(props: CreateClubProps) {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}
+                key={vibe}
               >
                 {groupVibeIcons(vibe, 'icon')}
                 <Radio

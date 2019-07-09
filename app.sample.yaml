@@ -15,7 +15,7 @@ resources:
   disk_size_gb: 10
 
 env_variables:
-  COOKIE_SESSION_KEY: # GEnerate random characters, something like oawrcr48ont49n8u489unt4c9n8uoo
+  COOKIE_SESSION_KEY: # Generate random characters, something like oawrcr48ont49n8u489unt4c9n8uoo
   DISCORD_BOT_SECRET: # Get from discord
   DISCORD_CLIENT_ID: # Get from discord
   DISCORD_CLIENT_SECRET: # Get from discord

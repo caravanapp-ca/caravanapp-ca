@@ -13,10 +13,11 @@ steps:
       - 'DISCORD_GUILD=${_DISCORD_GUILD}'
       - 'DISCORD_GUILD_ID=${_DISCORD_GUILD_ID}'
       - 'DISCORD_REDIRECT=${_DISCORD_REDIRECT}'
+      - 'GAE_ENV=${_GAE_ENV}'
       - 'MONGO_DB=${_MONGO_DB}'
       - 'PORT=3001'
   - name: gcr.io/cloud-builders/yarn
     args: ['build']
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'app.production.yaml', '--no-promote']
+    args: ['app', 'deploy', 'app.staging.yaml', '--no-promote']
 timeout: '1600s'

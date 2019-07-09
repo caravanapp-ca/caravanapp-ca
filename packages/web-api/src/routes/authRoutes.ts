@@ -4,7 +4,6 @@ import {
   Session,
   User,
 } from '@caravan/buddy-reading-types';
-import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
@@ -28,7 +27,7 @@ router.get('/discord/login', (req, res) => {
     res.status(400).send('OAuth2 state required.');
     return;
   }
-  res.redirect(DiscordOAuth2Url(state));
+  res.redirect(DiscordOAuth2Url(state, req.headers.host));
 });
 
 function convertTokenResponseToModel(
@@ -66,14 +65,18 @@ function convertTokenResponseToModel(
 //   users.forEach(async user => {
 //     if (!user.urlSlug) {
 //       const discordMember = guild.members.find(m => m.id === user.discordId);
-//       const slugs = generateSlugIds(discordMember.displayName);
-//       const availableSlugs = await getAvailableSlugIds(slugs);
-//       await UserModel.updateOne(
-//         { _id: user.id },
-//         {
-//           urlSlug: availableSlugs[0],
-//         }
-//       );
+//       if (discordMember) {
+//         const slugs = generateSlugIds(
+//           discordMember.displayName || discordMember.user.username
+//         );
+//         const availableSlugs = await getAvailableSlugIds(slugs);
+//         await UserModel.updateOne(
+//           { _id: user.id },
+//           {
+//             urlSlug: availableSlugs[0],
+//           }
+//         );
+//       }
 //     }
 //   });
 // });
@@ -85,7 +88,11 @@ router.get('/discord/callback', async (req, res) => {
     return;
   }
   let successfulAuthentication = true;
-  let tokenResponseData = await ReadingDiscordBot.getToken(code);
+  let tokenResponseData = await ReadingDiscordBot.getToken(
+    code,
+    req.headers.host
+  );
+
   if (tokenResponseData.error) {
     const encodedErrorMessage = encodeURIComponent(
       tokenResponseData.error_description
@@ -141,6 +148,13 @@ router.get('/discord/callback', async (req, res) => {
   try {
     const currentSessionModel = await SessionModel.findOne({ accessToken });
     if (currentSessionModel) {
+      if (currentSessionModel.client !== 'discord') {
+        return res
+          .status(401)
+          .send(
+            `Unauthorized: invalid source for session ${currentSessionModel.client}`
+          );
+      }
       const accessTokenExpiresAt: number = currentSessionModel.get(
         'accessTokenExpiresAt'
       );

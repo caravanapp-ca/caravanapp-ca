@@ -7,6 +7,7 @@ import {
   TextChannel,
   VoiceChannel,
   GuildMember,
+  PermissionResolvable,
 } from 'discord.js';
 import { check, validationResult } from 'express-validator';
 import {
@@ -16,6 +17,7 @@ import {
   Services,
   ShelfEntry,
   User,
+  CurrBookAction,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
@@ -64,7 +66,6 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     discordId: { $in: guildMemberDiscordIds },
     isBot: { $eq: false },
   });
-
   const guildMembers = guildMembersArr
     .map(mem => {
       const user = users.find(u => u.discordId === mem.id);
@@ -94,7 +95,7 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   return guildMembers;
 }
 
-// TODO: Need to add checks here: Is the club full? Is the club private? => Don't return
+// TODO: Need to add checks here: Is the club full? Is the club unlisted? => Don't return
 router.get('/', async (req, res, next) => {
   const { after, pageSize, readingSpeed } = req.query;
   const { userId } = req.session;
@@ -105,7 +106,7 @@ router.get('/', async (req, res, next) => {
   try {
     // Calculate number of documents to skip
     const query: any = {
-      private: false,
+      unlisted: { $eq: false },
     };
     if (after) {
       query._id = { $lt: after };
@@ -113,7 +114,6 @@ router.get('/', async (req, res, next) => {
     if (readingSpeed) {
       query.readingSpeed = { $eq: readingSpeed };
     }
-
     const size = Number.parseInt(pageSize || 0);
     const limit = Math.min(Math.max(size, 10), 50);
     const clubs = await ClubModel.find(query)
@@ -199,7 +199,7 @@ router.get('/:id', async (req, res, next) => {
         guildId: guild.id,
         channelSource: clubDoc.channelSource,
         channelId: clubDoc.channelId,
-        private: clubDoc.private,
+        unlisted: clubDoc.unlisted,
         createdAt:
           clubDoc.createdAt instanceof Date
             ? clubDoc.createdAt.toISOString()
@@ -231,44 +231,69 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-// Gets all of the clubs the specified user is currently in
-router.post('/getUserClubs', async (req, res, next) => {
-  const user: User = req.body.user;
-  // TODO: Validation that object passed is actually of User type
-  if (user.discordId) {
-    const client = ReadingDiscordBot.getInstance();
-    const guild = client.guilds.first();
-    const { discordId } = user;
-    const channels = getUserChannels(guild, discordId);
-    const channelIds = channels.map(c => c.id);
-    try {
-      const clubs = await ClubModel.find({
-        channelSource: 'discord',
-        channelId: {
-          $in: channelIds,
-        },
-      });
-      if (!clubs) {
-        res.sendStatus(404);
-        return;
-      }
-      const clubsWithMemberCount = clubs.map(cl => {
-        let memberCount = 0;
-        if (cl.channelSource === 'discord') {
-          const channel = channels.find(ch => ch.id === cl.channelId) as
-            | TextChannel
-            | VoiceChannel;
-          if (channel) {
-            memberCount = channel.members.size;
-          }
-        }
-        return { ...cl.toObject(), memberCount };
-      });
-      res.status(200).json(clubsWithMemberCount);
-    } catch (err) {
-      console.log('Failed to get clubs for user ' + user._id);
-      return next(err);
+// Gets all of the clubs the specified user is currently in.
+// Will get unlisted clubs iff the request is made by the user.
+router.get('/user/:userId', async (req, res, next) => {
+  const { after, pageSize } = req.query;
+  const { userId } = req.params;
+  let user: UserDoc | undefined;
+
+  const currentUser = req.session.userId
+    ? await UserModel.findById(req.session.userId)
+    : null;
+
+  if (userId) {
+    user = await getUser(userId);
+  } else {
+    res.status(400).send("Require a user id for get user's clubs");
+    return;
+  }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const { discordId } = user;
+  const channels = getUserChannels(guild, discordId);
+  const channelIds = channels.map(c => c.id);
+  try {
+    const clubDocs = await ClubModel.find({
+      channelSource: 'discord',
+      channelId: {
+        $in: channelIds,
+      },
+    });
+    if (!clubDocs) {
+      res.status(404).send(`No clubs exist for user ${userId}`);
+      return;
     }
+    const clubsWithMemberCount = clubDocs
+      .map(clubDoc => {
+        let discordChannel: GuildChannel | null = guild.channels.find(
+          c => c.id === clubDoc.channelId
+        );
+        if (!discordChannel) {
+          return null;
+        }
+
+        // If the club is unlisted
+        if (
+          clubDoc.unlisted &&
+          (!currentUser ||
+            !(discordChannel as TextChannel).members.some(
+              m => m.id === currentUser.discordId
+            ))
+        ) {
+          return null;
+        }
+        const memberCount = getCountableMembersInChannel(
+          discordChannel,
+          clubDoc
+        ).size;
+        return { ...clubDoc.toObject(), memberCount };
+      })
+      .filter(x => x != null);
+    res.status(200).json(clubsWithMemberCount);
+  } catch (err) {
+    console.log('Failed to get clubs for user ' + user._id);
+    return next(err);
   }
 });
 
@@ -277,6 +302,11 @@ router.post(
   '/clubsById',
   check('clubIds').isArray(),
   async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      return res.status(422).json({ errors: errorArr });
+    }
     const { clubIds } = req.body;
     try {
       const clubs = await ClubModel.find({
@@ -335,32 +365,6 @@ router.post(
   }
 );
 
-router.get('/my-clubs', isAuthenticated, async (req, res, next) => {
-  const discordId = req.user.discordId;
-  const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
-
-  const relevantChannels: GuildChannel[] = [];
-
-  guild.channels.forEach(channel => {
-    switch (channel.type) {
-      case 'text':
-        const textChannel = channel as TextChannel;
-        if (textChannel.members.has(discordId)) {
-          relevantChannels.push(textChannel);
-        }
-      case 'voice':
-        const voiceChannel = channel as VoiceChannel;
-        if (voiceChannel.members.has(discordId)) {
-          relevantChannels.push(voiceChannel);
-        }
-      default:
-        return;
-    }
-  });
-  res.status(200).json(relevantChannels);
-});
-
 interface CreateChannelInput {
   nsfw?: boolean;
   invitedUsers?: string[];
@@ -380,14 +384,27 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     const guild = discordClient.guilds.first();
 
     const body: CreateClubBody = req.body;
-    const channelCreationOverwrites = (body.invitedUsers || []).map(user => {
+    const invitedUsers = body.invitedUsers || [];
+    // Ensure exactly one instance of the owner is here
+    invitedUsers.filter(u => u !== req.user.discordId);
+    invitedUsers.push(req.user.discordId);
+    const channelCreationOverwrites = invitedUsers.map(user => {
+      const allowed: PermissionResolvable = [
+        'VIEW_CHANNEL',
+        'SEND_MESSAGES',
+        'READ_MESSAGES',
+        'SEND_TTS_MESSAGES',
+      ];
+      if (user === req.user.discordId) {
+        allowed.push('MANAGE_MESSAGES');
+      }
       return {
         id: user,
-        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGES'],
+        allow: allowed,
       } as ChannelCreationOverwrites;
     });
 
-    // Make all channels private (might have to handle Genre channels differently in the future)
+    // Make all channels unlisted (might have to handle Genre channels differently in the future)
     channelCreationOverwrites.push({
       id: guild.defaultRole.id,
       deny: ['VIEW_CHANNEL'],
@@ -430,19 +447,24 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       ownerDiscordId: req.user.discordId,
       channelSource: body.channelSource,
       channelId: channel.id,
-      private: body.private,
+      unlisted: body.unlisted,
       vibe: body.vibe,
     };
 
-    const addMemberPromise = guild.addMember(req.user.discordId, {
-      accessToken: token,
-    });
+    // const addMemberPromise = guild
+    //   .addMember(req.user.discordId, {
+    //     accessToken: token,
+    //   })
+    //   .then(m => {
+    //     m.permissions.add([
+    //       'MANAGE_MESSAGES',
+    //       'READ_MESSAGES',
+    //       'SEND_MESSAGES',
+    //       'SEND_TTS_MESSAGES',
+    //     ]);
+    //   });
     const club = new ClubModel(clubModelBody);
-    const clubSavePromise = club.save();
-    const [guildMember, newClub] = await Promise.all([
-      addMemberPromise,
-      clubSavePromise,
-    ]);
+    const newClub = await club.save();
 
     const result: Services.CreateClubResult = {
       //@ts-ignore
@@ -512,7 +534,10 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
 router.put(
   '/:id/updatebook',
   isAuthenticated,
-  check(['finishedPrev', 'newEntry']).isBoolean(),
+  check('newEntry').isBoolean(),
+  check('prevBookId').isString(),
+  check('currBookAction').isString(),
+  check('wantToRead').isArray(),
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -524,107 +549,130 @@ router.put(
       newBook,
       newEntry,
       prevBookId,
-      finishedPrev,
-      addToWantToRead,
+      currBookAction,
+      wantToRead,
     } = req.body;
-    let addToWantToReadArr = addToWantToRead as ShelfEntry[];
-    const prevCondition = {
-      _id: clubId,
-      'shelf._id': prevBookId,
-    };
-    let newReadState: ReadingState = 'read';
-    if (!finishedPrev) {
-      newReadState = 'notStarted';
-    }
-    const prevUpdate = {
-      $set: {
-        'shelf.$.readingState': newReadState,
-      },
-    };
-    let resultPrev;
-    try {
-      resultPrev = await ClubModel.findOneAndUpdate(prevCondition, prevUpdate, {
-        new: true,
-      });
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-    let newCondition, newUpdate;
-    if (!newEntry) {
-      newCondition = {
-        _id: clubId,
-        'shelf._id': newBook._id,
-      };
+    let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
+    let resultPrev, resultNew;
+    if (currBookAction !== 'current') {
+      if (prevBookId) {
+        switch (currBookAction as CurrBookAction) {
+          case 'delete':
+            resultPrev = await ClubModel.update(
+              { _id: clubId },
+              { $pull: { shelf: { _id: prevBookId } } }
+            );
+            break;
+          case 'notStarted':
+          case 'read':
+            const prevCondition = {
+              _id: clubId,
+              'shelf._id': prevBookId,
+            };
+            const prevUpdate = {
+              'shelf.$.readingState': currBookAction,
+              'shelf.$.updatedAt': new Date(),
+            };
+            try {
+              resultPrev = await ClubModel.findOneAndUpdate(
+                prevCondition,
+                prevUpdate,
+                {
+                  new: true,
+                }
+              );
+            } catch (err) {
+              return res.status(400).send(err);
+            }
+            break;
+          default:
+            return res
+              .status(400)
+              .send('Invalid value passed for currBookAction!');
+        }
+      }
+      let newCondition, newUpdate;
       const newReadingState: ReadingState = 'current';
-      newUpdate = {
-        $set: {
-          'shelf.$.readingState': newReadingState,
-          'shelf.$.updatedAt': new Date(),
-        },
-      };
-    } else {
-      newCondition = {
-        _id: clubId,
-      };
-      newUpdate = {
-        $addToSet: {
-          shelf: {
-            author: newBook.author,
-            coverImageURL: newBook.coverImageURL,
-            readingState: 'current',
-            title: newBook.title,
-            isbn: newBook.isbn,
-            publishedDate: new Date(newBook.publishedDate),
-            createdAt: new Date(),
-            updatedAt: new Date(),
+      if (!newEntry) {
+        newCondition = {
+          _id: clubId,
+          'shelf._id': newBook._id,
+        };
+        newUpdate = {
+          $set: {
+            'shelf.$.readingState': newReadingState,
+            'shelf.$.updatedAt': new Date(),
           },
-        },
-      };
-    }
-    let resultNew;
-    try {
-      resultNew = await ClubModel.findOneAndUpdate(newCondition, newUpdate, {
-        new: true,
-      });
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-    let resultAdd;
-    if (addToWantToReadArr.length > 0) {
-      const updateObject = addToWantToReadArr.map(b => ({
-        author: b.author,
-        coverImageURL: b.coverImageURL,
-        readingState: 'notStarted',
-        title: b.title,
-        isbn: b.isbn,
-        publishedDate: new Date(b.publishedDate),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }));
-      const addCondition = {
-        _id: clubId,
-      };
-      const addUpdate = {
-        $push: {
-          shelf: {
-            $each: updateObject,
+        };
+      } else {
+        newCondition = {
+          _id: clubId,
+        };
+        newUpdate = {
+          $addToSet: {
+            shelf: {
+              ...newBook,
+              readingState: newReadingState,
+              publishedDate: newBook.publishedDate
+                ? new Date(newBook.publishedDate)
+                : undefined,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
           },
-        },
-      };
+        };
+      }
       try {
-        resultAdd = await ClubModel.findOneAndUpdate(addCondition, addUpdate, {
+        resultNew = await ClubModel.findOneAndUpdate(newCondition, newUpdate, {
           new: true,
         });
-        if (resultPrev && resultNew && resultAdd) {
-          return res.status(200).send({ resultAdd });
-        }
       } catch (err) {
         return res.status(400).send(err);
       }
     }
-    if (resultPrev && resultNew) {
+    // TODO: typing here is a bitch.
+    let updateObject: any[] = [];
+    if (wantToReadArr.length > 0) {
+      const wtrReadingState: ReadingState = 'notStarted';
+      updateObject = wantToReadArr.map(b => {
+        return {
+          ...b,
+          readingState: wtrReadingState,
+          publishedDate: b.publishedDate
+            ? new Date(b.publishedDate)
+            : undefined,
+          updatedAt: new Date(),
+        };
+      });
+    }
+    const wtrCondition = {
+      _id: clubId,
+    };
+    const wtrUpdate = {
+      $push: { shelf: { $each: updateObject } },
+    };
+    let resultWTR;
+    try {
+      let removeWTR = await ClubModel.update(
+        { _id: clubId },
+        {
+          $pull: {
+            shelf: { readingState: 'notStarted', _id: { $ne: prevBookId } },
+          },
+        }
+      );
+      resultWTR = await ClubModel.findOneAndUpdate(wtrCondition, wtrUpdate, {
+        new: true,
+      });
+    } catch (err) {
+      return res.status(400).send(err);
+    }
+    if (resultWTR) {
+      return res.status(200).send({ resultWTR });
+    } else if (resultNew) {
       return res.status(200).send({ resultNew });
     }
+    return res.sendStatus(400);
   }
 );
 
@@ -650,6 +698,8 @@ router.put(
       res.status(400).send(`Could not find club ${clubId}`);
       return;
     }
+
+    const isOwner = club.ownerId === userId.toHexString();
 
     const discordClient = ReadingDiscordBot.getInstance();
     const guild = discordClient.guilds.first();
@@ -691,11 +741,13 @@ router.put(
           {
             READ_MESSAGES: true,
             SEND_MESSAGES: true,
+            SEND_TTS_MESSAGES: true,
+            MANAGE_MESSAGES: isOwner,
           }
         );
       }
     } else {
-      if (club.ownerId === userId.toHexString()) {
+      if (isOwner) {
         res.status(401).send('An owner cannot leave a club.');
         return;
       }
@@ -708,6 +760,8 @@ router.put(
         {
           READ_MESSAGES: false,
           SEND_MESSAGES: false,
+          SEND_TTS_MESSAGES: false,
+          MANAGE_MESSAGES: false,
         }
       );
     }

@@ -52,29 +52,31 @@ const forceOutOfOnboard = (user: User | null, route: JSX.Element) => {
 };
 
 export function App(props: AppProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const cachedUserStr = localStorage.getItem(KEY_USER);
+  let cachedUser: User | null = null;
+  if (cachedUserStr) {
+    cachedUser = JSON.parse(cachedUserStr);
+  }
+  const [user, setUser] = useState<User | null>(cachedUser);
+
   useEffect(() => {
-    if (!user) {
-      const cachedUserStr = localStorage.getItem(KEY_USER);
-      let cachedUser: User | null = null;
-      if (cachedUserStr) {
-        cachedUser = JSON.parse(cachedUserStr);
-        setUser(cachedUser);
-      }
-      const userId = getCookie('userId');
-      if (userId) {
-        getUser(userId).then(user => {
-          if (user) {
-            setUser(user);
-            localStorage.setItem(KEY_USER, JSON.stringify(user));
-          } else {
-            localStorage.removeItem(KEY_USER);
-            console.info('Are you having fun messing with cookies? :)');
-          }
-        });
-      }
+    const userId = getCookie('userId');
+    if (userId) {
+      getUser(userId).then(user => {
+        if (user) {
+          setUser(user);
+          localStorage.setItem(KEY_USER, JSON.stringify(user));
+        } else {
+          setUser(null);
+          localStorage.removeItem(KEY_USER);
+          console.info('Are you having fun messing with cookies? :)');
+        }
+      });
+    } else {
+      setUser(null);
+      localStorage.removeItem(KEY_USER);
     }
-  }, [user]);
+  }, []);
 
   // Handle the `state` query to verify login
   useEffect(() => {
@@ -134,7 +136,7 @@ export function App(props: AppProps) {
               render={props => forceOnboard(user, <Privacy />)}
             />
             <Route
-              path="/clubs/:id/updatebook"
+              path="/clubs/:id/manage-shelf"
               render={props =>
                 forceOnboard(user, <UpdateBook {...props} user={user} />)
               }

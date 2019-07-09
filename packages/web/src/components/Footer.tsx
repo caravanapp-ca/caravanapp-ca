@@ -16,11 +16,11 @@ function MadeWithLove() {
       Built with{' '}
       <span role="img" aria-label="love">
         ❤️
-      </span>{' '}
+      </span>
       for{' '}
       <span role="img" aria-label="books">
         📖
-      </span>{' '}
+      </span>
       by the Caravan team.
     </Typography>
   );
@@ -38,6 +38,9 @@ export default function Footer() {
         align="center"
         component="p"
       >
+        {'We recommend downloading the Discord app for chat. '}
+        <Link href="https://discordapp.com/download">Download here.</Link>
+        <br />
         {'We want to hear what you have to say! Check out our '}
         <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdpPzKPO9Spx7ovBKh5Q6n977hgBRbxTgiKVPaDIRnkjfb9jQ/viewform">
           feedback form.
