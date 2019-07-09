@@ -142,7 +142,17 @@ export default function UserNameplate(props: UserNameplateProps) {
           {user.bio}
         </Typography>
         <Typography variant="body1">
-          <Link onClick={() => window.open(user.website)}>{user.website}</Link>
+          <Link
+            href={
+              user.website
+                ? user.website.startsWith('http')
+                  ? user.website
+                  : `https://${user.website}`
+                : ''
+            }
+          >
+            {user.website}
+          </Link>
         </Typography>
         {user && !userIsMe && (
           <Button

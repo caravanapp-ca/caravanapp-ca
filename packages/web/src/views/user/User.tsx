@@ -319,7 +319,10 @@ export default function UserView(props: UserViewProps) {
     if (questionsModified || shelfModified) {
       let userCopy: User = { ...user };
       if (questionsModified) {
-        userCopy = { ...userCopy, questions: userQuestionsWkspc };
+        const userQuestionsAnswered = userQuestionsWkspc.filter(
+          q => q.answer.split(' ').join('').length !== 0
+        );
+        userCopy = { ...userCopy, questions: userQuestionsAnswered };
         if (questions) {
           const initQuestions = sortQuestions(userCopy, questions);
           setInitQuestions(initQuestions);
@@ -416,12 +419,20 @@ export default function UserView(props: UserViewProps) {
   //   return [true, [true, "All good!"]];
   // }
 
+  function backButtonAction() {
+    if (props.history.length > 1) {
+      props.history.goBack();
+    } else {
+      props.history.replace('/');
+    }
+  }
+
   const leftComponent = (
     <IconButton
       edge="start"
       color="inherit"
       aria-label="Back"
-      onClick={() => props.history.goBack()}
+      onClick={backButtonAction}
     >
       <BackIcon />
     </IconButton>

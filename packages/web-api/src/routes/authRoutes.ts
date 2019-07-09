@@ -57,30 +57,6 @@ function convertTokenResponseToModel(
 //   }
 // );
 
-// TODO: remove - function used to generate slugs for all users.
-// router.post('/init-slugs', async (req, res) => {
-//   const users = await UserModel.find({});
-//   const discordClient = ReadingDiscordBot.getInstance();
-//   const guild = discordClient.guilds.first();
-//   users.forEach(async user => {
-//     if (!user.urlSlug) {
-//       const discordMember = guild.members.find(m => m.id === user.discordId);
-//       if (discordMember) {
-//         const slugs = generateSlugIds(
-//           discordMember.displayName || discordMember.user.username
-//         );
-//         const availableSlugs = await getAvailableSlugIds(slugs);
-//         await UserModel.updateOne(
-//           { _id: user.id },
-//           {
-//             urlSlug: availableSlugs[0],
-//           }
-//         );
-//       }
-//     }
-//   });
-// });
-
 router.get('/discord/callback', async (req, res) => {
   const { code, error, error_description, state } = req.query;
   if (error) {
