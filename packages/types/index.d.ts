@@ -170,6 +170,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
 
+  export type Capacity = 'full' | 'open';
+
   export type GroupVibe =
     | 'chill'
     | 'power'
