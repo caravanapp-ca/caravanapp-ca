@@ -8,7 +8,14 @@ import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
+import {
+  User,
+  ShelfEntry,
+  Services,
+  UserSelectedGenre,
+  ReadingSpeed,
+  Capacity,
+} from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import { washedTheme } from '../../theme';
@@ -20,6 +27,10 @@ import { Service } from '../../common/service';
 import ClubCards from './ClubCards';
 import logo from '../../resources/logo.svg';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import ClubFilters from '../../components/filters/ClubFilters';
+import { getAllGenres } from '../../services/genre';
+import GenreFilterModal from '../../components/filters/GenreFilterModal';
+import ReadingSpeedModal from '../../components/filters/ReadingSpeedModal';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -60,6 +71,16 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: washedTheme.palette.primary.main,
     marginRight: 16,
   },
+  filterGrid: {
+    paddingTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  filtersContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
 }));
 
 export function transformClubsToWithCurrentlyReading(
@@ -96,6 +117,28 @@ export default function Home(props: HomeProps) {
   );
   const [showLoadMore, setShowLoadMore] = React.useState(false);
 
+  const [allGenres, setAllGenres] = React.useState<Services.GetGenres | null>(
+    null
+  );
+
+  const [showGenreFilter, setShowGenreFilter] = React.useState(false);
+
+  const [showSpeedFilter, setShowSpeedFilter] = React.useState(false);
+
+  const [showCapacityFilter, setShowCapacityFilter] = React.useState(false);
+
+  const [filteredGenres, setFilteredGenres] = React.useState<
+    UserSelectedGenre[]
+  >([]);
+
+  const [filteredSpeed, setFilteredSpeed] = React.useState<
+    ReadingSpeed | 'any'
+  >('any');
+
+  const [filteredCapacity, setFilteredCapacity] = React.useState<
+    Capacity | 'any'
+  >('any');
+
   useEffect(() => {
     if (!showWelcomeMessage) {
       localStorage.setItem(KEY_HIDE_WELCOME_CLUBS, 'yes');
@@ -122,6 +165,17 @@ export default function Home(props: HomeProps) {
     })();
   }, [afterQuery]);
 
+  useEffect(() => {
+    const getGenres = async () => {
+      const response = await getAllGenres();
+      if (response.status >= 200 && response.status < 300) {
+        const { data } = response;
+        setAllGenres(data);
+      }
+    };
+    getGenres();
+  }, []);
+
   function onCloseLoginModal() {
     setLoginModalShown(false);
   }
@@ -131,6 +185,25 @@ export default function Home(props: HomeProps) {
       'https://discordapp.com/channels/592761082523680798/592761082523680806',
       '_blank'
     );
+  }
+
+  function onGenreSelected(
+    genreKey: string,
+    genreName: string,
+    selected: boolean
+  ) {
+    if (selected) {
+      let newGenres: UserSelectedGenre[];
+      const addedGenre: UserSelectedGenre = {
+        key: genreKey,
+        name: genreName,
+      };
+      newGenres = [...filteredGenres, addedGenre];
+      setFilteredGenres(newGenres);
+    } else {
+      const updatedGenres = filteredGenres.filter(g => g.key !== genreKey);
+      setFilteredGenres(updatedGenres);
+    }
   }
 
   const centerComponent = (
@@ -185,13 +258,14 @@ export default function Home(props: HomeProps) {
             <Container maxWidth="md">
               <Typography
                 component="h1"
-                variant="h3"
+                variant="h4"
                 align="center"
                 color="primary"
                 style={{ fontWeight: 600 }}
                 gutterBottom
               >
-                Find your perfect reading buddies.
+                Read great books. Meet cool people. <br />
+                Exchange big ideas.
               </Typography>
               <Typography
                 variant="h5"
@@ -239,6 +313,37 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
+        <Container className={classes.filterGrid} maxWidth="md">
+          {/* <SearchByBook/> */}
+          <ClubFilters
+            onClickGenreFilter={() => setShowGenreFilter(true)}
+            onClickSpeedFilter={() => setShowSpeedFilter(true)}
+            onClickCapacityFilter={() => setShowCapacityFilter(true)}
+            genreFilterApplied={filteredGenres.length > 0}
+            readingSpeedFilter={filteredSpeed}
+          />
+          {showGenreFilter && allGenres && (
+            <GenreFilterModal
+              allGenres={allGenres}
+              filteredGenres={filteredGenres}
+              onGenreSelected={onGenreSelected}
+              onClickApply={() => setShowGenreFilter(false)}
+              onClickClearFilter={() => setFilteredGenres([])}
+              open={showGenreFilter}
+            />
+          )}
+          {showSpeedFilter && (
+            <ReadingSpeedModal
+              filteredSpeed={filteredSpeed}
+              onSetSelectedSpeed={(speed: ReadingSpeed | 'any') =>
+                setFilteredSpeed(speed)
+              }
+              onClickApply={() => setShowSpeedFilter(false)}
+              onClickClearFilter={() => setFilteredSpeed('any')}
+              open={showSpeedFilter}
+            />
+          )}
+        </Container>
         {clubsWCRResult.status === 'loaded' && (
           <ClubCards clubsWCR={clubsWCRResult.payload} user={user} />
         )}

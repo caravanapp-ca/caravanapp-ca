@@ -88,6 +88,18 @@ export const washedTheme = responsiveFontSizes(
   })
 );
 
+export const textSecondaryTheme = responsiveFontSizes(
+  createMuiTheme({
+    ...themeObj,
+    palette: {
+      ...themeObj.palette,
+      primary: {
+        main: theme.palette.text.secondary,
+      },
+    },
+  })
+);
+
 export const linkColor: string = '#0365D6';
 
 export default theme;
