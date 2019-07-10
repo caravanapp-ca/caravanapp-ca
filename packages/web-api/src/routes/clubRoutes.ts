@@ -488,6 +488,10 @@ router.put(
     .isString()
     .isLength({ max: 300 }),
   check(
+    'newClub.genres',
+    'Genres must be an array of {key: string, name: string} elements'
+  ).isArray(),
+  check(
     'newClub.maxMembers',
     'Max members must be an integer between 1 and 1000 inclusive'
   ).isInt({ gt: 1, lt: 1000 }),
@@ -534,9 +538,16 @@ router.put(
     }
     const updateObj: Pick<
       FilterAutoMongoKeys<Club>,
-      'bio' | 'maxMembers' | 'name' | 'readingSpeed' | 'unlisted' | 'vibe'
+      | 'bio'
+      | 'genres'
+      | 'maxMembers'
+      | 'name'
+      | 'readingSpeed'
+      | 'unlisted'
+      | 'vibe'
     > = {
       bio: newClub.bio,
+      genres: newClub.genres,
       maxMembers: newClub.maxMembers,
       name: newClub.name,
       readingSpeed: newClub.readingSpeed,
