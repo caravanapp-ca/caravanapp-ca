@@ -20,11 +20,23 @@ declare module '@caravan/buddy-reading-types' {
     updatedAt: Date | string;
   }
 
+  export interface ClubReadingSchedule extends DocumentFields, MongoTimestamps {
+    shelfEntryId: string;
+    startDate: Date;
+    duration: number;
+    discussionFrequency?: number;
+    discussions: {
+      date: Date;
+      format: 'text' | 'voice' | 'video';
+    }[];
+  }
+
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
     ownerDiscordId?: string;
     shelf: ShelfEntry[];
+    schedules: { [shelfEntryId: string]: ClubReadingSchedule };
     bio?: string;
     members: GuildMember[];
     maxMembers: number;
