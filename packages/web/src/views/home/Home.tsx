@@ -15,6 +15,8 @@ import {
   UserSelectedGenre,
   ReadingSpeed,
   Capacity,
+  FilterChip,
+  ActiveFilter,
 } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
@@ -31,6 +33,9 @@ import ClubFilters from '../../components/filters/ClubFilters';
 import { getAllGenres } from '../../services/genre';
 import GenreFilterModal from '../../components/filters/GenreFilterModal';
 import ReadingSpeedModal from '../../components/filters/ReadingSpeedModal';
+import CapacityModal from '../../components/filters/CapacityModal';
+import FilterChips from '../../components/filters/FilterChips';
+import { capacityLabels } from '../../components/capacity-labels';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -127,17 +132,11 @@ export default function Home(props: HomeProps) {
 
   const [showCapacityFilter, setShowCapacityFilter] = React.useState(false);
 
-  const [filteredGenres, setFilteredGenres] = React.useState<
-    UserSelectedGenre[]
-  >([]);
-
-  const [filteredSpeed, setFilteredSpeed] = React.useState<
-    ReadingSpeed | 'any'
-  >('any');
-
-  const [filteredCapacity, setFilteredCapacity] = React.useState<
-    Capacity | 'any'
-  >('any');
+  const [activeFilter, setActiveFilter] = React.useState<ActiveFilter>({
+    genres: [],
+    speed: [],
+    capacity: [],
+  });
 
   useEffect(() => {
     if (!showWelcomeMessage) {
@@ -193,16 +192,35 @@ export default function Home(props: HomeProps) {
     selected: boolean
   ) {
     if (selected) {
-      let newGenres: UserSelectedGenre[];
-      const addedGenre: UserSelectedGenre = {
+      let newGenres: FilterChip[];
+      const addedGenre: FilterChip = {
         key: genreKey,
         name: genreName,
+        type: 'genres',
       };
-      newGenres = [...filteredGenres, addedGenre];
-      setFilteredGenres(newGenres);
+      newGenres = [...activeFilter.genres, addedGenre];
+      setActiveFilter({ ...activeFilter, genres: newGenres });
     } else {
-      const updatedGenres = filteredGenres.filter(g => g.key !== genreKey);
-      setFilteredGenres(updatedGenres);
+      const updatedGenres = activeFilter.genres.filter(g => g.key !== genreKey);
+      setActiveFilter({ ...activeFilter, genres: updatedGenres });
+    }
+  }
+
+  function onCapacitySelected(capacity: Capacity, selected: boolean) {
+    if (selected) {
+      let newCapacities: FilterChip[];
+      const addedCapacity: FilterChip = {
+        key: capacity,
+        name: capacity,
+        type: 'capacity',
+      };
+      newCapacities = [...activeFilter.capacity, addedCapacity];
+      setActiveFilter({ ...activeFilter, capacity: newCapacities });
+    } else {
+      const updatedCapacity = activeFilter.capacity.filter(
+        c => c.key !== capacity
+      );
+      setActiveFilter({ ...activeFilter, capacity: updatedCapacity });
     }
   }
 
@@ -319,28 +337,99 @@ export default function Home(props: HomeProps) {
             onClickGenreFilter={() => setShowGenreFilter(true)}
             onClickSpeedFilter={() => setShowSpeedFilter(true)}
             onClickCapacityFilter={() => setShowCapacityFilter(true)}
-            genreFilterApplied={filteredGenres.length > 0}
-            readingSpeedFilter={filteredSpeed}
+            genreFilterApplied={activeFilter.genres.length > 0}
+            genreModalShown={showGenreFilter}
+            readingSpeedFilterApplied={activeFilter.speed.length > 0}
+            readingSpeedModalShown={showSpeedFilter}
+            capacityFilterApplied={activeFilter.capacity.length > 0}
+            capacityModalShown={showCapacityFilter}
           />
+          {activeFilter.genres.length +
+            activeFilter.capacity.length +
+            activeFilter.speed.length >
+            0 && (
+            <div>
+              {activeFilter.genres.map(genre => (
+                <FilterChips
+                  key={genre.key}
+                  name={genre.name}
+                  type={'genres'}
+                  active={true}
+                  onRemove={() => console.log('removed')}
+                />
+              ))}
+              {activeFilter.speed.map(speed => (
+                <FilterChips
+                  key={speed.key}
+                  name={speed.name}
+                  type={'speed'}
+                  active={true}
+                  onRemove={() => console.log('removed')}
+                />
+              ))}
+              {activeFilter.capacity.map(capacity => (
+                <FilterChips
+                  key={capacity.key}
+                  name={capacity.name}
+                  type={'capacity'}
+                  active={true}
+                  onRemove={() => console.log('removed')}
+                />
+              ))}
+            </div>
+          )}
           {showGenreFilter && allGenres && (
             <GenreFilterModal
               allGenres={allGenres}
-              filteredGenres={filteredGenres}
+              filteredGenres={activeFilter.genres}
               onGenreSelected={onGenreSelected}
               onClickApply={() => setShowGenreFilter(false)}
-              onClickClearFilter={() => setFilteredGenres([])}
+              onClickClearFilter={() =>
+                setActiveFilter({ ...activeFilter, genres: [] })
+              }
               open={showGenreFilter}
             />
           )}
           {showSpeedFilter && (
             <ReadingSpeedModal
-              filteredSpeed={filteredSpeed}
-              onSetSelectedSpeed={(speed: ReadingSpeed | 'any') =>
-                setFilteredSpeed(speed)
+              filteredSpeed={activeFilter.speed}
+              onSetSelectedSpeed={(speed: ReadingSpeed) =>
+                setActiveFilter({
+                  ...activeFilter,
+                  speed: [
+                    {
+                      name: speed,
+                      key: speed,
+                      type: 'speed',
+                    },
+                  ],
+                })
               }
               onClickApply={() => setShowSpeedFilter(false)}
-              onClickClearFilter={() => setFilteredSpeed('any')}
+              onClickClearFilter={() =>
+                setActiveFilter({
+                  ...activeFilter,
+                  speed: [
+                    {
+                      name: 'any',
+                      key: 'any',
+                      type: 'speed',
+                    },
+                  ],
+                })
+              }
               open={showSpeedFilter}
+            />
+          )}
+          {showCapacityFilter && (
+            <CapacityModal
+              filteredCapacities={activeFilter.capacity}
+              onCapacitySelected={onCapacitySelected}
+              onClickApply={() => setShowCapacityFilter(false)}
+              onClickClearFilter={() =>
+                setActiveFilter({ ...activeFilter, capacity: [] })
+              }
+              open={showCapacityFilter}
             />
           )}
         </Container>

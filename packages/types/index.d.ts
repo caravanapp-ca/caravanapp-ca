@@ -136,6 +136,18 @@ declare module '@caravan/buddy-reading-types' {
     max: number;
   }
 
+  export interface FilterChip {
+    type: FilterChipType;
+    name: string;
+    key: string;
+  }
+
+  export interface ActiveFilter {
+    genres: FilterChip[];
+    speed: FilterChip[];
+    capacity: FilterChip[];
+  }
+
   export type EditableUserField =
     | 'bio'
     | 'goodreadsUrl'
@@ -170,7 +182,9 @@ declare module '@caravan/buddy-reading-types' {
 
   export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
 
-  export type Capacity = 'full' | 'open';
+  export type Capacity = 'full' | 'spotsAvailable' | 'clubsImIn' | 'clubsIOwn';
+
+  export type FilterChipType = 'genres' | 'speed' | 'capacity';
 
   export type GroupVibe =
     | 'chill'

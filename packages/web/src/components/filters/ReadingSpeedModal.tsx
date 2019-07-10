@@ -3,6 +3,7 @@ import {
   Services,
   UserSelectedGenre,
   ReadingSpeed,
+  FilterChip,
 } from '@caravan/buddy-reading-types';
 import {
   Dialog,
@@ -11,8 +12,8 @@ import {
   DialogActions,
   Radio,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import GenreChip from '../../components/GenreChip';
 import theme from '../../theme';
 import {
   readingSpeedIcons,
@@ -20,15 +21,23 @@ import {
 } from '../reading-speed-avatars-icons-labels';
 import ListElementAvatar from '../ListElementAvatar';
 
+const useStyles = makeStyles(theme => ({
+  dialogStyle: {
+    padding: 0,
+  },
+}));
+
 interface ReadingSpeedModalProps {
-  filteredSpeed: ReadingSpeed | 'any';
-  onSetSelectedSpeed: (speed: ReadingSpeed | 'any') => void;
+  filteredSpeed: FilterChip[];
+  onSetSelectedSpeed: (speed: ReadingSpeed) => void;
   onClickApply: () => void;
   onClickClearFilter: () => void;
   open: boolean;
 }
 
 export default function ReadingSpeedModal(props: ReadingSpeedModalProps) {
+  const classes = useStyles();
+
   const {
     filteredSpeed,
     onSetSelectedSpeed,
@@ -39,19 +48,24 @@ export default function ReadingSpeedModal(props: ReadingSpeedModalProps) {
 
   const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 
+  let selectedSpeed = '';
+  if (filteredSpeed.length > 0) {
+    selectedSpeed = filteredSpeed[0].key;
+  }
+
   return (
     <Dialog open={open} onClose={onClickApply}>
       <DialogTitle color={theme.palette.primary.main} id="alert-dialog-title">
-        Filter Clubs by Genre
+        Filter Clubs by Reading Speed
       </DialogTitle>
-      <DialogContent>
+      <DialogContent classes={{ root: classes.dialogStyle }}>
         <div>
           {readingSpeeds.map(speed => (
             <ListElementAvatar
               key={speed}
               primaryElement={
                 <Radio
-                  checked={filteredSpeed === speed}
+                  checked={speed === selectedSpeed}
                   onChange={() => onSetSelectedSpeed(speed)}
                   value={speed}
                   name={`radio-button-${speed}`}

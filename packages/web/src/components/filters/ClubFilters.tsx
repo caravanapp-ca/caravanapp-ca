@@ -39,7 +39,11 @@ interface ClubFiltersProps {
   onClickSpeedFilter: () => void;
   onClickCapacityFilter: () => void;
   genreFilterApplied: boolean;
-  readingSpeedFilter: ReadingSpeed | 'any';
+  genreModalShown: boolean;
+  readingSpeedFilterApplied: boolean;
+  readingSpeedModalShown: boolean;
+  capacityFilterApplied: boolean;
+  capacityModalShown: boolean;
 }
 
 export default function ClubFilters(props: ClubFiltersProps) {
@@ -49,19 +53,16 @@ export default function ClubFilters(props: ClubFiltersProps) {
     onClickGenreFilter,
     onClickSpeedFilter,
     genreFilterApplied,
-    readingSpeedFilter,
+    genreModalShown,
+    readingSpeedFilterApplied,
+    readingSpeedModalShown,
     onClickCapacityFilter,
+    capacityFilterApplied,
+    capacityModalShown,
   } = props;
 
   const theme = useTheme();
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
-
-  let readingSpeedFilterText = 'Reading Speed';
-  if (readingSpeedFilter !== 'any') {
-    readingSpeedFilterText =
-      readingSpeedFilter[0].toUpperCase() +
-      readingSpeedFilter.substr(1).toLowerCase();
-  }
 
   return (
     <Grid container spacing={4}>
@@ -95,11 +96,9 @@ export default function ClubFilters(props: ClubFiltersProps) {
             style={{
               fontSize: screenSmallerThanSm ? 13 : 18,
               fontWeight: 600,
-              fontStyle: readingSpeedFilter !== 'any' ? 'italic' : undefined,
+              fontStyle: readingSpeedFilterApplied ? 'italic' : undefined,
             }}
-            color={
-              readingSpeedFilter !== 'any' ? 'textPrimary' : 'textSecondary'
-            }
+            color={readingSpeedFilterApplied ? 'textPrimary' : 'textSecondary'}
           >
             Reading Speed
           </Typography>
@@ -112,20 +111,17 @@ export default function ClubFilters(props: ClubFiltersProps) {
             <ArrowDropDown color="primary" />
           </MuiThemeProvider>
           <Typography
-            style={{ fontSize: screenSmallerThanSm ? 13 : 18, fontWeight: 600 }}
-            color="textSecondary"
+            style={{
+              fontSize: screenSmallerThanSm ? 13 : 18,
+              fontWeight: 600,
+              fontStyle: capacityFilterApplied ? 'italic' : undefined,
+            }}
+            color={capacityFilterApplied ? 'textPrimary' : 'textSecondary'}
           >
             Capacity
           </Typography>
         </Button>
       </div>
     </Grid>
-
-    // {readingSpeedFilter !== 'any' && (
-    //   <ListElementAvatar
-    //     key={readingSpeedFilter}
-    //     avatarElement={readingSpeedIcons(readingSpeedFilter, 'icon')}
-    //   />
-    // )}
   );
 }
