@@ -78,7 +78,11 @@ export default function GroupSizeSelector(props: GroupSizeSelectorProps) {
           }
         >
           {sizes.map(size => (
-            <option value={size.label} disabled={!size.enabled}>
+            <option
+              key={size.label}
+              value={size.label}
+              disabled={!size.enabled}
+            >
               {size.label}
             </option>
           ))}
