@@ -5,6 +5,7 @@ import { ShelfEntry, ReadingState } from '@caravan/buddy-reading-types';
 
 interface ShelfViewProps {
   shelf: ShelfEntry[];
+  isEditing: boolean;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -18,20 +19,30 @@ const useStyles = makeStyles(theme => ({
 
 export default function ShelfView(props: ShelfViewProps) {
   const classes = useStyles();
+  const { shelf, isEditing } = props;
+
   const shelfMap = useMemo(() => {
     const map: { [key in ReadingState]: ShelfEntry[] } = {
       current: [],
       notStarted: [],
       read: [],
     };
-    props.shelf.forEach(s => {
+    shelf.forEach(s => {
       map[s.readingState].push(s);
     });
     return map;
-  }, [props.shelf]);
+  }, [shelf]);
 
   return (
     <div>
+      {isEditing && (
+        <div className={classes.sectionContainer}>
+          <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
+            If you want to edit your shelf, first click Save in the top-right,
+            then click Manage Shelf below.
+          </Typography>
+        </div>
+      )}
       {shelfMap.current.length > 0 && (
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
