@@ -7,6 +7,7 @@ import {
   User,
   FilterAutoMongoKeys,
   CurrBookAction,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -17,6 +18,7 @@ interface CreateClubProps {
   bio: string;
   maxMembers: string;
   vibe: string;
+  genres: SelectedGenre[];
   readingSpeed: string;
   channelSource: ChannelSource;
   unlisted: boolean;
@@ -103,6 +105,7 @@ export async function createClub(props: CreateClubProps) {
     bio: props.bio,
     maxMembers: props.maxMembers,
     vibe: props.vibe,
+    genres: props.genres,
     readingSpeed: props.readingSpeed,
     unlisted: props.unlisted,
     channelSource: props.channelSource,
