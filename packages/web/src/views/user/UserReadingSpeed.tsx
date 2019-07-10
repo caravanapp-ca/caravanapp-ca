@@ -14,9 +14,10 @@ interface UserReadingSpeedProps {
   onEdit: (key: 'readingSpeed', newValue: ReadingSpeed) => void;
 }
 
+const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
+
 export default function UserReadingSpeed(props: UserReadingSpeedProps) {
   const { user, userIsMe, isEditing, onEdit } = props;
-  const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 
   if (user && !isEditing && !user.readingSpeed) {
     let noRSMessage = 'This user has not yet specified their reading speed';

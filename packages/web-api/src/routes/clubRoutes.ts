@@ -18,6 +18,8 @@ import {
   ShelfEntry,
   User,
   CurrBookAction,
+  ReadingSpeed,
+  GroupVibe,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
@@ -451,18 +453,6 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       vibe: body.vibe,
     };
 
-    // const addMemberPromise = guild
-    //   .addMember(req.user.discordId, {
-    //     accessToken: token,
-    //   })
-    //   .then(m => {
-    //     m.permissions.add([
-    //       'MANAGE_MESSAGES',
-    //       'READ_MESSAGES',
-    //       'SEND_MESSAGES',
-    //       'SEND_TTS_MESSAGES',
-    //     ]);
-    //   });
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
 
@@ -478,6 +468,84 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     return next(err);
   }
 });
+
+const READING_SPEEDS: ReadingSpeed[] = ['slow', 'moderate', 'fast'];
+const GROUP_VIBES: GroupVibe[] = [
+  'chill',
+  'first-timers',
+  'learning',
+  'nerdy',
+  'power',
+];
+
+// Modify a club
+router.put(
+  '/:id',
+  isAuthenticated,
+  check('newClub.bio', 'Bio must be a string less than 300 chars in length.')
+    .isString()
+    .isLength({ max: 300 }),
+  check(
+    'newClub.maxMembers',
+    'Max members must be an integer between 1 and 1000 inclusive'
+  ).isInt({ gt: 1, lt: 1000 }),
+  check(
+    'newClub.name',
+    'Name must be a string between 0 and 150 chars in length'
+  )
+    .isString()
+    .isLength({ min: 0, max: 150 }),
+  check(
+    'newClub.readingSpeed',
+    `Reading speed must be one of ${READING_SPEEDS.join(', ')}`
+  ).isIn(READING_SPEEDS),
+  check('newClub.unlisted', 'Unlisted must be a boolean').isBoolean(),
+  check('newClub.vibe', `Vibe must be one of ${GROUP_VIBES.join(', ')}`).isIn(
+    GROUP_VIBES
+  ),
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      console.warn(
+        `User {id: ${req.user._id}, name: ${
+          req.user.name
+        }} failed club update.\n${errorArr.toString()}\n${req.body}`
+      );
+      res.status(422).json({ errors: errorArr });
+      return;
+    }
+    const clubId = req.params.id;
+    const newClub: Services.GetClubById = req.body.newClub;
+    if (req.user._id.toHexString() !== newClub.ownerId) {
+      res.status(422).send('Only the club owner may update a club!');
+      return;
+    }
+    const updateObj: Pick<
+      FilterAutoMongoKeys<Club>,
+      'bio' | 'maxMembers' | 'name' | 'readingSpeed' | 'unlisted' | 'vibe'
+    > = {
+      bio: newClub.bio,
+      maxMembers: newClub.maxMembers,
+      name: newClub.name,
+      readingSpeed: newClub.readingSpeed,
+      unlisted: newClub.unlisted,
+      vibe: newClub.vibe,
+    };
+    let result: ClubDoc;
+    try {
+      result = await ClubModel.findByIdAndUpdate(clubId, updateObj, {
+        new: true,
+      });
+      if (result) {
+        res.status(200).send(result);
+      }
+    } catch (err) {
+      console.error('Failed to save club data', err);
+      res.status(400).send('Failed to save club data');
+    }
+  }
+);
 
 // Delete a club
 router.delete('/:clubId', isAuthenticated, async (req, res) => {
