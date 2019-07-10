@@ -243,32 +243,6 @@ export default function CreateClub(props: CreateClubProps) {
             }))}
             showContactMessage={true}
           />
-          {/* <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-            }}
-          >
-            {groupSizes.map(size => (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-                key={size.toString()}
-              >
-                <Radio
-                  checked={selectedGroupSize === size}
-                  onChange={() => setSelectedGroupSize(size)}
-                  value={size.toString()}
-                  color="primary"
-                />
-                <Typography>{size}</Typography>
-              </div>
-            ))}
-          </div> */}
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>

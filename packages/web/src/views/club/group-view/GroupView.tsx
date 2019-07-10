@@ -61,14 +61,25 @@ for (let i = groupSizeMin; i <= groupSizeMax; i++) {
   groupSizesStrArr.push(i.toString());
 }
 
+// TODO: Move these min/max declarations somewhere more global
+const nameMin = 2;
+const nameMax = 50;
 const validName = (name: string): boolean => {
-  if (name.length > 0 && name.trim().length < 2) {
+  if (name.length > 0 && name.trim().length < nameMin) {
+    return false;
+  }
+  if (name.length > nameMax) {
     return false;
   }
   return true;
 };
+const bioMin = 3;
+const bioMax = 300;
 const validBio = (bio: string): boolean => {
-  if (bio.trim().length < 3) {
+  if (bio.trim().length < bioMin) {
+    return false;
+  }
+  if (bio.length > bioMax) {
     return false;
   }
   return true;
@@ -109,17 +120,17 @@ export default function GroupView(props: GroupViewProps) {
             <TextField
               id="club-name"
               label="Club Name"
-              inputProps={{ maxLength: 50 }}
+              inputProps={{ maxLength: nameMax }}
               onFocus={() => setFocused({ ...focused, name: true })}
               onBlur={() => setFocused({ ...focused, name: false })}
               error={!validName(name)}
               helperText={
                 !validName(name)
-                  ? 'Must be 2 chars or longer'
+                  ? `Must be ${nameMin} chars or longer`
                   : focused.name
                   ? name
-                    ? `${50 - name.length} chars remaining`
-                    : 'Max 50 chars'
+                    ? `${nameMax - name.length} chars remaining`
+                    : `Max ${nameMax} chars`
                   : ' '
               }
               className={classes.textField}
@@ -131,17 +142,17 @@ export default function GroupView(props: GroupViewProps) {
             <TextField
               id="club-bio"
               label="Club Bio"
-              inputProps={{ maxLength: 300 }}
+              inputProps={{ maxLength: bioMax }}
               onFocus={() => setFocused({ ...focused, bio: true })}
               onBlur={() => setFocused({ ...focused, bio: false })}
               error={!bio || !validBio(bio)}
               helperText={
                 !bio || !validBio(bio)
-                  ? 'Is required, and must be 3 chars or longer'
+                  ? `Is required, and must be ${bioMin} chars or longer`
                   : focused.bio
                   ? bio
-                    ? `${300 - bio.trim().length} chars remaining`
-                    : 'Max 300 chars'
+                    ? `${bioMax - bio.trim().length} chars remaining`
+                    : `Max ${bioMax} chars`
                   : ' '
               }
               className={classes.textField}
