@@ -56,16 +56,6 @@ export default function GroupView(props: GroupViewProps) {
       </div>
       <div className={classes.sectionContainer}>
         <Typography variant={'h6'} className={classes.sectionLabel}>
-          Members
-        </Typography>
-        <MemberList
-          members={members}
-          maxMembers={maxMembers}
-          ownerId={props.club.ownerId}
-        />
-      </div>
-      <div className={classes.sectionContainer}>
-        <Typography variant={'h6'} className={classes.sectionLabel}>
           Reading Speed
         </Typography>
         <ListElementAvatar
@@ -80,6 +70,16 @@ export default function GroupView(props: GroupViewProps) {
         <ListElementAvatar
           avatarElement={groupVibeAvatar}
           primaryText={groupVibeString}
+        />
+      </div>
+      <div className={classes.sectionContainer}>
+        <Typography variant={'h6'} className={classes.sectionLabel}>
+          Members
+        </Typography>
+        <MemberList
+          members={members}
+          maxMembers={maxMembers}
+          ownerId={props.club.ownerId}
         />
       </div>
     </div>
