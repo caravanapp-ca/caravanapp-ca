@@ -525,10 +525,16 @@ router.put(
     const newClub: Services.GetClubById = req.body.newClub;
     // TODO: The user can still cheat this. Need to first get the existing club by id and check against that.
     if (req.user._id.toHexString() !== newClub.ownerId) {
+      console.warn(
+        `User ${req.user._id} attempted to edit club ${clubId} without valid permission.`
+      );
       res.status(422).send('Only the club owner may update a club!');
       return;
     }
     if (newClub.maxMembers < newClub.members.length) {
+      console.warn(
+        `User ${req.user._id} attempted to set max members on club ${clubId} to a value less than its current member count.`
+      );
       res
         .status(422)
         .send(
@@ -562,6 +568,9 @@ router.put(
       if (result) {
         res.status(200).send(result);
       } else {
+        console.warn(
+          `User ${req.user._id} attempted to edit club ${clubId} but the club was not found.`
+        );
         res.status(404).send(`Unable to find club ${clubId}`);
       }
     } catch (err) {
