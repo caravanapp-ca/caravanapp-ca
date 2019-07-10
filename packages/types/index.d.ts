@@ -36,7 +36,7 @@ declare module '@caravan/buddy-reading-types' {
     ownerId: string;
     ownerDiscordId?: string;
     shelf: ShelfEntry[];
-    schedules: { [shelfEntryId: string]: ClubReadingSchedule };
+    schedules: ClubReadingSchedule[];
     bio?: string;
     members: GuildMember[];
     maxMembers: number;
@@ -196,6 +196,7 @@ declare module '@caravan/buddy-reading-types' {
         ownerId: string;
         guildId: string;
         shelf: any[];
+        schedules: ClubReadingSchedule[];
         bio?: string;
         maxMembers: number;
         memberCount: number;
@@ -214,6 +215,7 @@ declare module '@caravan/buddy-reading-types' {
       ownerId: string;
       ownerDiscordId: string;
       shelf: any[];
+      schedules: ClubReadingSchedule[];
       bio: string;
       members: any[];
       maxMembers: number;

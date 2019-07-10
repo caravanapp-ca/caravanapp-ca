@@ -40,6 +40,19 @@ const shelfSchema = new Schema(shelfSchemaDefinition, {
   timestamps: true,
 });
 
+const scheduleDiscussionSchema = new Schema({
+  date: { type: Date, required: true },
+  format: String,
+});
+
+const scheduleSchema = new Schema({
+  shelfEntryId: { type: String, required: true },
+  startDate: { type: Date, required: true },
+  duration: { type: Number, required: true },
+  discussionFrequency: { type: Number },
+  discussions: { type: [scheduleDiscussionSchema], required: true },
+});
+
 const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   name: { type: String, required: true },
   bio: { type: String },
@@ -47,6 +60,7 @@ const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   vibe: { type: String },
   readingSpeed: { type: String },
   shelf: { type: [shelfSchema], required: true },
+  schedules: { type: [scheduleSchema], required: true },
   ownerId: { type: String, required: true },
   ownerDiscordId: { type: String },
   channelSource: { type: String, required: true }, // discord always for now
