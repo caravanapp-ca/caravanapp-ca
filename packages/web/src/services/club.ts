@@ -114,3 +114,11 @@ export async function createClub(props: CreateClubProps) {
   );
   return res;
 }
+
+export async function modifyClub(newClub: Services.GetClubById){
+  const { _id } = newClub;
+  const res = await axios.put(`${clubRoute}/${_id}`, {
+    newClub
+  });
+  return res;
+}

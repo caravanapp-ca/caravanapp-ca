@@ -18,6 +18,8 @@ import {
   Fab,
   IconButton,
 } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Create';
+import SaveIcon from '@material-ui/icons/Save';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ChatIcon from '@material-ui/icons/Chat';
 import JoinIcon from '@material-ui/icons/PersonAdd';
@@ -32,6 +34,7 @@ import {
   getClub,
   modifyMyClubMembership,
   deleteClub,
+  modifyClub,
 } from '../../services/club';
 import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
@@ -160,6 +163,7 @@ export default function ClubComponent(props: ClubProps) {
       variant: 'info',
     }
   );
+  const [isEditing, setIsEditing] = React.useState<boolean>(false);
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -231,11 +235,81 @@ export default function ClubComponent(props: ClubProps) {
     <HeaderTitle title="Club Homepage" />
   );
 
-  const rightComponent = <ProfileHeaderIcon user={user} />;
+  const rightComponent = (memberStatus: LoadableMemberStatus): JSX.Element => {
+    if (memberStatus === 'owner') {
+      if (isEditing) {
+        return (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="More"
+            onClick={onSaveClick}
+            disabled={!club}
+          >
+            <SaveIcon />
+          </IconButton>
+        );
+      } else {
+        return (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="More"
+            onClick={() => setIsEditing(true)}
+          >
+            <EditIcon />
+          </IconButton>
+        );
+      }
+    } else {
+      return <ProfileHeaderIcon user={user} />;
+    }
+  };
 
   function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
+
+  const onEdit = (
+    field:
+      | 'bio'
+      | 'maxMembers'
+      | 'name'
+      | 'readingSpeed'
+      | 'vibe'
+      | 'maxMembers',
+    newValue: string | number
+  ) => {
+    if (!club) {
+      return;
+    }
+    const newClub: Services.GetClubById = { ...club, [field]: newValue };
+    setClub(newClub);
+  };
+
+  const onSaveClick = async () => {
+    if (!club) {
+      return;
+    }
+    const res = await modifyClub(club);
+    if (res.status === 200) {
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'success',
+        message: 'Successfully updated your club!',
+      });
+    } else {
+      // TODO: determine routing based on other values of res
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'warning',
+        message: 'We ran into some trouble saving your club.',
+      });
+    }
+    setIsEditing(false);
+  };
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -303,7 +377,7 @@ export default function ClubComponent(props: ClubProps) {
           <Header
             leftComponent={leftComponent}
             centerComponent={centerComponent}
-            rightComponent={rightComponent}
+            rightComponent={rightComponent(memberStatus)}
           />
           {currBook && <ClubHero currBook={currBook} />}
           <Paper className={classes.root}>
@@ -321,8 +395,12 @@ export default function ClubComponent(props: ClubProps) {
           </Paper>
           <Container maxWidth="md">
             <div className={classes.contentContainer}>
-              {tabValue === 0 && <GroupView club={club} />}
-              {tabValue === 1 && <ShelfView shelf={club.shelf} />}
+              {tabValue === 0 && (
+                <GroupView club={club} isEditing={isEditing} onEdit={onEdit} />
+              )}
+              {tabValue === 1 && (
+                <ShelfView shelf={club.shelf} isEditing={isEditing} />
+              )}
               <div className={classes.buttonsContainer}>
                 {showJoinClub(memberStatus, club) && (
                   <Button
