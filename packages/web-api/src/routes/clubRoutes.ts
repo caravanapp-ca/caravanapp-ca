@@ -548,6 +548,8 @@ router.put(
       });
       if (result) {
         res.status(200).send(result);
+      } else {
+        res.status(404).send(`Unable to find club ${clubId}`);
       }
     } catch (err) {
       console.error('Failed to save club data', err);
