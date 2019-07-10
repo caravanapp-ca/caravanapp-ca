@@ -30,7 +30,7 @@ declare module '@caravan/buddy-reading-types' {
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
-    genres: string[];
+    genres: SelectedGenre[];
     channelSource: ChannelSource;
     channelId: string;
     unlisted: boolean;
@@ -192,7 +192,7 @@ declare module '@caravan/buddy-reading-types' {
         memberCount: number;
         vibe?: GroupVibe;
         readingSpeed?: ReadingSpeed;
-        genres: string[];
+        genres: SelectedGenre[];
         channelSource?: ChannelSource;
         channelId: string;
         createdAt: string;
@@ -211,7 +211,7 @@ declare module '@caravan/buddy-reading-types' {
       maxMembers: number;
       vibe: GroupVibe;
       readingSpeed: ReadingSpeed;
-      genres: string[];
+      genres: SelectedGenre[];
       guildId: string;
       channelSource: ChannelSource;
       channelId: string;

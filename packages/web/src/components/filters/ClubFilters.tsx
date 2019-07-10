@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserSelectedGenre, ReadingSpeed } from '@caravan/buddy-reading-types';
+import { SelectedGenre, ReadingSpeed } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/styles';
 import {
   Button,

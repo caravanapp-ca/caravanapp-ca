@@ -12,7 +12,7 @@ import {
   User,
   ShelfEntry,
   Services,
-  UserSelectedGenre,
+  SelectedGenre,
   ReadingSpeed,
   Capacity,
 } from '@caravan/buddy-reading-types';
@@ -127,9 +127,9 @@ export default function Home(props: HomeProps) {
 
   const [showCapacityFilter, setShowCapacityFilter] = React.useState(false);
 
-  const [filteredGenres, setFilteredGenres] = React.useState<
-    UserSelectedGenre[]
-  >([]);
+  const [filteredGenres, setFilteredGenres] = React.useState<SelectedGenre[]>(
+    []
+  );
 
   const [filteredSpeed, setFilteredSpeed] = React.useState<
     ReadingSpeed | 'any'
@@ -193,8 +193,8 @@ export default function Home(props: HomeProps) {
     selected: boolean
   ) {
     if (selected) {
-      let newGenres: UserSelectedGenre[];
-      const addedGenre: UserSelectedGenre = {
+      let newGenres: SelectedGenre[];
+      const addedGenre: SelectedGenre = {
         key: genreKey,
         name: genreName,
       };

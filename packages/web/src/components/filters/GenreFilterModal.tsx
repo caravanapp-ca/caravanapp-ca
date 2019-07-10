@@ -1,5 +1,5 @@
 import React from 'react';
-import { Services, UserSelectedGenre } from '@caravan/buddy-reading-types';
+import { Services, SelectedGenre } from '@caravan/buddy-reading-types';
 import {
   Dialog,
   DialogTitle,
@@ -12,7 +12,7 @@ import theme from '../../theme';
 
 interface GenreFilterModalProps {
   allGenres: Services.GetGenres | null;
-  filteredGenres: UserSelectedGenre[];
+  filteredGenres: SelectedGenre[];
   onGenreSelected: (
     genreKey: string,
     genreName: string,
