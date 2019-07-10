@@ -491,10 +491,10 @@ router.put(
   ).isInt({ gt: 1, lt: 1000 }),
   check(
     'newClub.name',
-    'Name must be a string between 0 and 150 chars in length'
+    'Name must be a string between 2 and 150 chars in length'
   )
     .isString()
-    .isLength({ min: 0, max: 150 }),
+    .isLength({ min: 2, max: 150 }),
   check(
     'newClub.readingSpeed',
     `Reading speed must be one of ${READING_SPEEDS.join(', ')}`
@@ -517,8 +517,17 @@ router.put(
     }
     const clubId = req.params.id;
     const newClub: Services.GetClubById = req.body.newClub;
+    // TODO: The user can still cheat this. Need to first get the existing club by id and check against that.
     if (req.user._id.toHexString() !== newClub.ownerId) {
       res.status(422).send('Only the club owner may update a club!');
+      return;
+    }
+    if (newClub.maxMembers < newClub.members.length) {
+      res
+        .status(422)
+        .send(
+          `You cannot set max members (${newClub.maxMembers}) to be smaller than the current number of members (${newClub.members.length}).`
+        );
       return;
     }
     const updateObj: Pick<

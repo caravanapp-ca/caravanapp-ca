@@ -61,6 +61,19 @@ for (let i = groupSizeMin; i <= groupSizeMax; i++) {
   groupSizesStrArr.push(i.toString());
 }
 
+const validName = (name: string): boolean => {
+  if (name.length > 0 && name.trim().length < 2) {
+    return false;
+  }
+  return true;
+};
+const validBio = (bio: string): boolean => {
+  if (bio.trim().length < 3) {
+    return false;
+  }
+  return true;
+};
+
 export default function GroupView(props: GroupViewProps) {
   const classes = useStyles();
   const { isEditing, onEdit } = props;
@@ -99,8 +112,11 @@ export default function GroupView(props: GroupViewProps) {
               inputProps={{ maxLength: 50 }}
               onFocus={() => setFocused({ ...focused, name: true })}
               onBlur={() => setFocused({ ...focused, name: false })}
+              error={!validName(name)}
               helperText={
-                focused.name
+                !validName(name)
+                  ? 'Must be 2 chars or longer'
+                  : focused.name
                   ? name
                     ? `${50 - name.length} chars remaining`
                     : 'Max 50 chars'
@@ -118,10 +134,13 @@ export default function GroupView(props: GroupViewProps) {
               inputProps={{ maxLength: 300 }}
               onFocus={() => setFocused({ ...focused, bio: true })}
               onBlur={() => setFocused({ ...focused, bio: false })}
+              error={!bio || !validBio(bio)}
               helperText={
-                focused.bio
+                !bio || !validBio(bio)
+                  ? 'Is required, and must be 3 chars or longer'
+                  : focused.bio
                   ? bio
-                    ? `${300 - bio.length} chars remaining`
+                    ? `${300 - bio.trim().length} chars remaining`
                     : 'Max 300 chars'
                   : ' '
               }
