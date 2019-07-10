@@ -114,7 +114,7 @@ export default function GroupView(props: GroupViewProps) {
       <div>
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
-            About the Group
+            Bio
           </Typography>
           <div className={classes.editableTextFieldContainer}>
             <TextField
@@ -231,7 +231,7 @@ export default function GroupView(props: GroupViewProps) {
       <div>
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
-            About the Group
+            Bio
           </Typography>
           {bio && <Typography>{bio}</Typography>}
         </div>
