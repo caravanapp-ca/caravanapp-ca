@@ -30,6 +30,7 @@ import {
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
 import HeaderTitle from '../../components/HeaderTitle';
+import GroupSizeSelector from '../../components/GroupSizeSelector';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -59,7 +60,12 @@ interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
   user: User | null;
 }
 
-const groupSizes: number[] = [2, 3, 4, 5, 6, 10, 20];
+const groupSizeMin = 2;
+const groupSizeMax = 32;
+let groupSizesStrArr: string[] = [];
+for (let i = groupSizeMin; i <= groupSizeMax; i++) {
+  groupSizesStrArr.push(i.toString());
+}
 const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 const groupVibes: GroupVibe[] = [
   'chill',
@@ -224,34 +230,19 @@ export default function CreateClub(props: CreateClubProps) {
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
-            How many group members do you want?
+            How many club members do you want?
           </Typography>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-            }}
-          >
-            {groupSizes.map(size => (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-                key={size.toString()}
-              >
-                <Radio
-                  checked={selectedGroupSize === size}
-                  onChange={() => setSelectedGroupSize(size)}
-                  value={size.toString()}
-                  color="primary"
-                />
-                <Typography>{size}</Typography>
-              </div>
-            ))}
-          </div>
+          <GroupSizeSelector
+            onChangeSize={e =>
+              setSelectedGroupSize(parseInt(e.target.value as string))
+            }
+            selectedSize={selectedGroupSize.toString()}
+            sizes={groupSizesStrArr.map(str => ({
+              label: str,
+              enabled: true,
+            }))}
+            showContactMessage={true}
+          />
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>

@@ -456,7 +456,7 @@ export default function UserView(props: UserViewProps) {
             color="inherit"
             aria-label="More"
             disabled={!formValidated()}
-            onClick={() => onSaveClick()}
+            onClick={onSaveClick}
           >
             <SaveIcon />
           </IconButton>
