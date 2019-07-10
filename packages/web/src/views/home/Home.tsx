@@ -20,6 +20,7 @@ import { Service } from '../../common/service';
 import ClubCards from './ClubCards';
 import logo from '../../resources/logo.svg';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import ClubFilters from '../../components/filters/ClubFilters';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -59,6 +60,9 @@ const useStyles = makeStyles(theme => ({
   createClubIconCircle: {
     backgroundColor: washedTheme.palette.primary.main,
     marginRight: 16,
+  },
+  filtersContainer: {
+    marginTop: theme.spacing(4),
   },
 }));
 
@@ -239,6 +243,9 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
+        <div className={classes.filtersContainer}>
+          <ClubFilters />
+        </div>
         {clubsWCRResult.status === 'loaded' && (
           <ClubCards clubsWCR={clubsWCRResult.payload} user={user} />
         )}

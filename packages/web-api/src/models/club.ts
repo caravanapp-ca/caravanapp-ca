@@ -46,6 +46,7 @@ const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   maxMembers: { type: Number, required: true },
   vibe: { type: String },
   readingSpeed: { type: String },
+  genres: { type: [String], required: true },
   shelf: { type: [shelfSchema], required: true },
   ownerId: { type: String, required: true },
   ownerDiscordId: { type: String },
