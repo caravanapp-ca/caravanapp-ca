@@ -62,32 +62,5 @@ export default function MemberList(props: MemberListProps) {
       ))}
       {emptySlots.length > 0 && emptySlots}
     </Grid>
-    // <List dense={false}>
-    //   {members.map(m => (
-    //     <ListElementAvatar
-    //       button={m.urlSlug ? true : undefined}
-    //       link={m.urlSlug ? `/user/${m.urlSlug}` : undefined}
-    //       key={m._id}
-    //       avatarElement={
-    //         m.photoUrl ? (
-    //           <Avatar alt={m.name || m.discordUsername} src={m.photoUrl} />
-    //         ) : (
-    //           undefined
-    //         )
-    //       }
-    //       primaryText={m.name || m.discordUsername}
-    //       secondaryElement={
-    //         props.ownerId === m._id ? (
-    //           <IconButton edge="end" aria-label="Star" disabled={true}>
-    //             <StarIcon />
-    //           </IconButton>
-    //         ) : (
-    //           undefined
-    //         )
-    //       }
-    //     />
-    //   ))}
-    //   {emptySlots.length > 0 && emptySlots}
-    // </List>
   );
 }
