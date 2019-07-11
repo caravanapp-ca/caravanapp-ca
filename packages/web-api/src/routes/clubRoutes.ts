@@ -130,6 +130,7 @@ router.get('/', async (req, res, next) => {
     }
     const client = ReadingDiscordBot.getInstance();
     const guild = client.guilds.first();
+    const members = await guild.fetchMembers();
     const clubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
       .map(clubDoc => {
         let discordChannel: GuildChannel | null = guild.channels.find(
