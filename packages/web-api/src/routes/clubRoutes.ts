@@ -55,6 +55,7 @@ const getUserChannels = (guild: Guild, discordId: string) => {
 };
 
 async function getChannelMembers(guild: Guild, club: ClubDoc) {
+  const members = await guild.fetchMembers();
   let discordChannel = guild.channels.find(c => c.id === club.channelId);
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
