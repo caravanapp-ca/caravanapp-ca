@@ -51,6 +51,7 @@ import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import ScheduleView from './schedule-view/ScheduleView';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -391,6 +392,7 @@ export default function ClubComponent(props: ClubProps) {
             >
               <Tab label="Group" />
               <Tab label="Shelf" />
+              <Tab label="Schedule" />
             </Tabs>
           </Paper>
           <Container maxWidth="md">
@@ -401,6 +403,7 @@ export default function ClubComponent(props: ClubProps) {
               {tabValue === 1 && (
                 <ShelfView shelf={club.shelf} isEditing={isEditing} />
               )}
+              {tabValue === 2 && <ScheduleView />}
               <div className={classes.buttonsContainer}>
                 {showJoinClub(memberStatus, club) && (
                   <Button

@@ -85,7 +85,7 @@ declare module '@caravan/buddy-reading-types' {
 
   export type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
 
-  export interface UserSelectedGenre {
+  export interface SelectedGenre {
     key: string;
     name: string;
   }
@@ -105,7 +105,7 @@ declare module '@caravan/buddy-reading-types' {
     location?: string;
     isBot: boolean;
     urlSlug: string;
-    selectedGenres: UserSelectedGenre[];
+    selectedGenres: SelectedGenre[];
     questions: UserQA[];
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
     onboardingVersion: number;

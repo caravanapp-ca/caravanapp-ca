@@ -7,7 +7,7 @@ import {
   Services,
   ProfileQuestions,
   UserQA,
-  UserSelectedGenre,
+  SelectedGenre,
   FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
@@ -118,9 +118,9 @@ export default function Onboarding(props: OnboardingProps) {
     'moderate'
   );
 
-  const [selectedGenres, setSelectedGenres] = React.useState<
-    UserSelectedGenre[]
-  >([]);
+  const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
+    []
+  );
 
   const [
     profileQuestions,
@@ -203,8 +203,8 @@ export default function Onboarding(props: OnboardingProps) {
     selected: boolean
   ) {
     if (selected) {
-      let newGenres: UserSelectedGenre[];
-      const addedGenre: UserSelectedGenre = {
+      let newGenres: SelectedGenre[];
+      const addedGenre: SelectedGenre = {
         key: genreKey,
         name: genreName,
       };
