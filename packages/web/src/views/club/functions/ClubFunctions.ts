@@ -4,6 +4,7 @@ import {
   FilterAutoMongoKeys,
   ReadingState,
   GoogleBooks,
+  ClubReadingSchedule,
 } from '@caravan/buddy-reading-types';
 
 export function getCurrentBook(club: Club): ShelfEntry | null {
@@ -11,6 +12,19 @@ export function getCurrentBook(club: Club): ShelfEntry | null {
     const book = club.shelf.find(book => book.readingState === 'current');
     if (book) {
       return book;
+    }
+  }
+  return null;
+}
+
+export function getCurrentSchedule(
+  club: Club,
+  currBook: ShelfEntry
+): ClubReadingSchedule | null {
+  if (club && club.schedules) {
+    const schedule = club.schedules.find(s => s.shelfEntryId === currBook._id);
+    if (schedule) {
+      return schedule;
     }
   }
   return null;
@@ -30,7 +44,7 @@ export function getShelfFromGoogleBooks(
   selectedBooks: GoogleBooks.Item[],
   currentBookId?: string
 ) {
-  if(selectedBooks){
+  if (selectedBooks) {
     const result = selectedBooks.map(book => {
       let readingState: ReadingState = 'notStarted';
       if (currentBookId && book.id === currentBookId) {
@@ -59,8 +73,7 @@ export function getShelfFromGoogleBooks(
       return res;
     });
     return result;
-  }
-  else{
+  } else {
     return [];
   }
 }

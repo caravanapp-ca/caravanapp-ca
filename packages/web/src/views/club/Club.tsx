@@ -5,6 +5,8 @@ import {
   User,
   MembershipStatus,
   Services,
+  ClubReadingSchedule,
+  FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -36,7 +38,7 @@ import {
   deleteClub,
   modifyClub,
 } from '../../services/club';
-import { getCurrentBook } from './functions/ClubFunctions';
+import { getCurrentBook, getCurrentSchedule } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
@@ -143,6 +145,9 @@ export default function ClubComponent(props: ClubProps) {
   const [tabValue, setTabValue] = React.useState(0);
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
+  const [schedule, setSchedule] = React.useState<
+    ClubReadingSchedule | FilterAutoMongoKeys<ClubReadingSchedule> | null
+  >(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
   const [loginDialogVisible, setLoginDialogVisible] = React.useState<boolean>(
     false
@@ -176,6 +181,10 @@ export default function ClubComponent(props: ClubProps) {
         if (club) {
           const currBook = getCurrentBook(club);
           setCurrBook(currBook);
+          if (currBook) {
+            const schedule = getCurrentSchedule(club, currBook);
+            setSchedule(schedule);
+          }
           setLoadedClub(true);
         }
       } catch (err) {
@@ -288,6 +297,34 @@ export default function ClubComponent(props: ClubProps) {
     setClub(newClub);
   };
 
+  const initSchedule = () => {
+    if (!currBook || !currBook._id) {
+      throw new Error(
+        'Attempted to initiate schedule without a current book selected!'
+      );
+    }
+    setSchedule({
+      shelfEntryId: currBook._id,
+      startDate: null,
+      duration: 4,
+      discussionFrequency: 3,
+      discussions: [],
+    });
+  };
+
+  const onUpdateSchedule = (
+    field: 'startDate' | 'duration' | 'discussionFrequency',
+    newVal: Date | number | null
+  ) => {
+    if (!schedule) {
+      throw new Error(
+        'Attempted to set a schedule that had not yet been initialized!'
+      );
+    }
+    setSchedule({ ...schedule, [field]: newVal });
+  };
+
+  // TODO: Add schedule shit to onSaveClick.
   const onSaveClick = async () => {
     if (!club) {
       return;
@@ -403,7 +440,14 @@ export default function ClubComponent(props: ClubProps) {
               {tabValue === 1 && (
                 <ShelfView shelf={club.shelf} isEditing={isEditing} />
               )}
-              {tabValue === 2 && <ScheduleView />}
+              {tabValue === 2 && (
+                <ScheduleView
+                  initSchedule={initSchedule}
+                  isEditing={isEditing}
+                  onUpdateSchedule={onUpdateSchedule}
+                  schedule={schedule}
+                />
+              )}
               <div className={classes.buttonsContainer}>
                 {showJoinClub(memberStatus, club) && (
                   <Button
