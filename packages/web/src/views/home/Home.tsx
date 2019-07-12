@@ -199,6 +199,7 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     (async () => {
+      // Should be 24
       const pageSize = 3;
       if (
         activeFilter.genres.length +

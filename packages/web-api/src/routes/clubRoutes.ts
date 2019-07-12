@@ -240,6 +240,7 @@ router.get('/user/:userId', async (req, res, next) => {
       }
     }
     const size = Number.parseInt(pageSize || 0);
+    // Should be Math.max(size, 10)
     const limit = Math.min(Math.max(size, 3), 50);
     const clubDocs = await ClubModel.find(query)
       .limit(limit)
