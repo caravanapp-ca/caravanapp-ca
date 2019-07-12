@@ -1,5 +1,5 @@
 import React from 'react';
-import { Capacity, FilterChip } from '@caravan/buddy-reading-types';
+import { Capacity, FilterChip, Membership } from '@caravan/buddy-reading-types';
 import {
   Dialog,
   DialogTitle,
@@ -14,6 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import theme from '../../theme';
 import { capacityLabels } from '../capacity-labels';
+import { membershipLabels } from '../membership-labels';
 
 const useStyles = makeStyles(theme => ({
   dialogStyle: {
@@ -21,37 +22,36 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface CapacityModalProps {
-  filteredCapacities: FilterChip[];
-  onCapacitySelected: (capacity: Capacity, label: string) => void;
+interface MembershipModalProps {
+  filteredMemberships: FilterChip[];
+  onMembershipSelected: (membership: Membership, label: string) => void;
   onClickApply: () => void;
   onClickClearFilter: () => void;
   open: boolean;
 }
 
-export default function CapacityModal(props: CapacityModalProps) {
+export default function MembershipModal(props: MembershipModalProps) {
   const classes = useStyles();
 
   const {
-    filteredCapacities,
-    onCapacitySelected,
+    filteredMemberships,
+    onMembershipSelected,
     onClickApply,
     onClickClearFilter,
     open,
   } = props;
 
-  const capacities: Capacity[] = ['full', 'spotsAvailable'];
-  // TODO add filters 'clubsImIn','clubsIOwn',
+  const memberships: Membership[] = ['myClubs', 'clubsImNotIn'];
 
-  let selectedCapacity = '';
-  if (filteredCapacities.length > 0) {
-    selectedCapacity = filteredCapacities[0].key;
+  let selectedMembership = '';
+  if (filteredMemberships.length > 0) {
+    selectedMembership = filteredMemberships[0].key;
   }
 
   return (
     <Dialog open={open} onClose={onClickApply}>
       <DialogTitle color={theme.palette.primary.main} id="alert-dialog-title">
-        Filter Clubs by Capacity
+        Filter Clubs by Membership
       </DialogTitle>
       <DialogContent classes={{ root: classes.dialogStyle }}>
         <div
@@ -61,21 +61,21 @@ export default function CapacityModal(props: CapacityModalProps) {
             justifyContent: 'flex-start',
           }}
         >
-          {capacities.map(capacity => {
-            const label = capacityLabels(capacity);
+          {memberships.map(membership => {
+            const label = membershipLabels(membership);
             return (
-              <ListItem key={capacity}>
+              <ListItem key={membership}>
                 <Radio
-                  checked={capacity === selectedCapacity}
-                  onChange={() => onCapacitySelected(capacity, label)}
-                  value={capacity}
-                  name={`radio-box-${capacity}`}
+                  checked={membership === selectedMembership}
+                  onChange={() => onMembershipSelected(membership, label)}
+                  value={membership}
+                  name={`radio-box-${membership}`}
                   color="primary"
                   style={{ marginRight: theme.spacing(2) }}
                 />
                 <ListItemText
                   primary={label}
-                  secondary={capacityLabels(capacity, 'description')}
+                  secondary={membershipLabels(membership, 'description')}
                 />
               </ListItem>
             );

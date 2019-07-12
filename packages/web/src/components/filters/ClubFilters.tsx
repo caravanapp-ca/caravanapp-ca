@@ -22,15 +22,36 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
   },
   genreFilter: {
-    marginRight: 8,
+    marginRight: 4,
     'text-transform': 'none',
+    borderColor: '#bbdefb',
+  },
+  genreFilterText: {
+    padding: 4,
   },
   speedFilter: {
     'text-transform': 'none',
-    marginRight: 8,
+    marginRight: 4,
+    borderColor: '#b2dfdb',
+  },
+  speedFilterText: {
+    padding: 4,
   },
   capacityFilter: {
     'text-transform': 'none',
+    marginRight: 4,
+    borderColor: '#dcedc8',
+  },
+  capacityFilterText: {
+    padding: 4,
+  },
+  memberFilter: {
+    'text-transform': 'none',
+    marginRight: 0,
+    borderColor: '#dcedc8',
+  },
+  memberFilterText: {
+    padding: 4,
   },
 }));
 
@@ -38,12 +59,11 @@ interface ClubFiltersProps {
   onClickGenreFilter: () => void;
   onClickSpeedFilter: () => void;
   onClickCapacityFilter: () => void;
+  onClickMembershipFilter: () => void;
   genreFilterApplied: boolean;
-  genreModalShown: boolean;
   readingSpeedFilterApplied: boolean;
-  readingSpeedModalShown: boolean;
   capacityFilterApplied: boolean;
-  capacityModalShown: boolean;
+  memberFilterApplied: boolean;
 }
 
 export default function ClubFilters(props: ClubFiltersProps) {
@@ -53,12 +73,11 @@ export default function ClubFilters(props: ClubFiltersProps) {
     onClickGenreFilter,
     onClickSpeedFilter,
     genreFilterApplied,
-    genreModalShown,
     readingSpeedFilterApplied,
-    readingSpeedModalShown,
     onClickCapacityFilter,
+    onClickMembershipFilter,
     capacityFilterApplied,
-    capacityModalShown,
+    memberFilterApplied,
   } = props;
 
   const theme = useTheme();
@@ -68,7 +87,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
     <Grid container spacing={4}>
       <div className={classes.root}>
         <Button
-          className={classes.genreFilter}
+          classes={{ root: classes.genreFilter, text: classes.genreFilterText }}
           onClick={() => onClickGenreFilter()}
         >
           <MuiThemeProvider theme={textSecondaryTheme}>
@@ -86,7 +105,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
           </Typography>
         </Button>
         <Button
-          className={classes.speedFilter}
+          classes={{ root: classes.speedFilter, text: classes.speedFilterText }}
           onClick={() => onClickSpeedFilter()}
         >
           <MuiThemeProvider theme={textSecondaryTheme}>
@@ -100,11 +119,14 @@ export default function ClubFilters(props: ClubFiltersProps) {
             }}
             color={readingSpeedFilterApplied ? 'textPrimary' : 'textSecondary'}
           >
-            Reading Speed
+            Speed
           </Typography>
         </Button>
         <Button
-          className={classes.capacityFilter}
+          classes={{
+            root: classes.capacityFilter,
+            text: classes.capacityFilterText,
+          }}
           onClick={() => onClickCapacityFilter()}
         >
           <MuiThemeProvider theme={textSecondaryTheme}>
@@ -119,6 +141,27 @@ export default function ClubFilters(props: ClubFiltersProps) {
             color={capacityFilterApplied ? 'textPrimary' : 'textSecondary'}
           >
             Capacity
+          </Typography>
+        </Button>
+        <Button
+          classes={{
+            root: classes.memberFilter,
+            text: classes.memberFilterText,
+          }}
+          onClick={() => onClickMembershipFilter()}
+        >
+          <MuiThemeProvider theme={textSecondaryTheme}>
+            <ArrowDropDown color="primary" />
+          </MuiThemeProvider>
+          <Typography
+            style={{
+              fontSize: screenSmallerThanSm ? 13 : 18,
+              fontWeight: 600,
+              fontStyle: memberFilterApplied ? 'italic' : undefined,
+            }}
+            color={memberFilterApplied ? 'textPrimary' : 'textSecondary'}
+          >
+            Member
           </Typography>
         </Button>
       </div>

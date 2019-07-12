@@ -15,16 +15,6 @@ export function capacityLabels(
       if (type === 'description') {
         return 'Clubs with spots available';
       }
-      return 'Spots Available';
-    case 'clubsImIn':
-      if (type === 'description') {
-        return "Clubs I'm a part of but don't own";
-      }
-      return 'Member';
-    case 'clubsIOwn':
-      if (type === 'description') {
-        return 'Clubs I own';
-      }
-      return 'Owner';
+      return 'Available';
   }
 }

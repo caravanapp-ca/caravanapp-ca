@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme =>
   createStyles({
     button: {
       margin: theme.spacing(1),
+      textTransform: 'none',
     },
     chip: {
       display: 'flex',
@@ -49,12 +50,13 @@ interface GenreChipProps {
   active: boolean;
   clickable?: boolean;
   onClick?: (genreKey: string, currActive: boolean) => void;
+  small?: boolean;
 }
 
 export default function GenreChip(props: GenreChipProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { genreKey, name, active, clickable, onClick } = props;
+  const { genreKey, name, active, clickable, onClick, small } = props;
   if (!clickable || !onClick) {
     return (
       <div
@@ -71,11 +73,13 @@ export default function GenreChip(props: GenreChipProps) {
     return (
       <MuiThemeProvider theme={active ? theme : washedTheme}>
         <Button
-          className={classes.button}
+          classes={{
+            root: classes.button,
+          }}
           color="primary"
-          variant="contained"
           key={genreKey}
           onClick={() => onClick(genreKey, active)}
+          variant="contained"
         >
           {/* TODO: Prevent capitalization */}
           <Typography>{name}</Typography>

@@ -1,49 +1,35 @@
 import React from 'react';
-import {
-  makeStyles,
-  createStyles,
-  Typography,
-  Button,
-  useTheme,
-  Fab,
-  useMediaQuery,
-  PropTypes,
-} from '@material-ui/core';
+import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
 import clsx from 'clsx';
 import { washedTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import RemoveIcon from '@material-ui/icons/Clear';
 import { FilterChipType } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme =>
   createStyles({
-    button: {
-      margin: theme.spacing(1),
-      textTransform: 'none',
-    },
-    chip: {
-      display: 'flex',
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
+    genreChip: {
       borderRadius: 4,
+      marginTop: theme.spacing(2),
+      marginRight: theme.spacing(1),
+      backgroundColor: '#bbdefb',
     },
-    chipActive: {
-      backgroundColor: theme.palette.primary.main,
-      color: '#FFFFFF',
+    speedChip: {
+      borderRadius: 4,
+      marginTop: theme.spacing(2),
+      marginRight: theme.spacing(1),
+      backgroundColor: '#b2dfdb',
     },
-    chipInactive: {
-      backgroundColor: washedTheme.palette.primary.main,
-      color: theme.palette.text.primary,
+    capacityChip: {
+      borderRadius: 4,
+      marginTop: theme.spacing(2),
+      marginRight: theme.spacing(1),
+      backgroundColor: '#dcedc8',
     },
-    activeText: {
-      color: '#FFFFFF',
-    },
-    chipText: {
-      root: {
-        textTransform: 'none',
-      },
+    membershipChip: {
+      borderRadius: 4,
+      marginTop: theme.spacing(2),
+      marginRight: theme.spacing(1),
+      backgroundColor: '#80deea',
     },
   })
 );
@@ -52,49 +38,31 @@ interface FilterChipsProps {
   name: string;
   active: boolean;
   type: FilterChipType;
-  key: string;
+  chipKey: string;
   onRemove: (key: string, type: FilterChipType) => void;
 }
 
 export default function FilterChips(props: FilterChipsProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const { name, active, type, key, onRemove } = props;
+  const { name, active, type, chipKey, onRemove } = props;
 
-  let color: PropTypes.Color = 'primary';
-
-  if (type === 'genres') {
-    color = 'primary';
-  } else if (type === 'speed') {
-    color = 'secondary';
-  } else if (type === 'capacity') {
-    color = 'default';
-  }
+  const wrapperClassName = clsx({
+    [classes.genreChip]: type === 'genres',
+    [classes.speedChip]: type === 'speed',
+    [classes.capacityChip]: type === 'capacity',
+    [classes.membershipChip]: type === 'membership',
+  });
 
   return (
     <MuiThemeProvider theme={active ? theme : washedTheme}>
-      <Button
-        className={classes.button}
-        color={color}
-        variant="contained"
-        key={key}
-      >
-        <Fab
-          color={active ? 'inherit' : 'primary'}
-          onClick={() => onRemove(key, type)}
-        >
-          <RemoveIcon />
-        </Fab>
-        <Typography
-          style={{
-            fontSize: screenSmallerThanSm ? 11 : 16,
-          }}
-        >
-          {name}
-        </Typography>
-      </Button>
+      <Chip
+        label={name}
+        key={chipKey}
+        classes={{ root: wrapperClassName }}
+        onDelete={() => onRemove(chipKey, type)}
+      />
     </MuiThemeProvider>
   );
 }

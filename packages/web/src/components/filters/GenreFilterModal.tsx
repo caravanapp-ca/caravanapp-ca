@@ -63,6 +63,7 @@ export default function GenreFilterModal(props: GenreFilterModalProps) {
                       !genreSelected
                     )
                   }
+                  small={true}
                 />
               );
             })}

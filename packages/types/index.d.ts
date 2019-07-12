@@ -146,6 +146,7 @@ declare module '@caravan/buddy-reading-types' {
     genres: FilterChip[];
     speed: FilterChip[];
     capacity: FilterChip[];
+    membership: FilterChip[];
   }
 
   export type EditableUserField =
@@ -182,9 +183,11 @@ declare module '@caravan/buddy-reading-types' {
 
   export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
 
-  export type Capacity = 'full' | 'spotsAvailable' | 'clubsImIn' | 'clubsIOwn';
+  export type Capacity = 'full' | 'spotsAvailable';
 
-  export type FilterChipType = 'genres' | 'speed' | 'capacity';
+  export type Membership = 'myClubs' | 'clubsImNotIn';
+
+  export type FilterChipType = 'genres' | 'speed' | 'capacity' | 'membership';
 
   export type GroupVibe =
     | 'chill'

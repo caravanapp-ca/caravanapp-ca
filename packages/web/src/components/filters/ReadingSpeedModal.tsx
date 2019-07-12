@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 
 interface ReadingSpeedModalProps {
   filteredSpeed: FilterChip[];
-  onSetSelectedSpeed: (speed: ReadingSpeed) => void;
+  onSetSelectedSpeed: (speed: ReadingSpeed, label: string) => void;
   onClickApply: () => void;
   onClickClearFilter: () => void;
   open: boolean;
@@ -60,23 +60,26 @@ export default function ReadingSpeedModal(props: ReadingSpeedModalProps) {
       </DialogTitle>
       <DialogContent classes={{ root: classes.dialogStyle }}>
         <div>
-          {readingSpeeds.map(speed => (
-            <ListElementAvatar
-              key={speed}
-              primaryElement={
-                <Radio
-                  checked={speed === selectedSpeed}
-                  onChange={() => onSetSelectedSpeed(speed)}
-                  value={speed}
-                  name={`radio-button-${speed}`}
-                  color="primary"
-                />
-              }
-              avatarElement={readingSpeedIcons(speed, 'avatar')}
-              primaryText={readingSpeedLabels(speed)}
-              secondaryText={readingSpeedLabels(speed, 'description')}
-            />
-          ))}
+          {readingSpeeds.map(speed => {
+            const label = readingSpeedLabels(speed);
+            return (
+              <ListElementAvatar
+                key={speed}
+                primaryElement={
+                  <Radio
+                    checked={speed === selectedSpeed}
+                    onChange={() => onSetSelectedSpeed(speed, label)}
+                    value={speed}
+                    name={`radio-button-${speed}`}
+                    color="primary"
+                  />
+                }
+                avatarElement={readingSpeedIcons(speed, 'avatar')}
+                primaryText={label}
+                secondaryText={readingSpeedLabels(speed, 'description')}
+              />
+            );
+          })}
         </div>
       </DialogContent>
       <DialogActions>

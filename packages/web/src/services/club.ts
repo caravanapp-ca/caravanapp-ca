@@ -7,6 +7,7 @@ import {
   User,
   FilterAutoMongoKeys,
   CurrBookAction,
+  ActiveFilter,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -25,13 +26,13 @@ interface CreateClubProps {
 export async function getAllClubs(
   after?: string,
   pageSize?: number,
-  readingSpeed?: ReadingSpeed
+  activeFilter?: ActiveFilter
 ) {
   const res = await axios.get<Services.GetClubs>(clubRoute, {
     params: {
       after,
       pageSize,
-      readingSpeed,
+      activeFilter,
     },
   });
   return res;
@@ -56,10 +57,23 @@ export async function getClubsById(clubIds: string[]) {
   return clubs;
 }
 
-export async function getUserClubs(userId: string) {
+export async function getUserClubs(
+  userId: string,
+  after?: string,
+  pageSize?: number,
+  activeFilter?: ActiveFilter
+) {
   const res = await axios.get<Services.GetClubs['clubs']>(
-    `${clubRoute}/user/${userId}`
+    `${clubRoute}/user/${userId}`,
+    {
+      params: {
+        after,
+        pageSize,
+        activeFilter,
+      },
+    }
   );
+
   return res;
 }
 
