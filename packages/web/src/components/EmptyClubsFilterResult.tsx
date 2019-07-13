@@ -1,18 +1,10 @@
 import React from 'react';
-import {
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  useTheme,
-} from '@material-ui/core';
+import { Container, Typography, useTheme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(() => ({}));
 
 export default function EmptyClubsFilterResult() {
-  const classes = useStyles();
   const theme = useTheme();
 
   return (

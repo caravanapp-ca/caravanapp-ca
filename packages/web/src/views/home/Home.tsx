@@ -12,7 +12,6 @@ import {
   User,
   ShelfEntry,
   Services,
-  UserSelectedGenre,
   ReadingSpeed,
   Capacity,
   FilterChip,
@@ -37,7 +36,6 @@ import GenreFilterModal from '../../components/filters/GenreFilterModal';
 import ReadingSpeedModal from '../../components/filters/ReadingSpeedModal';
 import CapacityModal from '../../components/filters/CapacityModal';
 import FilterChips from '../../components/filters/FilterChips';
-import { capacityLabels } from '../../components/capacity-labels';
 import MembershipModal from '../../components/filters/MembershipModal';
 import EmptyClubsFilterResult from '../../components/EmptyClubsFilterResult';
 
@@ -117,9 +115,9 @@ export default function Home(props: HomeProps) {
   const [clubsWCRResult, setClubsWCRResult] = React.useState<
     Service<ClubWithCurrentlyReading[]>
   >({ status: 'loading' });
-  const [filteredClubsWCRResult, setFilteredClubsWCRResult] = React.useState<
-    Service<ClubWithCurrentlyReading[]>
-  >({ status: 'loading' });
+  const [] = React.useState<Service<ClubWithCurrentlyReading[]>>({
+    status: 'loading',
+  });
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
@@ -128,7 +126,7 @@ export default function Home(props: HomeProps) {
     undefined
   );
   const [showLoadMore, setShowLoadMore] = React.useState(false);
-  const [showLoadMoreFiltered, setShowLoadMoreFiltered] = React.useState(false);
+  const [] = React.useState(false);
   const [allGenres, setAllGenres] = React.useState<Services.GetGenres | null>(
     null
   );
@@ -166,11 +164,10 @@ export default function Home(props: HomeProps) {
   }, [showWelcomeMessage]);
 
   useEffect(() => {
+    const pageSize = 24;
     if (filtersApplied) {
       // Get clubs filtered
       (async () => {
-        // TODO: change this to 24
-        const pageSize = 3;
         // TODO: right now this is typed as any because the response returned could be of variable type
         let res: any;
         if (
@@ -204,7 +201,6 @@ export default function Home(props: HomeProps) {
     } else {
       // Normal get all clubs
       (async () => {
-        const pageSize = 24;
         const res = await getAllClubs(afterQuery, pageSize);
         if (res.data) {
           const newClubsWCR = transformClubsToWithCurrentlyReading(
@@ -233,29 +229,6 @@ export default function Home(props: HomeProps) {
     };
     getGenres();
   }, []);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     // Should be 24
-  //     const pageSize = 3;
-  //     if (
-  //       activeFilter.genres.length +
-  //         activeFilter.capacity.length +
-  //         activeFilter.speed.length +
-  //         activeFilter.membership.length >
-  //       0
-  //     ) {
-  //     } else {
-  //       // Why do we need to do anything in this case? Shouldn't the useEffect above handle this?
-  //       // TODO: Uncomment this
-  //       // if (filteredClubsWCRResult.status === 'loaded') {
-  //       //   setShowLoadMoreFiltered(
-  //       //     filteredClubsWCRResult.payload.length === pageSize
-  //       //   );
-  //       // }
-  //     }
-  //   })();
-  // }, [activeFilter, afterQuery]);
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
@@ -313,29 +286,6 @@ export default function Home(props: HomeProps) {
     setShowGenreFilter(false);
   }
 
-  // Not needed until capacity  becomes of type checkbox (ie >1 options allowed per time)
-  // function onCapacitySelected(
-  //   capacity: Capacity,
-  //   label: string,
-  //   selected: boolean
-  // ) {
-  //   if (selected) {
-  //     let newCapacities: FilterChip[];
-  //     const addedCapacity: FilterChip = {
-  //       key: capacity,
-  //       name: label,
-  //       type: 'capacity',
-  //     };
-  //     newCapacities = [...stagingFilter.capacity, addedCapacity];
-  //     setStagingFilter({ ...stagingFilter, capacity: newCapacities });
-  //   } else {
-  //     const updatedCapacity = stagingFilter.capacity.filter(
-  //       c => c.key !== capacity
-  //     );
-  //     setStagingFilter({ ...stagingFilter, capacity: updatedCapacity });
-  //   }
-  // }
-
   async function saveSpeedSelection() {
     let speedFiltersChanged = false;
     if (activeFilter.speed.length !== stagingFilter.speed.length) {
@@ -376,8 +326,11 @@ export default function Home(props: HomeProps) {
 
   async function saveMembershipSelection() {
     let membershipFiltersChanged = false;
-    if (
-      activeFilter.membership.length !== stagingFilter.membership.length ||
+    if (activeFilter.membership.length !== stagingFilter.membership.length) {
+      membershipFiltersChanged = true;
+    } else if (
+      activeFilter.membership.length > 0 &&
+      stagingFilter.membership.length > 0 &&
       activeFilter.membership[0].key !== stagingFilter.membership[0].key
     ) {
       membershipFiltersChanged = true;
@@ -666,11 +619,6 @@ export default function Home(props: HomeProps) {
           clubsWCRResult.payload.length > 0 && (
             <ClubCards clubsWCR={clubsWCRResult.payload} user={user} />
           )}
-        {/* {filteredClubsWCRResult.status === 'loaded' &&
-          filtersApplied &&
-          filteredClubsWCRResult.payload.length > 0 && (
-            <ClubCards clubsWCR={filteredClubsWCRResult.payload} user={user} />
-          )} */}
         {clubsWCRResult.status === 'loaded' &&
           filtersApplied &&
           clubsWCRResult.payload.length === 0 && <EmptyClubsFilterResult />}
@@ -699,32 +647,6 @@ export default function Home(props: HomeProps) {
             </Button>
           </div>
         )}
-        {/* {filteredClubsWCRResult.status === 'loaded' && showLoadMoreFiltered && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
-            }}
-          >
-            <Button
-              color="primary"
-              className={classes.button}
-              variant="outlined"
-              onClick={() =>
-                setAfterQuery(
-                  filteredClubsWCRResult.payload[
-                    filteredClubsWCRResult.payload.length - 1
-                  ].club._id
-                )
-              }
-            >
-              <Typography variant="button" style={{ textAlign: 'center' }}>
-                LOAD MORE...
-              </Typography>
-            </Button>
-          </div>
-        )} */}
       </main>
       <DiscordLoginModal
         onCloseLoginDialog={onCloseLoginModal}
