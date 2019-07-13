@@ -20,6 +20,7 @@ import {
   CurrBookAction,
   ReadingSpeed,
   GroupVibe,
+  ActiveFilter,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
@@ -104,98 +105,92 @@ router.get('/', async (req, res, next) => {
   if (userId) {
     user = await getUser(userId);
   }
+  // Calculate number of documents to skip
+  const query: any = {
+    unlisted: { $eq: false },
+  };
+  if (after) {
+    query._id = { $lt: after };
+  }
+  let filterObj: ActiveFilter;
+  if (activeFilter) {
+    filterObj = JSON.parse(activeFilter);
+    if (filterObj.speed.length > 0) {
+      query.readingSpeed = { $eq: filterObj.speed[0].key };
+    }
+    if (filterObj.genres.length > 0) {
+      var genreKeys = filterObj.genres.map((g: { key: any }) => g.key);
+      query.genres = { $elemMatch: { key: { $in: genreKeys } } };
+    }
+  }
+  const size = Number.parseInt(pageSize || 0);
+  const limit = Math.min(Math.max(size, 10), 50);
+  let clubs: ClubDoc[];
   try {
-    // Calculate number of documents to skip
-    const query: any = {
-      unlisted: { $eq: false },
-    };
-    if (after) {
-      query._id = { $lt: after };
-    }
-    if (activeFilter) {
-      const filterObj = JSON.parse(activeFilter);
-      if (filterObj.speed.length > 0) {
-        query.readingSpeed = { $eq: filterObj.speed[0].key };
-      }
-      if (filterObj.genres.length > 0) {
-        var genreKeys = filterObj.genres.map((g: { key: any }) => g.key);
-        query.genres = { $elemMatch: { key: { $in: genreKeys } } };
-      }
-    }
-    const size = Number.parseInt(pageSize || 0);
-    const limit = Math.min(Math.max(size, 10), 50); 
-    const clubs = await ClubModel.find(query)
+    clubs = await ClubModel.find(query)
       .limit(limit)
       .sort({ createdAt: -1 })
       .exec();
-    // Don't return full clubs
-    if (!clubs) {
-      res.sendStatus(404);
-      return;
-    }
-    const client = ReadingDiscordBot.getInstance();
-    const guild = client.guilds.first();
-    const clubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
-      .map(clubDoc => {
-        let discordChannel: GuildChannel | null = guild.channels.find(
-          c => c.id === clubDoc.channelId
-        );
-        if (!discordChannel) {
+  } catch (err) {
+    console.error('Failed to get all clubs, ', err);
+    res.status(500).send(`Failed to get all clubs: ${err}`);
+  }
+  if (!clubs) {
+    res.sendStatus(404);
+    return;
+  }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
+    .map(clubDoc => {
+      let discordChannel: GuildChannel | null = guild.channels.find(
+        c => c.id === clubDoc.channelId
+      );
+      if (!discordChannel) {
+        return null;
+      }
+      const memberCount = getCountableMembersInChannel(discordChannel, clubDoc)
+        .size;
+      if (filterObj && filterObj.capacity.length > 0) {
+        let capacityKeys = filterObj.capacity.map((c: { key: any }) => c.key);
+        if (
+          capacityKeys.includes('spotsAvailable') &&
+          memberCount >= clubDoc.maxMembers
+        ) {
+          return null;
+        } else if (
+          capacityKeys.includes('full') &&
+          memberCount < clubDoc.maxMembers
+        ) {
           return null;
         }
-        const memberCount = getCountableMembersInChannel(
-          discordChannel,
-          clubDoc
-        ).size;
-        if (activeFilter) {
-          const filterObj = JSON.parse(activeFilter);
-          if (filterObj.capacity.length > 0) {
-            var capacityKeys = filterObj.capacity.map(
-              (c: { key: any }) => c.key
-            );
-            if (
-              capacityKeys.includes('spotsAvailable') &&
-              memberCount >= clubDoc.maxMembers
-            ) {
-              return null;
-            } else if (
-              capacityKeys.includes('full') &&
-              memberCount < clubDoc.maxMembers
-            ) {
-              return null;
-            }
-          }
-        }
-        const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
-          createdAt: string;
-          updatedAt: string;
-        } = {
-          ...clubDoc.toObject(),
-          createdAt:
-            clubDoc.createdAt instanceof Date
-              ? clubDoc.createdAt.toISOString()
-              : clubDoc.createdAt,
-          updatedAt:
-            clubDoc.updatedAt instanceof Date
-              ? clubDoc.updatedAt.toISOString()
-              : clubDoc.updatedAt,
-        };
-        const obj: Services.GetClubs['clubs'][0] = {
-          ...club,
-          guildId: guild.id,
-          memberCount,
-        };
-        return obj;
-      })
-      .filter(c => c !== null);
-    const result: Services.GetClubs = {
-      clubs: clubsWithMemberCounts,
-    };
-    res.status(200).json(result);
-  } catch (err) {
-    console.error('Failed to get all clubs.', err);
-    return next(err);
-  }
+      }
+      const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
+        createdAt: string;
+        updatedAt: string;
+      } = {
+        ...clubDoc.toObject(),
+        createdAt:
+          clubDoc.createdAt instanceof Date
+            ? clubDoc.createdAt.toISOString()
+            : clubDoc.createdAt,
+        updatedAt:
+          clubDoc.updatedAt instanceof Date
+            ? clubDoc.updatedAt.toISOString()
+            : clubDoc.updatedAt,
+      };
+      const obj: Services.GetClubs['clubs'][0] = {
+        ...club,
+        guildId: guild.id,
+        memberCount,
+      };
+      return obj;
+    })
+    .filter(c => c !== null);
+  const result: Services.GetClubs = {
+    clubs: filteredClubsWithMemberCounts,
+  };
+  res.status(200).json(result);
 });
 
 // Gets all of the clubs the specified user is currently in.
@@ -231,8 +226,9 @@ router.get('/user/:userId', async (req, res, next) => {
     if (after) {
       query._id = { $lt: after };
     }
+    let filterObj: ActiveFilter;
     if (activeFilter) {
-      const filterObj = JSON.parse(activeFilter);
+      filterObj = JSON.parse(activeFilter);
       if (filterObj.speed.length > 0) {
         query.readingSpeed = { $eq: filterObj.speed[0].key };
       }
@@ -242,8 +238,7 @@ router.get('/user/:userId', async (req, res, next) => {
       }
     }
     const size = Number.parseInt(pageSize || 0);
-    // Should be Math.max(size, 10)
-    const limit = Math.min(Math.max(size, 3), 50);
+    const limit = Math.min(Math.max(size, 10), 50);
     const clubDocs = await ClubModel.find(query)
       .limit(limit)
       .sort({ createdAt: -1 })
@@ -276,23 +271,18 @@ router.get('/user/:userId', async (req, res, next) => {
           clubDoc
         ).size;
 
-        if (activeFilter) {
-          const filterObj = JSON.parse(activeFilter);
-          if (filterObj.capacity.length > 0) {
-            var capacityKeys = filterObj.capacity.map(
-              (c: { key: any }) => c.key
-            );
-            if (
-              capacityKeys.includes('spotsAvailable') &&
-              memberCount >= clubDoc.maxMembers
-            ) {
-              return null;
-            } else if (
-              capacityKeys.includes('full') &&
-              memberCount < clubDoc.maxMembers
-            ) {
-              return null;
-            }
+        if (filterObj && filterObj.capacity.length > 0) {
+          var capacityKeys = filterObj.capacity.map((c: { key: any }) => c.key);
+          if (
+            capacityKeys.includes('spotsAvailable') &&
+            memberCount >= clubDoc.maxMembers
+          ) {
+            return null;
+          } else if (
+            capacityKeys.includes('full') &&
+            memberCount < clubDoc.maxMembers
+          ) {
+            return null;
           }
         }
 
