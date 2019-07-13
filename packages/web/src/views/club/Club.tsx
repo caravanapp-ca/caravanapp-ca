@@ -5,6 +5,7 @@ import {
   User,
   MembershipStatus,
   Services,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -18,6 +19,8 @@ import {
   Fab,
   IconButton,
 } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Create';
+import SaveIcon from '@material-ui/icons/Save';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ChatIcon from '@material-ui/icons/Chat';
 import JoinIcon from '@material-ui/icons/PersonAdd';
@@ -32,6 +35,7 @@ import {
   getClub,
   modifyMyClubMembership,
   deleteClub,
+  modifyClub,
 } from '../../services/club';
 import { getCurrentBook } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
@@ -48,6 +52,7 @@ import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import { getAllGenres } from '../../services/genre';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -136,6 +141,7 @@ export default function ClubComponent(props: ClubProps) {
   const { user } = props;
   const clubId = props.match.params.id;
 
+  const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [tabValue, setTabValue] = React.useState(0);
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
@@ -160,6 +166,7 @@ export default function ClubComponent(props: ClubProps) {
       variant: 'info',
     }
   );
+  const [isEditing, setIsEditing] = React.useState<boolean>(false);
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -184,11 +191,14 @@ export default function ClubComponent(props: ClubProps) {
   useEffect(() => {
     if (club) {
       if (user) {
-        // TODO: Investigate this line of code breaking the world
-        // setMembershipStatus('member');
         const member = club.members.find(m => m._id === user._id);
         if (member) {
-          setMembershipStatus(club.ownerId === user._id ? 'owner' : 'member');
+          if (club.ownerId === user._id) {
+            setMembershipStatus('owner');
+            getGenres();
+          } else {
+            setMembershipStatus('member');
+          }
         } else {
           setMembershipStatus('notMember');
         }
@@ -205,6 +215,32 @@ export default function ClubComponent(props: ClubProps) {
       </Container>
     );
   }
+
+  const getGenres = async () => {
+    const res = await getAllGenres();
+    if (res.status === 200) {
+      setGenres(res.data);
+    } else {
+      // TODO: error handling
+    }
+  };
+
+  const onGenreClick = (key: string, currActive: boolean) => {
+    if (!genres || !club) {
+      return;
+    }
+    let selectedGenresNew: SelectedGenre[];
+    if (!currActive) {
+      selectedGenresNew = [...club.genres];
+      selectedGenresNew.push({
+        key,
+        name: genres.genres[key].name,
+      });
+    } else {
+      selectedGenresNew = club.genres.filter(sg => sg.key !== key);
+    }
+    setClub({ ...club, genres: selectedGenresNew });
+  };
 
   function backButtonAction() {
     if (props.history.length > 1) {
@@ -231,11 +267,81 @@ export default function ClubComponent(props: ClubProps) {
     <HeaderTitle title="Club Homepage" />
   );
 
-  const rightComponent = <ProfileHeaderIcon user={user} />;
+  const rightComponent = (memberStatus: LoadableMemberStatus): JSX.Element => {
+    if (memberStatus === 'owner') {
+      if (isEditing) {
+        return (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="More"
+            onClick={onSaveClick}
+            disabled={!club}
+          >
+            <SaveIcon />
+          </IconButton>
+        );
+      } else {
+        return (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="More"
+            onClick={() => setIsEditing(true)}
+          >
+            <EditIcon />
+          </IconButton>
+        );
+      }
+    } else {
+      return <ProfileHeaderIcon user={user} />;
+    }
+  };
 
   function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
+
+  const onEdit = (
+    field:
+      | 'bio'
+      | 'maxMembers'
+      | 'name'
+      | 'readingSpeed'
+      | 'vibe'
+      | 'maxMembers',
+    newValue: string | number
+  ) => {
+    if (!club) {
+      return;
+    }
+    const newClub: Services.GetClubById = { ...club, [field]: newValue };
+    setClub(newClub);
+  };
+
+  const onSaveClick = async () => {
+    if (!club) {
+      return;
+    }
+    const res = await modifyClub(club);
+    if (res.status === 200) {
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'success',
+        message: 'Successfully updated your club!',
+      });
+    } else {
+      // TODO: determine routing based on other values of res
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'warning',
+        message: 'We ran into some trouble saving your club.',
+      });
+    }
+    setIsEditing(false);
+  };
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -303,7 +409,7 @@ export default function ClubComponent(props: ClubProps) {
           <Header
             leftComponent={leftComponent}
             centerComponent={centerComponent}
-            rightComponent={rightComponent}
+            rightComponent={rightComponent(memberStatus)}
           />
           {currBook && <ClubHero currBook={currBook} />}
           <Paper className={classes.root}>
@@ -321,8 +427,18 @@ export default function ClubComponent(props: ClubProps) {
           </Paper>
           <Container maxWidth="md">
             <div className={classes.contentContainer}>
-              {tabValue === 0 && <GroupView club={club} />}
-              {tabValue === 1 && <ShelfView shelf={club.shelf} />}
+              {tabValue === 0 && (
+                <GroupView club={club} isEditing={isEditing} onEdit={onEdit} />
+              )}
+              {tabValue === 1 && (
+                <ShelfView
+                  genres={genres || undefined}
+                  isEditing={isEditing}
+                  onGenreClick={onGenreClick}
+                  shelf={club.shelf}
+                  selectedGenres={club.genres}
+                />
+              )}
               <div className={classes.buttonsContainer}>
                 {showJoinClub(memberStatus, club) && (
                   <Button

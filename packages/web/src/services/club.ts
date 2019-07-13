@@ -3,11 +3,10 @@ import {
   Services,
   ChannelSource,
   ShelfEntry,
-  ReadingSpeed,
-  User,
   FilterAutoMongoKeys,
   CurrBookAction,
   ActiveFilter,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -18,6 +17,7 @@ interface CreateClubProps {
   bio: string;
   maxMembers: string;
   vibe: string;
+  genres: SelectedGenre[];
   readingSpeed: string;
   channelSource: ChannelSource;
   unlisted: boolean;
@@ -117,6 +117,7 @@ export async function createClub(props: CreateClubProps) {
     bio: props.bio,
     maxMembers: props.maxMembers,
     vibe: props.vibe,
+    genres: props.genres,
     readingSpeed: props.readingSpeed,
     unlisted: props.unlisted,
     channelSource: props.channelSource,
@@ -126,5 +127,13 @@ export async function createClub(props: CreateClubProps) {
     clubRoute,
     body
   );
+  return res;
+}
+
+export async function modifyClub(newClub: Services.GetClubById) {
+  const { _id } = newClub;
+  const res = await axios.put(`${clubRoute}/${_id}`, {
+    newClub,
+  });
   return res;
 }

@@ -7,6 +7,7 @@ import {
   GroupVibe,
   Services,
   FilterAutoMongoKeys,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -30,6 +31,9 @@ import {
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
 import HeaderTitle from '../../components/HeaderTitle';
+import GroupSizeSelector from '../../components/GroupSizeSelector';
+import { getAllGenres } from '../../services/genre';
+import GenreChip from '../../components/GenreChip';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -49,6 +53,11 @@ const useStyles = makeStyles(theme => ({
   sectionHeader: {
     marginBottom: theme.spacing(1),
   },
+  genresContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
 }));
 
 interface CreateClubRouteParams {
@@ -59,7 +68,12 @@ interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
   user: User | null;
 }
 
-const groupSizes: number[] = [2, 3, 4, 5, 6, 10, 20];
+const groupSizeMin = 2;
+const groupSizeMax = 32;
+let groupSizesStrArr: string[] = [];
+for (let i = groupSizeMin; i <= groupSizeMax; i++) {
+  groupSizesStrArr.push(i.toString());
+}
 const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 const groupVibes: GroupVibe[] = [
   'chill',
@@ -98,6 +112,7 @@ export default function CreateClub(props: CreateClubProps) {
   //   </IconButton>
   // );
 
+  const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
   const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<
     ReadingSpeed
@@ -113,6 +128,7 @@ export default function CreateClub(props: CreateClubProps) {
   const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
     ShelfEntry
   > | null>(null);
+  const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>([]);
   const [unlistedClub] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
@@ -127,6 +143,11 @@ export default function CreateClub(props: CreateClubProps) {
     setSelectedBooks(selectedBooks);
     setBookToRead(bookToRead);
   }
+
+  // Things to load on mount.
+  useEffect(() => {
+    getGenres();
+  }, [])
 
   useEffect(() => {
     if (createdClub) {
@@ -163,6 +184,7 @@ export default function CreateClub(props: CreateClubProps) {
       bio: selectedGroupBio,
       maxMembers: selectedGroupSize,
       vibe: selectedGroupVibe,
+      genres: selectedGenres,
       readingSpeed: selectedGroupSpeed,
       channelSource: 'discord',
       unlisted: unlistedClub,
@@ -175,10 +197,52 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }
 
-  // let unlistedSwitchLabel = 'Anyone can find and join my club.';
-  // if (unlistedClub) {
-  //   unlistedSwitchLabel = 'Only friends I share the link with can join my club.';
-  // }
+  const getGenres = async () => {
+    const res = await getAllGenres();
+    if (res.status === 200) {
+      setGenres(res.data);
+    } else {
+      // TODO: error handling
+    }
+  }
+
+  const onGenreClick = (key: string, currActive: boolean) => {
+    if(!genres){
+      return;
+    }
+    let selectedGenresNew: SelectedGenre[];
+    if (!currActive) {
+      selectedGenresNew = [...selectedGenres];
+      selectedGenresNew.push({
+        key,
+        name: genres.genres[key].name,
+      });
+    } else {
+      selectedGenresNew = selectedGenres.filter(
+        sg => sg.key !== key
+      );
+    }
+    setSelectedGenres(selectedGenresNew);
+  };
+
+  const validateForm = (): boolean => {
+    if(selectedGroupBio === ''){
+      return false;
+    }
+    else if(selectedGroupName === ''){
+      return false;
+    }
+    else if(!bookToRead){
+      return false;
+    }
+    else if(selectedBooks.length === 0){
+      return false;
+    }
+    else if(selectedGenres.length === 0){
+      return false;
+    }
+    return true;
+  }
 
   return (
     <>
@@ -222,36 +286,40 @@ export default function CreateClub(props: CreateClubProps) {
             secondary={'delete'}
           />
         </div>
+        {genres && (
+          <div className={classes.sectionContainer}>
+          <Typography variant="subtitle1">
+            What genres will your club be reading?
+          </Typography>
+          <div className={classes.genresContainer}>
+              {genres.mainGenres.map(g => (
+                <GenreChip
+                  key={g}
+                  genreKey={g}
+                  name={genres.genres[g].name}
+                  active={selectedGenres.some(sg => sg.key === g)}
+                  clickable={true}
+                  onClick={onGenreClick}
+                />
+              ))}
+            </div>
+          </div>
+        )}   
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
-            How many group members do you want?
+            How many club members do you want?
           </Typography>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-            }}
-          >
-            {groupSizes.map(size => (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-                key={size.toString()}
-              >
-                <Radio
-                  checked={selectedGroupSize === size}
-                  onChange={() => setSelectedGroupSize(size)}
-                  value={size.toString()}
-                  color="primary"
-                />
-                <Typography>{size}</Typography>
-              </div>
-            ))}
-          </div>
+          <GroupSizeSelector
+            onChangeSize={e =>
+              setSelectedGroupSize(parseInt(e.target.value as string))
+            }
+            selectedSize={selectedGroupSize.toString()}
+            sizes={groupSizesStrArr.map(str => ({
+              label: str,
+              enabled: true,
+            }))}
+            showContactMessage={true}
+          />
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
@@ -349,12 +417,7 @@ export default function CreateClub(props: CreateClubProps) {
             {!creatingClub && (
               <Button
                 variant="contained"
-                disabled={
-                  selectedGroupBio === '' ||
-                  selectedGroupName === '' ||
-                  !bookToRead ||
-                  selectedBooks.length === 0
-                }
+                disabled={!validateForm()}
                 onClick={createClubOnClick}
                 color="secondary"
               >

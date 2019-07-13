@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Services,
-  UserSelectedGenre,
+  SelectedGenre,
   ReadingSpeed,
   FilterChip,
 } from '@caravan/buddy-reading-types';
