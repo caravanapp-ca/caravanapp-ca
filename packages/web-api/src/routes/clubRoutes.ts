@@ -123,11 +123,7 @@ router.get('/', async (req, res, next) => {
       }
     }
     const size = Number.parseInt(pageSize || 0);
-
-    // TODO: Replace this line
-    const limit = Math.min(Math.max(size, 1), 50);
-    // const limit = Math.min(Math.max(size, 10), 50);
-    
+    const limit = Math.min(Math.max(size, 10), 50); 
     const clubs = await ClubModel.find(query)
       .limit(limit)
       .sort({ createdAt: -1 })

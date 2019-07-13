@@ -49,6 +49,10 @@ const useStyles = makeStyles(() => ({
   memberFilterText: {
     padding: 4,
   },
+  dropDownIcon: {
+    height: 20,
+    width: 20,
+  },
 }));
 
 interface ClubFiltersProps {
@@ -85,7 +89,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
         onClick={() => onClickGenreFilter()}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
-          <ArrowDropDown color="primary" />
+          <ArrowDropDown color="primary" className={classes.dropDownIcon} />
         </MuiThemeProvider>
         <Typography
           style={{
@@ -101,7 +105,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
         onClick={() => onClickSpeedFilter()}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
-          <ArrowDropDown color="primary" />
+          <ArrowDropDown color="primary" className={classes.dropDownIcon} />
         </MuiThemeProvider>
         <Typography
           style={{
@@ -120,7 +124,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
         onClick={() => onClickCapacityFilter()}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
-          <ArrowDropDown color="primary" />
+          <ArrowDropDown color="primary" className={classes.dropDownIcon} />
         </MuiThemeProvider>
         <Typography
           style={{
@@ -139,7 +143,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
         onClick={() => onClickMembershipFilter()}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
-          <ArrowDropDown color="primary" />
+          <ArrowDropDown color="primary" className={classes.dropDownIcon} />
         </MuiThemeProvider>
         <Typography
           style={{
