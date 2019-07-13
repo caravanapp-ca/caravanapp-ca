@@ -63,7 +63,7 @@ export async function getUserClubs(
   pageSize?: number,
   activeFilter?: ActiveFilter
 ) {
-  const res = await axios.get<Services.GetClubs['clubs']>(
+  const res = await axios.get<{ clubs: Services.GetClubs['clubs'] }>(
     `${clubRoute}/user/${userId}`,
     {
       params: {
@@ -73,7 +73,6 @@ export async function getUserClubs(
       },
     }
   );
-
   return res;
 }
 
