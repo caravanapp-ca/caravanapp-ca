@@ -1,5 +1,4 @@
 import React from 'react';
-import { UserSelectedGenre, ReadingSpeed } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/styles';
 import {
   Button,
@@ -11,10 +10,8 @@ import {
 import { ArrowDropDown } from '@material-ui/icons';
 import { textSecondaryTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import ListElementAvatar from '../ListElementAvatar';
-import { readingSpeedIcons } from '../reading-speed-avatars-icons-labels';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
     display: 'flex',
@@ -47,7 +44,6 @@ const useStyles = makeStyles(theme => ({
   },
   memberFilter: {
     'text-transform': 'none',
-    marginRight: 0,
     borderColor: '#dcedc8',
   },
   memberFilterText: {
@@ -81,90 +77,79 @@ export default function ClubFilters(props: ClubFiltersProps) {
   } = props;
 
   const theme = useTheme();
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
-    <Grid container spacing={4}>
-      <div className={classes.root}>
-        <Button
-          classes={{ root: classes.genreFilter, text: classes.genreFilterText }}
-          onClick={() => onClickGenreFilter()}
-        >
-          <MuiThemeProvider theme={textSecondaryTheme}>
-            <ArrowDropDown color="primary" />
-          </MuiThemeProvider>
-          <Typography
-            style={{
-              fontSize: screenSmallerThanSm ? 13 : 18,
-              fontWeight: 600,
-              fontStyle: genreFilterApplied ? 'italic' : undefined,
-            }}
-            color={genreFilterApplied ? 'textPrimary' : 'textSecondary'}
-          >
-            Genres
-          </Typography>
-        </Button>
-        <Button
-          classes={{ root: classes.speedFilter, text: classes.speedFilterText }}
-          onClick={() => onClickSpeedFilter()}
-        >
-          <MuiThemeProvider theme={textSecondaryTheme}>
-            <ArrowDropDown color="primary" />
-          </MuiThemeProvider>
-          <Typography
-            style={{
-              fontSize: screenSmallerThanSm ? 13 : 18,
-              fontWeight: 600,
-              fontStyle: readingSpeedFilterApplied ? 'italic' : undefined,
-            }}
-            color={readingSpeedFilterApplied ? 'textPrimary' : 'textSecondary'}
-          >
-            Speed
-          </Typography>
-        </Button>
-        <Button
-          classes={{
-            root: classes.capacityFilter,
-            text: classes.capacityFilterText,
+    <div className={classes.root}>
+      <Button
+        classes={{ root: classes.genreFilter, text: classes.genreFilterText }}
+        onClick={() => onClickGenreFilter()}
+      >
+        <MuiThemeProvider theme={textSecondaryTheme}>
+          <ArrowDropDown color="primary" />
+        </MuiThemeProvider>
+        <Typography
+          style={{
+            fontStyle: genreFilterApplied ? 'italic' : undefined,
           }}
-          onClick={() => onClickCapacityFilter()}
+          color={genreFilterApplied ? 'textPrimary' : 'textSecondary'}
         >
-          <MuiThemeProvider theme={textSecondaryTheme}>
-            <ArrowDropDown color="primary" />
-          </MuiThemeProvider>
-          <Typography
-            style={{
-              fontSize: screenSmallerThanSm ? 13 : 18,
-              fontWeight: 600,
-              fontStyle: capacityFilterApplied ? 'italic' : undefined,
-            }}
-            color={capacityFilterApplied ? 'textPrimary' : 'textSecondary'}
-          >
-            Capacity
-          </Typography>
-        </Button>
-        <Button
-          classes={{
-            root: classes.memberFilter,
-            text: classes.memberFilterText,
+          Genres
+        </Typography>
+      </Button>
+      <Button
+        classes={{ root: classes.speedFilter, text: classes.speedFilterText }}
+        onClick={() => onClickSpeedFilter()}
+      >
+        <MuiThemeProvider theme={textSecondaryTheme}>
+          <ArrowDropDown color="primary" />
+        </MuiThemeProvider>
+        <Typography
+          style={{
+            fontStyle: readingSpeedFilterApplied ? 'italic' : undefined,
           }}
-          onClick={() => onClickMembershipFilter()}
+          color={readingSpeedFilterApplied ? 'textPrimary' : 'textSecondary'}
         >
-          <MuiThemeProvider theme={textSecondaryTheme}>
-            <ArrowDropDown color="primary" />
-          </MuiThemeProvider>
-          <Typography
-            style={{
-              fontSize: screenSmallerThanSm ? 13 : 18,
-              fontWeight: 600,
-              fontStyle: memberFilterApplied ? 'italic' : undefined,
-            }}
-            color={memberFilterApplied ? 'textPrimary' : 'textSecondary'}
-          >
-            Member
-          </Typography>
-        </Button>
-      </div>
-    </Grid>
+          Speed
+        </Typography>
+      </Button>
+      <Button
+        classes={{
+          root: classes.capacityFilter,
+          text: classes.capacityFilterText,
+        }}
+        onClick={() => onClickCapacityFilter()}
+      >
+        <MuiThemeProvider theme={textSecondaryTheme}>
+          <ArrowDropDown color="primary" />
+        </MuiThemeProvider>
+        <Typography
+          style={{
+            fontStyle: capacityFilterApplied ? 'italic' : undefined,
+          }}
+          color={capacityFilterApplied ? 'textPrimary' : 'textSecondary'}
+        >
+          Capacity
+        </Typography>
+      </Button>
+      <Button
+        classes={{
+          root: classes.memberFilter,
+          text: classes.memberFilterText,
+        }}
+        onClick={() => onClickMembershipFilter()}
+      >
+        <MuiThemeProvider theme={textSecondaryTheme}>
+          <ArrowDropDown color="primary" />
+        </MuiThemeProvider>
+        <Typography
+          style={{
+            fontStyle: memberFilterApplied ? 'italic' : undefined,
+          }}
+          color={memberFilterApplied ? 'textPrimary' : 'textSecondary'}
+        >
+          Member
+        </Typography>
+      </Button>
+    </div>
   );
 }

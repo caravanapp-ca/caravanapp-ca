@@ -7,29 +7,21 @@ import { FilterChipType } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme =>
   createStyles({
-    genreChip: {
-      borderRadius: 4,
-      marginTop: theme.spacing(2),
+    baseChip: {
+      marginTop: theme.spacing(1),
       marginRight: theme.spacing(1),
+    },
+    genreChip: {
       backgroundColor: '#bbdefb',
     },
     speedChip: {
-      borderRadius: 4,
-      marginTop: theme.spacing(2),
-      marginRight: theme.spacing(1),
-      backgroundColor: '#b2dfdb',
+      backgroundColor: '#b2ebf2',
     },
     capacityChip: {
-      borderRadius: 4,
-      marginTop: theme.spacing(2),
-      marginRight: theme.spacing(1),
-      backgroundColor: '#dcedc8',
+      backgroundColor: '#c8e6c9',
     },
     membershipChip: {
-      borderRadius: 4,
-      marginTop: theme.spacing(2),
-      marginRight: theme.spacing(1),
-      backgroundColor: '#80deea',
+      backgroundColor: '#f0f4c3',
     },
   })
 );
@@ -48,7 +40,7 @@ export default function FilterChips(props: FilterChipsProps) {
 
   const { name, active, type, chipKey, onRemove } = props;
 
-  const wrapperClassName = clsx({
+  const wrapperClassName = clsx(classes.baseChip, {
     [classes.genreChip]: type === 'genres',
     [classes.speedChip]: type === 'speed',
     [classes.capacityChip]: type === 'capacity',
