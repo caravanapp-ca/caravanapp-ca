@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useEffect, createRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   footer: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
+    paddingTop: theme.spacing(6),
+    paddingBottom: theme.spacing(6),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+  },
+  sticky: {
+    position: 'fixed',
+    width: '100%',
+    bottom: 0,
+    left: 0,
   },
 }));
 
@@ -26,11 +36,46 @@ function MadeWithLove() {
   );
 }
 
-export default function Footer() {
+interface FooterProps {
+  docHeight: number;
+}
+
+export default function Footer(props: FooterProps) {
   const classes = useStyles();
+  const { docHeight } = props;
+  const [docHeightLTWinHeight, setDocHeightLTWinHeight] = React.useState<
+    boolean
+  >(docHeight < window.innerHeight);
+  const footerHeightRef = createRef<HTMLElement>();
+
+  useEffect(() => {
+    window.addEventListener('resize', updateFooterState);
+    return () => {
+      window.removeEventListener('resize', updateFooterState);
+    };
+  }, []);
+
+  useEffect(() => {
+    updateFooterState();
+  }, [docHeight]);
+
+  const updateFooterState = () => {
+    setDocHeightLTWinHeight(
+      docHeight +
+        (footerHeightRef && footerHeightRef.current
+          ? footerHeightRef.current.offsetHeight
+          : 0) <
+        window.innerHeight
+    );
+  };
 
   return (
-    <footer className={classes.footer}>
+    <footer
+      className={clsx(classes.footer, {
+        [classes.sticky]: docHeightLTWinHeight,
+      })}
+      ref={footerHeightRef}
+    >
       <MadeWithLove />
       <Typography
         variant="body2"

@@ -119,7 +119,7 @@ router.get('/', async (req, res, next) => {
       query.readingSpeed = { $eq: filterObj.speed[0].key };
     }
     if (filterObj.genres.length > 0) {
-      var genreKeys = filterObj.genres.map((g: { key: any }) => g.key);
+      var genreKeys = filterObj.genres.map((g: { key: string }) => g.key);
       query.genres = { $elemMatch: { key: { $in: genreKeys } } };
     }
   }
@@ -152,7 +152,9 @@ router.get('/', async (req, res, next) => {
       const memberCount = getCountableMembersInChannel(discordChannel, clubDoc)
         .size;
       if (filterObj && filterObj.capacity.length > 0) {
-        let capacityKeys = filterObj.capacity.map((c: { key: any }) => c.key);
+        let capacityKeys = filterObj.capacity.map(
+          (c: { key: string }) => c.key
+        );
         if (
           capacityKeys.includes('spotsAvailable') &&
           memberCount >= clubDoc.maxMembers
@@ -215,88 +217,86 @@ router.get('/user/:userId', async (req, res, next) => {
   const { discordId } = user;
   const channels = getUserChannels(guild, discordId);
   const channelIds = channels.map(c => c.id);
-
+  const query: any = {
+    channelSource: 'discord',
+    channelId: {
+      $in: channelIds,
+    },
+  };
+  if (after) {
+    query._id = { $lt: after };
+  }
+  let filterObj: ActiveFilter;
+  if (activeFilter) {
+    filterObj = JSON.parse(activeFilter);
+    if (filterObj.speed.length > 0) {
+      query.readingSpeed = { $eq: filterObj.speed[0].key };
+    }
+    if (filterObj.genres.length > 0) {
+      var genreKeys = filterObj.genres.map((g: { key: string }) => g.key);
+      query.genres = { $elemMatch: { key: { $in: genreKeys } } };
+    }
+  }
+  const size = Number.parseInt(pageSize || 0);
+  const limit = Math.min(Math.max(size, 10), 50);
+  let clubDocs: ClubDoc[];
   try {
-    const query: any = {
-      channelSource: 'discord',
-      channelId: {
-        $in: channelIds,
-      },
-    };
-    if (after) {
-      query._id = { $lt: after };
-    }
-    let filterObj: ActiveFilter;
-    if (activeFilter) {
-      filterObj = JSON.parse(activeFilter);
-      if (filterObj.speed.length > 0) {
-        query.readingSpeed = { $eq: filterObj.speed[0].key };
-      }
-      if (filterObj.genres.length > 0) {
-        var genreKeys = filterObj.genres.map((g: { key: any }) => g.key);
-        query.genres = { $elemMatch: { key: { $in: genreKeys } } };
-      }
-    }
-    const size = Number.parseInt(pageSize || 0);
-    const limit = Math.min(Math.max(size, 10), 50);
-    const clubDocs = await ClubModel.find(query)
+    clubDocs = await ClubModel.find(query)
       .limit(limit)
       .sort({ createdAt: -1 })
       .exec();
-    if (!clubDocs) {
-      res.status(404).send(`No clubs exist for user ${userId}`);
-      return;
-    }
-    const clubsWithMemberCount = clubDocs
-      .map(clubDoc => {
-        let discordChannel: GuildChannel | null = guild.channels.find(
-          c => c.id === clubDoc.channelId
+  } catch (err) {
+    console.error(`Failed to get clubs for user ${user._id}`, err);
+    res.status(500).send(err);
+  }
+  if (!clubDocs) {
+    res.status(404).send(`No clubs exist for user ${userId}`);
+    return;
+  }
+  const filteredClubsWithMemberCount = clubDocs
+    .map(clubDoc => {
+      let discordChannel: GuildChannel | null = guild.channels.find(
+        c => c.id === clubDoc.channelId
+      );
+      if (!discordChannel) {
+        return null;
+      }
+      // If the club is unlisted
+      if (
+        clubDoc.unlisted &&
+        (!currentUser ||
+          !(discordChannel as TextChannel).members.some(
+            m => m.id === currentUser.discordId
+          ))
+      ) {
+        return null;
+      }
+      const memberCount = getCountableMembersInChannel(discordChannel, clubDoc)
+        .size;
+      if (filterObj && filterObj.capacity.length > 0) {
+        var capacityKeys = filterObj.capacity.map(
+          (c: { key: string }) => c.key
         );
-        if (!discordChannel) {
-          return null;
-        }
-
-        // If the club is unlisted
         if (
-          clubDoc.unlisted &&
-          (!currentUser ||
-            !(discordChannel as TextChannel).members.some(
-              m => m.id === currentUser.discordId
-            ))
+          capacityKeys.includes('spotsAvailable') &&
+          memberCount >= clubDoc.maxMembers
+        ) {
+          return null;
+        } else if (
+          capacityKeys.includes('full') &&
+          memberCount < clubDoc.maxMembers
         ) {
           return null;
         }
-        const memberCount = getCountableMembersInChannel(
-          discordChannel,
-          clubDoc
-        ).size;
+      }
 
-        if (filterObj && filterObj.capacity.length > 0) {
-          var capacityKeys = filterObj.capacity.map((c: { key: any }) => c.key);
-          if (
-            capacityKeys.includes('spotsAvailable') &&
-            memberCount >= clubDoc.maxMembers
-          ) {
-            return null;
-          } else if (
-            capacityKeys.includes('full') &&
-            memberCount < clubDoc.maxMembers
-          ) {
-            return null;
-          }
-        }
-
-        return { ...clubDoc.toObject(), memberCount };
-      })
-      .filter(x => x != null);
-    const result: Services.GetClubs = {
-      clubs: clubsWithMemberCount,
-    };
-    res.status(200).json(result);
-  } catch (err) {
-    console.log('Failed to get clubs for user ' + user._id);
-    return next(err);
-  }
+      return { ...clubDoc.toObject(), memberCount };
+    })
+    .filter(x => x != null);
+  const result: Services.GetClubs = {
+    clubs: filteredClubsWithMemberCount,
+  };
+  res.status(200).json(result);
 });
 
 // Get a club
@@ -312,23 +312,10 @@ router.get('/:id', async (req, res, next) => {
       const client = ReadingDiscordBot.getInstance();
       const guild = client.guilds.first();
       const guildMembers = await getChannelMembers(guild, clubDoc);
-
       const clubWithDiscord: Services.GetClubById = {
-        _id: clubDoc.id,
-        name: clubDoc.name,
-        ownerId: clubDoc.ownerId,
-        ownerDiscordId: clubDoc.ownerDiscordId,
-        shelf: clubDoc.shelf,
-        bio: clubDoc.bio,
+        ...clubDoc.toObject(),
         members: guildMembers,
-        maxMembers: clubDoc.maxMembers,
-        vibe: clubDoc.vibe,
-        readingSpeed: clubDoc.readingSpeed,
-        genres: clubDoc.genres,
         guildId: guild.id,
-        channelSource: clubDoc.channelSource,
-        channelId: clubDoc.channelId,
-        unlisted: clubDoc.unlisted,
         createdAt:
           clubDoc.createdAt instanceof Date
             ? clubDoc.createdAt.toISOString()
@@ -553,8 +540,8 @@ router.put(
   ).isArray(),
   check(
     'newClub.maxMembers',
-    'Max members must be an integer between 1 and 1000 inclusive'
-  ).isInt({ gt: 1, lt: 1000 }),
+    'Max members must be an integer between 2 and 1000 inclusive'
+  ).isInt({ gt: 1, lt: 1001 }),
   check(
     'newClub.name',
     'Name must be a string between 2 and 150 chars in length'

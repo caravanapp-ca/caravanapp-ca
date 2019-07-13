@@ -5,6 +5,7 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
+import ReactResizeDetector from 'react-resize-detector';
 import qs from 'query-string';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
@@ -58,6 +59,9 @@ export function App(props: AppProps) {
     cachedUser = JSON.parse(cachedUserStr);
   }
   const [user, setUser] = useState<User | null>(cachedUser);
+  const [docHeight, setDocHeight] = useState<number>(
+    document.body.scrollHeight
+  );
 
   useEffect(() => {
     const userId = getCookie('userId');
@@ -99,62 +103,69 @@ export function App(props: AppProps) {
       <Router>
         <GAListener trackingId={trackingId}>
           <Switch>
-            <Route
-              exact
-              path="/"
-              render={props => forceOnboard(user, HomeRedirect())}
-            />
-            <Route
-              exact
-              path="/clubs"
-              render={props =>
-                forceOnboard(user, <Home {...props} user={user} />)
-              }
-            />
-            <Route
-              exact
-              path="/clubs/create"
-              render={props =>
-                forceOnboard(user, <CreateClub {...props} user={user} />)
-              }
-            />
-            <Route
-              exact
-              path="/onboarding"
-              render={props =>
-                forceOutOfOnboard(user, <Onboarding {...props} user={user} />)
-              }
-            />
-            <Route
-              exact
-              path="/findbooks"
-              render={props => forceOnboard(user, <FindBooks />)}
-            />
-            <Route
-              exact
-              path="/privacy"
-              render={props => forceOnboard(user, <Privacy />)}
-            />
-            <Route
-              path="/clubs/:id/manage-shelf"
-              render={props =>
-                forceOnboard(user, <UpdateBook {...props} user={user} />)
-              }
-            />
-            <Route
-              path="/clubs/:id"
-              render={props =>
-                forceOnboard(user, <Club {...props} user={user} />)
-              }
-            />
-            <Route
-              path="/user/:id"
-              render={props =>
-                forceOnboard(user, <UserView {...props} user={user} />)
-              }
-            />
+            {/* div exists for ReactResizeDetector to work */}
+            <div>
+              <Route
+                exact
+                path="/"
+                render={props => forceOnboard(user, HomeRedirect())}
+              />
+              <Route
+                exact
+                path="/clubs"
+                render={props =>
+                  forceOnboard(user, <Home {...props} user={user} />)
+                }
+              />
+              <Route
+                exact
+                path="/clubs/create"
+                render={props =>
+                  forceOnboard(user, <CreateClub {...props} user={user} />)
+                }
+              />
+              <Route
+                exact
+                path="/onboarding"
+                render={props =>
+                  forceOutOfOnboard(user, <Onboarding {...props} user={user} />)
+                }
+              />
+              <Route
+                exact
+                path="/findbooks"
+                render={props => forceOnboard(user, <FindBooks />)}
+              />
+              <Route
+                exact
+                path="/privacy"
+                render={props => forceOnboard(user, <Privacy />)}
+              />
+              <Route
+                path="/clubs/:id/manage-shelf"
+                render={props =>
+                  forceOnboard(user, <UpdateBook {...props} user={user} />)
+                }
+              />
+              <Route
+                path="/clubs/:id"
+                render={props =>
+                  forceOnboard(user, <Club {...props} user={user} />)
+                }
+              />
+              <Route
+                path="/user/:id"
+                render={props =>
+                  forceOnboard(user, <UserView {...props} user={user} />)
+                }
+              />
+              <ReactResizeDetector
+                handleHeight
+                onResize={(w, h) => setDocHeight(h)}
+              />
+            </div>
           </Switch>
-          <Footer />
+          <Footer docHeight={docHeight} />
         </GAListener>
       </Router>
     </ThemeProvider>
