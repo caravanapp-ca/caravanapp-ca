@@ -50,7 +50,7 @@ export default function MembershipModal(props: MembershipModalProps) {
 
   return (
     <Dialog open={open} onClose={onClickApply}>
-      <DialogTitle color={theme.palette.primary.main} id="alert-dialog-title">
+      <DialogTitle id="membership-dialog-title">
         Filter Clubs by Membership
       </DialogTitle>
       <DialogContent classes={{ root: classes.dialogStyle }}>

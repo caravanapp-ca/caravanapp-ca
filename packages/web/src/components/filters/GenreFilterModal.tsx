@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Services,
-  SelectedGenre,
-  FilterChip,
-} from '@caravan/buddy-reading-types';
+import { Services, FilterChip } from '@caravan/buddy-reading-types';
 import {
   Dialog,
   DialogTitle,
@@ -39,9 +35,7 @@ export default function GenreFilterModal(props: GenreFilterModalProps) {
 
   return (
     <Dialog open={open} onClose={onClickApply}>
-      <DialogTitle color={theme.palette.primary.main} id="alert-dialog-title">
-        Filter Clubs by Genre
-      </DialogTitle>
+      <DialogTitle id="alert-dialog-title">Filter Clubs by Genre</DialogTitle>
       <DialogContent>
         <div>
           {allGenres &&

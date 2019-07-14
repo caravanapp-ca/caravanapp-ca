@@ -128,7 +128,9 @@ export default function CreateClub(props: CreateClubProps) {
   const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
     ShelfEntry
   > | null>(null);
-  const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>([]);
+  const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
+    []
+  );
   const [unlistedClub] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
@@ -144,10 +146,10 @@ export default function CreateClub(props: CreateClubProps) {
     setBookToRead(bookToRead);
   }
 
-  // Things to load on mount.
+  // Things to do on mount.
   useEffect(() => {
     getGenres();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (createdClub) {
@@ -204,10 +206,10 @@ export default function CreateClub(props: CreateClubProps) {
     } else {
       // TODO: error handling
     }
-  }
+  };
 
   const onGenreClick = (key: string, currActive: boolean) => {
-    if(!genres){
+    if (!genres) {
       return;
     }
     let selectedGenresNew: SelectedGenre[];
@@ -218,31 +220,25 @@ export default function CreateClub(props: CreateClubProps) {
         name: genres.genres[key].name,
       });
     } else {
-      selectedGenresNew = selectedGenres.filter(
-        sg => sg.key !== key
-      );
+      selectedGenresNew = selectedGenres.filter(sg => sg.key !== key);
     }
     setSelectedGenres(selectedGenresNew);
   };
 
   const validateForm = (): boolean => {
-    if(selectedGroupBio === ''){
+    if (selectedGroupBio === '') {
       return false;
-    }
-    else if(selectedGroupName === ''){
+    } else if (selectedGroupName === '') {
       return false;
-    }
-    else if(!bookToRead){
+    } else if (!bookToRead) {
       return false;
-    }
-    else if(selectedBooks.length === 0){
+    } else if (selectedBooks.length === 0) {
       return false;
-    }
-    else if(selectedGenres.length === 0){
+    } else if (selectedGenres.length === 0) {
       return false;
     }
     return true;
-  }
+  };
 
   return (
     <>
@@ -288,10 +284,10 @@ export default function CreateClub(props: CreateClubProps) {
         </div>
         {genres && (
           <div className={classes.sectionContainer}>
-          <Typography variant="subtitle1">
-            What genres will your club be reading?
-          </Typography>
-          <div className={classes.genresContainer}>
+            <Typography variant="subtitle1">
+              What genres will your club be reading?
+            </Typography>
+            <div className={classes.genresContainer}>
               {genres.mainGenres.map(g => (
                 <GenreChip
                   key={g}
@@ -304,7 +300,7 @@ export default function CreateClub(props: CreateClubProps) {
               ))}
             </div>
           </div>
-        )}   
+        )}
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
             How many club members do you want?

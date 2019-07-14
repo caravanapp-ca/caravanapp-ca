@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Services,
-  SelectedGenre,
-  ReadingSpeed,
-  FilterChip,
-} from '@caravan/buddy-reading-types';
+import { ReadingSpeed, FilterChip } from '@caravan/buddy-reading-types';
 import {
   Dialog,
   DialogTitle,
@@ -14,14 +9,13 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import theme from '../../theme';
 import {
   readingSpeedIcons,
   readingSpeedLabels,
 } from '../reading-speed-avatars-icons-labels';
 import ListElementAvatar from '../ListElementAvatar';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   dialogStyle: {
     padding: 0,
   },
@@ -55,7 +49,7 @@ export default function ReadingSpeedModal(props: ReadingSpeedModalProps) {
 
   return (
     <Dialog open={open} onClose={onClickApply}>
-      <DialogTitle color={theme.palette.primary.main} id="alert-dialog-title">
+      <DialogTitle id="alert-dialog-title">
         Filter Clubs by Reading Speed
       </DialogTitle>
       <DialogContent classes={{ root: classes.dialogStyle }}>
