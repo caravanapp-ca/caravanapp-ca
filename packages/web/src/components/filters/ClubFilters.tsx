@@ -60,6 +60,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
 
   return (
     <div className={classes.root}>
+      {/* TODO: Map a variable number of genre buttons here in the future. */}
       <Button
         classes={{ root: classes.filterButton, text: classes.filterButtonText }}
         onClick={() => onClickGenreFilter()}

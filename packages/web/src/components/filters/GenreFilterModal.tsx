@@ -46,9 +46,9 @@ export default function GenreFilterModal(props: GenreFilterModalProps) {
         <div>
           {allGenres &&
             allGenres.mainGenres.map((genreKey: string) => {
-              const genreSelected = filteredGenres
-                .map(g => g.key)
-                .includes(genreKey);
+              const genreSelected = filteredGenres.some(
+                fg => fg.key === genreKey
+              );
               return (
                 <GenreChip
                   key={genreKey}
@@ -63,7 +63,6 @@ export default function GenreFilterModal(props: GenreFilterModalProps) {
                       !genreSelected
                     )
                   }
-                  small={true}
                 />
               );
             })}

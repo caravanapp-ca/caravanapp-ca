@@ -1,8 +1,6 @@
 import React from 'react';
 import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
 import clsx from 'clsx';
-import { washedTheme } from '../../theme';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import { FilterChipType } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme =>
@@ -48,13 +46,11 @@ export default function FilterChips(props: FilterChipsProps) {
   });
 
   return (
-    <MuiThemeProvider theme={active ? theme : washedTheme}>
-      <Chip
-        label={name}
-        key={chipKey}
-        classes={{ root: wrapperClassName }}
-        onDelete={() => onRemove(chipKey, type)}
-      />
-    </MuiThemeProvider>
+    <Chip
+      label={name}
+      key={chipKey}
+      classes={{ root: wrapperClassName }}
+      onDelete={() => onRemove(chipKey, type)}
+    />
   );
 }
