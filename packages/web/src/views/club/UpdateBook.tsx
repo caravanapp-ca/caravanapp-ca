@@ -147,7 +147,15 @@ export default function UpdateBook(props: UpdateBookProps) {
         b => b.sourceId !== bookToRead.sourceId
       );
     }
-    newWantToRead = newWantToRead.concat(searchedBooks);
+    let searchedBooksFiltered: FilterAutoMongoKeys<
+      ShelfEntry
+    >[] = searchedBooks;
+    if (newBookForShelf) {
+      searchedBooksFiltered = searchedBooks.filter(
+        b => b.sourceId !== bookToRead.sourceId
+      );
+    }
+    newWantToRead = newWantToRead.concat(searchedBooksFiltered);
     const res = await updateCurrentlyReadBook(
       clubId,
       bookToRead,
