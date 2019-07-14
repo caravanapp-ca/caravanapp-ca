@@ -7,30 +7,27 @@ import {
 } from '@caravan/buddy-reading-types';
 
 export function getCurrentBook(club: Club): ShelfEntry | null {
-  if (club && club.shelf) {
-    const book = club.shelf.find(book => book.readingState === 'current');
-    if (book) {
-      return book;
-    }
-  }
-  return null;
+  const currBook = club.shelf.find(b => b.readingState === 'current');
+  return currBook || null;
 }
 
-export function getWantToRead(club: Club): ShelfEntry[] {
-  if (club && club.shelf) {
-    const wantToRead = club.shelf.filter(
-      book => book.readingState === 'notStarted'
-    );
-    return wantToRead;
-  }
-  return [];
+export function sortShelf(club: Club): { [key in ReadingState]: ShelfEntry[] } {
+  const sortedShelf: { [key in ReadingState]: ShelfEntry[] } = {
+    current: [],
+    notStarted: [],
+    read: [],
+  };
+  club.shelf.forEach(book => {
+    sortedShelf[book.readingState].push(book);
+  });
+  return sortedShelf;
 }
 
 export function getShelfFromGoogleBooks(
   selectedBooks: GoogleBooks.Item[],
   currentBookId?: string
 ) {
-  if(selectedBooks){
+  if (selectedBooks) {
     const result = selectedBooks.map(book => {
       let readingState: ReadingState = 'notStarted';
       if (currentBookId && book.id === currentBookId) {
@@ -59,8 +56,7 @@ export function getShelfFromGoogleBooks(
       return res;
     });
     return result;
-  }
-  else{
+  } else {
     return [];
   }
 }

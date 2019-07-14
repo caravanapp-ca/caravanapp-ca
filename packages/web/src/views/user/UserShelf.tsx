@@ -69,7 +69,7 @@ export default function UserShelf(props: UserShelfProps) {
           <Typography variant="h6" className={classes.sectionLabel}>
             Currently Reading
           </Typography>
-          <BookList data={shelf.current} />
+          <BookList id="current" data={shelf.current} />
         </div>
       )}
       {shelf.notStarted.length > 0 && (
@@ -81,9 +81,11 @@ export default function UserShelf(props: UserShelfProps) {
           }
         >
           <Typography variant="h6" className={classes.sectionLabel}>
-            Wants to Read
+            To be Read
           </Typography>
-          {(!isEditing || !onEdit) && <BookList data={shelf.notStarted} />}
+          {(!isEditing || !onEdit) && (
+            <BookList id="to-be-read" data={shelf.notStarted} />
+          )}
         </div>
       )}
       {isEditing && onEdit && (
@@ -116,7 +118,9 @@ export default function UserShelf(props: UserShelfProps) {
           <Typography variant="h6" className={classes.sectionLabel}>
             Previously Read
           </Typography>
-          {(!isEditing || !onEdit) && <BookList data={shelf.read} />}
+          {(!isEditing || !onEdit) && (
+            <BookList id="previously-read" data={shelf.read} />
+          )}
           {isEditing && onEdit && (
             <UserShelfEditable
               readingState={'read'}

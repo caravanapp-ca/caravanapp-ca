@@ -48,7 +48,7 @@ export default function ShelfView(props: ShelfViewProps) {
           <Typography variant={'h6'} className={classes.sectionLabel}>
             Currently Reading
           </Typography>
-          <BookList data={shelfMap.current} />
+          <BookList id="current" data={shelfMap.current} />
         </div>
       )}
       {shelfMap.notStarted.length > 0 && (
@@ -56,7 +56,7 @@ export default function ShelfView(props: ShelfViewProps) {
           <Typography variant={'h6'} className={classes.sectionLabel}>
             To be Read
           </Typography>
-          <BookList data={shelfMap.notStarted} />
+          <BookList id="to-be-read" data={shelfMap.notStarted} />
         </div>
       )}
       {shelfMap.read.length > 0 && (
@@ -64,7 +64,7 @@ export default function ShelfView(props: ShelfViewProps) {
           <Typography variant={'h6'} className={classes.sectionLabel}>
             Previously Read
           </Typography>
-          <BookList data={shelfMap.read} />
+          <BookList id="previously-read" data={shelfMap.read} />
         </div>
       )}
     </div>

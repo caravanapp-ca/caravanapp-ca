@@ -220,6 +220,7 @@ export default function BookSearch(props: BookSearchProps) {
           >
             <Container className={classes.searchResultsContainer}>
               <BookList
+                id="search-results"
                 data={
                   getShelfFromGoogleBooks(searchResults.items) as ShelfEntry[]
                 }
@@ -249,6 +250,7 @@ export default function BookSearch(props: BookSearchProps) {
       {selectedBooks.length > 0 && (
         <div className={classes.bookListContainer}>
           <BookList
+            id="selected-books"
             data={selectedBooks}
             primary={primary ? primary : undefined}
             secondary={secondary ? secondary : undefined}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Draggable } from 'react-beautiful-dnd';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   ListItem,
@@ -12,6 +13,8 @@ import AdapterLink from './AdapterLink';
 import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
 
 export interface ListElementBookProps {
+  id: string;
+  index: number;
   clubId?: string;
   club?: Club;
   coverImage?: any;
@@ -21,6 +24,7 @@ export interface ListElementBookProps {
   secondary?: JSX.Element;
   onClick?: any;
   selected?: boolean;
+  draggable?: boolean;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -50,6 +54,8 @@ export default function ListElementBook(props: ListElementBookProps) {
   const theme = useTheme();
 
   const {
+    id,
+    index,
     clubId,
     club,
     coverImage,
@@ -58,6 +64,7 @@ export default function ListElementBook(props: ListElementBookProps) {
     primary,
     secondary,
     selected,
+    draggable,
   } = props;
 
   let shortenedTitle = primaryText;
@@ -66,35 +73,41 @@ export default function ListElementBook(props: ListElementBookProps) {
   }
 
   return (
-    <ListItem
-      // @ts-ignore
-      button={clubId ? true : false}
-      component={clubId ? AdapterLink : undefined}
-      to={clubId ? `/clubs/${clubId}` : undefined}
-    >
-      {primary && <ListItemIcon>{primary}</ListItemIcon>}
-      <img
-        src={coverImage || require('../resources/generic-book-cover.jpg')}
-        alt={primaryText}
-        className={classes.coverImage}
-      />
-      <div className={classes.textContainer}>
-        {club && (
-          <div className={classes.clubNameContainer}>
-            <GroupIcon color="primary" />
-            <Typography variant="body1" color="primary">
-              {club.name}
+    <Draggable draggableId={id} index={index}>
+      {(provided, snapshot) => (
+        <ListItem
+          // @ts-ignore
+          button={clubId ? true : false}
+          href={clubId ? `/clubs/${clubId}` : undefined}
+          innerRef={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          {primary && <ListItemIcon>{primary}</ListItemIcon>}
+          <img
+            src={coverImage || require('../resources/generic-book-cover.jpg')}
+            alt={primaryText}
+            className={classes.coverImage}
+          />
+          <div className={classes.textContainer}>
+            {club && (
+              <div className={classes.clubNameContainer}>
+                <GroupIcon color="primary" />
+                <Typography variant="body1" color="primary">
+                  {club.name}
+                </Typography>
+              </div>
+            )}
+            <Typography variant="body1">{shortenedTitle}</Typography>
+            <Typography variant="body2" color="textSecondary">
+              {secondaryText}
             </Typography>
           </div>
-        )}
-        <Typography variant="body1">{shortenedTitle}</Typography>
-        <Typography variant="body2" color="textSecondary">
-          {secondaryText}
-        </Typography>
-      </div>
-      {secondary && (
-        <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
+          {secondary && (
+            <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
+          )}
+        </ListItem>
       )}
-    </ListItem>
+    </Draggable>
   );
 }

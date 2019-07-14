@@ -1,4 +1,5 @@
 import React from 'react';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 import {
   ShelfEntry,
   UserShelfEntry,
@@ -20,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface BookListProps {
+  id: string;
   data:
     | ShelfEntry
     | UserShelfEntry
@@ -33,11 +35,13 @@ interface BookListProps {
   onDelete?: (id: string, index: number) => void;
   onAdd?: (book: ShelfEntry) => void;
   footerElement?: JSX.Element;
+  droppable?: boolean;
 }
 
 export default function BookList(props: BookListProps) {
   const classes = useStyles();
   const {
+    id,
     data,
     primary,
     secondary,
@@ -47,9 +51,13 @@ export default function BookList(props: BookListProps) {
     onDelete,
     onAdd,
     footerElement,
+    droppable,
   } = props;
 
-  function radio(b: FilterAutoMongoKeys<ShelfEntry>, index: number): JSX.Element {
+  function radio(
+    b: FilterAutoMongoKeys<ShelfEntry>,
+    index: number
+  ): JSX.Element {
     if (onRadioPress && radioValue) {
       return (
         <Radio
@@ -108,44 +116,55 @@ export default function BookList(props: BookListProps) {
 
   return (
     <Paper>
-      <List dense={false}>
-        {(data as UserShelfEntry[]).map((b, index) => {
-          let selected = false;
-          if (radioValue && radioValue === b._id) {
-            selected = true;
-          }
-          let primaryElement;
-          switch (primary) {
-            case 'radio':
-              primaryElement = radio(b, index);
-              break;
-          }
-          let secondaryElement;
-          switch (secondary) {
-            case 'delete':
-              secondaryElement = deleteIcon(b, index);
-              break;
-            case 'add':
-              secondaryElement = addIcon(b, index);
-              break;
-          }
-          return (
-            <ListElementBook
-              clubId={b.clubId}
-              club={b.club}
-              coverImage={b.coverImageURL}
-              primaryText={b.title}
-              secondaryText={b.author}
-              key={b.isbn || index}
-              primary={primaryElement}
-              secondary={secondaryElement}
-              onClick={onClick}
-              selected={selected}
-            />
-          );
-        })}
-        {footerElement}
-      </List>
+      <Droppable droppableId={id}>
+        {(provided, snapshot) => (
+          <List
+            dense={false}
+            innerRef={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {(data as UserShelfEntry[]).map((b, index) => {
+              let selected = false;
+              if (radioValue && radioValue === b._id) {
+                selected = true;
+              }
+              let primaryElement;
+              switch (primary) {
+                case 'radio':
+                  primaryElement = radio(b, index);
+                  break;
+              }
+              let secondaryElement;
+              switch (secondary) {
+                case 'delete':
+                  secondaryElement = deleteIcon(b, index);
+                  break;
+                case 'add':
+                  secondaryElement = addIcon(b, index);
+                  break;
+              }
+              return (
+                <ListElementBook
+                  key={b._id || index}
+                  id={b._id || b.isbn || b.title}
+                  index={index}
+                  clubId={b.clubId}
+                  club={b.club}
+                  coverImage={b.coverImageURL}
+                  primaryText={b.title}
+                  secondaryText={b.author}
+                  primary={primaryElement}
+                  secondary={secondaryElement}
+                  onClick={onClick}
+                  selected={selected}
+                  draggable={droppable}
+                />
+              );
+            })}
+            {footerElement}
+          </List>
+        )}
+      </Droppable>
     </Paper>
   );
 }
