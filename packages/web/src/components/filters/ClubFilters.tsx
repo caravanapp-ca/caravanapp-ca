@@ -18,35 +18,11 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
-  genreFilter: {
+  filterButton: {
     marginRight: 4,
     'text-transform': 'none',
-    borderColor: '#bbdefb',
   },
-  genreFilterText: {
-    padding: 4,
-  },
-  speedFilter: {
-    'text-transform': 'none',
-    marginRight: 4,
-    borderColor: '#b2dfdb',
-  },
-  speedFilterText: {
-    padding: 4,
-  },
-  capacityFilter: {
-    'text-transform': 'none',
-    marginRight: 4,
-    borderColor: '#dcedc8',
-  },
-  capacityFilterText: {
-    padding: 4,
-  },
-  memberFilter: {
-    'text-transform': 'none',
-    borderColor: '#dcedc8',
-  },
-  memberFilterText: {
+  filterButtonText: {
     padding: 4,
   },
   dropDownIcon: {
@@ -85,7 +61,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
   return (
     <div className={classes.root}>
       <Button
-        classes={{ root: classes.genreFilter, text: classes.genreFilterText }}
+        classes={{ root: classes.filterButton, text: classes.filterButtonText }}
         onClick={() => onClickGenreFilter()}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
@@ -101,7 +77,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
         </Typography>
       </Button>
       <Button
-        classes={{ root: classes.speedFilter, text: classes.speedFilterText }}
+        classes={{ root: classes.filterButton, text: classes.filterButtonText }}
         onClick={() => onClickSpeedFilter()}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
@@ -117,10 +93,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
         </Typography>
       </Button>
       <Button
-        classes={{
-          root: classes.capacityFilter,
-          text: classes.capacityFilterText,
-        }}
+        classes={{ root: classes.filterButton, text: classes.filterButtonText }}
         onClick={() => onClickCapacityFilter()}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
@@ -136,10 +109,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
         </Typography>
       </Button>
       <Button
-        classes={{
-          root: classes.memberFilter,
-          text: classes.memberFilterText,
-        }}
+        classes={{ root: classes.filterButton, text: classes.filterButtonText }}
         onClick={() => onClickMembershipFilter()}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>

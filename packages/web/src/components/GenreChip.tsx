@@ -50,21 +50,19 @@ interface GenreChipProps {
   active: boolean;
   clickable?: boolean;
   onClick?: (genreKey: string, currActive: boolean) => void;
-  small?: boolean;
 }
 
 export default function GenreChip(props: GenreChipProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { genreKey, name, active, clickable, onClick, small } = props;
+  const { genreKey, name, active, clickable, onClick } = props;
   if (!clickable || !onClick) {
     return (
       <div
-        className={
-          active
-            ? clsx(classes.chip, classes.chipActive)
-            : clsx(classes.chip, classes.chipInactive)
-        }
+        className={clsx(classes.chip, {
+          [classes.chipActive]: active,
+          [classes.chipInactive]: !active,
+        })}
       >
         <Typography variant="body1">{name}</Typography>
       </div>
@@ -81,7 +79,6 @@ export default function GenreChip(props: GenreChipProps) {
           onClick={() => onClick(genreKey, active)}
           variant="contained"
         >
-          {/* TODO: Prevent capitalization */}
           <Typography>{name}</Typography>
         </Button>
       </MuiThemeProvider>

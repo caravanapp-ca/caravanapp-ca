@@ -5,7 +5,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Checkbox,
   ListItem,
   ListItemText,
   Radio,

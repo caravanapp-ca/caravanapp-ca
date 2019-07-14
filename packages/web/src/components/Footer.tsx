@@ -43,10 +43,16 @@ interface FooterProps {
 export default function Footer(props: FooterProps) {
   const classes = useStyles();
   const { docHeight } = props;
+  const footerHeightRef = createRef<HTMLElement>();
   const [docHeightLTWinHeight, setDocHeightLTWinHeight] = React.useState<
     boolean
-  >(docHeight < window.innerHeight);
-  const footerHeightRef = createRef<HTMLElement>();
+  >(
+    docHeight +
+      (footerHeightRef && footerHeightRef.current
+        ? footerHeightRef.current.offsetHeight
+        : 0) <
+      window.innerHeight
+  );
 
   useEffect(() => {
     window.addEventListener('resize', updateFooterState);
