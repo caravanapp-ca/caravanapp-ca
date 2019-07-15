@@ -167,11 +167,7 @@ export default function Home(props: HomeProps) {
       (async () => {
         // TODO: right now this is typed as any because the response returned could be of variable type
         let res: any;
-        if (
-          user &&
-          activeFilter.membership.length > 0 &&
-          activeFilter.membership[0].key === 'myClubs'
-        ) {
+        if (user && activeFilter.membership.length > 0) {
           res = await getUserClubs(
             user._id,
             afterQuery,

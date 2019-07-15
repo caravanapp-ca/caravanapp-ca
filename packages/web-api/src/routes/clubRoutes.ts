@@ -29,6 +29,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
 import { ClubDoc, UserDoc } from '../../typings';
 import { getUser } from '../services/user';
+import { exists } from 'fs';
 
 const router = express.Router();
 
@@ -44,15 +45,30 @@ const getCountableMembersInChannel = (
     isInChannel(m, club)
   );
 
-const getUserChannels = (guild: Guild, discordId: string) => {
-  const channels = guild.channels.filter(c => {
-    const cTyped = c as TextChannel | VoiceChannel;
-    return (
-      (c.type === 'text' || c.type === 'voice') &&
-      cTyped.members.some(m => m.id === discordId)
-    );
-  });
-  return channels;
+const getUserChannels = (
+  guild: Guild,
+  discordId: string,
+  inChannels: boolean
+) => {
+  if (inChannels) {
+    const channels = guild.channels.filter(c => {
+      const cTyped = c as TextChannel | VoiceChannel;
+      return (
+        (c.type === 'text' || c.type === 'voice') &&
+        cTyped.members.some(m => m.id === discordId)
+      );
+    });
+    return channels;
+  } else {
+    const channels = guild.channels.filter(c => {
+      const cTyped = c as TextChannel | VoiceChannel;
+      return (
+        (c.type === 'text' || c.type === 'voice') &&
+        !cTyped.members.get(discordId)
+      );
+    });
+    return channels;
+  }
 };
 
 async function getChannelMembers(guild: Guild, club: ClubDoc) {
@@ -216,14 +232,11 @@ router.get('/user/:userId', async (req, res, next) => {
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
   const { discordId } = user;
-  const channels = getUserChannels(guild, discordId);
-  const channelIds = channels.map(c => c.id);
+
   const query: any = {
     channelSource: 'discord',
-    channelId: {
-      $in: channelIds,
-    },
   };
+
   if (after) {
     query._id = { $lt: after };
   }
@@ -237,7 +250,17 @@ router.get('/user/:userId', async (req, res, next) => {
       var genreKeys = filterObj.genres.map((g: { key: string }) => g.key);
       query.genres = { $elemMatch: { key: { $in: genreKeys } } };
     }
+    if (filterObj.membership.length > 0) {
+      let userInChannelBoolean = false;
+      if (filterObj.membership[0].key === 'myClubs') {
+        userInChannelBoolean = true;
+      }
+      const channels = getUserChannels(guild, discordId, userInChannelBoolean);
+      const channelIds = channels.map(c => c.id);
+      query.channelId = { $in: channelIds };
+    }
   }
+
   const size = Number.parseInt(pageSize || 0);
   const limit = Math.min(Math.max(size, 10), 50);
   let clubDocs: ClubDoc[];
