@@ -30,6 +30,7 @@ declare module '@caravan/buddy-reading-types' {
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
+    genres: SelectedGenre[];
     channelSource: ChannelSource;
     channelId: string;
     unlisted: boolean;
@@ -73,7 +74,7 @@ declare module '@caravan/buddy-reading-types' {
 
   export type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
 
-  export interface UserSelectedGenre {
+  export interface SelectedGenre {
     key: string;
     name: string;
   }
@@ -93,7 +94,7 @@ declare module '@caravan/buddy-reading-types' {
     location?: string;
     isBot: boolean;
     urlSlug: string;
-    selectedGenres: UserSelectedGenre[];
+    selectedGenres: SelectedGenre[];
     questions: UserQA[];
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
     onboardingVersion: number;
@@ -135,6 +136,19 @@ declare module '@caravan/buddy-reading-types' {
     max: number;
   }
 
+  export interface FilterChip {
+    type: FilterChipType;
+    name: string;
+    key: string;
+  }
+
+  export interface ActiveFilter {
+    genres: FilterChip[];
+    speed: FilterChip[];
+    capacity: FilterChip[];
+    membership: FilterChip[];
+  }
+
   export type EditableUserField =
     | 'bio'
     | 'goodreadsUrl'
@@ -169,6 +183,12 @@ declare module '@caravan/buddy-reading-types' {
 
   export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
 
+  export type Capacity = 'full' | 'spotsAvailable';
+
+  export type Membership = 'myClubs' | 'clubsImNotIn';
+
+  export type FilterChipType = 'genres' | 'speed' | 'capacity' | 'membership';
+
   export type GroupVibe =
     | 'chill'
     | 'power'
@@ -189,6 +209,7 @@ declare module '@caravan/buddy-reading-types' {
         memberCount: number;
         vibe?: GroupVibe;
         readingSpeed?: ReadingSpeed;
+        genres: SelectedGenre[];
         channelSource?: ChannelSource;
         channelId: string;
         createdAt: string;
@@ -207,6 +228,7 @@ declare module '@caravan/buddy-reading-types' {
       maxMembers: number;
       vibe: GroupVibe;
       readingSpeed: ReadingSpeed;
+      genres: SelectedGenre[];
       guildId: string;
       channelSource: ChannelSource;
       channelId: string;

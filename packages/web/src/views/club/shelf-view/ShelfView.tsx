@@ -1,11 +1,20 @@
 import React, { useMemo } from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
 import BookList from './BookList';
-import { ShelfEntry, ReadingState } from '@caravan/buddy-reading-types';
+import {
+  ShelfEntry,
+  ReadingState,
+  SelectedGenre,
+  Services,
+} from '@caravan/buddy-reading-types';
+import GenreChip from '../../../components/GenreChip';
 
 interface ShelfViewProps {
-  shelf: ShelfEntry[];
+  genres?: Services.GetGenres;
   isEditing: boolean;
+  onGenreClick: (key: string, currActive: boolean) => void;
+  selectedGenres: SelectedGenre[];
+  shelf: ShelfEntry[];
 }
 
 const useStyles = makeStyles(theme => ({
@@ -15,11 +24,16 @@ const useStyles = makeStyles(theme => ({
   sectionLabel: {
     marginBottom: theme.spacing(1),
   },
+  genresContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
 }));
 
 export default function ShelfView(props: ShelfViewProps) {
   const classes = useStyles();
-  const { shelf, isEditing } = props;
+  const { genres, isEditing, onGenreClick, selectedGenres, shelf } = props;
 
   const shelfMap = useMemo(() => {
     const map: { [key in ReadingState]: ShelfEntry[] } = {
@@ -35,13 +49,50 @@ export default function ShelfView(props: ShelfViewProps) {
 
   return (
     <div>
-      {isEditing && (
+      {!isEditing && selectedGenres.length > 0 && (
         <div className={classes.sectionContainer}>
-          <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
-            If you want to edit your shelf, first click Save in the top-right,
-            then click Manage Shelf below.
+          <Typography variant={'h6'} className={classes.sectionLabel}>
+            Genres
           </Typography>
+          <div className={classes.genresContainer}>
+            {selectedGenres.map(g => (
+              <GenreChip
+                key={g.key}
+                genreKey={g.key}
+                name={g.name}
+                active={false}
+                clickable={false}
+              />
+            ))}
+          </div>
         </div>
+      )}
+      {isEditing && genres && (
+        <>
+          <div className={classes.sectionContainer}>
+            <Typography variant={'h6'} className={classes.sectionLabel}>
+              Genres
+            </Typography>
+            <div className={classes.genresContainer}>
+              {genres.mainGenres.map(g => (
+                <GenreChip
+                  key={g}
+                  genreKey={g}
+                  name={genres.genres[g].name}
+                  active={selectedGenres.some(sg => sg.key === g)}
+                  clickable={true}
+                  onClick={onGenreClick}
+                />
+              ))}
+            </div>
+          </div>
+          <div className={classes.sectionContainer}>
+            <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
+              If you want to edit your shelf, first click Save in the top-right,
+              then click Manage Shelf below.
+            </Typography>
+          </div>
+        </>
       )}
       {shelfMap.current.length > 0 && (
         <div className={classes.sectionContainer}>

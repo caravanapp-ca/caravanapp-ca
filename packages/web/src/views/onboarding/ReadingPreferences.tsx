@@ -3,7 +3,7 @@ import {
   User,
   ReadingSpeed,
   Services,
-  UserSelectedGenre,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { Fab } from '@material-ui/core';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
@@ -76,7 +76,7 @@ interface ReadingPreferencesProps {
   user: User | null;
   onContinue: () => void;
   continuing: boolean;
-  selectedGenres: UserSelectedGenre[];
+  selectedGenres: SelectedGenre[];
   onGenreSelected: (
     genreKey: string,
     genreName: string,

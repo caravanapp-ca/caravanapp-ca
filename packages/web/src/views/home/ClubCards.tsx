@@ -24,7 +24,7 @@ import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
-    paddingTop: theme.spacing(8),
+    paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(8),
   },
   card: {
