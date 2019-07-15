@@ -418,7 +418,7 @@ export default function Home(props: HomeProps) {
             <Container maxWidth="md">
               <Typography
                 component="h1"
-                variant="h4"
+                variant="h3"
                 align="center"
                 color="primary"
                 style={{ fontWeight: 600 }}

@@ -118,9 +118,9 @@ export default function Onboarding(props: OnboardingProps) {
     'moderate'
   );
 
-  const [selectedGenres, setSelectedGenres] = React.useState<
-    SelectedGenre[]
-  >([]);
+  const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
+    []
+  );
 
   const [
     profileQuestions,
@@ -202,18 +202,17 @@ export default function Onboarding(props: OnboardingProps) {
     genreName: string,
     selected: boolean
   ) {
+    let newGenres: SelectedGenre[] = [];
     if (selected) {
-      let newGenres: SelectedGenre[];
       const addedGenre: SelectedGenre = {
         key: genreKey,
         name: genreName,
       };
       newGenres = [...selectedGenres, addedGenre];
-      setSelectedGenres(newGenres);
     } else {
-      const updatedGenres = selectedGenres.filter(g => g.key !== genreKey);
-      setSelectedGenres(updatedGenres);
+      newGenres = selectedGenres.filter(g => g.key !== genreKey);
     }
+    setSelectedGenres(newGenres);
   }
 
   function onSetSelectedSpeed(speed: ReadingSpeed) {
