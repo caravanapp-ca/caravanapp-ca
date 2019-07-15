@@ -193,7 +193,7 @@ export default function UserView(props: UserViewProps) {
           if (!res.data) {
             // TODO: Error checking
           }
-          const clubs = res.data;
+          const { clubs } = res.data;
           getUserShelf(user, clubs).then(shelf => {
             setUserShelf(shelf);
           });

@@ -7,7 +7,7 @@ import {
   Services,
   ProfileQuestions,
   UserQA,
-  UserSelectedGenre,
+  SelectedGenre,
   FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
@@ -118,9 +118,9 @@ export default function Onboarding(props: OnboardingProps) {
     'moderate'
   );
 
-  const [selectedGenres, setSelectedGenres] = React.useState<
-    UserSelectedGenre[]
-  >([]);
+  const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
+    []
+  );
 
   const [
     profileQuestions,
@@ -202,18 +202,17 @@ export default function Onboarding(props: OnboardingProps) {
     genreName: string,
     selected: boolean
   ) {
+    let newGenres: SelectedGenre[] = [];
     if (selected) {
-      let newGenres: UserSelectedGenre[];
-      const addedGenre: UserSelectedGenre = {
+      const addedGenre: SelectedGenre = {
         key: genreKey,
         name: genreName,
       };
       newGenres = [...selectedGenres, addedGenre];
-      setSelectedGenres(newGenres);
     } else {
-      const updatedGenres = selectedGenres.filter(g => g.key !== genreKey);
-      setSelectedGenres(updatedGenres);
+      newGenres = selectedGenres.filter(g => g.key !== genreKey);
     }
+    setSelectedGenres(newGenres);
   }
 
   function onSetSelectedSpeed(speed: ReadingSpeed) {

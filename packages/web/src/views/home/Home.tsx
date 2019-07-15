@@ -8,18 +8,36 @@ import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { User, ShelfEntry, Services } from '@caravan/buddy-reading-types';
+import {
+  User,
+  ShelfEntry,
+  Services,
+  ReadingSpeed,
+  Capacity,
+  FilterChip,
+  ActiveFilter,
+  FilterChipType,
+  Membership,
+} from '@caravan/buddy-reading-types';
+import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
+import { Service } from '../../common/service';
+import { washedTheme } from '../../theme';
+import { getAllClubs, getUserClubs } from '../../services/club';
+import { getAllGenres } from '../../services/genre';
+import logo from '../../resources/logo.svg';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import { washedTheme } from '../../theme';
 import JoinCaravanButton from '../../components/JoinCaravanButton';
-import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { getAllClubs } from '../../services/club';
-import { Service } from '../../common/service';
-import ClubCards from './ClubCards';
-import logo from '../../resources/logo.svg';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import ClubFilters from '../../components/filters/ClubFilters';
+import GenreFilterModal from '../../components/filters/GenreFilterModal';
+import ReadingSpeedModal from '../../components/filters/ReadingSpeedModal';
+import CapacityModal from '../../components/filters/CapacityModal';
+import FilterChips from '../../components/filters/FilterChips';
+import MembershipModal from '../../components/filters/MembershipModal';
+import EmptyClubsFilterResult from '../../components/EmptyClubsFilterResult';
+import ClubCards from './ClubCards';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -60,6 +78,17 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: washedTheme.palette.primary.main,
     marginRight: 16,
   },
+  filterGrid: {
+    marginTop: theme.spacing(4),
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  filtersContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+  },
 }));
 
 export function transformClubsToWithCurrentlyReading(
@@ -81,20 +110,49 @@ export function transformClubsToWithCurrentlyReading(
 export default function Home(props: HomeProps) {
   const classes = useStyles();
   const { user } = props;
-
   const [clubsWCRResult, setClubsWCRResult] = React.useState<
     Service<ClubWithCurrentlyReading[]>
   >({ status: 'loading' });
+  const [] = React.useState<Service<ClubWithCurrentlyReading[]>>({
+    status: 'loading',
+  });
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-
   const [afterQuery, setAfterQuery] = React.useState<string | undefined>(
     undefined
   );
   const [showLoadMore, setShowLoadMore] = React.useState(false);
+  const [allGenres, setAllGenres] = React.useState<Services.GetGenres | null>(
+    null
+  );
+  const [showGenreFilter, setShowGenreFilter] = React.useState(false);
+  const [showSpeedFilter, setShowSpeedFilter] = React.useState(false);
+  const [showCapacityFilter, setShowCapacityFilter] = React.useState(false);
+  const [showMembershipFilter, setShowMembershipFilter] = React.useState(false);
+  const [stagingFilter, setStagingFilter] = React.useState<ActiveFilter>({
+    genres: [],
+    speed: [],
+    capacity: [],
+    membership: [],
+  });
+  const [activeFilter, setActiveFilter] = React.useState<ActiveFilter>({
+    genres: [],
+    speed: [],
+    capacity: [],
+    membership: [],
+  });
+
+  const genreFiltersApplied = activeFilter.genres.length > 0;
+  const speedFiltersApplied = activeFilter.speed.length > 0;
+  const capacityFiltersApplied = activeFilter.capacity.length > 0;
+  const membershipFiltersApplied = activeFilter.membership.length > 0;
+  const filtersApplied =
+    genreFiltersApplied ||
+    speedFiltersApplied ||
+    capacityFiltersApplied ||
+    membershipFiltersApplied;
 
   useEffect(() => {
     if (!showWelcomeMessage) {
@@ -103,24 +161,68 @@ export default function Home(props: HomeProps) {
   }, [showWelcomeMessage]);
 
   useEffect(() => {
-    (async () => {
-      const pageSize = 24;
-      const res = await getAllClubs(afterQuery, pageSize);
-      if (res.data) {
-        const newClubsWCR = transformClubsToWithCurrentlyReading(
-          res.data.clubs
-        );
-        setShowLoadMore(newClubsWCR.length === pageSize);
-        setClubsWCRResult(s => ({
-          status: 'loaded',
-          payload:
-            s.status === 'loaded'
-              ? [...s.payload, ...newClubsWCR]
-              : newClubsWCR,
-        }));
+    const pageSize = 24;
+    if (filtersApplied) {
+      // Get clubs filtered
+      (async () => {
+        // TODO: right now this is typed as any because the response returned could be of variable type
+        let res: any;
+        if (user && activeFilter.membership.length > 0) {
+          res = await getUserClubs(
+            user._id,
+            afterQuery,
+            pageSize,
+            activeFilter
+          );
+        } else {
+          res = await getAllClubs(afterQuery, pageSize, activeFilter);
+        }
+        if (res.data) {
+          const newClubsWCR = transformClubsToWithCurrentlyReading(
+            res.data.clubs
+          );
+          setShowLoadMore(newClubsWCR.length === pageSize);
+          setClubsWCRResult(s => ({
+            status: 'loaded',
+            payload:
+              s.status === 'loaded'
+                ? [...s.payload, ...newClubsWCR]
+                : newClubsWCR,
+          }));
+        }
+      })();
+    } else {
+      // Normal get all clubs
+      (async () => {
+        const res = await getAllClubs(afterQuery, pageSize);
+        if (res.data) {
+          const newClubsWCR = transformClubsToWithCurrentlyReading(
+            res.data.clubs
+          );
+          setShowLoadMore(newClubsWCR.length === pageSize);
+          setClubsWCRResult(s => ({
+            status: 'loaded',
+            payload:
+              s.status === 'loaded'
+                ? [...s.payload, ...newClubsWCR]
+                : newClubsWCR,
+          }));
+        }
+      })();
+    }
+  }, [activeFilter, afterQuery]);
+
+  // Get genres on mount
+  useEffect(() => {
+    const getGenres = async () => {
+      const response = await getAllGenres();
+      if (response.status >= 200 && response.status < 300) {
+        const { data } = response;
+        setAllGenres(data);
       }
-    })();
-  }, [afterQuery]);
+    };
+    getGenres();
+  }, []);
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
@@ -132,6 +234,127 @@ export default function Home(props: HomeProps) {
       '_blank'
     );
   }
+
+  function onGenreSelected(
+    genreKey: string,
+    genreName: string,
+    selected: boolean
+  ) {
+    if (selected) {
+      const addedGenre: FilterChip = {
+        key: genreKey,
+        name: genreName,
+        type: 'genres',
+      };
+      let newGenres = [...stagingFilter.genres, addedGenre];
+      setStagingFilter({ ...stagingFilter, genres: newGenres });
+    } else {
+      const updatedGenres = stagingFilter.genres.filter(
+        g => g.key !== genreKey
+      );
+      setStagingFilter({ ...stagingFilter, genres: updatedGenres });
+    }
+  }
+
+  async function saveGenreSelection() {
+    let genreFiltersChanged = false;
+    if (activeFilter.genres.length !== stagingFilter.genres.length) {
+      genreFiltersChanged = true;
+    } else {
+      if (JSON.stringify(activeFilter) !== JSON.stringify(stagingFilter)) {
+        genreFiltersChanged = true;
+      }
+    }
+    if (genreFiltersChanged) {
+      await resetFilters();
+      setActiveFilter({ ...activeFilter, genres: stagingFilter.genres });
+    }
+    setShowGenreFilter(false);
+  }
+
+  async function saveSpeedSelection() {
+    let speedFiltersChanged = false;
+    if (activeFilter.speed.length !== stagingFilter.speed.length) {
+      speedFiltersChanged = true;
+    } else if (
+      activeFilter.speed.length > 0 &&
+      stagingFilter.speed.length > 0
+    ) {
+      if (activeFilter.speed[0].key !== stagingFilter.speed[0].key) {
+        speedFiltersChanged = true;
+      }
+    }
+    if (speedFiltersChanged) {
+      await resetFilters();
+      setActiveFilter({ ...activeFilter, speed: stagingFilter.speed });
+    }
+    setShowSpeedFilter(false);
+  }
+
+  async function saveCapacitySelection() {
+    let capacityFiltersChanged = false;
+    if (activeFilter.capacity.length !== stagingFilter.capacity.length) {
+      capacityFiltersChanged = true;
+    } else if (
+      activeFilter.capacity.length > 0 &&
+      stagingFilter.capacity.length > 0 &&
+      activeFilter.capacity[0].key !== stagingFilter.capacity[0].key
+    ) {
+      capacityFiltersChanged = true;
+    }
+    if (capacityFiltersChanged) {
+      await resetFilters();
+      setActiveFilter({ ...activeFilter, capacity: stagingFilter.capacity });
+    }
+    setShowCapacityFilter(false);
+  }
+
+  async function saveMembershipSelection() {
+    let membershipFiltersChanged = false;
+    if (activeFilter.membership.length !== stagingFilter.membership.length) {
+      membershipFiltersChanged = true;
+    } else if (
+      activeFilter.membership.length > 0 &&
+      stagingFilter.membership.length > 0 &&
+      activeFilter.membership[0].key !== stagingFilter.membership[0].key
+    ) {
+      membershipFiltersChanged = true;
+    }
+    if (membershipFiltersChanged) {
+      await resetFilters();
+      setActiveFilter({
+        ...activeFilter,
+        membership: stagingFilter.membership,
+      });
+    }
+    setShowMembershipFilter(false);
+  }
+
+  async function removeFilterChip(key: string, type: FilterChipType) {
+    await resetFilters();
+    if (type === 'speed') {
+      setActiveFilter({ ...activeFilter, speed: [] });
+      setStagingFilter({ ...stagingFilter, speed: [] });
+    } else if (type === 'genres') {
+      const updatedGenres = activeFilter.genres.filter(c => c.key !== key);
+      setActiveFilter({ ...activeFilter, genres: updatedGenres });
+      setStagingFilter({ ...stagingFilter, genres: updatedGenres });
+    } else if (type === 'capacity') {
+      setActiveFilter({ ...activeFilter, capacity: [] });
+      setStagingFilter({ ...stagingFilter, capacity: [] });
+    } else if (type === 'membership') {
+      setStagingFilter({ ...stagingFilter, membership: [] });
+      setActiveFilter({ ...activeFilter, membership: [] });
+    }
+  }
+
+  const resetFilters = async () => {
+    await setClubsWCRResult(s => ({
+      ...s,
+      status: 'loading',
+    }));
+    await setAfterQuery(undefined);
+  };
 
   const centerComponent = (
     <img
@@ -239,9 +462,142 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
-        {clubsWCRResult.status === 'loaded' && (
-          <ClubCards clubsWCR={clubsWCRResult.payload} user={user} />
-        )}
+        <Container className={classes.filterGrid} maxWidth="md">
+          <ClubFilters
+            onClickGenreFilter={() => setShowGenreFilter(true)}
+            onClickSpeedFilter={() => setShowSpeedFilter(true)}
+            onClickCapacityFilter={() => setShowCapacityFilter(true)}
+            onClickMembershipFilter={() => setShowMembershipFilter(true)}
+            genreFilterApplied={genreFiltersApplied}
+            readingSpeedFilterApplied={speedFiltersApplied}
+            capacityFilterApplied={capacityFiltersApplied}
+            memberFilterApplied={membershipFiltersApplied}
+          />
+          {filtersApplied && (
+            <div className={classes.filtersContainer}>
+              {activeFilter.genres.map(genre => (
+                <FilterChips
+                  key={genre.key}
+                  chipKey={genre.key}
+                  name={genre.name}
+                  type={'genres'}
+                  active={true}
+                  onRemove={removeFilterChip}
+                />
+              ))}
+              {activeFilter.speed.map(speed => (
+                <FilterChips
+                  key={speed.key}
+                  chipKey={speed.key}
+                  name={speed.name}
+                  type={'speed'}
+                  active={true}
+                  onRemove={removeFilterChip}
+                />
+              ))}
+              {activeFilter.capacity.map(capacity => (
+                <FilterChips
+                  key={capacity.key}
+                  chipKey={capacity.key}
+                  name={capacity.name}
+                  type={'capacity'}
+                  active={true}
+                  onRemove={removeFilterChip}
+                />
+              ))}
+              {activeFilter.membership.map(membership => (
+                <FilterChips
+                  key={membership.key}
+                  chipKey={membership.key}
+                  name={membership.name}
+                  type={'membership'}
+                  active={true}
+                  onRemove={removeFilterChip}
+                />
+              ))}
+            </div>
+          )}
+        </Container>
+        <GenreFilterModal
+          allGenres={allGenres}
+          filteredGenres={stagingFilter.genres}
+          onGenreSelected={onGenreSelected}
+          onClickApply={saveGenreSelection}
+          onClickClearFilter={() =>
+            setStagingFilter({ ...stagingFilter, genres: [] })
+          }
+          open={!!(allGenres && showGenreFilter)}
+        />
+        <ReadingSpeedModal
+          filteredSpeed={stagingFilter.speed}
+          onSetSelectedSpeed={(speed: ReadingSpeed, label: string) =>
+            setStagingFilter({
+              ...stagingFilter,
+              speed: [
+                {
+                  name: label,
+                  key: speed,
+                  type: 'speed',
+                },
+              ],
+            })
+          }
+          onClickApply={saveSpeedSelection}
+          onClickClearFilter={() =>
+            setStagingFilter({
+              ...stagingFilter,
+              speed: [],
+            })
+          }
+          open={showSpeedFilter}
+        />
+        <CapacityModal
+          filteredCapacities={stagingFilter.capacity}
+          onClickApply={saveCapacitySelection}
+          onClickClearFilter={() =>
+            setStagingFilter({ ...stagingFilter, capacity: [] })
+          }
+          onCapacitySelected={(capacity: Capacity, label: string) =>
+            setStagingFilter({
+              ...stagingFilter,
+              capacity: [
+                {
+                  name: label,
+                  key: capacity,
+                  type: 'capacity',
+                },
+              ],
+            })
+          }
+          open={showCapacityFilter}
+        />
+        <MembershipModal
+          filteredMemberships={stagingFilter.membership}
+          onClickApply={saveMembershipSelection}
+          onClickClearFilter={() =>
+            setStagingFilter({ ...stagingFilter, membership: [] })
+          }
+          onMembershipSelected={(membership: Membership, label: string) =>
+            setStagingFilter({
+              ...stagingFilter,
+              membership: [
+                {
+                  name: label,
+                  key: membership,
+                  type: 'membership',
+                },
+              ],
+            })
+          }
+          open={showMembershipFilter}
+        />
+        {clubsWCRResult.status === 'loaded' &&
+          clubsWCRResult.payload.length > 0 && (
+            <ClubCards clubsWCR={clubsWCRResult.payload} user={user} />
+          )}
+        {clubsWCRResult.status === 'loaded' &&
+          filtersApplied &&
+          clubsWCRResult.payload.length === 0 && <EmptyClubsFilterResult />}
         {clubsWCRResult.status === 'loaded' && showLoadMore && (
           <div
             style={{
