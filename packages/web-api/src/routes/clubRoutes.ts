@@ -259,10 +259,6 @@ router.get('/user/:userId', async (req, res, next) => {
       const channelIds = channels.map(c => c.id);
       query.channelId = { $in: channelIds };
     }
-  } else {
-    const channels = getUserChannels(guild, discordId, true);
-    const channelIds = channels.map(c => c.id);
-    query.channelId = { $in: channelIds };
   }
 
   const size = Number.parseInt(pageSize || 0);
