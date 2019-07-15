@@ -261,13 +261,7 @@ export default function Home(props: HomeProps) {
     if (activeFilter.genres.length !== stagingFilter.genres.length) {
       genreFiltersChanged = true;
     } else {
-      let stagingGenreKeys = stagingFilter.genres
-        .map((sc: { key: any }) => sc.key)
-        .sort();
-      let activeGenreKeys = activeFilter.genres
-        .map((ac: { key: any }) => ac.key)
-        .sort();
-      if (activeGenreKeys.toString() !== stagingGenreKeys.toString()) {
+      if (JSON.stringify(activeFilter) !== JSON.stringify(stagingFilter)) {
         genreFiltersChanged = true;
       }
     }
