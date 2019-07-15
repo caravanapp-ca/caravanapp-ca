@@ -82,7 +82,11 @@ export default function CapacityModal(props: CapacityModalProps) {
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClickClearFilter} color="primary">
+        <Button
+          onClick={onClickClearFilter}
+          disabled={filteredCapacities.length === 0}
+          color="primary"
+        >
           CLEAR
         </Button>
         <Button variant="contained" onClick={onClickApply} color="primary">

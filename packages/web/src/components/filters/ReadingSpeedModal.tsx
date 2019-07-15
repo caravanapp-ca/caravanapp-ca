@@ -77,7 +77,11 @@ export default function ReadingSpeedModal(props: ReadingSpeedModalProps) {
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClickClearFilter} color="primary">
+        <Button
+          onClick={onClickClearFilter}
+          disabled={filteredSpeed.length === 0}
+          color="primary"
+        >
           CLEAR
         </Button>
         <Button variant="contained" onClick={onClickApply} color="primary">

@@ -83,7 +83,11 @@ export default function MembershipModal(props: MembershipModalProps) {
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClickClearFilter} color="primary">
+        <Button
+          onClick={onClickClearFilter}
+          disabled={filteredMemberships.length === 0}
+          color="primary"
+        >
           CLEAR
         </Button>
         <Button variant="contained" onClick={onClickApply} color="primary">
