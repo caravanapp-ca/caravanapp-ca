@@ -267,7 +267,7 @@ export default function Home(props: HomeProps) {
       let activeGenreKeys = activeFilter.genres
         .map((ac: { key: any }) => ac.key)
         .sort();
-      if (activeGenreKeys !== stagingGenreKeys) {
+      if (activeGenreKeys.toString() !== stagingGenreKeys.toString()) {
         genreFiltersChanged = true;
       }
     }
