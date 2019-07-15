@@ -8,6 +8,7 @@ import {
   ClubReadingSchedule,
   FilterAutoMongoKeys,
   Discussion,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -55,6 +56,7 @@ import CustomSnackbar, {
 } from '../../components/CustomSnackbar';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import ScheduleView from './schedule-view/ScheduleView';
+import { getAllGenres } from '../../services/genre';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -143,6 +145,7 @@ export default function ClubComponent(props: ClubProps) {
   const { user } = props;
   const clubId = props.match.params.id;
 
+  const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [tabValue, setTabValue] = React.useState(0);
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
@@ -199,11 +202,14 @@ export default function ClubComponent(props: ClubProps) {
   useEffect(() => {
     if (club) {
       if (user) {
-        // TODO: Investigate this line of code breaking the world
-        // setMembershipStatus('member');
         const member = club.members.find(m => m._id === user._id);
         if (member) {
-          setMembershipStatus(club.ownerId === user._id ? 'owner' : 'member');
+          if (club.ownerId === user._id) {
+            setMembershipStatus('owner');
+            getGenres();
+          } else {
+            setMembershipStatus('member');
+          }
         } else {
           setMembershipStatus('notMember');
         }
@@ -220,6 +226,32 @@ export default function ClubComponent(props: ClubProps) {
       </Container>
     );
   }
+
+  const getGenres = async () => {
+    const res = await getAllGenres();
+    if (res.status === 200) {
+      setGenres(res.data);
+    } else {
+      // TODO: error handling
+    }
+  };
+
+  const onGenreClick = (key: string, currActive: boolean) => {
+    if (!genres || !club) {
+      return;
+    }
+    let selectedGenresNew: SelectedGenre[];
+    if (!currActive) {
+      selectedGenresNew = [...club.genres];
+      selectedGenresNew.push({
+        key,
+        name: genres.genres[key].name,
+      });
+    } else {
+      selectedGenresNew = club.genres.filter(sg => sg.key !== key);
+    }
+    setClub({ ...club, genres: selectedGenresNew });
+  };
 
   function backButtonAction() {
     if (props.history.length > 1) {
@@ -466,7 +498,13 @@ export default function ClubComponent(props: ClubProps) {
                 <GroupView club={club} isEditing={isEditing} onEdit={onEdit} />
               )}
               {tabValue === 1 && (
-                <ShelfView shelf={club.shelf} isEditing={isEditing} />
+                <ShelfView
+                  genres={genres || undefined}
+                  isEditing={isEditing}
+                  onGenreClick={onGenreClick}
+                  shelf={club.shelf}
+                  selectedGenres={club.genres}
+                />
               )}
               {tabValue === 2 && (
                 <ScheduleView

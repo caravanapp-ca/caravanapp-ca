@@ -5,10 +5,16 @@ import {
   FilterAutoMongoKeys,
   SameKeysAs,
   BookSource,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
 import { ClubDoc } from '../../typings';
+
+const genresSchema = new Schema({
+  key: String,
+  name: String,
+});
 
 const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
   source: {
@@ -59,6 +65,7 @@ const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   maxMembers: { type: Number, required: true },
   vibe: { type: String },
   readingSpeed: { type: String },
+  genres: { type: [genresSchema], required: true },
   shelf: { type: [shelfSchema], required: true },
   schedules: { type: [scheduleSchema], required: true },
   ownerId: { type: String, required: true },
