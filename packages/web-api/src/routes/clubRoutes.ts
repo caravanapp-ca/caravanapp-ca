@@ -269,10 +269,16 @@ router.get('/user/:userId', async (req, res, next) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let clubDocs: ClubDoc[];
   try {
-    clubDocs = await ClubModel.find(query)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .exec();
+    if (filterObj && filterObj.capacity.length > 0) {
+      clubDocs = await ClubModel.find(query)
+        .sort({ createdAt: -1 })
+        .exec();
+    } else {
+      clubDocs = await ClubModel.find(query)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec();
+    }
   } catch (err) {
     console.error(`Failed to get clubs for user ${user._id}`, err);
     res.status(500).send(err);
