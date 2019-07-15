@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import clsx from 'clsx';
-import { isMobile } from '../functions/isMobile';
 
 const useStyles = makeStyles(theme => ({
   footer: {
@@ -77,10 +76,9 @@ export default function Footer(props: FooterProps) {
   };
 
   return (
-    // TODO: Fix sticky footer on mobile
     <footer
       className={clsx(classes.footer, {
-        [classes.sticky]: !isMobile() && docHeightLTWinHeight,
+        [classes.sticky]: docHeightLTWinHeight,
       })}
       ref={footerHeightRef}
     >
