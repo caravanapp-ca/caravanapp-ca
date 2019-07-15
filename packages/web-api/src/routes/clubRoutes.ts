@@ -144,10 +144,16 @@ router.get('/', async (req, res, next) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let clubs: ClubDoc[];
   try {
-    clubs = await ClubModel.find(query)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .exec();
+    if (filterObj && filterObj.capacity.length > 0) {
+      clubs = await ClubModel.find(query)
+        .sort({ createdAt: -1 })
+        .exec();
+    } else {
+      clubs = await ClubModel.find(query)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec();
+    }
   } catch (err) {
     console.error('Failed to get all clubs, ', err);
     res.status(500).send(`Failed to get all clubs: ${err}`);
