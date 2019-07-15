@@ -235,6 +235,14 @@ export default function Home(props: HomeProps) {
     );
   }
 
+  function onClickMembershipFilter() {
+    if (user) {
+      setShowMembershipFilter(true);
+    } else {
+      setLoginModalShown(true);
+    }
+  }
+
   function onGenreSelected(
     genreKey: string,
     genreName: string,
@@ -467,7 +475,7 @@ export default function Home(props: HomeProps) {
             onClickGenreFilter={() => setShowGenreFilter(true)}
             onClickSpeedFilter={() => setShowSpeedFilter(true)}
             onClickCapacityFilter={() => setShowCapacityFilter(true)}
-            onClickMembershipFilter={() => setShowMembershipFilter(true)}
+            onClickMembershipFilter={onClickMembershipFilter}
             genreFilterApplied={genreFiltersApplied}
             readingSpeedFilterApplied={speedFiltersApplied}
             capacityFilterApplied={capacityFiltersApplied}
