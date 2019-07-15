@@ -10,8 +10,8 @@ const mutateUserDiscordContent = (userDoc: UserDoc) => {
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
   const guildMember = guild.members.find(m => m.id === userDoc.discordId);
-  const { user } = guildMember;
   if (guildMember) {
+    const { user } = guildMember;
     userDoc.name = userDoc.name || user.username;
     userDoc.discordUsername = user.username;
     userDoc.photoUrl =
