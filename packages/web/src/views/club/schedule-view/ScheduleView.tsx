@@ -8,6 +8,7 @@ import {
   Typography,
   Slider,
   Container,
+  TextField,
 } from '@material-ui/core';
 import {
   usePickerState,
@@ -23,6 +24,7 @@ import { successTheme } from '../../../theme';
 import {
   ClubReadingSchedule,
   FilterAutoMongoKeys,
+  Discussion,
 } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 36,
       height: 36,
       fontSize: theme.typography.caption.fontSize,
-      margin: '0 2px',
+      // margin: '0 2px',
       color: 'inherit',
     },
     customDayHighlight: {
@@ -59,25 +61,36 @@ const useStyles = makeStyles((theme: Theme) =>
       background: theme.palette.primary.main,
       color: theme.palette.common.white,
     },
+    discussionHighlight: {
+      extend: 'highlight',
+      background: theme.palette.secondary.main,
+      color: theme.palette.text.primary,
+    },
     firstHighlight: {
       extend: 'highlight',
       background: successTheme.palette.primary.main,
+      color: theme.palette.common.white,
       borderTopLeftRadius: '50%',
       borderBottomLeftRadius: '50%',
     },
     endHighlight: {
       extend: 'highlight',
       background: theme.palette.error.main,
+      color: theme.palette.common.white,
       borderTopRightRadius: '50%',
       borderBottomRightRadius: '50%',
     },
-    discussionHighlight: {
+    firstOnlyHighlight: {
       extend: 'highlight',
-      background: theme.palette.secondary.main,
-      color: theme.palette.text.primary,
+      background: successTheme.palette.primary.main,
+      borderRadius: '50%',
     },
     sectionContainer: {
       marginTop: theme.spacing(4),
+    },
+    textField: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
     },
   })
 );
@@ -86,8 +99,10 @@ interface ScheduleViewProps {
   initSchedule: () => void;
   isEditing: boolean;
   onUpdateSchedule: (
-    field: 'startDate' | 'duration' | 'discussionFrequency',
-    newVal: Date | number | null
+    field: 'startDate' | 'duration' | 'discussionFrequency' | 'label',
+    newVal: Date | number | string | null,
+    newDiscussions?: Discussion[],
+    index?: number
   ) => void;
   schedule:
     | ClubReadingSchedule
@@ -95,17 +110,22 @@ interface ScheduleViewProps {
     | null;
 }
 
+const discussionLabelMax = 50;
+
 export default function ScheduleView(props: ScheduleViewProps) {
   const theme = useTheme();
   const classes = useStyles();
   const { initSchedule, isEditing, schedule } = props;
+  const [discussionLabelsFocused, setDiscussionLabelsFocused] = React.useState<
+    boolean[]
+  >(schedule ? new Array(schedule.discussions.length).fill(false) : []);
 
   // Placed this here because I was getting the error:
   // React Hook "usePickerState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?
   const { pickerProps, wrapperProps, inputProps } = usePickerState(
     {
       value: props.schedule ? props.schedule.startDate : null,
-      onChange: date => handleScheduleChange('startDate', date),
+      onChange: date => handleScheduleChange('startDate', date, discussionObjs),
     },
     {
       getDefaultFormat: () => 'MM/dd/yyyy',
@@ -137,15 +157,15 @@ export default function ScheduleView(props: ScheduleViewProps) {
   }
 
   const { onUpdateSchedule } = props;
-  const { startDate, duration, discussionFrequency } = props.schedule;
-  // const [startDate, handleScheduleChange] = useState<Date | null>(
-  //   addDays(new Date(), 3)
-  // );
-  // const [duration, setDuration] = useState<number | null>(3);
-  // const [discussionFrequency, setDiscussionFreq] = useState<number | null>(3);
+  const {
+    startDate,
+    duration,
+    discussionFrequency,
+    discussions,
+  } = props.schedule;
 
-  let interval: Date[] = [];
-  let discussionDays: Date[] = [];
+  const discussionDays: Date[] = [];
+  const discussionObjs: Discussion[] = [];
   if (startDate && duration && discussionFrequency) {
     const durationInDays = duration * 7;
     const readingDays = eachDayOfInterval({
@@ -158,6 +178,11 @@ export default function ScheduleView(props: ScheduleViewProps) {
       i = i + discussionFrequency
     ) {
       discussionDays.push(readingDays[i]);
+      discussionObjs.push({
+        date: readingDays[i],
+        label: i < discussions.length ? discussions[i].label : '',
+        format: i < discussions.length ? discussions[i].format : 'text',
+      });
     }
   }
 
@@ -172,9 +197,24 @@ export default function ScheduleView(props: ScheduleViewProps) {
     }
 
     // TODO: Will need to break these out.
-    if (!startDate || !duration || !discussionFrequency) {
+    if (!startDate) {
       return (
         <div>
+          <IconButton className={classes.day}>
+            <span> {format(day, 'd')} </span>
+          </IconButton>
+        </div>
+      );
+    }
+
+    const isFirstDay = isSameDay(day, startDate);
+
+    if (!duration) {
+      const wrapperClassName = clsx({
+        [classes.firstOnlyHighlight]: isFirstDay,
+      });
+      return (
+        <div className={wrapperClassName}>
           <IconButton className={classes.day}>
             <span> {format(day, 'd')} </span>
           </IconButton>
@@ -189,15 +229,14 @@ export default function ScheduleView(props: ScheduleViewProps) {
       start: addDays(startDate, -1),
       end,
     });
-    const isFirstDay = isSameDay(day, startDate);
     const isLastDay = isSameDay(day, end);
     const isDiscussionDay = discussionDays.some(d => isSameDay(d, day));
 
     const wrapperClassName = clsx({
-      [classes.highlight]: dayIsBetween,
-      [classes.discussionHighlight]: isDiscussionDay,
       [classes.firstHighlight]: isFirstDay,
       [classes.endHighlight]: isLastDay,
+      [classes.highlight]: dayIsBetween,
+      [classes.discussionHighlight]: isDiscussionDay,
     });
 
     const dayClassName = clsx(classes.day, {
@@ -217,48 +256,40 @@ export default function ScheduleView(props: ScheduleViewProps) {
   };
 
   const handleScheduleChange = (
-    field: 'startDate' | 'duration' | 'discussionFrequency',
-    newVal: Date | number | null
+    field: 'startDate' | 'duration' | 'discussionFrequency' | 'label',
+    newVal: Date | number | string | null,
+    newDiscussions?: Discussion[],
+    index?: number
   ) => {
-    onUpdateSchedule(field, newVal);
+    onUpdateSchedule(field, newVal, newDiscussions, index);
+  };
+
+  const onBlurFocusDiscussionLabel = (
+    action: 'blur' | 'focus',
+    index: number
+  ) => {
+    let discussionLabelsFocusedNew = [...discussionLabelsFocused];
+    discussionLabelsFocusedNew[index] = action === 'blur' ? false : true;
+    setDiscussionLabelsFocused(discussionLabelsFocusedNew);
   };
 
   return (
     <Container maxWidth="sm">
       <div className={classes.sectionContainer}>
         <Typography id="discussion-freq-slider-label" variant="h6">
-          Club Calendar Legend
-        </Typography>
-        <Paper>
-          <CalendarLegend />
-        </Paper>
-      </div>
-      <div className={classes.sectionContainer}>
-        <Typography id="discussion-freq-slider-label" variant="h6">
           Start Date
         </Typography>
-        <Typography
-          variant="subtitle2"
-          color="textSecondary"
-          style={{ fontStyle: 'italic' }}
-          gutterBottom
-        >
-          Click a date on the calendar to set your start date!
+        <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
+          {startDate
+            ? format(startDate, 'PPP')
+            : 'Click a date on the calendar to set your start date!'}
         </Typography>
-        <Paper style={{ overflow: 'hidden' }}>
-          <Calendar
-            {...pickerProps}
-            onChange={date => handleScheduleChange('startDate', date)}
-            renderDay={renderDay}
-          />
-        </Paper>
       </div>
       <div className={classes.sectionContainer}>
         <Typography id="discussion-freq-slider-label" variant="h6">
           Duration
         </Typography>
         <Typography
-          variant="subtitle2"
           color="textSecondary"
           style={{ fontStyle: 'italic' }}
           gutterBottom
@@ -270,7 +301,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
             : 'No duration set'}
         </Typography>
         <Slider
-          defaultValue={3}
           getAriaValueText={duration =>
             duration ? duration.toString() : 'none'
           }
@@ -279,7 +309,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
           onChange={(event, value) =>
             handleScheduleChange(
               'duration',
-              Array.isArray(value) ? value[0] : value
+              Array.isArray(value) ? value[0] : value,
+              discussionObjs
             )
           }
           step={1}
@@ -293,7 +324,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
           Discussion Frequency
         </Typography>
         <Typography
-          variant="subtitle2"
           color="textSecondary"
           style={{ fontStyle: 'italic' }}
           gutterBottom
@@ -305,7 +335,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
             : 'No scheduled discussions'}
         </Typography>
         <Slider
-          defaultValue={3}
           getAriaValueText={discussionFrequency =>
             discussionFrequency ? discussionFrequency.toString() : 'none'
           }
@@ -314,7 +343,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
           onChange={(event, value) =>
             handleScheduleChange(
               'discussionFrequency',
-              Array.isArray(value) ? value[0] : value
+              Array.isArray(value) ? value[0] : value,
+              discussionObjs
             )
           }
           step={1}
@@ -323,6 +353,54 @@ export default function ScheduleView(props: ScheduleViewProps) {
           max={7}
         />
       </div>
+      <div className={classes.sectionContainer}>
+        <Paper style={{ overflow: 'hidden' }}>
+          <Calendar
+            {...pickerProps}
+            onChange={date =>
+              handleScheduleChange('startDate', date, discussionObjs)
+            }
+            renderDay={renderDay}
+          />
+        </Paper>
+      </div>
+      <div className={classes.sectionContainer}>
+        <Typography id="discussion-freq-slider-label" variant="h6">
+          Club Calendar Legend
+        </Typography>
+        <Paper>
+          <CalendarLegend />
+        </Paper>
+      </div>
+      {discussions.length > 0 && (
+        <div className={classes.sectionContainer}>
+          <Typography id="discussion-labels" variant="h6">
+            Discussion Labels
+          </Typography>
+          {discussions.map((d, index) => (
+            <TextField
+              id={`discussion-${index + 1}`}
+              label={`Discussion ${index + 1}`}
+              inputProps={{ maxLength: discussionLabelMax }}
+              onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
+              onBlur={() => onBlurFocusDiscussionLabel('blur', index)}
+              // error={}
+              helperText={
+                discussionLabelsFocused[index]
+                  ? `${discussionLabelMax - d.label.length} chars remaining`
+                  : ' '
+              }
+              className={classes.textField}
+              value={d.label}
+              onChange={e =>
+                handleScheduleChange('label', e.target.value, undefined, index)
+              }
+              margin="normal"
+              variant="outlined"
+            />
+          ))}
+        </div>
+      )}
     </Container>
   );
 }

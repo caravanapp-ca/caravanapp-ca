@@ -7,6 +7,7 @@ import {
   Services,
   ClubReadingSchedule,
   FilterAutoMongoKeys,
+  Discussion,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -306,22 +307,49 @@ export default function ClubComponent(props: ClubProps) {
     setSchedule({
       shelfEntryId: currBook._id,
       startDate: null,
-      duration: 4,
-      discussionFrequency: 3,
+      // TODO: Change these back
+      duration: 3,
+      discussionFrequency: 5,
       discussions: [],
     });
   };
 
   const onUpdateSchedule = (
-    field: 'startDate' | 'duration' | 'discussionFrequency',
-    newVal: Date | number | null
+    field: 'startDate' | 'duration' | 'discussionFrequency' | 'label',
+    newVal: Date | number | string | null,
+    newDiscussions?: Discussion[],
+    index?: number
   ) => {
     if (!schedule) {
       throw new Error(
         'Attempted to set a schedule that had not yet been initialized!'
       );
     }
-    setSchedule({ ...schedule, [field]: newVal });
+    if (field !== 'label') {
+      if (!newDiscussions) {
+        throw new Error(
+          'Cannot update schedule without passing a non-null new discussions array!'
+        );
+      }
+      setSchedule({
+        ...schedule,
+        [field]: newVal,
+        discussions: newDiscussions,
+      });
+    } else if (
+      field === 'label' &&
+      typeof index === 'number' &&
+      index >= 0 &&
+      typeof newVal === 'string'
+    ) {
+      let discussionsNew = [...schedule.discussions];
+      discussionsNew[index].label = newVal;
+      setSchedule({ ...schedule, discussions: discussionsNew });
+    } else {
+      throw new Error(
+        `Illegal params passed to onUpdateSchedule! field: ${field}, newVal: ${newVal}, newDiscussions: ${newDiscussions}, index: ${index}`
+      );
+    }
   };
 
   // TODO: Add schedule shit to onSaveClick.
