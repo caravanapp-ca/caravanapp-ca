@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import { paletteColours } from '../../theme';
 
 interface UserNameplateProps {
   user: User;
@@ -74,30 +75,6 @@ export default function UserNameplate(props: UserNameplateProps) {
     ? `MESSAGE ${user.discordUsername}`
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
-
-  const paletteColours: PaletteObject[] = [
-    { key: '#FFFFFF', textColor: 'primary' },
-    { key: '#5c6bc0', textColor: 'white' },
-    { key: '#f44336', textColor: 'primary' },
-    { key: '#e91e63', textColor: 'primary' },
-    { key: '#9c27b0', textColor: 'white' },
-    { key: '#673ab7', textColor: 'white' },
-    { key: '#3f51b5', textColor: 'white' },
-    { key: '#2196f3', textColor: 'primary' },
-    { key: '#03a9f4', textColor: 'primary' },
-    { key: '#00bcd4', textColor: 'primary' },
-    { key: '#009688', textColor: 'primary' },
-    { key: '#4caf50', textColor: 'primary' },
-    { key: '#8bc34a', textColor: 'primary' },
-    { key: '#cddc39', textColor: 'primary' },
-    { key: '#ffeb3b', textColor: 'primary' },
-    { key: '#ffc107', textColor: 'primary' },
-    { key: '#ff9800', textColor: 'primary' },
-    { key: '#ff5722', textColor: 'primary' },
-    { key: '#795548', textColor: 'white' },
-    { key: '#9e9e9e', textColor: 'primary' },
-    { key: '#607d8b', textColor: 'white' },
-  ];
 
   // TODO: Add userIsMe to if statement after testing
   if (isEditing && onEdit) {
@@ -184,7 +161,11 @@ export default function UserNameplate(props: UserNameplateProps) {
   } else {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <Typography variant="h4" color="textPrimary">
+        <Typography
+          variant="h4"
+          color="textPrimary"
+          style={{ fontWeight: 600 }}
+        >
           {user.name}
         </Typography>
         <Typography
