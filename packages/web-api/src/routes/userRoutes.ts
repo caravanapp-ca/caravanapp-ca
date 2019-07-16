@@ -251,11 +251,14 @@ router.put(
       selectedGenres: userGenres,
       questions: userQA,
       shelf: userShelf,
+      palette: user.palette,
     };
 
     const writeableObj: any = newUserButWithPossibleNullValues;
     Object.keys(writeableObj).forEach(key => {
       switch (key) {
+        case 'palette':
+          break;
         default:
           writeableObj[key] == null && delete writeableObj[key];
       }

@@ -5,6 +5,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  useMediaQuery,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import GenreChip from '../../components/GenreChip';
@@ -33,6 +34,8 @@ export default function GenreFilterModal(props: GenreFilterModalProps) {
     open,
   } = props;
 
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
+
   return (
     <Dialog open={open} onClose={onClickApply}>
       <DialogTitle id="alert-dialog-title">Filter Clubs by Genre</DialogTitle>
@@ -57,6 +60,7 @@ export default function GenreFilterModal(props: GenreFilterModalProps) {
                       !genreSelected
                     )
                   }
+                  small={screenSmallerThanSm}
                 />
               );
             })}
