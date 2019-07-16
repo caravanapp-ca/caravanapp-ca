@@ -34,6 +34,8 @@ import HeaderTitle from '../../components/HeaderTitle';
 import GroupSizeSelector from '../../components/GroupSizeSelector';
 import { getAllGenres } from '../../services/genre';
 import GenreChip from '../../components/GenreChip';
+import { useMediaQuery } from '@material-ui/core';
+import theme from '../../theme';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -240,6 +242,8 @@ export default function CreateClub(props: CreateClubProps) {
     return true;
   };
 
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
+
   return (
     <>
       <Header leftComponent={leftComponent} centerComponent={centerComponent} />
@@ -296,6 +300,7 @@ export default function CreateClub(props: CreateClubProps) {
                   active={selectedGenres.some(sg => sg.key === g)}
                   clickable={true}
                   onClick={onGenreClick}
+                  small={screenSmallerThanSm}
                 />
               ))}
             </div>

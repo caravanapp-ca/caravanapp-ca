@@ -77,10 +77,11 @@ export default function Footer(props: FooterProps) {
   };
 
   return (
-    // TODO: Fix sticky footer on mobile
+    // TODO: Fix sticky footer on everything
     <footer
       className={clsx(classes.footer, {
-        [classes.sticky]: !isMobileDevice() && docHeightLTWinHeight,
+        [classes.sticky]: false,
+        // [classes.sticky]: !isMobileDevice() && docHeightLTWinHeight,
       })}
       ref={footerHeightRef}
     >
