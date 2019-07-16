@@ -693,7 +693,7 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   const memberInChannel = (channel as VoiceChannel | TextChannel).members.find(
     m => m.id === user.discordId
   );
-  if (memberInChannel && memberInChannel.hasPermission('MANAGE_CHANNELS')) {
+  if (memberInChannel && clubDoc.ownerId === user.id) {
     try {
       const deletedChannel = await channel.delete();
       console.log(

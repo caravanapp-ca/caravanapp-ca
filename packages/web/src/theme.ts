@@ -103,26 +103,47 @@ export const textSecondaryTheme = responsiveFontSizes(
 );
 
 export const paletteColours: PaletteObject[] = [
+  // White
   { key: '#FFFFFF', textColor: 'primary' },
+  // Caravan Blurple
   { key: '#5c6bc0', textColor: 'white' },
-  { key: '#f44336', textColor: 'primary' },
-  { key: '#e91e63', textColor: 'primary' },
+  // Red
+  { key: '#f44336', textColor: 'white' },
+  // Pink
+  { key: '#e91e63', textColor: 'white' },
+  // Purple
   { key: '#9c27b0', textColor: 'white' },
+  // Deep Purple
   { key: '#673ab7', textColor: 'white' },
+  // Indigo
   { key: '#3f51b5', textColor: 'white' },
-  { key: '#2196f3', textColor: 'primary' },
+  // Blue
+  { key: '#2196f3', textColor: 'white' },
+  // Light Blue
   { key: '#03a9f4', textColor: 'primary' },
+  // Cyan
   { key: '#00bcd4', textColor: 'primary' },
-  { key: '#009688', textColor: 'primary' },
+  // Teal
+  { key: '#009688', textColor: 'white' },
+  // Green
   { key: '#4caf50', textColor: 'primary' },
+  // Light Green
   { key: '#8bc34a', textColor: 'primary' },
+  // Lime
   { key: '#cddc39', textColor: 'primary' },
+  // Yellow
   { key: '#ffeb3b', textColor: 'primary' },
+  // Amber
   { key: '#ffc107', textColor: 'primary' },
+  // Orange
   { key: '#ff9800', textColor: 'primary' },
-  { key: '#ff5722', textColor: 'primary' },
+  // Deep Orange
+  { key: '#ff5722', textColor: 'white' },
+  // Brown
   { key: '#795548', textColor: 'white' },
+  // Grey
   { key: '#9e9e9e', textColor: 'primary' },
+  // Blue Grey
   { key: '#607d8b', textColor: 'white' },
 ];
 
