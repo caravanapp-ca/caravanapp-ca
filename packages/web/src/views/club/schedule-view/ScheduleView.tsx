@@ -92,6 +92,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
+    discussionLabelContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
   })
 );
 
@@ -377,28 +381,37 @@ export default function ScheduleView(props: ScheduleViewProps) {
           <Typography id="discussion-labels" variant="h6">
             Discussion Labels
           </Typography>
-          {discussions.map((d, index) => (
-            <TextField
-              id={`discussion-${index + 1}`}
-              label={`Discussion ${index + 1}`}
-              inputProps={{ maxLength: discussionLabelMax }}
-              onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
-              onBlur={() => onBlurFocusDiscussionLabel('blur', index)}
-              // error={}
-              helperText={
-                discussionLabelsFocused[index]
-                  ? `${discussionLabelMax - d.label.length} chars remaining`
-                  : ' '
-              }
-              className={classes.textField}
-              value={d.label}
-              onChange={e =>
-                handleScheduleChange('label', e.target.value, undefined, index)
-              }
-              margin="normal"
-              variant="outlined"
-            />
-          ))}
+          <div className={classes.discussionLabelContainer}>
+            {discussions.map((d, index) => (
+              <TextField
+                id={`discussion-${index + 1}`}
+                label={`Discussion ${index + 1}`}
+                placeholder={`Chapters ${3 * index + 1}-${3 * (index + 1)}`}
+                inputProps={{ maxLength: discussionLabelMax }}
+                onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
+                onBlur={() => onBlurFocusDiscussionLabel('blur', index)}
+                // error={}
+                helperText={
+                  discussionLabelsFocused[index]
+                    ? `${discussionLabelMax - d.label.length} chars remaining`
+                    : ' '
+                }
+                className={classes.textField}
+                value={d.label}
+                onChange={e =>
+                  handleScheduleChange(
+                    'label',
+                    e.target.value,
+                    undefined,
+                    index
+                  )
+                }
+                margin="normal"
+                variant="outlined"
+                fullWidth
+              />
+            ))}
+          </div>
         </div>
       )}
     </Container>
