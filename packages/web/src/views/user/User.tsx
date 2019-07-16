@@ -8,6 +8,7 @@ import {
   Services,
   ProfileQuestion,
   UserQA,
+  UserPalette,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -17,8 +18,13 @@ import {
   useMediaQuery,
   useTheme,
   Tab,
+  createMuiTheme,
   Container,
 } from '@material-ui/core';
+import {
+  responsiveFontSizes,
+  MuiThemeProvider,
+} from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
@@ -43,6 +49,7 @@ import {
   transformClubsToWithCurrentlyReading,
 } from '../home/Home';
 import validURL from '../../functions/validURL';
+import clsx from 'clsx';
 
 interface MinMax {
   min: number;
@@ -70,6 +77,7 @@ const EditableUserFieldStringsArr: EditableUserField[] = [
   'readingSpeed',
   'gender',
   'location',
+  'palette',
 ];
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -164,6 +172,23 @@ export default function UserView(props: UserViewProps) {
       variant: 'success',
     }
   );
+
+  const userTheme = user
+    ? responsiveFontSizes(
+        createMuiTheme({
+          ...theme,
+          palette: {
+            ...theme.palette,
+            primary: {
+              main:
+                user && user.palette
+                  ? user.palette.key
+                  : theme.palette.primary.main,
+            },
+          },
+        })
+      )
+    : theme;
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -306,6 +331,17 @@ export default function UserView(props: UserViewProps) {
       } else if (field === 'questions') {
         setQuestionsModified(true);
         setUserQuestionsWkspc(newValue);
+      } else if (
+        field === 'palette' &&
+        typeof newValue.key === 'string' &&
+        typeof newValue.textColor === 'string'
+      ) {
+        if (newValue.key === '#FFFFFF') {
+          const userCopy: User = { ...user, [field]: null };
+          setUser(userCopy);
+        } else {
+          writeChange = true;
+        }
       }
       if (writeChange) {
         const userCopy: User = { ...user, [field]: newValue };
@@ -477,14 +513,20 @@ export default function UserView(props: UserViewProps) {
   };
 
   return (
-    <>
+    <MuiThemeProvider theme={userTheme}>
       <Header
         leftComponent={leftComponent}
         centerComponent={scrolled > 64 ? centerComponent : undefined}
         rightComponent={rightComponentFn()}
         showBorder={scrolled > 1 ? true : false}
       />
-      <div className={classes.nameplateContainer}>
+      <div
+        className={classes.nameplateContainer}
+        style={{
+          backgroundColor:
+            user && user.palette ? userTheme.palette.primary.main : undefined,
+        }}
+      >
         <UserAvatar
           user={user}
           size={screenSmallerThanSm ? 'small' : 'large'}
@@ -496,6 +538,7 @@ export default function UserView(props: UserViewProps) {
             isEditing={isEditing}
             onEdit={onEdit}
             valid={[nameValidated(), bioValidated(), websiteValidated()]}
+            palette={user.palette}
           />
         </div>
       </div>
@@ -544,6 +587,6 @@ export default function UserView(props: UserViewProps) {
         </>
       </Container>
       <CustomSnackbar {...snackbarProps} />
-    </>
+    </MuiThemeProvider>
   );
 }

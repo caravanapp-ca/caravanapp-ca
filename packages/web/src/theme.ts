@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core/styles';
 const montserrat = require('typeface-montserrat');
 
-const themeObj = {
+export const themeObj = {
   palette: {
     primary: {
       main: '#5C6BC0',
@@ -50,7 +50,7 @@ const themeObj = {
   },
 };
 
-const theme = responsiveFontSizes(createMuiTheme(themeObj));
+export const theme = responsiveFontSizes(createMuiTheme(themeObj));
 
 export const errorTheme = responsiveFontSizes(
   createMuiTheme({
