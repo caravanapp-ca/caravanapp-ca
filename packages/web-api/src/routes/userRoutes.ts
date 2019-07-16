@@ -7,12 +7,15 @@ import {
   ReadingSpeed,
   FilterAutoMongoKeys,
   UserQA,
+  Services,
+  ActiveFilter,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import { userSlugExists, getMe, getUser } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
+import { UserDoc } from '../../typings';
 
 const router = express.Router();
 
@@ -36,6 +39,65 @@ router.get('/@me', async (req, res, next) => {
         return next(err);
     }
   }
+});
+
+router.get('/', async (req, res, next) => {
+  const { after, pageSize, activeFilter } = req.query;
+  const { userId } = req.session;
+  let user: UserDoc | undefined;
+  if (userId) {
+    user = await getUser(userId);
+  }
+  // Calculate number of documents to skip
+  const query: any = {
+    unlisted: { $eq: false },
+  };
+  if (after) {
+    query._id = { $lt: after };
+  }
+  const size = Number.parseInt(pageSize || 0);
+  const limit = Math.min(Math.max(size, 10), 50);
+  let users: UserDoc[];
+  try {
+    users = await UserModel.find(query)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .exec();
+  } catch (err) {
+    console.error('Failed to get all users, ', err);
+    res.status(500).send(`Failed to get all users: ${err}`);
+  }
+  if (!users) {
+    res.sendStatus(404);
+    return;
+  }
+
+  // const filteredUsers: Services.GetUsers['users'] = users
+  //   .map(userDocument => {
+  //     const user: Omit<User, 'createdAt' | 'updatedAt'> & {
+  //       createdAt: string;
+  //       updatedAt: string;
+  //     } = {
+  //       ...userDocument.toObject(),
+  //       createdAt:
+  //         userDocument.createdAt instanceof Date
+  //           ? userDocument.createdAt.toISOString()
+  //           : userDocument.createdAt,
+  //       updatedAt:
+  //         userDocument.updatedAt instanceof Date
+  //           ? userDocument.updatedAt.toISOString()
+  //           : userDocument.updatedAt,
+  //     };
+  //     const obj: Services.GetUsers['users'][0] = {
+  //       ...user,
+  //     };
+  //     return obj;
+  //   })
+  //   .filter(c => c !== null);
+  const result: Services.GetUsers = {
+    users: users,
+  };
+  res.status(200).json(result);
 });
 
 // Get a user

@@ -116,7 +116,7 @@ export default function UserCards(props: UserCardProps) {
   const { users, user } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-  const [joinClubLoadingId, setJoinClubLoadingId] = React.useState('');
+  const [visitProfileLoadingId, setVisitProfileLoadingId] = React.useState('');
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
@@ -126,35 +126,25 @@ export default function UserCards(props: UserCardProps) {
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
-          {users.map(u => {
+          {users.map(u => (
             <Grid item key={u._id} xs={12} sm={6}>
               <Card className={classes.card}>
                 <div className={classes.clubImageContainer}>
-                  {currentlyReading && (
-                    <>
-                      <img
-                        src={currentlyReading.coverImageURL}
-                        alt={currentlyReading.title}
-                        className={classes.clubImage}
-                      />
-                      <div className={classes.clubImageShade} />
-                      <div className={classes.imageTextContainer}>
-                        <Typography
-                          variant="h5"
-                          className={classes.imageTitleText}
-                        >
-                          {currentlyReading.title}
-                        </Typography>
-                        <Typography className={classes.imageText}>
-                          {currentlyReading.author}
-                          {year && `, ${year}`}
-                        </Typography>
-                        <Typography className={classes.imageText}>
-                          {currentlyReading.genres.join(', ')}
-                        </Typography>
-                      </div>
-                    </>
-                  )}
+                  <>
+                    <img src={u.photoUrl} className={classes.clubImage} />
+                    <div className={classes.clubImageShade} />
+                    <div className={classes.imageTextContainer}>
+                      <Typography
+                        variant="h5"
+                        className={classes.imageTitleText}
+                      >
+                        {u.name}
+                      </Typography>
+                      <Typography className={classes.imageText}>
+                        {u.selectedGenres.map(x => x.name).join(', ')}
+                      </Typography>
+                    </div>
+                  </>
                 </div>
                 <CardContent className={classes.cardContent}>
                   <Typography
@@ -165,40 +155,7 @@ export default function UserCards(props: UserCardProps) {
                   >
                     {u.name}
                   </Typography>
-                  <div className={classes.iconRoot}>
-                    <div className={classes.iconWithLabel}>
-                      <PersonIcon />
-                      <Typography
-                        variant="subtitle1"
-                        className={classes.iconLabel}
-                      >
-                        {`${club.memberCount}/${club.maxMembers}`}
-                      </Typography>
-                    </div>
-                    {club.readingSpeed && (
-                      <div className={classes.iconWithLabel}>
-                        {readingSpeedIcons(club.readingSpeed, 'icon')}
-                        <Typography
-                          variant="subtitle1"
-                          className={classes.iconLabel}
-                        >
-                          {readingSpeedLabels(club.readingSpeed)}
-                        </Typography>
-                      </div>
-                    )}
-                    {club.vibe && (
-                      <div className={classes.iconWithLabel}>
-                        {groupVibeIcons(club.vibe, 'icon')}
-                        <Typography
-                          variant="subtitle1"
-                          className={classes.iconLabel}
-                        >
-                          {groupVibeLabels(club.vibe)}
-                        </Typography>
-                      </div>
-                    )}
-                  </div>
-                  <Typography>{club.bio}</Typography>
+                  <Typography>{u.bio}</Typography>
                 </CardContent>
                 <CardActions className={classes.cardActions}>
                   <Button
@@ -206,17 +163,17 @@ export default function UserCards(props: UserCardProps) {
                     color="primary"
                     variant="contained"
                     component={AdapterLink}
-                    to={`/clubs/${club._id}`}
+                    to={`/user/${u._id}`}
                   >
                     <Typography variant="button">VIEW CLUB</Typography>
                   </Button>
-                  {joinClubLoadingId === club._id && (
+                  {visitProfileLoadingId === u._id && (
                     <CircularProgress className={classes.progress} />
                   )}
                 </CardActions>
               </Card>
-            </Grid>;
-          })}
+            </Grid>
+          ))}
         </Grid>
         <DiscordLoginModal
           onCloseLoginDialog={onCloseLoginDialog}
