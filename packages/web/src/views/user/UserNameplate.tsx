@@ -12,6 +12,8 @@ import {
   Theme,
 } from '@material-ui/core';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
+import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
+import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
 
@@ -200,13 +202,37 @@ export default function UserNameplate(props: UserNameplateProps) {
             }
             style={{ marginTop: theme.spacing(1) }}
           >
-            <DiscordLogo
-              style={{
-                marginRight: theme.spacing(1),
-                height: 28,
-                width: 28,
-              }}
-            />
+            {!userDarkTheme && (
+              <DiscordLogo
+                style={{
+                  marginRight: theme.spacing(1),
+                  height: 28,
+                  width: 28,
+                }}
+              />
+            )}
+            {userDarkTheme &&
+              user.palette &&
+              user.palette.textColor === 'primary' && (
+                <DiscordLogoDark
+                  style={{
+                    marginRight: theme.spacing(1),
+                    height: 28,
+                    width: 28,
+                  }}
+                />
+              )}
+            {userDarkTheme &&
+              user.palette &&
+              user.palette.textColor === 'white' && (
+                <DiscordLogoWhite
+                  style={{
+                    marginRight: theme.spacing(1),
+                    height: 28,
+                    width: 28,
+                  }}
+                />
+              )}
             <Typography variant="button">{msgBtnLabelCaps}</Typography>
           </Button>
         )}
