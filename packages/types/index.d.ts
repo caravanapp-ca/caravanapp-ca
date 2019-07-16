@@ -113,6 +113,7 @@ declare module '@caravan/buddy-reading-types' {
     questions: UserQA[];
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
     onboardingVersion: number;
+    palette: PaletteObject | null;
   }
 
   export interface Genres {
@@ -176,7 +177,8 @@ declare module '@caravan/buddy-reading-types' {
     | 'location'
     | 'selectedGenres'
     | 'questions'
-    | 'shelf';
+    | 'shelf'
+    | 'palette';
 
   export type BookSource =
     | 'google'
@@ -210,6 +212,11 @@ declare module '@caravan/buddy-reading-types' {
     | 'learning'
     | 'first-timers'
     | 'nerdy';
+
+  export interface PaletteObject {
+    key: string;
+    textColor: 'primary' | 'white';
+  }
 
   export namespace Services {
     export interface GetClubs {
