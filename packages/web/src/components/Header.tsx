@@ -3,11 +3,20 @@ import {
   AppBar,
   Toolbar,
   useScrollTrigger,
-  Grid,
   useMediaQuery,
   useTheme,
+  createMuiTheme,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  responsiveFontSizes,
+  MuiThemeProvider,
+} from '@material-ui/core/styles';
+import { PaletteObject } from '@caravan/buddy-reading-types';
+import { getUserTextPalette } from '../theme';
+import { palette } from '@material-ui/system';
 
 interface ScrollProps {
   children: React.ReactElement;
@@ -19,6 +28,8 @@ interface HeaderProps {
   centerComponent?: JSX.Element;
   children?: React.ReactElement;
   showBorder?: boolean;
+  userTheme?: Theme;
+  userDarkTheme?: Theme;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,7 +42,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'block',
       height: 2,
       width: '100%',
-      backgroundColor: theme.palette.primary.main,
     },
     toolBarContainer: {
       display: 'flex',
@@ -99,44 +109,68 @@ function ElevationScroll(props: ScrollProps) {
 export default function ButtonAppBar(props: HeaderProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { leftComponent, centerComponent, rightComponent, showBorder } = props;
+  const {
+    leftComponent,
+    centerComponent,
+    rightComponent,
+    showBorder,
+    userTheme,
+    userDarkTheme,
+  } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
     <ElevationScroll {...props}>
       <AppBar className={classes.appBar} position="sticky">
-        <Toolbar>
-          <div className={classes.toolBarContainer}>
-            <div
-              className={
-                screenSmallerThanSm
-                  ? classes.toolBarLeftContainerMobile
-                  : classes.toolBarLeftContainerDesktop
-              }
-            >
-              {leftComponent}
+        <Toolbar
+          style={
+            userTheme
+              ? { backgroundColor: userTheme.palette.primary.main }
+              : undefined
+          }
+        >
+          <MuiThemeProvider theme={userDarkTheme}>
+            <div className={classes.toolBarContainer}>
+              <div
+                className={
+                  screenSmallerThanSm
+                    ? classes.toolBarLeftContainerMobile
+                    : classes.toolBarLeftContainerDesktop
+                }
+              >
+                {leftComponent}
+              </div>
+              <div
+                className={
+                  screenSmallerThanSm
+                    ? classes.toolBarCenterContainerMobile
+                    : classes.toolBarCenterContainerDesktop
+                }
+              >
+                {centerComponent}
+              </div>
+              <div
+                className={
+                  screenSmallerThanSm
+                    ? classes.toolBarRightContainerMobile
+                    : classes.toolBarRightContainerDesktop
+                }
+              >
+                {rightComponent}
+              </div>
             </div>
-            <div
-              className={
-                screenSmallerThanSm
-                  ? classes.toolBarCenterContainerMobile
-                  : classes.toolBarCenterContainerDesktop
-              }
-            >
-              {centerComponent}
-            </div>
-            <div
-              className={
-                screenSmallerThanSm
-                  ? classes.toolBarRightContainerMobile
-                  : classes.toolBarRightContainerDesktop
-              }
-            >
-              {rightComponent}
-            </div>
-          </div>
+          </MuiThemeProvider>
         </Toolbar>
-        {showBorder !== false && <div className={classes.bottomBorder} />}
+        {showBorder !== false && (
+          <div
+            className={classes.bottomBorder}
+            style={{
+              backgroundColor: userDarkTheme
+                ? userDarkTheme.palette.primary.main
+                : theme.palette.primary.main,
+            }}
+          />
+        )}
       </AppBar>
     </ElevationScroll>
   );
