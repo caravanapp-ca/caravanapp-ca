@@ -16,6 +16,8 @@ import { getProfileQuestions } from '../services/profileQuestions';
 
 const router = express.Router();
 
+// TODO write the get all clubs method
+
 // Get me, includes more sensitive stuff
 router.get('/@me', async (req, res, next) => {
   const { userId } = req.session;
