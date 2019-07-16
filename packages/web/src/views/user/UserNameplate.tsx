@@ -10,14 +10,9 @@ import {
   TextField,
   Fab,
   Theme,
-  createMuiTheme,
 } from '@material-ui/core';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
-import {
-  responsiveFontSizes,
-  MuiThemeProvider,
-} from '@material-ui/core/styles';
-import { getUserTextPalette } from '../../theme';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
 interface UserNameplateProps {
   user: User;
@@ -53,14 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const {
-    user,
-    userIsMe,
-    isEditing,
-    onEdit,
-    valid,
-    userDarkTheme: darkTheme,
-  } = props;
+  const { user, userIsMe, isEditing, onEdit, valid, userDarkTheme } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
     bio: boolean;
@@ -114,7 +102,7 @@ export default function UserNameplate(props: UserNameplateProps) {
   // TODO: Add userIsMe to if statement after testing
   if (isEditing && onEdit) {
     return (
-      <MuiThemeProvider theme={darkTheme}>
+      <MuiThemeProvider theme={userDarkTheme}>
         <div className={classes.editContainer}>
           <TextField
             id="display-name"
@@ -195,7 +183,7 @@ export default function UserNameplate(props: UserNameplateProps) {
     );
   } else {
     return (
-      <MuiThemeProvider theme={darkTheme}>
+      <MuiThemeProvider theme={userDarkTheme}>
         <Typography variant="h4" color="textPrimary">
           {user.name}
         </Typography>

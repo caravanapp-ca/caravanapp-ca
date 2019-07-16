@@ -5,18 +5,13 @@ import {
   useScrollTrigger,
   useMediaQuery,
   useTheme,
-  createMuiTheme,
 } from '@material-ui/core';
 import {
   createStyles,
   makeStyles,
   Theme,
-  responsiveFontSizes,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
-import { PaletteObject } from '@caravan/buddy-reading-types';
-import { getUserTextPalette } from '../theme';
-import { palette } from '@material-ui/system';
 
 interface ScrollProps {
   children: React.ReactElement;
@@ -32,7 +27,7 @@ interface HeaderProps {
   userDarkTheme?: Theme;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     appBar: {
       backgroundColor: 'white',

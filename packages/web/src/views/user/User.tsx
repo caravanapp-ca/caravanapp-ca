@@ -8,7 +8,6 @@ import {
   Services,
   ProfileQuestion,
   UserQA,
-  UserPalette,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -18,11 +17,9 @@ import {
   useMediaQuery,
   useTheme,
   Tab,
-  createMuiTheme,
   Container,
 } from '@material-ui/core';
 import {
-  responsiveFontSizes,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -49,7 +46,6 @@ import {
   transformClubsToWithCurrentlyReading,
 } from '../home/Home';
 import validURL from '../../functions/validURL';
-import clsx from 'clsx';
 import { makeUserTheme, makeUserDarkTheme } from '../../theme';
 
 interface MinMax {
@@ -381,7 +377,7 @@ export default function UserView(props: UserViewProps) {
     setIsEditing(false);
   };
 
-  function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
+  function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
