@@ -3,9 +3,11 @@ import {
   responsiveFontSizes,
   Theme,
 } from '@material-ui/core/styles';
+import { PaletteObject } from '@caravan/buddy-reading-types';
+import { TypeText } from '@material-ui/core/styles/createPalette';
 const montserrat = require('typeface-montserrat');
 
-const themeObj = {
+export const themeObj = {
   palette: {
     primary: {
       main: '#5C6BC0',
@@ -50,7 +52,7 @@ const themeObj = {
   },
 };
 
-const theme = responsiveFontSizes(createMuiTheme(themeObj));
+export const theme = responsiveFontSizes(createMuiTheme(themeObj));
 
 export const errorTheme = responsiveFontSizes(
   createMuiTheme({
@@ -99,6 +101,70 @@ export const textSecondaryTheme = responsiveFontSizes(
     },
   })
 );
+
+export const makeUserTheme = (palette: PaletteObject | null) => {
+  if (palette) {
+    return responsiveFontSizes(
+      createMuiTheme({
+        ...theme,
+        palette: {
+          ...theme.palette,
+          primary: {
+            main: palette.key,
+          },
+        },
+      })
+    );
+  }
+  return undefined;
+};
+
+export const makeUserDarkTheme = (palette: PaletteObject | null) => {
+  if (palette) {
+    const userTextColors = getUserTextPalette(palette);
+    return responsiveFontSizes(
+      createMuiTheme({
+        ...theme,
+        palette: {
+          ...theme.palette,
+          primary: {
+            main: userTextColors.primary,
+          },
+          text: userTextColors,
+        },
+      })
+    );
+  }
+  return undefined;
+};
+
+export const getUserTextPalette = (palette?: PaletteObject) => {
+  const opacities = {
+    primary: 0.87,
+    secondary: 0.54,
+    disabled: 0.38,
+    hint: 0.38,
+  };
+  if (palette) {
+    switch (palette.textColor) {
+      case 'primary':
+        return {
+          primary: `rgba(0, 0, 0, ${opacities.primary})`,
+          secondary: `rgba(0, 0, 0, ${opacities.secondary})`,
+          disabled: `rgba(0, 0, 0, ${opacities.disabled})`,
+          hint: `rgba(0, 0, 0, ${opacities.hint})`,
+        };
+      case 'white':
+        return {
+          primary: `rgba(255, 255, 255, ${opacities.primary})`,
+          secondary: `rgba(255, 255, 255, ${opacities.secondary})`,
+          disabled: `rgba(255, 255, 255, ${opacities.disabled})`,
+          hint: `rgba(255, 255, 255, ${opacities.hint})`,
+        };
+    }
+  }
+  return theme.palette.text;
+};
 
 export const linkColor: string = '#0365D6';
 

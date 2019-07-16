@@ -72,6 +72,11 @@ const mapUserShelfSchema = new Schema(mapUserShelfDefinition, {
   _id: false,
 });
 
+const paletteSchema = new Schema({
+  key: { type: String },
+  textColor: { type: String },
+});
+
 const definition: SameKeysAs<
   Omit<FilterAutoMongoKeys<User>, 'discordUsername'>
 > = {
@@ -99,6 +104,7 @@ const definition: SameKeysAs<
     },
   },
   onboardingVersion: { type: Number, required: true, default: 0 },
+  palette: { type: paletteSchema, default: null },
 };
 
 const userSchema = new Schema<UserDoc>(definition, {
