@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme =>
     button: {
       margin: theme.spacing(1),
       textTransform: 'none',
+      minWidth: '25px',
     },
     chip: {
       display: 'flex',
@@ -48,6 +49,7 @@ interface GenreChipProps {
   genreKey: string;
   name: string;
   active: boolean;
+  small?: boolean;
   clickable?: boolean;
   onClick?: (genreKey: string, currActive: boolean) => void;
 }
@@ -55,7 +57,7 @@ interface GenreChipProps {
 export default function GenreChip(props: GenreChipProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { genreKey, name, active, clickable, onClick } = props;
+  const { genreKey, name, active, clickable, onClick, small } = props;
   if (!clickable || !onClick) {
     return (
       <div
@@ -78,6 +80,7 @@ export default function GenreChip(props: GenreChipProps) {
           key={genreKey}
           onClick={() => onClick(genreKey, active)}
           variant="contained"
+          size={small ? 'small' : 'medium'}
         >
           <Typography>{name}</Typography>
         </Button>

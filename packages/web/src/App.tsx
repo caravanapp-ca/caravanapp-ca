@@ -102,9 +102,9 @@ export function App(props: AppProps) {
       <CssBaseline />
       <Router>
         <GAListener trackingId={trackingId}>
-          <Switch>
-            {/* div exists for ReactResizeDetector to work */}
-            <div>
+          {/* div exists for ReactResizeDetector to work */}
+          <div>
+            <Switch>
               <Route
                 exact
                 path="/"
@@ -163,8 +163,8 @@ export function App(props: AppProps) {
                 handleHeight
                 onResize={(w, h) => setDocHeight(h)}
               />
-            </div>
-          </Switch>
+            </Switch>
+          </div>
           <Footer docHeight={docHeight} />
         </GAListener>
       </Router>
