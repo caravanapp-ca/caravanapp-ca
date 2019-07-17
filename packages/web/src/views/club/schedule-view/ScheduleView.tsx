@@ -39,6 +39,8 @@ const useStyles = makeStyles((theme: Theme) =>
     day: {
       width: 36,
       height: 36,
+      // This aligns the days with the day of week headers, but makes the highlight circles stretched
+      // margin: "0 2px",
       fontSize: theme.typography.caption.fontSize,
       color: 'inherit',
     },

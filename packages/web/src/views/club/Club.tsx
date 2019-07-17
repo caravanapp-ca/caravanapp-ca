@@ -156,7 +156,7 @@ const generateDiscussions = (
     const newDiscussions: Discussion[] = [];
     let loopIndex = 0;
     for (
-      let i = discussionFrequency - 1;
+      let i = discussionFrequency;
       i < readingDays.length;
       i = i + discussionFrequency
     ) {
