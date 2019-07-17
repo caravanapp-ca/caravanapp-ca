@@ -1,11 +1,16 @@
 import React, { useEffect, SyntheticEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { eachDayOfInterval, addDays } from 'date-fns/esm';
 import {
   ShelfEntry,
   User,
-  MembershipStatus,
+  LoadableMemberStatus,
   Services,
+  ClubReadingSchedule,
+  FilterAutoMongoKeys,
+  Discussion,
   SelectedGenre,
+  ClubWUninitSchedules,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -37,7 +42,7 @@ import {
   deleteClub,
   modifyClub,
 } from '../../services/club';
-import { getCurrentBook } from './functions/ClubFunctions';
+import { getCurrentBook, getCurrentSchedule } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
@@ -52,7 +57,12 @@ import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import ScheduleView from './schedule-view/ScheduleView';
 import { getAllGenres } from '../../services/genre';
+import {
+  defaultClubScheduleDuration,
+  defaultClubScheduleDiscussionFreq,
+} from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,7 +87,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     buttonsContainer: {
       width: '100%',
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(4),
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
@@ -102,9 +113,6 @@ interface ClubRouteParams {
 interface ClubProps extends RouteComponentProps<ClubRouteParams> {
   user: User | null;
 }
-
-type LoadableMemberStatus = MembershipStatus | 'loading';
-
 const showJoinClub = (
   memberStatus: LoadableMemberStatus,
   club: Services.GetClubById
@@ -135,6 +143,40 @@ const openChat = (club: Services.GetClubById, inApp: boolean) => {
   }
 };
 
+const generateDiscussions = (
+  schedule: FilterAutoMongoKeys<ClubReadingSchedule>
+): Discussion[] => {
+  const { discussionFrequency, discussions, duration, startDate } = schedule;
+  if (discussionFrequency && duration && startDate) {
+    const durationInDays = duration * 7;
+    const readingDays = eachDayOfInterval({
+      start: startDate,
+      end: addDays(startDate, durationInDays),
+    });
+    const newDiscussions: Discussion[] = [];
+    let loopIndex = 0;
+    for (
+      let i = discussionFrequency - 1;
+      i < readingDays.length;
+      i = i + discussionFrequency
+    ) {
+      newDiscussions.push({
+        date: readingDays[i],
+        label:
+          loopIndex < discussions.length ? discussions[loopIndex].label : '',
+        format:
+          loopIndex < discussions.length
+            ? discussions[loopIndex].format
+            : 'text',
+      });
+      loopIndex += 1;
+    }
+    return newDiscussions;
+  } else {
+    return [];
+  }
+};
+
 export default function ClubComponent(props: ClubProps) {
   const classes = useStyles();
   const theme = useTheme();
@@ -145,6 +187,9 @@ export default function ClubComponent(props: ClubProps) {
   const [tabValue, setTabValue] = React.useState(0);
   const [club, setClub] = React.useState<Services.GetClubById | null>(null);
   const [currBook, setCurrBook] = React.useState<ShelfEntry | null>(null);
+  const [schedule, setSchedule] = React.useState<
+    ClubReadingSchedule | FilterAutoMongoKeys<ClubReadingSchedule> | null
+  >(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
   const [loginDialogVisible, setLoginDialogVisible] = React.useState<boolean>(
     false
@@ -167,6 +212,9 @@ export default function ClubComponent(props: ClubProps) {
     }
   );
   const [isEditing, setIsEditing] = React.useState<boolean>(false);
+  const [madeScheduleChanges, setMadeScheduleChanges] = React.useState<boolean>(
+    true
+  );
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -178,6 +226,12 @@ export default function ClubComponent(props: ClubProps) {
         if (club) {
           const currBook = getCurrentBook(club);
           setCurrBook(currBook);
+          if (currBook) {
+            const schedule = getCurrentSchedule(club, currBook);
+            setSchedule(schedule);
+          } else {
+            setSchedule(null);
+          }
           setLoadedClub(true);
         }
       } catch (err) {
@@ -319,11 +373,84 @@ export default function ClubComponent(props: ClubProps) {
     setClub(newClub);
   };
 
+  const initSchedule = () => {
+    if (!currBook || !currBook._id) {
+      throw new Error(
+        'Attempted to initiate schedule without a current book selected!'
+      );
+    }
+    setSchedule({
+      shelfEntryId: currBook._id,
+      startDate: null,
+      duration: defaultClubScheduleDuration,
+      discussionFrequency: defaultClubScheduleDiscussionFreq,
+      discussions: [],
+    });
+  };
+
+  const onUpdateSchedule = (
+    field: 'startDate' | 'duration' | 'discussionFrequency' | 'label',
+    newVal: Date | number | string | null,
+    index?: number
+  ) => {
+    if (!schedule) {
+      throw new Error(
+        'Attempted to set a schedule that had not yet been initialized!'
+      );
+    }
+    if (field !== 'label') {
+      const newSchedule: FilterAutoMongoKeys<ClubReadingSchedule> = {
+        ...schedule,
+        [field]: newVal,
+      };
+      const newDiscussions = generateDiscussions(newSchedule);
+      setSchedule({
+        ...newSchedule,
+        discussions: newDiscussions,
+      });
+      setMadeScheduleChanges(true);
+    } else if (
+      field === 'label' &&
+      typeof index === 'number' &&
+      index >= 0 &&
+      typeof newVal === 'string'
+    ) {
+      let discussionsNew = [...schedule.discussions];
+      discussionsNew[index].label = newVal;
+      setSchedule({ ...schedule, discussions: discussionsNew });
+      setMadeScheduleChanges(true);
+    } else {
+      throw new Error(
+        `Illegal params passed to onUpdateSchedule! field: ${field}, newVal: ${newVal}, index: ${index}`
+      );
+    }
+  };
+
   const onSaveClick = async () => {
     if (!club) {
       return;
     }
-    const res = await modifyClub(club);
+    const clubCopy: ClubWUninitSchedules = { ...club };
+    let nullSchedule = false;
+    if (madeScheduleChanges && currBook && schedule) {
+      let scheduleCopy: (
+        | ClubReadingSchedule
+        | FilterAutoMongoKeys<ClubReadingSchedule>)[] = [...club.schedules];
+      if (schedule.startDate == null || schedule.duration == null) {
+        nullSchedule = true;
+      } else {
+        const currScheduleIndex = club.schedules.findIndex(
+          sched => sched.shelfEntryId === currBook._id
+        );
+        if (currScheduleIndex >= 0) {
+          scheduleCopy[currScheduleIndex] = schedule;
+        } else {
+          scheduleCopy.push(schedule);
+        }
+      }
+      clubCopy.schedules = scheduleCopy;
+    }
+    const res = await modifyClub(clubCopy);
     if (res.status === 200) {
       setSnackbarProps({
         ...snackbarProps,
@@ -340,7 +467,12 @@ export default function ClubComponent(props: ClubProps) {
         message: 'We ran into some trouble saving your club.',
       });
     }
-    setIsEditing(false);
+    if (nullSchedule) {
+      await setIsEditing(false);
+      setSchedule(null);
+    } else {
+      setIsEditing(false);
+    }
   };
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -423,6 +555,7 @@ export default function ClubComponent(props: ClubProps) {
             >
               <Tab label="Group" />
               <Tab label="Shelf" />
+              <Tab label="Schedule" />
             </Tabs>
           </Paper>
           <Container maxWidth="md">
@@ -437,6 +570,18 @@ export default function ClubComponent(props: ClubProps) {
                   onGenreClick={onGenreClick}
                   shelf={club.shelf}
                   selectedGenres={club.genres}
+                />
+              )}
+              {tabValue === 2 && (
+                <ScheduleView
+                  currBook={currBook}
+                  initSchedule={initSchedule}
+                  isEditing={isEditing}
+                  madeScheduleChanges={madeScheduleChanges}
+                  memberStatus={memberStatus}
+                  onUpdateSchedule={onUpdateSchedule}
+                  schedule={schedule}
+                  setIsEditing={setIsEditing}
                 />
               )}
               <div className={classes.buttonsContainer}>
