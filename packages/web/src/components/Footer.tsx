@@ -55,16 +55,17 @@ export default function Footer(props: FooterProps) {
       window.innerHeight
   );
 
-  useEffect(() => {
-    window.addEventListener('resize', updateFooterState);
-    return () => {
-      window.removeEventListener('resize', updateFooterState);
-    };
-  }, []);
+  // TODO: Uncommenting these for perfromance
+  // useEffect(() => {
+  //   window.addEventListener('resize', updateFooterState);
+  //   return () => {
+  //     window.removeEventListener('resize', updateFooterState);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    updateFooterState();
-  }, [docHeight]);
+  // useEffect(() => {
+  //   updateFooterState();
+  // }, [docHeight]);
 
   const updateFooterState = () => {
     setDocHeightLTWinHeight(
