@@ -7,6 +7,7 @@ import {
   CurrBookAction,
   ActiveFilter,
   SelectedGenre,
+  ClubWUninitSchedules,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -129,7 +130,9 @@ export async function createClub(props: CreateClubProps) {
   return res;
 }
 
-export async function modifyClub(newClub: Services.GetClubById) {
+export async function modifyClub(
+  newClub: Services.GetClubById | ClubWUninitSchedules
+) {
   const { _id } = newClub;
   const res = await axios.put(`${clubRoute}/${_id}`, {
     newClub,

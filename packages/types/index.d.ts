@@ -218,6 +218,14 @@ declare module '@caravan/buddy-reading-types' {
     textColor: 'primary' | 'white';
   }
 
+  // Don't use this... I did what I do had to do - Matt C.
+  export interface ClubWUninitSchedules
+    extends Omit<Services.GetClubById, 'schedules'> {
+    schedules: (
+      | ClubReadingSchedule
+      | FilterAutoMongoKeys<ClubReadingSchedule>)[];
+  }
+
   export namespace Services {
     export interface GetClubs {
       clubs: {

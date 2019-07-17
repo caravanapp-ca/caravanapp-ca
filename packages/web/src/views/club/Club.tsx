@@ -1,5 +1,6 @@
 import React, { useEffect, SyntheticEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { eachDayOfInterval, addDays } from 'date-fns/esm';
 import {
   ShelfEntry,
   User,
@@ -9,6 +10,7 @@ import {
   FilterAutoMongoKeys,
   Discussion,
   SelectedGenre,
+  ClubWUninitSchedules,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -57,7 +59,10 @@ import CustomSnackbar, {
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import ScheduleView from './schedule-view/ScheduleView';
 import { getAllGenres } from '../../services/genre';
-import { eachDayOfInterval, addDays } from 'date-fns/esm';
+import {
+  defaultClubScheduleDuration,
+  defaultClubScheduleDiscussionFreq,
+} from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -150,7 +155,7 @@ const generateDiscussions = (
       start: startDate,
       end: addDays(startDate, durationInDays),
     });
-    let newDiscussions: Discussion[] = [];
+    const newDiscussions: Discussion[] = [];
     let loopIndex = 0;
     for (
       let i = discussionFrequency - 1;
@@ -226,6 +231,8 @@ export default function ClubComponent(props: ClubProps) {
           if (currBook) {
             const schedule = getCurrentSchedule(club, currBook);
             setSchedule(schedule);
+          } else {
+            setSchedule(null);
           }
           setLoadedClub(true);
         }
@@ -377,8 +384,8 @@ export default function ClubComponent(props: ClubProps) {
     setSchedule({
       shelfEntryId: currBook._id,
       startDate: null,
-      duration: 3,
-      discussionFrequency: null,
+      duration: defaultClubScheduleDuration,
+      discussionFrequency: defaultClubScheduleDiscussionFreq,
       discussions: [],
     });
   };
@@ -425,16 +432,18 @@ export default function ClubComponent(props: ClubProps) {
     if (!club) {
       return;
     }
-    const clubCopy = { ...club };
+    const clubCopy: ClubWUninitSchedules = { ...club };
     if (madeScheduleChanges && currBook && schedule) {
-      const scheduleCopy = [...club.schedules];
+      const scheduleCopy: (
+        | ClubReadingSchedule
+        | FilterAutoMongoKeys<ClubReadingSchedule>)[] = [...club.schedules];
       const currScheduleIndex = club.schedules.findIndex(
         sched => sched.shelfEntryId === currBook._id
       );
       if (currScheduleIndex >= 0) {
-        scheduleCopy[currScheduleIndex] = schedule as ClubReadingSchedule;
+        scheduleCopy[currScheduleIndex] = schedule;
       } else {
-        scheduleCopy.push(schedule as ClubReadingSchedule);
+        scheduleCopy.push(schedule);
       }
       clubCopy.schedules = scheduleCopy;
     }
