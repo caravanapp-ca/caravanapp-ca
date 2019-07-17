@@ -479,7 +479,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
               <MuiThemeProvider theme={textSecondaryTheme}>
                 <Button
                   color="primary"
-                  onClick={() => initSchedule()}
+                  onClick={initSchedule}
                   style={{ marginTop: 8 }}
                 >
                   <NotInterested style={{ marginRight: 8 }} />
