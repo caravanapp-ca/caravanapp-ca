@@ -593,6 +593,10 @@ router.put(
     'newClub.readingSpeed',
     `Reading speed must be one of ${READING_SPEEDS.join(', ')}`
   ).isIn(READING_SPEEDS),
+  check(
+    'newClub.schedules',
+    'Schedules must be an array of ClubReadingSchedule objects!'
+  ).isArray(),
   check('newClub.unlisted', 'Unlisted must be a boolean').isBoolean(),
   check('newClub.vibe', `Vibe must be one of ${GROUP_VIBES.join(', ')}`).isIn(
     GROUP_VIBES
@@ -637,6 +641,7 @@ router.put(
       | 'maxMembers'
       | 'name'
       | 'readingSpeed'
+      | 'schedules'
       | 'unlisted'
       | 'vibe'
     > = {
@@ -645,6 +650,7 @@ router.put(
       maxMembers: newClub.maxMembers,
       name: newClub.name,
       readingSpeed: newClub.readingSpeed,
+      schedules: newClub.schedules,
       unlisted: newClub.unlisted,
       vibe: newClub.vibe,
     };

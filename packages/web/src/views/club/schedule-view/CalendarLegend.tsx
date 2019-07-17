@@ -9,10 +9,10 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       flexGrow: 1,
-      padding: theme.spacing(2),
-      flexDirection: 'column',
+      flexDirection: 'row',
       justifyContent: 'center',
-      alignItems: 'flex-start',
+      alignItems: 'center',
+      flexWrap: 'wrap',
     },
     legendItemContainer: {
       display: 'flex',
@@ -21,12 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     legendItemContainerMid: {
-      marginTop: theme.spacing(1),
+      marginLeft: 16,
     },
     legendCircle: {
       display: 'block',
-      width: 24,
-      height: 24,
+      width: 12,
+      height: 12,
       borderRadius: '50%',
     },
     startDay: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.error.main,
     },
     labelText: {
-      marginLeft: 16,
+      marginLeft: 4,
     },
   })
 );
@@ -56,7 +56,9 @@ export default function CalendarLegend() {
           className={clsx(classes.legendCircle, classes.startDay)}
           boxShadow={2}
         />
-        <Typography className={classes.labelText}>Start date</Typography>
+        <Typography variant="body2" className={classes.labelText}>
+          Start date
+        </Typography>
       </div>
       <div
         className={clsx(
@@ -68,7 +70,9 @@ export default function CalendarLegend() {
           className={clsx(classes.legendCircle, classes.endDay)}
           boxShadow={2}
         />
-        <Typography className={classes.labelText}>Finish date</Typography>
+        <Typography variant="body2" className={classes.labelText}>
+          Finish date
+        </Typography>
       </div>
       <div
         className={clsx(
@@ -80,7 +84,9 @@ export default function CalendarLegend() {
           className={clsx(classes.legendCircle, classes.readingDay)}
           boxShadow={2}
         />
-        <Typography className={classes.labelText}>Reading day</Typography>
+        <Typography variant="body2" className={classes.labelText}>
+          Reading day
+        </Typography>
       </div>
       <div
         className={clsx(
@@ -92,7 +98,9 @@ export default function CalendarLegend() {
           className={clsx(classes.legendCircle, classes.discussionDay)}
           boxShadow={2}
         />
-        <Typography className={classes.labelText}>Discussion day</Typography>
+        <Typography variant="body2" className={classes.labelText}>
+          Discussion day
+        </Typography>
       </div>
     </div>
   );

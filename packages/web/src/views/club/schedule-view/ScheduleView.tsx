@@ -9,6 +9,7 @@ import {
   Slider,
   Container,
   TextField,
+  Tooltip,
 } from '@material-ui/core';
 import {
   usePickerState,
@@ -25,6 +26,7 @@ import {
   ClubReadingSchedule,
   FilterAutoMongoKeys,
   Discussion,
+  ShelfEntry,
 } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,11 +63,6 @@ const useStyles = makeStyles((theme: Theme) =>
       background: theme.palette.primary.main,
       color: theme.palette.common.white,
     },
-    discussionHighlight: {
-      extend: 'highlight',
-      background: theme.palette.secondary.main,
-      color: theme.palette.text.primary,
-    },
     firstHighlight: {
       extend: 'highlight',
       background: successTheme.palette.primary.main,
@@ -79,6 +76,12 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.common.white,
       borderTopRightRadius: '50%',
       borderBottomRightRadius: '50%',
+    },
+    discussionHighlight: {
+      extend: 'highlight',
+      background: theme.palette.secondary.main,
+      color: theme.palette.text.primary,
+      borderRadius: '50%',
     },
     firstOnlyHighlight: {
       extend: 'highlight',
@@ -96,16 +99,36 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
+    root: {},
+    disabled: {
+      color: theme.palette.text.primary,
+      borderColor: theme.palette.primary.main,
+    },
+    notchedOutline: {
+      disabled: {
+        borderColor: theme.palette.grey[400] + ' !important',
+      },
+    },
+    disabledLabel: {
+      color: theme.palette.primary.main + ' !important',
+    },
+    legendContainer: {
+      width: '100%',
+      marginBottom: 8,
+    },
+    calendarContainer: {
+      position: 'relative',
+    },
   })
 );
 
 interface ScheduleViewProps {
+  currBook: ShelfEntry | null;
   initSchedule: () => void;
   isEditing: boolean;
   onUpdateSchedule: (
     field: 'startDate' | 'duration' | 'discussionFrequency' | 'label',
     newVal: Date | number | string | null,
-    newDiscussions?: Discussion[],
     index?: number
   ) => void;
   schedule:
@@ -119,7 +142,13 @@ const discussionLabelMax = 50;
 export default function ScheduleView(props: ScheduleViewProps) {
   const theme = useTheme();
   const classes = useStyles();
-  const { initSchedule, isEditing, schedule } = props;
+  const {
+    currBook,
+    initSchedule,
+    isEditing,
+    onUpdateSchedule,
+    schedule,
+  } = props;
   const [discussionLabelsFocused, setDiscussionLabelsFocused] = React.useState<
     boolean[]
   >(schedule ? new Array(schedule.discussions.length).fill(false) : []);
@@ -129,7 +158,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
   const { pickerProps, wrapperProps, inputProps } = usePickerState(
     {
       value: props.schedule ? props.schedule.startDate : null,
-      onChange: date => handleScheduleChange('startDate', date, discussionObjs),
+      onChange: date => handleScheduleChange('startDate', date),
+      autoOk: isEditing ? true : false,
     },
     {
       getDefaultFormat: () => 'MM/dd/yyyy',
@@ -139,6 +169,24 @@ export default function ScheduleView(props: ScheduleViewProps) {
   if (!schedule && isEditing) {
     initSchedule();
     return <div />;
+  }
+
+  if (!currBook) {
+    return (
+      <Container maxWidth="md">
+        <Typography
+          color="textSecondary"
+          style={{
+            textAlign: 'center',
+            fontStyle: 'italic',
+            marginTop: theme.spacing(4),
+            marginBottom: theme.spacing(4),
+          }}
+        >
+          The club needs to pick a book to read before setting a schedule.
+        </Typography>
+      </Container>
+    );
   }
 
   // Using the destructured version here causes a Typescript error.
@@ -160,35 +208,12 @@ export default function ScheduleView(props: ScheduleViewProps) {
     );
   }
 
-  const { onUpdateSchedule } = props;
   const {
     startDate,
     duration,
     discussionFrequency,
     discussions,
   } = props.schedule;
-
-  const discussionDays: Date[] = [];
-  const discussionObjs: Discussion[] = [];
-  if (startDate && duration && discussionFrequency) {
-    const durationInDays = duration * 7;
-    const readingDays = eachDayOfInterval({
-      start: startDate,
-      end: addDays(startDate, durationInDays),
-    });
-    for (
-      let i = discussionFrequency - 1;
-      i < readingDays.length;
-      i = i + discussionFrequency
-    ) {
-      discussionDays.push(readingDays[i]);
-      discussionObjs.push({
-        date: readingDays[i],
-        label: i < discussions.length ? discussions[i].label : '',
-        format: i < discussions.length ? discussions[i].format : 'text',
-      });
-    }
-  }
 
   const renderDay = (
     day: MaterialUiPickersDate,
@@ -200,7 +225,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
       return <div />;
     }
 
-    // TODO: Will need to break these out.
     if (!startDate) {
       return (
         <div>
@@ -234,13 +258,13 @@ export default function ScheduleView(props: ScheduleViewProps) {
       end,
     });
     const isLastDay = isSameDay(day, end);
-    const isDiscussionDay = discussionDays.some(d => isSameDay(d, day));
+    const discussionIndex = discussions.findIndex(d => isSameDay(d.date, day));
+    const isDiscussionDay = discussionIndex >= 0;
 
     const wrapperClassName = clsx({
       [classes.firstHighlight]: isFirstDay,
       [classes.endHighlight]: isLastDay,
       [classes.highlight]: dayIsBetween,
-      [classes.discussionHighlight]: isDiscussionDay,
     });
 
     const dayClassName = clsx(classes.day, {
@@ -250,22 +274,57 @@ export default function ScheduleView(props: ScheduleViewProps) {
         !dayInCurrentMonth && isDiscussionDay,
     });
 
-    return (
-      <div className={wrapperClassName}>
-        <IconButton className={dayClassName}>
-          <span> {format(day, 'd')} </span>
-        </IconButton>
-      </div>
-    );
+    if (isFirstDay || isLastDay || discussionIndex >= 0) {
+      let tooltipMsg: string = '';
+      if (isFirstDay) {
+        tooltipMsg = `Start: ${format(day, 'PPP')}`;
+      } else if (isLastDay) {
+        tooltipMsg = `End: ${format(day, 'PPP')}`;
+      }
+      if (discussionIndex >= 0) {
+        if (tooltipMsg.length > 0) {
+          tooltipMsg += ' - ';
+        }
+        if (discussions[discussionIndex].label.length > 0) {
+          tooltipMsg += `Discussion ${discussionIndex + 1}: ${
+            discussions[discussionIndex].label
+          }`;
+        } else {
+          tooltipMsg += `Discussion ${discussionIndex + 1}`;
+        }
+      }
+      return (
+        <Tooltip title={tooltipMsg}>
+          <div className={wrapperClassName}>
+            <div
+              className={
+                discussionIndex >= 0 ? classes.discussionHighlight : undefined
+              }
+            >
+              <IconButton className={dayClassName}>
+                <span> {format(day, 'd')} </span>
+              </IconButton>
+            </div>
+          </div>
+        </Tooltip>
+      );
+    } else {
+      return (
+        <div className={wrapperClassName}>
+          <IconButton className={dayClassName}>
+            <span> {format(day, 'd')} </span>
+          </IconButton>
+        </div>
+      );
+    }
   };
 
   const handleScheduleChange = (
     field: 'startDate' | 'duration' | 'discussionFrequency' | 'label',
     newVal: Date | number | string | null,
-    newDiscussions?: Discussion[],
     index?: number
   ) => {
-    onUpdateSchedule(field, newVal, newDiscussions, index);
+    onUpdateSchedule(field, newVal, index);
   };
 
   const onBlurFocusDiscussionLabel = (
@@ -277,143 +336,248 @@ export default function ScheduleView(props: ScheduleViewProps) {
     setDiscussionLabelsFocused(discussionLabelsFocusedNew);
   };
 
-  return (
-    <Container maxWidth="sm">
-      <div className={classes.sectionContainer}>
-        <Typography id="discussion-freq-slider-label" variant="h6">
-          Start Date
-        </Typography>
-        <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
-          {startDate
-            ? format(startDate, 'PPP')
-            : 'Click a date on the calendar to set your start date!'}
-        </Typography>
-      </div>
-      <div className={classes.sectionContainer}>
-        <Typography id="discussion-freq-slider-label" variant="h6">
-          Duration
-        </Typography>
-        <Typography
-          color="textSecondary"
-          style={{ fontStyle: 'italic' }}
-          gutterBottom
-        >
-          {duration
-            ? duration > 1
-              ? `Finish in ${duration} weeks`
-              : 'Finish in 1 week'
-            : 'No duration set'}
-        </Typography>
-        <Slider
-          getAriaValueText={duration =>
-            duration ? duration.toString() : 'none'
-          }
-          aria-labelledby="discussion-freq-slider"
-          valueLabelDisplay="auto"
-          onChange={(event, value) =>
-            handleScheduleChange(
-              'duration',
-              Array.isArray(value) ? value[0] : value,
-              discussionObjs
-            )
-          }
-          step={1}
-          marks
-          min={1}
-          max={6}
-        />
-      </div>
-      <div className={classes.sectionContainer}>
-        <Typography id="discussion-freq-slider-label" variant="h6">
-          Discussion Frequency
-        </Typography>
-        <Typography
-          color="textSecondary"
-          style={{ fontStyle: 'italic' }}
-          gutterBottom
-        >
-          {discussionFrequency
-            ? discussionFrequency > 1
-              ? `Discuss every ${discussionFrequency} days`
-              : 'Discuss every day'
-            : 'No scheduled discussions'}
-        </Typography>
-        <Slider
-          getAriaValueText={discussionFrequency =>
-            discussionFrequency ? discussionFrequency.toString() : 'none'
-          }
-          aria-labelledby="discussion-freq-slider"
-          valueLabelDisplay="auto"
-          onChange={(event, value) =>
-            handleScheduleChange(
-              'discussionFrequency',
-              Array.isArray(value) ? value[0] : value,
-              discussionObjs
-            )
-          }
-          step={1}
-          marks
-          min={1}
-          max={7}
-        />
-      </div>
-      <div className={classes.sectionContainer}>
-        <Paper style={{ overflow: 'hidden' }}>
-          <Calendar
-            {...pickerProps}
-            onChange={date =>
-              handleScheduleChange('startDate', date, discussionObjs)
-            }
-            renderDay={renderDay}
-          />
-        </Paper>
-      </div>
-      <div className={classes.sectionContainer}>
-        <Typography id="discussion-freq-slider-label" variant="h6">
-          Club Calendar Legend
-        </Typography>
-        <Paper>
-          <CalendarLegend />
-        </Paper>
-      </div>
-      {discussions.length > 0 && (
+  if (isEditing) {
+    return (
+      <Container maxWidth="sm">
         <div className={classes.sectionContainer}>
-          <Typography id="discussion-labels" variant="h6">
-            Discussion Labels
+          <Typography variant="h5">
+            {`Set a reading schedule for ${currBook.title}`}
           </Typography>
-          <div className={classes.discussionLabelContainer}>
-            {discussions.map((d, index) => (
-              <TextField
-                id={`discussion-${index + 1}`}
-                label={`Discussion ${index + 1}`}
-                placeholder={`Chapters ${3 * index + 1}-${3 * (index + 1)}`}
-                inputProps={{ maxLength: discussionLabelMax }}
-                onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
-                onBlur={() => onBlurFocusDiscussionLabel('blur', index)}
-                // error={}
-                helperText={
-                  discussionLabelsFocused[index]
-                    ? `${discussionLabelMax - d.label.length} chars remaining`
-                    : ' '
-                }
-                className={classes.textField}
-                value={d.label}
-                onChange={e =>
-                  handleScheduleChange(
-                    'label',
-                    e.target.value,
-                    undefined,
-                    index
-                  )
-                }
-                margin="normal"
-                variant="outlined"
-                fullWidth
-              />
-            ))}
-          </div>
         </div>
-      )}
-    </Container>
-  );
+        <div className={classes.sectionContainer}>
+          <Typography id="discussion-freq-slider-label" variant="h6">
+            Start Date
+          </Typography>
+          <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
+            {startDate
+              ? format(startDate, 'PPP')
+              : 'Click a date on the calendar to set your start date!'}
+          </Typography>
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography id="discussion-freq-slider-label" variant="h6">
+            Duration
+          </Typography>
+          <Typography
+            color="textSecondary"
+            style={{ fontStyle: 'italic' }}
+            gutterBottom
+          >
+            {duration
+              ? duration > 1
+                ? `Finish in ${duration} weeks`
+                : 'Finish in 1 week'
+              : 'No duration set'}
+          </Typography>
+          <Slider
+            getAriaValueText={duration =>
+              duration ? duration.toString() : 'none'
+            }
+            aria-labelledby="discussion-freq-slider"
+            valueLabelDisplay="auto"
+            onChange={(event, value) =>
+              handleScheduleChange(
+                'duration',
+                Array.isArray(value) ? value[0] : value
+              )
+            }
+            step={1}
+            marks
+            min={1}
+            max={6}
+            defaultValue={3}
+          />
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography id="discussion-freq-slider-label" variant="h6">
+            Discussion Frequency
+          </Typography>
+          <Typography
+            color="textSecondary"
+            style={{ fontStyle: 'italic' }}
+            gutterBottom
+          >
+            {discussionFrequency
+              ? discussionFrequency > 1
+                ? `Discuss every ${discussionFrequency} days`
+                : 'Discuss every day'
+              : 'No scheduled discussions'}
+          </Typography>
+          <Slider
+            getAriaValueText={discussionFrequency =>
+              discussionFrequency ? discussionFrequency.toString() : 'none'
+            }
+            aria-labelledby="discussion-freq-slider"
+            valueLabelDisplay="auto"
+            onChange={(event, value) =>
+              handleScheduleChange(
+                'discussionFrequency',
+                Array.isArray(value)
+                  ? value[0] === 0
+                    ? null
+                    : value[0]
+                  : value === 0
+                  ? null
+                  : value
+              )
+            }
+            step={1}
+            marks
+            min={0}
+            max={7}
+          />
+        </div>
+        <div
+          className={clsx(classes.sectionContainer, classes.calendarContainer)}
+        >
+          <Paper style={{ overflow: 'hidden' }}>
+            <Calendar {...pickerProps} renderDay={renderDay} />
+            <div className={classes.legendContainer}>
+              <CalendarLegend />
+            </div>
+          </Paper>
+        </div>
+        {discussions.length > 0 && (
+          <div className={classes.sectionContainer}>
+            <Typography id="discussion-labels" variant="h6" gutterBottom>
+              Discussion Topics
+            </Typography>
+            <div className={classes.discussionLabelContainer}>
+              {discussions.map((d, index) => (
+                <TextField
+                  id={`discussion-${index + 1}`}
+                  label={`Discussion ${index + 1} - ${format(d.date, 'PPP')}`}
+                  placeholder={`Chapters ${3 * index + 1}-${3 * (index + 1)}`}
+                  inputProps={{ maxLength: discussionLabelMax }}
+                  onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
+                  onBlur={() => onBlurFocusDiscussionLabel('blur', index)}
+                  // error={}
+                  helperText={
+                    discussionLabelsFocused[index]
+                      ? `${discussionLabelMax - d.label.length} chars remaining`
+                      : ' '
+                  }
+                  className={classes.textField}
+                  value={d.label}
+                  onChange={e =>
+                    handleScheduleChange('label', e.target.value, index)
+                  }
+                  margin="normal"
+                  variant="outlined"
+                  fullWidth
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </Container>
+    );
+  } else {
+    return (
+      <Container maxWidth="sm">
+        <div
+          className={clsx(classes.sectionContainer, classes.calendarContainer)}
+        >
+          <Typography variant="h6" gutterBottom>
+            {`Reading Schedule for ${currBook.title}`}
+          </Typography>
+          <Paper style={{ overflow: 'hidden' }}>
+            <Calendar {...pickerProps} renderDay={renderDay} />
+            <div className={classes.legendContainer}>
+              <CalendarLegend />
+            </div>
+          </Paper>
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography id="discussion-freq-slider-label" variant="h6">
+            Start Date
+          </Typography>
+          <Typography
+            color="textSecondary"
+            style={{ fontStyle: 'italic' }}
+            gutterBottom
+          >
+            {startDate ? format(startDate, 'PPP') : 'No start date set.'}
+          </Typography>
+          <Typography id="discussion-freq-slider-label" variant="h6">
+            Duration
+          </Typography>
+          <Typography
+            color="textSecondary"
+            style={{ fontStyle: 'italic' }}
+            gutterBottom
+          >
+            {duration
+              ? duration > 1
+                ? `Finish in ${duration} weeks`
+                : 'Finish in 1 week'
+              : 'No duration set.'}
+          </Typography>
+          <Typography id="discussion-freq-slider-label" variant="h6">
+            Discussion Frequency
+          </Typography>
+          <Typography
+            color="textSecondary"
+            style={{ fontStyle: 'italic' }}
+            gutterBottom
+          >
+            {discussionFrequency
+              ? discussionFrequency > 1
+                ? `Discuss every ${discussionFrequency} days`
+                : 'Discuss every day'
+              : 'No scheduled discussions.'}
+          </Typography>
+        </div>
+        {discussions.length > 0 && (
+          <div className={classes.sectionContainer}>
+            <Typography id="discussion-labels" variant="h6" gutterBottom>
+              Discussion Topics
+            </Typography>
+            <div className={classes.discussionLabelContainer}>
+              {discussions.map((d, index) => {
+                return (
+                  <TextField
+                    disabled={true}
+                    InputProps={{
+                      classes: {
+                        root: classes.root,
+                        disabled: classes.disabled,
+                        notchedOutline: classes.notchedOutline,
+                      },
+                    }}
+                    InputLabelProps={{
+                      classes: {
+                        disabled: classes.disabledLabel,
+                      },
+                    }}
+                    id={`discussion-${index + 1}`}
+                    label={`Discussion ${index + 1}: ${format(d.date, 'PPP')}`}
+                    placeholder={`Chapters ${3 * index + 1}-${3 * (index + 1)}`}
+                    inputProps={{ maxLength: discussionLabelMax }}
+                    onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
+                    onBlur={() => onBlurFocusDiscussionLabel('blur', index)}
+                    // error={}
+                    helperText={
+                      discussionLabelsFocused[index]
+                        ? `${discussionLabelMax -
+                            d.label.length} chars remaining`
+                        : ' '
+                    }
+                    className={classes.textField}
+                    value={d.label}
+                    onChange={e =>
+                      handleScheduleChange('label', e.target.value, index)
+                    }
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                  />
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </Container>
+    );
+  }
 }

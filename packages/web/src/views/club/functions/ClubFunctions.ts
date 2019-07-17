@@ -24,6 +24,16 @@ export function getCurrentSchedule(
   if (club && club.schedules) {
     const schedule = club.schedules.find(s => s.shelfEntryId === currBook._id);
     if (schedule) {
+      if (schedule.startDate) {
+        schedule.startDate = new Date(schedule.startDate);
+      }
+      schedule.discussions = schedule.discussions.map(disc => {
+        const discDate = new Date(disc.date);
+        return {
+          ...disc,
+          date: discDate,
+        };
+      });
       return schedule;
     }
   }

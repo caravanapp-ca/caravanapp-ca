@@ -57,6 +57,7 @@ import CustomSnackbar, {
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import ScheduleView from './schedule-view/ScheduleView';
 import { getAllGenres } from '../../services/genre';
+import { eachDayOfInterval, addDays } from 'date-fns/esm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -139,6 +140,40 @@ const openChat = (club: Services.GetClubById, inApp: boolean) => {
   }
 };
 
+const generateDiscussions = (
+  schedule: FilterAutoMongoKeys<ClubReadingSchedule>
+): Discussion[] => {
+  const { discussionFrequency, discussions, duration, startDate } = schedule;
+  if (discussionFrequency && duration && startDate) {
+    const durationInDays = duration * 7;
+    const readingDays = eachDayOfInterval({
+      start: startDate,
+      end: addDays(startDate, durationInDays),
+    });
+    let newDiscussions: Discussion[] = [];
+    let loopIndex = 0;
+    for (
+      let i = discussionFrequency - 1;
+      i < readingDays.length;
+      i = i + discussionFrequency
+    ) {
+      newDiscussions.push({
+        date: readingDays[i],
+        label:
+          loopIndex < discussions.length ? discussions[loopIndex].label : '',
+        format:
+          loopIndex < discussions.length
+            ? discussions[loopIndex].format
+            : 'text',
+      });
+      loopIndex += 1;
+    }
+    return newDiscussions;
+  } else {
+    return [];
+  }
+};
+
 export default function ClubComponent(props: ClubProps) {
   const classes = useStyles();
   const theme = useTheme();
@@ -174,6 +209,9 @@ export default function ClubComponent(props: ClubProps) {
     }
   );
   const [isEditing, setIsEditing] = React.useState<boolean>(false);
+  const [madeScheduleChanges, setMadeScheduleChanges] = React.useState<boolean>(
+    true
+  );
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -339,9 +377,8 @@ export default function ClubComponent(props: ClubProps) {
     setSchedule({
       shelfEntryId: currBook._id,
       startDate: null,
-      // TODO: Change these back
       duration: 3,
-      discussionFrequency: 5,
+      discussionFrequency: null,
       discussions: [],
     });
   };
@@ -349,7 +386,6 @@ export default function ClubComponent(props: ClubProps) {
   const onUpdateSchedule = (
     field: 'startDate' | 'duration' | 'discussionFrequency' | 'label',
     newVal: Date | number | string | null,
-    newDiscussions?: Discussion[],
     index?: number
   ) => {
     if (!schedule) {
@@ -358,16 +394,16 @@ export default function ClubComponent(props: ClubProps) {
       );
     }
     if (field !== 'label') {
-      if (!newDiscussions) {
-        throw new Error(
-          'Cannot update schedule without passing a non-null new discussions array!'
-        );
-      }
-      setSchedule({
+      const newSchedule: FilterAutoMongoKeys<ClubReadingSchedule> = {
         ...schedule,
         [field]: newVal,
+      };
+      const newDiscussions = generateDiscussions(newSchedule);
+      setSchedule({
+        ...newSchedule,
         discussions: newDiscussions,
       });
+      setMadeScheduleChanges(true);
     } else if (
       field === 'label' &&
       typeof index === 'number' &&
@@ -377,19 +413,32 @@ export default function ClubComponent(props: ClubProps) {
       let discussionsNew = [...schedule.discussions];
       discussionsNew[index].label = newVal;
       setSchedule({ ...schedule, discussions: discussionsNew });
+      setMadeScheduleChanges(true);
     } else {
       throw new Error(
-        `Illegal params passed to onUpdateSchedule! field: ${field}, newVal: ${newVal}, newDiscussions: ${newDiscussions}, index: ${index}`
+        `Illegal params passed to onUpdateSchedule! field: ${field}, newVal: ${newVal}, index: ${index}`
       );
     }
   };
 
-  // TODO: Add schedule shit to onSaveClick.
   const onSaveClick = async () => {
     if (!club) {
       return;
     }
-    const res = await modifyClub(club);
+    const clubCopy = { ...club };
+    if (madeScheduleChanges && currBook && schedule) {
+      const scheduleCopy = [...club.schedules];
+      const currScheduleIndex = club.schedules.findIndex(
+        sched => sched.shelfEntryId === currBook._id
+      );
+      if (currScheduleIndex >= 0) {
+        scheduleCopy[currScheduleIndex] = schedule as ClubReadingSchedule;
+      } else {
+        scheduleCopy.push(schedule as ClubReadingSchedule);
+      }
+      clubCopy.schedules = scheduleCopy;
+    }
+    const res = await modifyClub(clubCopy);
     if (res.status === 200) {
       setSnackbarProps({
         ...snackbarProps,
@@ -508,6 +557,7 @@ export default function ClubComponent(props: ClubProps) {
               )}
               {tabValue === 2 && (
                 <ScheduleView
+                  currBook={currBook}
                   initSchedule={initSchedule}
                   isEditing={isEditing}
                   onUpdateSchedule={onUpdateSchedule}
