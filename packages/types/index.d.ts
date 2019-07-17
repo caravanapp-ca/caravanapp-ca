@@ -290,6 +290,8 @@ declare module '@caravan/buddy-reading-types' {
         shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
         onboardingVersion: number;
         palette: PaletteObject | null;
+        createdAt: string;
+        updatedAt: string;
       }[];
     }
   }

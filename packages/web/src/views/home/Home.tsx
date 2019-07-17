@@ -130,10 +130,6 @@ export default function Home(props: HomeProps) {
     status: 'loading',
   });
 
-  const [allUsers, setAllUsers] = React.useState<
-    Service<ClubWithCurrentlyReading[]>
-  >({ status: 'loading' });
-
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );

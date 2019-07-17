@@ -49,9 +49,7 @@ router.get('/', async (req, res, next) => {
     user = await getUser(userId);
   }
   // Calculate number of documents to skip
-  const query: any = {
-    unlisted: { $eq: false },
-  };
+  const query: any = {};
   if (after) {
     query._id = { $lt: after };
   }
@@ -72,30 +70,30 @@ router.get('/', async (req, res, next) => {
     return;
   }
 
-  // const filteredUsers: Services.GetUsers['users'] = users
-  //   .map(userDocument => {
-  //     const user: Omit<User, 'createdAt' | 'updatedAt'> & {
-  //       createdAt: string;
-  //       updatedAt: string;
-  //     } = {
-  //       ...userDocument.toObject(),
-  //       createdAt:
-  //         userDocument.createdAt instanceof Date
-  //           ? userDocument.createdAt.toISOString()
-  //           : userDocument.createdAt,
-  //       updatedAt:
-  //         userDocument.updatedAt instanceof Date
-  //           ? userDocument.updatedAt.toISOString()
-  //           : userDocument.updatedAt,
-  //     };
-  //     const obj: Services.GetUsers['users'][0] = {
-  //       ...user,
-  //     };
-  //     return obj;
-  //   })
-  //   .filter(c => c !== null);
+  const filteredUsers: Services.GetUsers['users'] = users
+    .map(userDocument => {
+      const user: Omit<User, 'createdAt' | 'updatedAt'> & {
+        createdAt: string;
+        updatedAt: string;
+      } = {
+        ...userDocument.toObject(),
+        createdAt:
+          userDocument.createdAt instanceof Date
+            ? userDocument.createdAt.toISOString()
+            : userDocument.createdAt,
+        updatedAt:
+          userDocument.updatedAt instanceof Date
+            ? userDocument.updatedAt.toISOString()
+            : userDocument.updatedAt,
+      };
+      const obj: Services.GetUsers['users'][0] = {
+        ...user,
+      };
+      return obj;
+    })
+    .filter(c => c !== null);
   const result: Services.GetUsers = {
-    users: users,
+    users: filteredUsers,
   };
   res.status(200).json(result);
 });

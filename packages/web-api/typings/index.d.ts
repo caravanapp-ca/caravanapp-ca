@@ -50,5 +50,7 @@ export interface ShelfEntryDoc
 }
 
 export interface UserDoc extends Document, FilterAutoMongoKeys<User> {
+  updatedAt: DateConstructor;
+  createdAt: DateConstructor;
   _id: MongooseTypes.ObjectId;
 }
