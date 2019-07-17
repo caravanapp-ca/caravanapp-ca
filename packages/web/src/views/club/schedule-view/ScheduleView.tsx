@@ -38,17 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 36,
       height: 36,
       fontSize: theme.typography.caption.fontSize,
-      // margin: '0 2px',
       color: 'inherit',
-    },
-    customDayHighlight: {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: '2px',
-      right: '2px',
-      border: `1px solid ${theme.palette.secondary.main}`,
-      borderRadius: '50%',
     },
     nonCurrentMonthDay: {
       color: theme.palette.text.disabled,
@@ -228,7 +218,11 @@ export default function ScheduleView(props: ScheduleViewProps) {
     if (!startDate) {
       return (
         <div>
-          <IconButton className={classes.day}>
+          <IconButton
+            className={clsx(classes.day, {
+              [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
+            })}
+          >
             <span> {format(day, 'd')} </span>
           </IconButton>
         </div>
