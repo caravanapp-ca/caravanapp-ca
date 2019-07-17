@@ -202,7 +202,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
             marginBottom: theme.spacing(4),
           }}
         >
-          This club has not yet set a schedule.
+          {`This club has not yet set a schedule for ${currBook.title}.`}
         </Typography>
       </Container>
     );
@@ -385,7 +385,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
             marks
             min={1}
             max={6}
-            defaultValue={3}
+            defaultValue={duration || undefined}
           />
         </div>
         <div className={classes.sectionContainer}>
@@ -425,6 +425,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
             marks
             min={0}
             max={7}
+            defaultValue={discussionFrequency || undefined}
           />
         </div>
         <div
