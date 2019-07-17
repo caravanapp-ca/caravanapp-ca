@@ -87,7 +87,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     buttonsContainer: {
       width: '100%',
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(4),
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
