@@ -20,11 +20,26 @@ declare module '@caravan/buddy-reading-types' {
     updatedAt: Date | string;
   }
 
+  export interface Discussion {
+    date: Date;
+    label: string;
+    format: 'text' | 'voice' | 'video';
+  }
+
+  export interface ClubReadingSchedule extends DocumentFields, MongoTimestamps {
+    shelfEntryId: string;
+    startDate: Date | null;
+    duration: number | null;
+    discussionFrequency: number | null;
+    discussions: Discussion[];
+  }
+
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
     ownerDiscordId?: string;
     shelf: ShelfEntry[];
+    schedules: ClubReadingSchedule[];
     bio?: string;
     members: GuildMember[];
     maxMembers: number;
@@ -203,6 +218,14 @@ declare module '@caravan/buddy-reading-types' {
     textColor: 'primary' | 'white';
   }
 
+  // Don't use this... I did what I do had to do - Matt C.
+  export interface ClubWUninitSchedules
+    extends Omit<Services.GetClubById, 'schedules'> {
+    schedules: (
+      | ClubReadingSchedule
+      | FilterAutoMongoKeys<ClubReadingSchedule>)[];
+  }
+
   export namespace Services {
     export interface GetClubs {
       clubs: {
@@ -211,6 +234,7 @@ declare module '@caravan/buddy-reading-types' {
         ownerId: string;
         guildId: string;
         shelf: any[];
+        schedules: ClubReadingSchedule[];
         bio?: string;
         maxMembers: number;
         memberCount: number;
@@ -230,6 +254,7 @@ declare module '@caravan/buddy-reading-types' {
       ownerId: string;
       ownerDiscordId: string;
       shelf: any[];
+      schedules: ClubReadingSchedule[];
       bio: string;
       members: any[];
       maxMembers: number;

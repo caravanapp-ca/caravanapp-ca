@@ -20,7 +20,7 @@ export default function DiscordLoginModal(props: LoginModalProps) {
   return (
     <Dialog open={open} onClose={onCloseLoginDialog}>
       <DialogTitle color={theme.palette.primary.main} id="alert-dialog-title">
-        Join our Community!
+        Meet great people, read amazing books.
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">

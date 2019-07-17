@@ -9,6 +9,8 @@ import ReactResizeDetector from 'react-resize-detector';
 import qs from 'query-string';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 import { User } from '@caravan/buddy-reading-types';
 import Footer from './components/Footer';
 import Club from './views/club/Club';
@@ -98,77 +100,82 @@ export function App(props: AppProps) {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <GAListener trackingId={trackingId}>
-          {/* div exists for ReactResizeDetector to work */}
-          <div>
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={props => forceOnboard(user, HomeRedirect())}
-              />
-              <Route
-                exact
-                path="/clubs"
-                render={props =>
-                  forceOnboard(user, <Home {...props} user={user} />)
-                }
-              />
-              <Route
-                exact
-                path="/clubs/create"
-                render={props =>
-                  forceOnboard(user, <CreateClub {...props} user={user} />)
-                }
-              />
-              <Route
-                exact
-                path="/onboarding"
-                render={props =>
-                  forceOutOfOnboard(user, <Onboarding {...props} user={user} />)
-                }
-              />
-              <Route
-                exact
-                path="/findbooks"
-                render={props => forceOnboard(user, <FindBooks />)}
-              />
-              <Route
-                exact
-                path="/privacy"
-                render={props => forceOnboard(user, <Privacy />)}
-              />
-              <Route
-                path="/clubs/:id/manage-shelf"
-                render={props =>
-                  forceOnboard(user, <UpdateBook {...props} user={user} />)
-                }
-              />
-              <Route
-                path="/clubs/:id"
-                render={props =>
-                  forceOnboard(user, <Club {...props} user={user} />)
-                }
-              />
-              <Route
-                path="/user/:id"
-                render={props =>
-                  forceOnboard(user, <UserView {...props} user={user} />)
-                }
-              />
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <GAListener trackingId={trackingId}>
+            {/* div exists for ReactResizeDetector to work */}
+            <div>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={props => forceOnboard(user, HomeRedirect())}
+                />
+                <Route
+                  exact
+                  path="/clubs"
+                  render={props =>
+                    forceOnboard(user, <Home {...props} user={user} />)
+                  }
+                />
+                <Route
+                  exact
+                  path="/clubs/create"
+                  render={props =>
+                    forceOnboard(user, <CreateClub {...props} user={user} />)
+                  }
+                />
+                <Route
+                  exact
+                  path="/onboarding"
+                  render={props =>
+                    forceOutOfOnboard(
+                      user,
+                      <Onboarding {...props} user={user} />
+                    )
+                  }
+                />
+                <Route
+                  exact
+                  path="/findbooks"
+                  render={props => forceOnboard(user, <FindBooks />)}
+                />
+                <Route
+                  exact
+                  path="/privacy"
+                  render={props => forceOnboard(user, <Privacy />)}
+                />
+                <Route
+                  path="/clubs/:id/manage-shelf"
+                  render={props =>
+                    forceOnboard(user, <UpdateBook {...props} user={user} />)
+                  }
+                />
+                <Route
+                  path="/clubs/:id"
+                  render={props =>
+                    forceOnboard(user, <Club {...props} user={user} />)
+                  }
+                />
+                <Route
+                  path="/user/:id"
+                  render={props =>
+                    forceOnboard(user, <UserView {...props} user={user} />)
+                  }
+                />
+              </Switch>
               <ReactResizeDetector
                 handleHeight
                 onResize={(w, h) => setDocHeight(h)}
               />
-            </Switch>
-          </div>
-          <Footer docHeight={docHeight} />
-        </GAListener>
-      </Router>
-    </ThemeProvider>
+            </div>
+            <Footer docHeight={docHeight} />
+          </GAListener>
+        </Router>
+      </ThemeProvider>
+    </MuiPickersUtilsProvider>
   );
 }
 
