@@ -208,7 +208,7 @@ export default function Onboarding(props: OnboardingProps) {
         key: genreKey,
         name: genreName,
       };
-      newGenres = [...selectedGenres, addedGenre];
+      let newGenres = [...selectedGenres, addedGenre];
     } else {
       newGenres = selectedGenres.filter(g => g.key !== genreKey);
     }

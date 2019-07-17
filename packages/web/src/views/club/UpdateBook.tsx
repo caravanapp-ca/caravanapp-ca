@@ -191,8 +191,8 @@ export default function UpdateBook(props: UpdateBookProps) {
       }
       setBookToRead(getBookToRead);
       setNewBookForShelf(false);
+      setMadeSavableMods(true);
     }
-    setMadeSavableMods(true);
   }
 
   function handleCurrBookActionChange(event: ChangeEvent<{}>, value: string) {
