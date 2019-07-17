@@ -4,7 +4,7 @@ import { eachDayOfInterval, addDays } from 'date-fns/esm';
 import {
   ShelfEntry,
   User,
-  MembershipStatus,
+  LoadableMemberStatus,
   Services,
   ClubReadingSchedule,
   FilterAutoMongoKeys,
@@ -112,9 +112,6 @@ interface ClubRouteParams {
 interface ClubProps extends RouteComponentProps<ClubRouteParams> {
   user: User | null;
 }
-
-type LoadableMemberStatus = MembershipStatus | 'loading';
-
 const showJoinClub = (
   memberStatus: LoadableMemberStatus,
   club: Services.GetClubById
@@ -433,17 +430,22 @@ export default function ClubComponent(props: ClubProps) {
       return;
     }
     const clubCopy: ClubWUninitSchedules = { ...club };
+    let nullSchedule = false;
     if (madeScheduleChanges && currBook && schedule) {
-      const scheduleCopy: (
+      let scheduleCopy: (
         | ClubReadingSchedule
         | FilterAutoMongoKeys<ClubReadingSchedule>)[] = [...club.schedules];
-      const currScheduleIndex = club.schedules.findIndex(
-        sched => sched.shelfEntryId === currBook._id
-      );
-      if (currScheduleIndex >= 0) {
-        scheduleCopy[currScheduleIndex] = schedule;
+      if (schedule.startDate == null || schedule.duration == null) {
+        nullSchedule = true;
       } else {
-        scheduleCopy.push(schedule);
+        const currScheduleIndex = club.schedules.findIndex(
+          sched => sched.shelfEntryId === currBook._id
+        );
+        if (currScheduleIndex >= 0) {
+          scheduleCopy[currScheduleIndex] = schedule;
+        } else {
+          scheduleCopy.push(schedule);
+        }
       }
       clubCopy.schedules = scheduleCopy;
     }
@@ -464,7 +466,12 @@ export default function ClubComponent(props: ClubProps) {
         message: 'We ran into some trouble saving your club.',
       });
     }
-    setIsEditing(false);
+    if (nullSchedule) {
+      await setIsEditing(false);
+      setSchedule(null);
+    } else {
+      setIsEditing(false);
+    }
   };
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -569,8 +576,11 @@ export default function ClubComponent(props: ClubProps) {
                   currBook={currBook}
                   initSchedule={initSchedule}
                   isEditing={isEditing}
+                  madeScheduleChanges={madeScheduleChanges}
+                  memberStatus={memberStatus}
                   onUpdateSchedule={onUpdateSchedule}
                   schedule={schedule}
+                  setIsEditing={setIsEditing}
                 />
               )}
               <div className={classes.buttonsContainer}>

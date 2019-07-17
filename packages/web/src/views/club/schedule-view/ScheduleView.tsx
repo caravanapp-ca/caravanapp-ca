@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Paper,
   Theme,
@@ -10,6 +10,7 @@ import {
   Container,
   TextField,
   Tooltip,
+  Button,
 } from '@material-ui/core';
 import {
   usePickerState,
@@ -17,17 +18,18 @@ import {
   MaterialUiPickersDate,
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
+import { DateRange, NotInterested } from '@material-ui/icons';
 import { addDays, isWithinInterval, isSameDay, format } from 'date-fns';
 import clsx from 'clsx';
-import { eachDayOfInterval } from 'date-fns/esm';
 import CalendarLegend from './CalendarLegend';
-import { successTheme } from '../../../theme';
+import { successTheme, textSecondaryTheme } from '../../../theme';
 import {
   ClubReadingSchedule,
   FilterAutoMongoKeys,
-  Discussion,
   ShelfEntry,
+  LoadableMemberStatus,
 } from '@caravan/buddy-reading-types';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -121,10 +123,13 @@ interface ScheduleViewProps {
     newVal: Date | number | string | null,
     index?: number
   ) => void;
+  madeScheduleChanges: boolean;
+  memberStatus: LoadableMemberStatus;
   schedule:
     | ClubReadingSchedule
     | FilterAutoMongoKeys<ClubReadingSchedule>
     | null;
+  setIsEditing: (isEditing: boolean) => void;
 }
 
 const discussionLabelMax = 50;
@@ -136,8 +141,11 @@ export default function ScheduleView(props: ScheduleViewProps) {
     currBook,
     initSchedule,
     isEditing,
+    madeScheduleChanges,
+    memberStatus,
     onUpdateSchedule,
     schedule,
+    setIsEditing,
   } = props;
   const [discussionLabelsFocused, setDiscussionLabelsFocused] = React.useState<
     boolean[]
@@ -173,7 +181,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
             marginBottom: theme.spacing(4),
           }}
         >
-          The club needs to pick a book to read before setting a schedule.
+          The club needs to pick a book before setting a schedule.
         </Typography>
       </Container>
     );
@@ -181,21 +189,49 @@ export default function ScheduleView(props: ScheduleViewProps) {
 
   // Using the destructured version here causes a Typescript error.
   if (!props.schedule) {
-    return (
-      <Container maxWidth="md">
-        <Typography
-          color="textSecondary"
-          style={{
-            textAlign: 'center',
-            fontStyle: 'italic',
-            marginTop: theme.spacing(4),
-            marginBottom: theme.spacing(4),
-          }}
-        >
-          {`This club has not yet set a schedule for ${currBook.title}.`}
-        </Typography>
-      </Container>
-    );
+    if (memberStatus === 'owner') {
+      return (
+        <Container maxWidth="md">
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              color="primary"
+              variant="outlined"
+              style={{
+                marginTop: theme.spacing(4),
+                marginBottom: theme.spacing(4),
+              }}
+              onClick={() => setIsEditing(true)}
+            >
+              <DateRange style={{ marginRight: 8 }} />
+              <Typography variant="button">Create a Schedule</Typography>
+            </Button>
+          </div>
+        </Container>
+      );
+    } else {
+      return (
+        <Container maxWidth="md">
+          <Typography
+            color="textSecondary"
+            style={{
+              textAlign: 'center',
+              fontStyle: 'italic',
+              marginTop: theme.spacing(4),
+              marginBottom: theme.spacing(4),
+            }}
+          >
+            {`The club has not yet set a schedule for "${currBook.title}"`}
+          </Typography>
+        </Container>
+      );
+    }
   }
 
   const {
@@ -335,7 +371,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
       <Container maxWidth="sm">
         <div className={classes.sectionContainer}>
           <Typography variant="h5">
-            {`Set a reading schedule for ${currBook.title}`}
+            {`Set a reading schedule for "${currBook.title}"`}
           </Typography>
         </div>
         <div className={classes.sectionContainer}>
@@ -431,6 +467,27 @@ export default function ScheduleView(props: ScheduleViewProps) {
               <CalendarLegend />
             </div>
           </Paper>
+          {madeScheduleChanges && (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}
+            >
+              <MuiThemeProvider theme={textSecondaryTheme}>
+                <Button
+                  color="primary"
+                  onClick={() => initSchedule()}
+                  style={{ marginTop: 8 }}
+                >
+                  <NotInterested style={{ marginRight: 8 }} />
+                  <Typography variant="button">Clear Schedule</Typography>
+                </Button>
+              </MuiThemeProvider>
+            </div>
+          )}
         </div>
         {discussions.length > 0 && (
           <div className={classes.sectionContainer}>
@@ -474,7 +531,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           className={clsx(classes.sectionContainer, classes.calendarContainer)}
         >
           <Typography variant="h6" gutterBottom>
-            {`Reading Schedule for ${currBook.title}`}
+            {`Reading Schedule for "${currBook.title}"`}
           </Typography>
           <Paper style={{ overflow: 'hidden' }}>
             <Calendar {...pickerProps} renderDay={renderDay} />

@@ -192,6 +192,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';
 
+  export type LoadableMemberStatus = MembershipStatus | 'loading';
+
   export type UserShelfReadingState = 'notStarted' | 'read';
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
