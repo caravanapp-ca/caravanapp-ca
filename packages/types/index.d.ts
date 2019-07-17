@@ -51,6 +51,13 @@ declare module '@caravan/buddy-reading-types' {
     unlisted: boolean;
   }
 
+  // This format of the Club has the current book and schedule extracted for quicker access.
+  export interface ClubTransformed {
+    club: Services.GetClubs['clubs'][0];
+    currentlyReading: ShelfEntry | null;
+    schedule: ClubReadingSchedule | null;
+  }
+
   export interface GroupMember extends DocumentFields, MongoTimestamps {
     userId: string;
     role: string;
@@ -84,7 +91,7 @@ declare module '@caravan/buddy-reading-types' {
   export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {
     readingState: ReadingState;
     clubId?: string;
-    club?: Club;
+    club?: GetClubById;
   }
 
   export type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
@@ -235,7 +242,7 @@ declare module '@caravan/buddy-reading-types' {
         name: string;
         ownerId: string;
         guildId: string;
-        shelf: any[];
+        shelf: ShelfEntry[];
         schedules: ClubReadingSchedule[];
         bio?: string;
         maxMembers: number;
@@ -255,7 +262,7 @@ declare module '@caravan/buddy-reading-types' {
       name: string;
       ownerId: string;
       ownerDiscordId: string;
-      shelf: any[];
+      shelf: ShelfEntry[];
       schedules: ClubReadingSchedule[];
       bio: string;
       members: any[];

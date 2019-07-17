@@ -8,6 +8,7 @@ import {
   Services,
   ProfileQuestion,
   UserQA,
+  ClubTransformed,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -19,9 +20,7 @@ import {
   Tab,
   Container,
 } from '@material-ui/core';
-import {
-  MuiThemeProvider,
-} from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
@@ -41,10 +40,7 @@ import UserClubs from './UserClubs';
 import { getClubsById, getUserClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
-import {
-  ClubWithCurrentlyReading,
-  transformClubsToWithCurrentlyReading,
-} from '../home/Home';
+import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme } from '../../theme';
 
@@ -136,8 +132,8 @@ export default function UserView(props: UserViewProps) {
     read: [],
   });
   const [shelfModified, setShelfModified] = React.useState<boolean>(false);
-  const [userClubsWCR, setUserClubsWCR] = React.useState<
-    ClubWithCurrentlyReading[]
+  const [userClubsTransformed, setUserClubsTransformed] = React.useState<
+    ClubTransformed[]
   >([]);
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
@@ -205,7 +201,7 @@ export default function UserView(props: UserViewProps) {
           getUserShelf(user, clubs).then(shelf => {
             setUserShelf(shelf);
           });
-          setUserClubsWCR(transformClubsToWithCurrentlyReading(clubs));
+          setUserClubsTransformed(transformClubs(clubs));
         });
       }
       setUser(user);
@@ -580,7 +576,7 @@ export default function UserView(props: UserViewProps) {
           )}
           {tabValue === 2 && (
             <UserClubs
-              clubsWCR={userClubsWCR}
+              clubsTransformed={userClubsTransformed}
               user={user}
               userIsMe={userIsMe}
             />

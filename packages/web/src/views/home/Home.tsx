@@ -18,6 +18,7 @@ import {
   ActiveFilter,
   FilterChipType,
   Membership,
+  ClubTransformed,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -41,11 +42,6 @@ import ClubCards from './ClubCards';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
-}
-
-export interface ClubWithCurrentlyReading {
-  club: Services.GetClubs['clubs'][0];
-  currentlyReading: ShelfEntry | null;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -91,29 +87,39 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function transformClubsToWithCurrentlyReading(
+export function transformClubs(
   clubs: Services.GetClubs['clubs']
-): ClubWithCurrentlyReading[] {
-  const clubsWCR: ClubWithCurrentlyReading[] = clubs.map(club => {
+): ClubTransformed[] {
+  const clubsTransformed: ClubTransformed[] = clubs.map(club => {
+    let returnObj: ClubTransformed = {
+      club,
+      currentlyReading: null,
+      schedule: null,
+    };
     const currentlyReading = club.shelf.find(
       book => book.readingState === 'current'
     );
     if (currentlyReading) {
-      return { club, currentlyReading };
-    } else {
-      return { club, currentlyReading: null };
+      returnObj = { ...returnObj, currentlyReading };
+      const schedule = club.schedules.find(
+        sched => sched.shelfEntryId === currentlyReading._id
+      );
+      if (schedule) {
+        returnObj = { ...returnObj, schedule };
+      }
     }
+    return returnObj;
   });
-  return clubsWCR;
+  return clubsTransformed;
 }
 
 export default function Home(props: HomeProps) {
   const classes = useStyles();
   const { user } = props;
-  const [clubsWCRResult, setClubsWCRResult] = React.useState<
-    Service<ClubWithCurrentlyReading[]>
+  const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
+    Service<ClubTransformed[]>
   >({ status: 'loading' });
-  const [] = React.useState<Service<ClubWithCurrentlyReading[]>>({
+  const [] = React.useState<Service<ClubTransformed[]>>({
     status: 'loading',
   });
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
@@ -178,16 +184,14 @@ export default function Home(props: HomeProps) {
           res = await getAllClubs(afterQuery, pageSize, activeFilter);
         }
         if (res.data) {
-          const newClubsWCR = transformClubsToWithCurrentlyReading(
-            res.data.clubs
-          );
-          setShowLoadMore(newClubsWCR.length === pageSize);
-          setClubsWCRResult(s => ({
+          const newClubsTransformed = transformClubs(res.data.clubs);
+          setShowLoadMore(newClubsTransformed.length === pageSize);
+          setClubsTransformedResult(s => ({
             status: 'loaded',
             payload:
               s.status === 'loaded'
-                ? [...s.payload, ...newClubsWCR]
-                : newClubsWCR,
+                ? [...s.payload, ...newClubsTransformed]
+                : newClubsTransformed,
           }));
         }
       })();
@@ -196,16 +200,14 @@ export default function Home(props: HomeProps) {
       (async () => {
         const res = await getAllClubs(afterQuery, pageSize);
         if (res.data) {
-          const newClubsWCR = transformClubsToWithCurrentlyReading(
-            res.data.clubs
-          );
-          setShowLoadMore(newClubsWCR.length === pageSize);
-          setClubsWCRResult(s => ({
+          const newClubsTransformed = transformClubs(res.data.clubs);
+          setShowLoadMore(newClubsTransformed.length === pageSize);
+          setClubsTransformedResult(s => ({
             status: 'loaded',
             payload:
               s.status === 'loaded'
-                ? [...s.payload, ...newClubsWCR]
-                : newClubsWCR,
+                ? [...s.payload, ...newClubsTransformed]
+                : newClubsTransformed,
           }));
         }
       })();
@@ -357,7 +359,7 @@ export default function Home(props: HomeProps) {
   }
 
   const resetFilters = async () => {
-    await setClubsWCRResult(s => ({
+    await setClubsTransformedResult(s => ({
       ...s,
       status: 'loading',
     }));
@@ -599,14 +601,19 @@ export default function Home(props: HomeProps) {
           }
           open={showMembershipFilter}
         />
-        {clubsWCRResult.status === 'loaded' &&
-          clubsWCRResult.payload.length > 0 && (
-            <ClubCards clubsWCR={clubsWCRResult.payload} user={user} />
+        {clubsTransformedResult.status === 'loaded' &&
+          clubsTransformedResult.payload.length > 0 && (
+            <ClubCards
+              clubsTransformed={clubsTransformedResult.payload}
+              user={user}
+            />
           )}
-        {clubsWCRResult.status === 'loaded' &&
+        {clubsTransformedResult.status === 'loaded' &&
           filtersApplied &&
-          clubsWCRResult.payload.length === 0 && <EmptyClubsFilterResult />}
-        {clubsWCRResult.status === 'loaded' && showLoadMore && (
+          clubsTransformedResult.payload.length === 0 && (
+            <EmptyClubsFilterResult />
+          )}
+        {clubsTransformedResult.status === 'loaded' && showLoadMore && (
           <div
             style={{
               display: 'flex',
@@ -620,8 +627,9 @@ export default function Home(props: HomeProps) {
               variant="outlined"
               onClick={() =>
                 setAfterQuery(
-                  clubsWCRResult.payload[clubsWCRResult.payload.length - 1].club
-                    ._id
+                  clubsTransformedResult.payload[
+                    clubsTransformedResult.payload.length - 1
+                  ].club._id
                 )
               }
             >
