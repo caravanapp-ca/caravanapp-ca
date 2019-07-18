@@ -37,7 +37,11 @@ import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
 import UserClubs from './UserClubs';
-import { getClubsById, getUserClubs } from '../../services/club';
+import {
+  getClubsByIdWMembers,
+  getUserClubs,
+  getClubsByIdNoMembers,
+} from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
 import { transformClubs } from '../home/Home';
@@ -278,8 +282,12 @@ export default function UserView(props: UserViewProps) {
         clubIdsArr.push(s.clubId);
       }
     });
-    const rClubs = await getClubsById(clubIdsArr);
-    if (rClubs && rClubs.length === indices.length) {
+    const res = await getClubsByIdNoMembers(clubIdsArr);
+    let rClubs: Services.GetClubs['clubs'] = [];
+    if (res.status === 200) {
+      rClubs = res.data.clubs;
+    }
+    if (rClubs.length === indices.length) {
       for (let i = 0; i < rClubs.length; i++) {
         userShelf.read[indices[i]].club = rClubs[i];
       }

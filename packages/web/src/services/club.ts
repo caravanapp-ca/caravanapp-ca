@@ -47,9 +47,21 @@ export async function getClub(clubId: string) {
   return club;
 }
 
-export async function getClubsById(clubIds: string[]) {
+export async function getClubsByIdNoMembers(clubIds: string[]) {
+  const res = await axios.get<Services.GetClubs>(
+    `${clubRoute}/clubsByIdNoMembers`,
+    {
+      params: {
+        clubIds,
+      },
+    }
+  );
+  return res;
+}
+
+export async function getClubsByIdWMembers(clubIds: string[]) {
   const res = await axios.post<Services.GetClubById[]>(
-    `${clubRoute}/clubsById`,
+    `${clubRoute}/clubsByIdWMembers`,
     {
       clubIds,
     }

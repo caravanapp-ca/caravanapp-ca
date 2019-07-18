@@ -140,6 +140,7 @@ router.get('/', async (req, res, next) => {
       query.genres = { $elemMatch: { key: { $in: genreKeys } } };
     }
   }
+  // MARKER 1
   const size = Number.parseInt(pageSize || 0);
   const limit = Math.min(Math.max(size, 10), 50);
   let clubs: ClubDoc[];
@@ -389,7 +390,7 @@ router.get('/:id', async (req, res, next) => {
 
 // Return clubs from array of clubId's.
 router.post(
-  '/clubsById',
+  '/clubsByIdWMembers',
   check('clubIds').isArray(),
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -454,6 +455,73 @@ router.post(
     }
   }
 );
+
+// Get clubs by Id but with member counts instead of members themselves
+// Lightweight option for when you don't need all the member's information
+// MARKER 2
+router.get(
+  '/getClubsByIdNoMembers',
+  async(req, res, next) => {
+  const { after, pageSize } = req.query;
+  const { clubIds } = req.params;
+  const size = Number.parseInt(pageSize || 0);
+  const limit = Math.min(Math.max(size, 10), 50);
+  let clubs: ClubDoc[];
+  try {
+    clubs = await ClubModel.find({
+      _id: {
+        $in: clubIds,
+      },
+    })
+    .limit(limit)
+    .sort({ createdAt: -1 })
+    .exec();
+    if (!clubs) {
+      res.sendStatus(404);
+      return;
+    }
+  } catch (err){
+    console.error('Failed to save club data', err);
+    res.status(400).send('Failed to save club data');
+  }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
+    .map(clubDoc => {
+      let discordChannel: GuildChannel | null = guild.channels.find(
+        c => c.id === clubDoc.channelId
+      );
+      if (!discordChannel) {
+        return null;
+      }
+      const memberCount = getCountableMembersInChannel(discordChannel, clubDoc).size;
+      const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
+        createdAt: string;
+        updatedAt: string;
+      } = {
+        ...clubDoc.toObject(),
+        createdAt:
+          clubDoc.createdAt instanceof Date
+            ? clubDoc.createdAt.toISOString()
+            : clubDoc.createdAt,
+        updatedAt:
+          clubDoc.updatedAt instanceof Date
+            ? clubDoc.updatedAt.toISOString()
+            : clubDoc.updatedAt,
+      };
+      const obj: Services.GetClubs['clubs'][0] = {
+        ...club,
+        guildId: guild.id,
+        memberCount,
+      };
+      return obj;
+    })
+    .filter(c => c !== null);
+    const result: Services.GetClubs = {
+      clubs: filteredClubsWithMemberCounts,
+    };
+    res.status(200).json(result);
+});
 
 interface CreateChannelInput {
   nsfw?: boolean;

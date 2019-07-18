@@ -92,7 +92,7 @@ declare module '@caravan/buddy-reading-types' {
   export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {
     readingState: ReadingState;
     clubId?: string;
-    club?: Services.GetClubById;
+    club?: Services.GetClubs['clubs'][0];
   }
 
   export type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
