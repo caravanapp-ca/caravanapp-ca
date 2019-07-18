@@ -299,17 +299,17 @@ export default function ClubCards(props: ClubCardsProps) {
                   </CardContent>
                   <CardActions className={classes.cardActions}>
                     <div className={classes.creationInfoContainer}>
-                      {owner && (
+                      <Typography variant="caption" color="textSecondary">
+                        {`Created on ${format(new Date(club.createdAt), 'PP')}`}
+                      </Typography>
+                      {owner && owner.name && owner.name.length > 0 && (
                         <Typography variant="caption" color="textSecondary">
-                          {`Created by: ${owner.name}`}
+                          {/* Truncate doesn't work as advertised, so we set an exact width here. */}
+                          <Truncate lines={1} trimWhitespace={true} width={196}>
+                            {`by ${owner.name}`}
+                          </Truncate>
                         </Typography>
                       )}
-                      <Typography variant="caption" color="textSecondary">
-                        {`Created on: ${format(
-                          new Date(club.createdAt),
-                          'PP'
-                        )}`}
-                      </Typography>
                     </div>
                     <Button
                       className={classes.button}

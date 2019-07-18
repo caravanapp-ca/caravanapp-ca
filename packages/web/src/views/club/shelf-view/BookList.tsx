@@ -49,7 +49,10 @@ export default function BookList(props: BookListProps) {
     footerElement,
   } = props;
 
-  function radio(b: FilterAutoMongoKeys<ShelfEntry>, index: number): JSX.Element {
+  function radio(
+    b: FilterAutoMongoKeys<ShelfEntry>,
+    index: number
+  ): JSX.Element {
     if (onRadioPress && radioValue) {
       return (
         <Radio
