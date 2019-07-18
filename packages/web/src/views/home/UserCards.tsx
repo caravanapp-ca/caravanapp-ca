@@ -372,7 +372,10 @@ export default function UserCards(props: UserCardProps) {
                         className={classes.button}
                         color="primary"
                         component={AdapterLink}
-                        to={`/user/${u.user._id}`}
+                        to={{
+                          pathname: `/user/${u.user._id}`,
+                          state: { tabValue: 1 },
+                        }}
                         variant="contained"
                       >
                         <Typography variant="button">View Profile</Typography>
