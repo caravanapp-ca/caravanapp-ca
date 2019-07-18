@@ -13,10 +13,10 @@ const useStyles = makeStyles(() =>
       fontStyle: 'italic',
     },
     chipIcon: {
-      color: 'red',
+      color: '#AF0020',
       paddingLeft: 2,
-      height: 25,
-      width: 25,
+      height: 22,
+      width: 22,
     },
   })
 );
@@ -53,11 +53,11 @@ export default function GenresInCommonChips(props: GenresInCommonChipsProps) {
     <Chip
       label={name}
       key={name}
-      avatar={common ? <HeartIcon /> : undefined}
+      icon={common ? <HeartIcon /> : undefined}
       classes={{
         root: classes.baseChip,
         label: classes.chipText,
-        avatar: classes.chipIcon,
+        icon: classes.chipIcon,
       }}
       style={{
         backgroundColor: backgroundColorWithOpacity,

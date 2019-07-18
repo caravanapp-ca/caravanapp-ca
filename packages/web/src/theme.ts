@@ -151,9 +151,9 @@ export const makeUserTheme = (palette: PaletteObject | null) => {
   if (palette) {
     return responsiveFontSizes(
       createMuiTheme({
-        ...theme,
+        ...themeObj,
         palette: {
-          ...theme.palette,
+          ...themeObj.palette,
           primary: {
             main: palette.key,
           },
@@ -169,9 +169,9 @@ export const makeUserDarkTheme = (palette: PaletteObject | null) => {
     const userTextColors = getUserTextPalette(palette);
     return responsiveFontSizes(
       createMuiTheme({
-        ...theme,
+        ...themeObj,
         palette: {
-          ...theme.palette,
+          ...themeObj.palette,
           primary: {
             main: userTextColors.primary,
           },

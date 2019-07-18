@@ -20,11 +20,17 @@ import GenresInCommonChips from '../../components/GenresInCommonChips';
 import UserCardShelfList from '../club/shelf-view/UserCardShelfList';
 import { InviteToClubMenu } from '../../components/InviteToClubMenu';
 import { getUserClubs, getClubMembers } from '../../services/club';
+import { UserWithInvitableClubs } from './Home';
+import UserAvatar from '../user/UserAvatar';
+import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(8),
+  },
+  gridItem: {
+    marginBottom: theme.spacing(4),
   },
   card: {
     height: '100%',
@@ -40,6 +46,7 @@ const useStyles = makeStyles(theme => ({
     zIndex: 1,
     flexGrow: 1,
     backgroundColor: '#FFFFFF',
+    paddingBottom: 0,
   },
   iconWithLabel: {
     display: 'flex',
@@ -85,18 +92,17 @@ const useStyles = makeStyles(theme => ({
   },
   userNameText: {
     fontWeight: 600,
+    width: '74%',
   },
   userWebsiteText: {},
   userAvatarContainer: {
     position: 'absolute',
-    width: 112,
-    height: 112,
-    top: 30,
-    right: 10,
-    'border-radius': '50%',
-    padding: theme.spacing(2),
+    top: 32,
+    right: 16,
     zIndex: 1,
-    backgroundColor: 'red',
+    borderRadius: '50%',
+    padding: 3,
+    backgroundColor: '#FFFFFF',
   },
   fieldTitleText: {
     fontStyle: 'italic',
@@ -142,14 +148,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface UserCardProps {
-  users: User[];
+  usersWithInvitableClubs: UserWithInvitableClubs[];
   user: User | null;
   userClubs: Services.GetClubs['clubs'];
 }
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
-  const { users, user, userClubs } = props;
+  const { usersWithInvitableClubs, user, userClubs } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
@@ -166,34 +172,16 @@ export default function UserCards(props: UserCardProps) {
     myGenres = user.selectedGenres.map(x => x.name);
   }
 
-  async function checkIfInClub(
-    club: Services.GetClubs['clubs'][0],
-    userId: string
-  ) {
-    const res = await getClubMembers(club._id);
-    if (!res.data) {
-      return null;
-    }
-    const members = res.data;
-
-    const memberIds = members.map(m => m._id);
-
-    if (!memberIds.includes(userId)) {
-      return club;
-    }
-    return null;
-  }
-
   return (
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
-          {users.map(u => {
-            const userTheme = makeUserTheme(u.palette);
+          {usersWithInvitableClubs.map(u => {
+            const userTheme = makeUserTheme(u.user.palette);
 
-            const userDarkTheme = makeUserDarkTheme(u.palette);
+            const userDarkTheme = makeUserDarkTheme(u.user.palette);
 
-            const otherUsersGenres: string[] = u.selectedGenres.map(
+            const otherUsersGenres: string[] = u.user.selectedGenres.map(
               x => x.name
             );
 
@@ -220,23 +208,22 @@ export default function UserCards(props: UserCardProps) {
               );
             }
 
-            const nameField: string = u.name
-              ? u.name
-              : u.urlSlug
-              ? u.urlSlug
+            const nameField: string = u.user.name
+              ? u.user.name
+              : u.user.urlSlug
+              ? u.user.urlSlug
               : 'noName';
-
-            let filteredUserClubs: Services.GetClubs['clubs'] = [];
-            userClubs.forEach(function(club) {
-              const clubVal = await checkIfInClub(club, u._id);
-              if (clubVal) {
-                filteredUserClubs.push(clubVal);
-              }
-            });
 
             return (
               <MuiThemeProvider theme={userTheme}>
-                <Grid item key={u._id} xs={12} sm={6} spacing={4}>
+                <Grid
+                  item
+                  key={u.user._id}
+                  xs={12}
+                  sm={6}
+                  className={classes.gridItem}
+                  justify="space-around"
+                >
                   <Card className={classes.card}>
                     <div
                       className={classes.userHeading}
@@ -247,14 +234,16 @@ export default function UserCards(props: UserCardProps) {
                       }}
                     >
                       <div className={classes.userTextContainer}>
-                        <MuiThemeProvider theme={userDarkTheme}>
+                        <MuiThemeProvider theme={userDarkTheme || theme}>
                           <Typography
-                            variant="h4"
+                            variant="h5"
                             className={classes.userNameText}
                             color="primary"
                             style={
                               !userDarkTheme
-                                ? { color: theme.palette.common.white }
+                                ? {
+                                    color: theme.palette.common.white,
+                                  }
                                 : undefined
                             }
                           >
@@ -263,7 +252,7 @@ export default function UserCards(props: UserCardProps) {
                         </MuiThemeProvider>
                       </div>
                     </div>
-                    <CardContent className={classes.cardContent}>
+                    <CardContent classes={{ root: classes.cardContent }}>
                       <Typography
                         gutterBottom
                         className={classes.fieldTitleText}
@@ -322,10 +311,10 @@ export default function UserCards(props: UserCardProps) {
                       >
                         Shelf
                       </Typography>
-                      {u.shelf.notStarted.length > 0 && (
-                        <UserCardShelfList shelf={u.shelf.notStarted} />
+                      {u.user.shelf.notStarted.length > 0 && (
+                        <UserCardShelfList shelf={u.user.shelf.notStarted} />
                       )}
-                      {u.shelf.notStarted.length === 0 && (
+                      {u.user.shelf.notStarted.length === 0 && (
                         <Typography
                           variant="body1"
                           className={classes.emptyFieldText}
@@ -334,28 +323,30 @@ export default function UserCards(props: UserCardProps) {
                           User has no books on their shelf...
                         </Typography>
                       )}
-                      {u.questions && u.questions.length > 0 && (
+                      {u.user.questions && u.user.questions.length > 0 && (
                         <>
                           <Typography
                             className={classes.fieldTitleText}
                             color="textSecondary"
+                            gutterBottom
                           >
-                            {u.questions[0].title}
+                            {u.user.questions[0].title}
                           </Typography>
                           <Typography
                             variant="body1"
                             className={classes.emptyFieldText}
                           >
-                            {u.questions[0].answer}
+                            {u.user.questions[0].answer}
                           </Typography>
                         </>
                       )}
-                      {!u.questions ||
-                        (u.questions.length === 0 && (
+                      {!u.user.questions ||
+                        (u.user.questions.length === 0 && (
                           <>
                             <Typography
                               className={classes.fieldTitleText}
                               color="textSecondary"
+                              gutterBottom
                             >
                               Profile questions
                             </Typography>
@@ -374,35 +365,39 @@ export default function UserCards(props: UserCardProps) {
                         className={classes.button}
                         color="primary"
                         component={AdapterLink}
-                        to={`/user/${u._id}`}
+                        to={`/user/${u.user._id}`}
+                        variant="contained"
                       >
                         <Typography variant="button">View Profile</Typography>
                       </Button>
-                      <Button
+                      {/* <Button
                         className={classes.button}
                         color="primary"
                         variant="contained"
-                        component={AdapterLink}
-                        to={`/user/${u._id}`}
                         onClick={() => setInviteToClubMenuShown(true)}
                       >
                         <Typography variant="button">Invite to Club</Typography>
-                      </Button>
-                      {visitProfileLoadingId === u._id && (
+                      </Button> */}
+                      {visitProfileLoadingId === u.user._id && (
                         <CircularProgress className={classes.progress} />
                       )}
                     </CardActions>
-                    <Avatar
-                      src={u.photoUrl}
-                      className={classes.userAvatarContainer}
-                      style={{
-                        borderColor: 'colorPrimary',
-                      }}
-                    />
+                    {u.user && u.user.photoUrl && (
+                      <div className={classes.userAvatarContainer}>
+                        <UserAvatar user={u.user} size={'small'} />
+                      </div>
+                    )}
+                    {!u.user.photoUrl && (
+                      <div className={classes.userAvatarContainer}>
+                        <GenericGroupMemberAvatar
+                          style={{ height: 112, width: 112 }}
+                        />
+                      </div>
+                    )}
                     {inviteToClubMenuShown && (
                       <InviteToClubMenu
                         user={user}
-                        //clubsToInviteTo={filteredUserClubs}
+                        clubsToInviteTo={u.invitableClubs}
                         inviteClubsMenuShown={inviteToClubMenuShown}
                       />
                     )}

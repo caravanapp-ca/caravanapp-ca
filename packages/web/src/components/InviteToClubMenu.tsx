@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 
 interface InviteToClubMenuProps {
   user: User | null;
-  //clubsToInviteTo: Services.GetClubs['clubs'];
+  clubsToInviteTo: Services.GetClubs['clubs'];
   inviteClubsMenuShown: boolean;
 }
 
@@ -36,7 +36,7 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
 
   const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
 
-  const { user, inviteClubsMenuShown } = props;
+  const { user, inviteClubsMenuShown, clubsToInviteTo } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
@@ -62,11 +62,17 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
     }
     setHeaderProfileMenuOpenState(false);
   }
+  if (user) {
+    console.log('User');
+    console.log(user.urlSlug);
+  }
+  console.log('clubs to invite');
+  console.log(clubsToInviteTo);
 
   return (
     <Menu
       open={inviteClubsMenuShown}
-      //anchorEl={headerProfileAnchorRef.current}
+      anchorEl={headerProfileAnchorRef.current}
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'right',
@@ -75,11 +81,11 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
         vertical: 'top',
         horizontal: 'right',
       }}
-      //onClose={handleProfileMenuClose}
+      onClose={handleProfileMenuClose}
     >
-      {/* {clubsToInviteTo.map(club => (
+      {clubsToInviteTo.map(club => (
         <MenuItem>{club.name}</MenuItem>
-      ))} */}
+      ))}
     </Menu>
   );
 }

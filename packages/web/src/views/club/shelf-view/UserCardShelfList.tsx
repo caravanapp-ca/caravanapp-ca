@@ -3,18 +3,12 @@ import {
   makeStyles,
   createStyles,
   useTheme,
-  GridList,
-  GridListTile,
-  Fab,
   Grid,
   Tooltip,
 } from '@material-ui/core';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import BackwardIcon from '@material-ui/icons/ArrowBackIos';
 import { ShelfEntry } from '@caravan/buddy-reading-types';
-import { number } from 'prop-types';
-import { useEffect } from 'react';
-import { Book } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -29,22 +23,18 @@ const useStyles = makeStyles(theme =>
       justifyContent: 'flex-start',
       overflow: 'hidden !important',
       backgroundColor: theme.palette.background.paper,
+      margin: 3,
     },
     clickableIcon: {
       height: 20,
       width: 20,
     },
-    gridList: {
-      flexWrap: 'nowrap',
-      transform: 'translateZ(0)',
-      width: '100%',
-    },
     bookCoverTile: {
       marginRight: theme.spacing(1),
     },
     bookCover: {
-      width: '100%',
-      height: '100%',
+      width: '95%',
+      height: '95%',
       borderRadius: 5,
       objectFit: 'cover',
       border: '1px solid #E9E9E9',
@@ -58,11 +48,10 @@ interface UserCardShelfListProps {
 
 export default function UserCardShelfList(props: UserCardShelfListProps) {
   const classes = useStyles();
-  const theme = useTheme();
 
   const { shelf } = props;
 
-  const [indices, setIndices] = React.useState<number[]>([0, 3]);
+  const [indices, setIndices] = React.useState<number[]>([0, 4]);
 
   function incrementIndices(val: number) {
     let higherVal = 0;
@@ -74,7 +63,7 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
       (val < 0 && lowerIndex > 0)
     ) {
       if (higherIndex > shelf.length) {
-        higherVal = shelf.length - Math.floor(shelf.length % 3);
+        higherVal = shelf.length - Math.floor(shelf.length % 4);
       } else {
         higherVal = Math.min(higherIndex + val, shelf.length + 1);
       }
@@ -92,7 +81,7 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
     <div className={classes.root}>
       <div
         className={classes.clickableIcon}
-        onClick={() => incrementIndices(-3)}
+        onClick={() => incrementIndices(-4)}
       >
         {indices[0] > 0 && <BackwardIcon color="primary" />}
       </div>
@@ -101,10 +90,11 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
         direction="row"
         justify="flex-start"
         alignItems="stretch"
-        spacing={2}
+        spacing={1}
+        className={classes.gridListDiv}
       >
         {shelf.slice(indices[0], indices[1]).map(book => (
-          <Grid item key={book.sourceId} xs={4}>
+          <Grid item key={book.sourceId} xs={3}>
             <Tooltip title={book.title} aria-label={book.title}>
               <img
                 src={book.coverImageURL}
@@ -117,7 +107,7 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
       </Grid>
       <div
         className={classes.clickableIcon}
-        onClick={() => incrementIndices(3)}
+        onClick={() => incrementIndices(4)}
       >
         {indices[1] <= shelf.length - 1 && <ForwardIcon color="primary" />}
       </div>

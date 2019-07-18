@@ -46,6 +46,7 @@ import UserCards from './UserCards';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
+  tabValuePassed?: number;
 }
 
 export interface ClubWithCurrentlyReading {
@@ -133,9 +134,12 @@ export async function transformUserToInvitableClub(
   usersClubs: Services.GetClubs['clubs']
 ) {
   if (usersClubs.length === 0) {
-    return users;
+    const usersWIC = users.map(user => {
+      return { user, invitableClubs: [] };
+    });
+    return usersWIC;
   } else {
-    const clubsWithMembers: ClubWithMemberIds[] = await Promise.all(
+    const clubsWithMembers = await Promise.all(
       usersClubs.map(async function(club) {
         const res = await getClubMembers(club._id);
         if (!res.data) {
@@ -146,19 +150,32 @@ export async function transformUserToInvitableClub(
         const memberIds = members.map(m => m._id);
         return { club, memberIds };
       })
-    ).filter(c => c !== null);
+    );
+
+    const filteredClubsWithMembers: ClubWithMemberIds[] = clubsWithMembers.filter(
+      c => c !== null
+    ) as ClubWithMemberIds[];
 
     const usersWIC: UserWithInvitableClubs[] = users.map(user => {
-      const filteredClubs = clubsWithMembers
-        .map(function(clubWithMembers) {
+      const filteredClubs = filteredClubsWithMembers.map(function(
+        clubWithMembers
+      ) {
+        if (clubWithMembers) {
           if (!clubWithMembers.memberIds.includes(user._id)) {
             return clubWithMembers.club;
+          } else {
+            return null;
           }
-        })
-        .filter(fc => fc !== null);
-      return { user, invitableClubs: filteredClubs };
-    });
+        } else {
+          return null;
+        }
+      });
+      const filteredClubsNotNull: Services.GetClubs['clubs'] = filteredClubs.filter(
+        fc => fc !== null
+      ) as Services.GetClubs['clubs'];
 
+      return { user, invitableClubs: filteredClubsNotNull };
+    });
     return usersWIC;
   }
 }
@@ -179,7 +196,7 @@ export function shuffleArr(arr: any[]) {
 
 export default function Home(props: HomeProps) {
   const classes = useStyles();
-  const { user } = props;
+  const { user, tabValuePassed } = props;
 
   const theme = useTheme();
 
@@ -193,14 +210,14 @@ export default function Home(props: HomeProps) {
 
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
-  >({
-    status: 'loading',
-  });
+  >({ status: 'loading' });
 
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tabValue, setTabValue] = React.useState(
+    tabValuePassed ? tabValuePassed : 0
+  );
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
@@ -327,35 +344,35 @@ export default function Home(props: HomeProps) {
   useEffect(() => {
     const pageSize = 24;
     (async () => {
-      const res = await getAllUsers(afterClubsQuery, pageSize);
+      const res = await getAllUsers(afterUsersQuery, pageSize);
 
       if (res.data) {
         let usersClubs: Services.GetClubs['clubs'] = [];
-        if (user) {
-          const userClubsRes = await getUserClubs(
-            user._id,
-            undefined,
-            pageSize,
-            {
-              genres: [],
-              speed: [],
-              capacity: [],
-              membership: [
-                { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-              ],
-            }
-          );
-          if (userClubsRes.data) {
-            usersClubs = userClubsRes.data.clubs;
-          }
-        }
+        // if (user) {
+        //   const userClubsRes = await getUserClubs(
+        //     user._id,
+        //     undefined,
+        //     pageSize,
+        //     {
+        //       genres: [],
+        //       speed: [],
+        //       capacity: [],
+        //       membership: [
+        //         { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
+        //       ],
+        //     }
+        //   );
+        //   if (userClubsRes.data) {
+        //     usersClubs = userClubsRes.data.clubs;
+        //   }
+        // }
         const newUsers = res.data.users;
         const newUsersShuffled = newUsers.map(user => shuffleUser(user));
-        const newUsersWithInvitableClubs = transformUserToInvitableClub(
+        const newUsersWithInvitableClubs = await transformUserToInvitableClub(
           newUsersShuffled,
           usersClubs
         );
-        setShowLoadMoreUsers(newUsersShuffled.length === pageSize);
+        setShowLoadMoreUsers(newUsersWithInvitableClubs.length === pageSize);
         setUsersResult(s => ({
           status: 'loaded',
           payload:
@@ -825,11 +842,36 @@ export default function Home(props: HomeProps) {
             {usersResult.status === 'loaded' &&
               usersResult.payload.length > 0 && (
                 <UserCards
-                  users={usersResult.payload}
+                  usersWithInvitableClubs={usersResult.payload}
                   user={user}
                   userClubs={currentUsersClubs}
                 />
               )}
+            {usersResult.status === 'loaded' && showLoadMoreUsers && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <Button
+                  color="primary"
+                  className={classes.button}
+                  variant="outlined"
+                  onClick={() =>
+                    setAfterUsersQuery(
+                      usersResult.payload[usersResult.payload.length - 1].user
+                        ._id
+                    )
+                  }
+                >
+                  <Typography variant="button" style={{ textAlign: 'center' }}>
+                    LOAD MORE...
+                  </Typography>
+                </Button>
+              </div>
+            )}
           </>
         )}
       </main>

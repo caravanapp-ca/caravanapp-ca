@@ -37,5 +37,8 @@ export default function UserAvatar(props: UserAvatarProps) {
     default:
       break;
   }
-  return <Avatar src={user.photoUrl} className={avatarClass} style={style} />;
+
+  return (
+    <Avatar src={user.photoUrl} classes={{ root: avatarClass }} style={style} />
+  );
 }
