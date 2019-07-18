@@ -390,7 +390,7 @@ router.get('/:id', async (req, res, next) => {
 
 // Return clubs from array of clubId's.
 router.post(
-  '/clubsByIdWMembers',
+  '/getClubsByIdWMembers',
   check('clubIds').isArray(),
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -459,13 +459,11 @@ router.post(
 // Get clubs by Id but with member counts instead of members themselves
 // Lightweight option for when you don't need all the member's information
 // MARKER 2
-router.get(
+router.post(
   '/getClubsByIdNoMembers',
-  async(req, res, next) => {
-  const { after, pageSize } = req.query;
-  const { clubIds } = req.params;
-  const size = Number.parseInt(pageSize || 0);
-  const limit = Math.min(Math.max(size, 10), 50);
+  check('clubIds').isArray(),
+  async (req, res, next) => {
+  const { clubIds } = req.body;
   let clubs: ClubDoc[];
   try {
     clubs = await ClubModel.find({
@@ -473,14 +471,13 @@ router.get(
         $in: clubIds,
       },
     })
-    .limit(limit)
-    .sort({ createdAt: -1 })
-    .exec();
+      .sort({ createdAt: -1 })
+      .exec();
     if (!clubs) {
       res.sendStatus(404);
       return;
     }
-  } catch (err){
+  } catch (err) {
     console.error('Failed to save club data', err);
     res.status(400).send('Failed to save club data');
   }
@@ -494,7 +491,8 @@ router.get(
       if (!discordChannel) {
         return null;
       }
-      const memberCount = getCountableMembersInChannel(discordChannel, clubDoc).size;
+      const memberCount = getCountableMembersInChannel(discordChannel, clubDoc)
+        .size;
       const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
         createdAt: string;
         updatedAt: string;
@@ -517,10 +515,10 @@ router.get(
       return obj;
     })
     .filter(c => c !== null);
-    const result: Services.GetClubs = {
-      clubs: filteredClubsWithMemberCounts,
-    };
-    res.status(200).json(result);
+  const result: Services.GetClubs = {
+    clubs: filteredClubsWithMemberCounts,
+  };
+  res.status(200).json(result);
 });
 
 interface CreateChannelInput {

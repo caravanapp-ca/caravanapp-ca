@@ -37,11 +37,7 @@ import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
 import UserClubs from './UserClubs';
-import {
-  getClubsByIdWMembers,
-  getUserClubs,
-  getClubsByIdNoMembers,
-} from '../../services/club';
+import { getClubsByIdNoMembers, getUserClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
 import { transformClubs } from '../home/Home';
