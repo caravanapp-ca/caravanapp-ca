@@ -18,6 +18,8 @@ import AdapterLink from '../../components/AdapterLink';
 import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
 import UserCardShelfList from '../club/shelf-view/UserCardShelfList';
+import { InviteToClubMenu } from '../../components/InviteToClubMenu';
+import { getUserClubs, getClubMembers } from '../../services/club';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -147,10 +149,13 @@ interface UserCardProps {
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
-  const { users, user } = props;
+  const { users, user, userClubs } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
+  const [inviteToClubMenuShown, setInviteToClubMenuShown] = React.useState(
+    false
+  );
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
@@ -159,6 +164,24 @@ export default function UserCards(props: UserCardProps) {
   let myGenres: string[] = [];
   if (user) {
     myGenres = user.selectedGenres.map(x => x.name);
+  }
+
+  async function checkIfInClub(
+    club: Services.GetClubs['clubs'][0],
+    userId: string
+  ) {
+    const res = await getClubMembers(club._id);
+    if (!res.data) {
+      return null;
+    }
+    const members = res.data;
+
+    const memberIds = members.map(m => m._id);
+
+    if (!memberIds.includes(userId)) {
+      return club;
+    }
+    return null;
   }
 
   return (
@@ -202,6 +225,14 @@ export default function UserCards(props: UserCardProps) {
               : u.urlSlug
               ? u.urlSlug
               : 'noName';
+
+            let filteredUserClubs: Services.GetClubs['clubs'] = [];
+            userClubs.forEach(function(club) {
+              const clubVal = await checkIfInClub(club, u._id);
+              if (clubVal) {
+                filteredUserClubs.push(clubVal);
+              }
+            });
 
             return (
               <MuiThemeProvider theme={userTheme}>
@@ -353,6 +384,7 @@ export default function UserCards(props: UserCardProps) {
                         variant="contained"
                         component={AdapterLink}
                         to={`/user/${u._id}`}
+                        onClick={() => setInviteToClubMenuShown(true)}
                       >
                         <Typography variant="button">Invite to Club</Typography>
                       </Button>
@@ -367,6 +399,13 @@ export default function UserCards(props: UserCardProps) {
                         borderColor: 'colorPrimary',
                       }}
                     />
+                    {inviteToClubMenuShown && (
+                      <InviteToClubMenu
+                        user={user}
+                        //clubsToInviteTo={filteredUserClubs}
+                        inviteClubsMenuShown={inviteToClubMenuShown}
+                      />
+                    )}
                   </Card>
                 </Grid>
               </MuiThemeProvider>
