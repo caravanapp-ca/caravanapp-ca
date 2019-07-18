@@ -1,12 +1,12 @@
 import React from 'react';
-import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
+import { makeStyles, createStyles, Theme, Chip } from '@material-ui/core';
 import HeartIcon from '@material-ui/icons/Favorite';
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     baseChip: {
-      marginRight: 4,
-      marginTop: 4,
+      marginRight: theme.spacing(1),
+      marginTop: theme.spacing(1),
       zIndex: 1,
     },
     chipText: {

@@ -64,9 +64,9 @@ const useStyles = makeStyles(theme => ({
   cardActions: {
     display: 'flex',
     justifyContent: 'flex-end',
-    margin: 0,
   },
   button: {
+    marginBottom: theme.spacing(1),
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
@@ -106,6 +106,10 @@ const useStyles = makeStyles(theme => ({
   },
   fieldTitleText: {
     fontStyle: 'italic',
+    marginTop: theme.spacing(2),
+  },
+  fieldTitleTextLessTopMargin: {
+    fontStyle: 'italic',
     marginTop: theme.spacing(1),
   },
   genresInCommon: {
@@ -113,6 +117,9 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
   },
   emptyFieldText: {},
+  emptyFieldTitleTextLessTopMargin: {
+    marginTop: theme.spacing(1),
+  },
   clubImage: {
     position: 'absolute',
     width: '100%',
@@ -255,7 +262,7 @@ export default function UserCards(props: UserCardProps) {
                     <CardContent classes={{ root: classes.cardContent }}>
                       <Typography
                         gutterBottom
-                        className={classes.fieldTitleText}
+                        className={classes.fieldTitleTextLessTopMargin}
                         color="textSecondary"
                       >
                         Genres
@@ -297,7 +304,7 @@ export default function UserCards(props: UserCardProps) {
                         >
                           <Typography
                             variant="body1"
-                            className={classes.emptyFieldText}
+                            className={classes.emptyFieldTitleTextLessTopMargin}
                             color="textSecondary"
                           >
                             User has no genres...
@@ -391,6 +398,7 @@ export default function UserCards(props: UserCardProps) {
                       <div className={classes.userAvatarContainer}>
                         <GenericGroupMemberAvatar
                           style={{ height: 112, width: 112 }}
+                          iconStyle={{ height: 80, width: 80 }}
                         />
                       </div>
                     )}
