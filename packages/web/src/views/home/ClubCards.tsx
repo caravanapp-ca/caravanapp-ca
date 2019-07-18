@@ -255,9 +255,9 @@ export default function ClubCards(props: ClubCardsProps) {
                           <Typography
                             variant="body2"
                             className={classes.attributeLabel}
-                          >{`${club.memberCount} (Max ${
-                            club.maxMembers
-                          })`}</Typography>
+                          >{`${club.memberCount}${
+                            club.memberCount >= club.maxMembers ? ' (full)' : ''
+                          }`}</Typography>
                         </div>
                       </Grid>
                       <Grid item xs={6}>
