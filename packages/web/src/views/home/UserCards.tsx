@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User } from '@caravan/buddy-reading-types';
+import { User, Services } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
@@ -142,6 +142,7 @@ const useStyles = makeStyles(theme => ({
 interface UserCardProps {
   users: User[];
   user: User | null;
+  userClubs: Services.GetClubs['clubs'];
 }
 
 export default function UserCards(props: UserCardProps) {

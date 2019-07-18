@@ -19,9 +19,7 @@ import {
   Tab,
   Container,
 } from '@material-ui/core';
-import {
-  MuiThemeProvider,
-} from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';

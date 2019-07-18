@@ -7,12 +7,14 @@ import {
   GridListTile,
   Fab,
   Grid,
+  Tooltip,
 } from '@material-ui/core';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import BackwardIcon from '@material-ui/icons/ArrowBackIos';
 import { ShelfEntry } from '@caravan/buddy-reading-types';
 import { number } from 'prop-types';
 import { useEffect } from 'react';
+import { Book } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -103,11 +105,13 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
       >
         {shelf.slice(indices[0], indices[1]).map(book => (
           <Grid item key={book.sourceId} xs={4}>
-            <img
-              src={book.coverImageURL}
-              alt={'Book cover'}
-              className={classes.bookCover}
-            />
+            <Tooltip title={book.title} aria-label={book.title}>
+              <img
+                src={book.coverImageURL}
+                alt={'Book cover'}
+                className={classes.bookCover}
+              />
+            </Tooltip>
           </Grid>
         ))}
       </Grid>

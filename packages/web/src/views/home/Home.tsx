@@ -126,6 +126,11 @@ export default function Home(props: HomeProps) {
   const [clubsWCRResult, setClubsWCRResult] = React.useState<
     Service<ClubWithCurrentlyReading[]>
   >({ status: 'loading' });
+
+  const [userClubsWCRResult, setUserClubsWCRResult] = React.useState<
+    Services.GetClubs['clubs']
+  >([]);
+
   const [usersResult, setUsersResult] = React.useState<Service<User[]>>({
     status: 'loading',
   });
@@ -300,6 +305,26 @@ export default function Home(props: HomeProps) {
       }
     };
     getGenres();
+
+    const getUsersClubs = async () => {
+      if (user) {
+        getUserClubs(user._id, undefined, 50, {
+          genres: [],
+          speed: [],
+          capacity: [],
+          membership: [
+            { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
+          ],
+        }).then(res => {
+          if (!res.data) {
+            // TODO: Error checking
+          }
+          const { clubs } = res.data;
+          setUserClubsWCRResult(clubs);
+        });
+      }
+    };
+    getUsersClubs();
   }, []);
 
   function onCloseLoginModal() {
@@ -747,7 +772,11 @@ export default function Home(props: HomeProps) {
           <>
             {usersResult.status === 'loaded' &&
               usersResult.payload.length > 0 && (
-                <UserCards users={usersResult.payload} user={user} />
+                <UserCards
+                  users={usersResult.payload}
+                  user={user}
+                  userClubs={userClubsWCRResult}
+                />
               )}
           </>
         )}
