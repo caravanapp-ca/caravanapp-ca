@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface GenericGroupMemberAvatarProps {
   style?: Object;
+  iconStyle?: Object;
 }
 
 export default function GenericGroupMemberAvatar(
@@ -24,7 +25,11 @@ export default function GenericGroupMemberAvatar(
   const { style } = props;
   return (
     <Avatar classes={{ colorDefault: classes.colorDefault }} style={style}>
-      <GenericGroupMemberIcon color="primary" fontSize="large" />
+      <GenericGroupMemberIcon
+        color="primary"
+        fontSize="large"
+        style={iconStyle}
+      />
     </Avatar>
   );
 }
