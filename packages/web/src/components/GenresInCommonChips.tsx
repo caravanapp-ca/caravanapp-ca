@@ -1,19 +1,11 @@
 import React from 'react';
-import {
-  makeStyles,
-  createStyles,
-  useTheme,
-  Chip,
-  Avatar,
-} from '@material-ui/core';
-import clsx from 'clsx';
+import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
 import HeartIcon from '@material-ui/icons/Favorite';
-import { FilterChipType } from '@caravan/buddy-reading-types';
 
-const useStyles = makeStyles(theme =>
+const useStyles = makeStyles(() =>
   createStyles({
     baseChip: {
-      marginRight: theme.spacing(1),
+      marginRight: 4,
       marginTop: 4,
       zIndex: 1,
     },
@@ -37,7 +29,6 @@ interface GenresInCommonChipsProps {
 
 export default function GenresInCommonChips(props: GenresInCommonChipsProps) {
   const classes = useStyles();
-  const theme = useTheme();
 
   const { name, backgroundColor, common } = props;
 
@@ -70,7 +61,6 @@ export default function GenresInCommonChips(props: GenresInCommonChipsProps) {
       }}
       style={{
         backgroundColor: backgroundColorWithOpacity,
-        // fontSize: 15,
       }}
     />
   );

@@ -263,15 +263,32 @@ export default function Home(props: HomeProps) {
       const res = await getAllUsers(afterClubsQuery, pageSize);
       if (res.data) {
         const newUsers = res.data.users;
-        setShowLoadMoreUsers(newUsers.length === pageSize);
+        const newUsersShuffled = newUsers.map(user => shuffleUser(user));
+        setShowLoadMoreUsers(newUsersShuffled.length === pageSize);
         setUsersResult(s => ({
           status: 'loaded',
           payload:
-            s.status === 'loaded' ? [...s.payload, ...newUsers] : newUsers,
+            s.status === 'loaded'
+              ? [...s.payload, ...newUsersShuffled]
+              : newUsersShuffled,
         }));
       }
     })();
   }, [activeUsersFilter, afterUsersQuery]);
+
+  function shuffleUser(user: User) {
+    shuffleArr(user.shelf.notStarted);
+    shuffleArr(user.selectedGenres);
+    shuffleArr(user.questions);
+    return user;
+  }
+
+  function shuffleArr(arr: any[]) {
+    for (let i = arr.length; i; i--) {
+      let j = Math.floor(Math.random() * i);
+      [arr[i - 1], arr[j]] = [arr[j], arr[i - 1]];
+    }
+  }
 
   // Get genres on mount
   useEffect(() => {

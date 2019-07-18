@@ -1,18 +1,11 @@
 import React from 'react';
-import { ClubWithCurrentlyReading } from './Home';
-import {
-  CircularProgress,
-  createMuiTheme,
-  useMediaQuery,
-  Avatar,
-} from '@material-ui/core';
+import { CircularProgress, createMuiTheme, Avatar } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import PersonIcon from '@material-ui/icons/PersonOutline';
 import {
   makeStyles,
   responsiveFontSizes,
@@ -21,18 +14,10 @@ import {
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { User } from '@caravan/buddy-reading-types';
-import {
-  groupVibeIcons,
-  groupVibeLabels,
-} from '../../components/group-vibe-avatars-icons-labels';
-import {
-  readingSpeedIcons,
-  readingSpeedLabels,
-} from '../../components/reading-speed-avatars-icons-labels';
 import AdapterLink from '../../components/AdapterLink';
 import theme from '../../theme';
-import UserAvatar from '../user/UserAvatar';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
+import UserCardShelfList from '../club/shelf-view/UserCardShelfList';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -44,7 +29,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
-    margin: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
   },
   cardContent: {
     position: 'relative',
@@ -68,15 +55,24 @@ const useStyles = makeStyles(theme => ({
   cardActions: {
     display: 'flex',
     justifyContent: 'flex-end',
+    margin: 0,
   },
   button: {
-    margin: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
   userHeading: {
     position: 'relative',
-    'border-radius': '4px',
     height: '100px',
     width: '100%',
+  },
+  userHeadingNoPalette: {
+    position: 'relative',
+    height: '100px',
+    width: '100%',
+    'border-style': 'solid',
+    'border-color': '#5C6BC0',
+    'border-width': '0px 0px 2px 0px',
   },
   userTextContainer: {
     position: 'absolute',
@@ -88,15 +84,17 @@ const useStyles = makeStyles(theme => ({
   userNameText: {
     fontWeight: 600,
   },
+  userWebsiteText: {},
   userAvatarContainer: {
     position: 'absolute',
     width: 112,
     height: 112,
-    top: 20,
+    top: 30,
     right: 10,
     'border-radius': '50%',
     padding: theme.spacing(2),
     zIndex: 1,
+    backgroundColor: 'red',
   },
   fieldTitleText: {
     fontStyle: 'italic',
@@ -106,7 +104,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  noGenresText: {},
+  emptyFieldText: {},
   clubImage: {
     position: 'absolute',
     width: '100%',
@@ -150,22 +148,12 @@ export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
   const { users, user } = props;
 
-  const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
-
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-  const [visitProfileLoadingId, setVisitProfileLoadingId] = React.useState('');
+  const [visitProfileLoadingId] = React.useState('');
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
   };
-
-  function shuffleArr(arr: string[]) {
-    for (let i = arr.length; i; i--) {
-      let j = Math.floor(Math.random() * i);
-      [arr[i - 1], arr[j]] = [arr[j], arr[i - 1]];
-    }
-  }
 
   let myGenres: string[] = [];
   if (user) {
@@ -199,26 +187,36 @@ export default function UserCards(props: UserCardProps) {
 
             const otherGenresSet = new Set(otherUsersGenres);
             const myGenresSet = new Set(myGenres);
-            const commonGenres = Array.from(
+            let commonGenres = Array.from(
               //@ts-ignore
               new Set([...otherGenresSet].filter(val => myGenresSet.has(val)))
             );
-            shuffleArr(commonGenres);
+
+            commonGenres = commonGenres.slice(
+              0,
+              Math.min(commonGenres.length, 5)
+            );
+
             let otherUniqueGenres: string[] = [];
             if (commonGenres.length < 5) {
               otherUniqueGenres = otherUsersGenres.filter(
                 val => !myGenres.includes(val)
               );
-              shuffleArr(otherUniqueGenres);
               otherUniqueGenres = otherUniqueGenres.slice(
                 0,
                 Math.min(5 - commonGenres.length, 5)
               );
             }
 
+            const nameField: string = u.name
+              ? u.name
+              : u.urlSlug
+              ? u.urlSlug
+              : 'noName';
+
             return (
               <MuiThemeProvider theme={userTheme}>
-                <Grid item key={u._id} xs={12} sm={6}>
+                <Grid item key={u._id} xs={12} sm={6} spacing={4}>
                   <Card className={classes.card}>
                     <div
                       className={classes.userHeading}
@@ -226,7 +224,7 @@ export default function UserCards(props: UserCardProps) {
                         backgroundColor:
                           u && u.palette
                             ? userTheme.palette.primary.main
-                            : undefined,
+                            : '#5C6BC0',
                       }}
                     >
                       <div className={classes.userTextContainer}>
@@ -234,7 +232,7 @@ export default function UserCards(props: UserCardProps) {
                           variant="h4"
                           className={classes.userNameText}
                         >
-                          {u.name}
+                          {nameField}
                         </Typography>
                       </div>
                     </div>
@@ -265,23 +263,83 @@ export default function UserCards(props: UserCardProps) {
                         </div>
                       )}
                       {otherUsersGenres.length === 0 && (
-                        <Typography
-                          variant="body1"
-                          className={classes.noGenresText}
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            height: 36,
+                          }}
                         >
-                          User has no genres...
-                        </Typography>
+                          <Typography
+                            variant="body1"
+                            className={classes.emptyFieldText}
+                          >
+                            User has no genres...
+                          </Typography>
+                        </div>
                       )}
                       <Typography
                         gutterBottom
                         className={classes.fieldTitleText}
                         color="textSecondary"
                       >
-                        Currently reading
+                        Shelf
                       </Typography>
-                      <Typography>{u.bio}</Typography>
+                      {u.shelf.notStarted.length > 0 && (
+                        <UserCardShelfList shelf={u.shelf.notStarted} />
+                      )}
+                      {u.shelf.notStarted.length === 0 && (
+                        <Typography
+                          variant="body1"
+                          className={classes.emptyFieldText}
+                        >
+                          User has no books on their shelf...
+                        </Typography>
+                      )}
+                      {u.questions && u.questions.length > 0 && (
+                        <>
+                          <Typography
+                            className={classes.fieldTitleText}
+                            color="textSecondary"
+                          >
+                            {u.questions[0].title}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            className={classes.emptyFieldText}
+                          >
+                            {u.questions[0].answer}
+                          </Typography>
+                        </>
+                      )}
+                      {!u.questions ||
+                        (u.questions.length === 0 && (
+                          <>
+                            <Typography
+                              className={classes.fieldTitleText}
+                              color="textSecondary"
+                            >
+                              Profile questions
+                            </Typography>
+                            <Typography
+                              variant="body1"
+                              className={classes.emptyFieldText}
+                            >
+                              User hasn't answered any profile questions yet...
+                            </Typography>
+                          </>
+                        ))}
                     </CardContent>
-                    <CardActions className={classes.cardActions}>
+                    <CardActions classes={{ root: classes.cardActions }}>
+                      <Button
+                        className={classes.button}
+                        color="primary"
+                        component={AdapterLink}
+                        to={`/user/${u._id}`}
+                      >
+                        <Typography variant="button">View Profile</Typography>
+                      </Button>
                       <Button
                         className={classes.button}
                         color="primary"
@@ -289,7 +347,7 @@ export default function UserCards(props: UserCardProps) {
                         component={AdapterLink}
                         to={`/user/${u._id}`}
                       >
-                        <Typography variant="button">VIEW CLUB</Typography>
+                        <Typography variant="button">Invite to Club</Typography>
                       </Button>
                       {visitProfileLoadingId === u._id && (
                         <CircularProgress className={classes.progress} />
@@ -298,7 +356,9 @@ export default function UserCards(props: UserCardProps) {
                     <Avatar
                       src={u.photoUrl}
                       className={classes.userAvatarContainer}
-                      style={{ borderColor: 'colorPrimary' }}
+                      style={{
+                        borderColor: 'colorPrimary',
+                      }}
                     />
                   </Card>
                 </Grid>
