@@ -534,6 +534,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       readingSpeed: body.readingSpeed,
       genres: body.genres,
       shelf,
+      schedules: body.schedules,
       ownerId: userId,
       ownerDiscordId: req.user.discordId,
       channelSource: body.channelSource,
@@ -592,6 +593,10 @@ router.put(
     'newClub.readingSpeed',
     `Reading speed must be one of ${READING_SPEEDS.join(', ')}`
   ).isIn(READING_SPEEDS),
+  check(
+    'newClub.schedules',
+    'Schedules must be an array of ClubReadingSchedule objects!'
+  ).isArray(),
   check('newClub.unlisted', 'Unlisted must be a boolean').isBoolean(),
   check('newClub.vibe', `Vibe must be one of ${GROUP_VIBES.join(', ')}`).isIn(
     GROUP_VIBES
@@ -636,6 +641,7 @@ router.put(
       | 'maxMembers'
       | 'name'
       | 'readingSpeed'
+      | 'schedules'
       | 'unlisted'
       | 'vibe'
     > = {
@@ -644,6 +650,7 @@ router.put(
       maxMembers: newClub.maxMembers,
       name: newClub.name,
       readingSpeed: newClub.readingSpeed,
+      schedules: newClub.schedules,
       unlisted: newClub.unlisted,
       vibe: newClub.vibe,
     };
@@ -693,7 +700,7 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   const memberInChannel = (channel as VoiceChannel | TextChannel).members.find(
     m => m.id === user.discordId
   );
-  if (memberInChannel && memberInChannel.hasPermission('MANAGE_CHANNELS')) {
+  if (memberInChannel && clubDoc.ownerId === user.id) {
     try {
       const deletedChannel = await channel.delete();
       console.log(

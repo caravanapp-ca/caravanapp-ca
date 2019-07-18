@@ -10,13 +10,12 @@ import {
   TextField,
   Fab,
   Theme,
-  createMuiTheme,
 } from '@material-ui/core';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
-import {
-  responsiveFontSizes,
-  MuiThemeProvider,
-} from '@material-ui/core/styles';
+import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
+import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import { paletteColours } from '../../theme';
 
 interface UserNameplateProps {
   user: User;
@@ -27,7 +26,7 @@ interface UserNameplateProps {
     newValue: string | PaletteObject
   ) => void;
   valid: [boolean, string][];
-  palette: PaletteObject | null;
+  userDarkTheme?: Theme;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -52,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { user, userIsMe, isEditing, onEdit, valid, palette } = props;
+  const { user, userIsMe, isEditing, onEdit, valid, userDarkTheme } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
     bio: boolean;
@@ -79,83 +78,10 @@ export default function UserNameplate(props: UserNameplateProps) {
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
-  const paletteColours: PaletteObject[] = [
-    { key: '#FFFFFF', textColor: 'primary' },
-    { key: '#5c6bc0', textColor: 'white' },
-    { key: '#f44336', textColor: 'primary' },
-    { key: '#e91e63', textColor: 'primary' },
-    { key: '#9c27b0', textColor: 'white' },
-    { key: '#673ab7', textColor: 'white' },
-    { key: '#3f51b5', textColor: 'white' },
-    { key: '#2196f3', textColor: 'primary' },
-    { key: '#03a9f4', textColor: 'primary' },
-    { key: '#00bcd4', textColor: 'primary' },
-    { key: '#009688', textColor: 'primary' },
-    { key: '#4caf50', textColor: 'primary' },
-    { key: '#8bc34a', textColor: 'primary' },
-    { key: '#cddc39', textColor: 'primary' },
-    { key: '#ffeb3b', textColor: 'primary' },
-    { key: '#ffc107', textColor: 'primary' },
-    { key: '#ff9800', textColor: 'primary' },
-    { key: '#ff5722', textColor: 'primary' },
-    { key: '#795548', textColor: 'white' },
-    { key: '#9e9e9e', textColor: 'primary' },
-    { key: '#607d8b', textColor: 'white' },
-  ];
-
-  const opacities = {
-    primary: 0.87,
-    secondary: 0.54,
-    disabled: 0.38,
-    hint: 0.38,
-  };
-
-  const getUserTextColors = () => {
-    if (user && user.palette && user.palette.textColor) {
-      switch (user.palette.textColor) {
-        case 'primary':
-          return {
-            primary: `rgba(0, 0, 0, ${opacities.primary})`,
-            secondary: `rgba(0, 0, 0, ${opacities.secondary})`,
-            disabled: `rgba(0, 0, 0, ${opacities.disabled})`,
-            hint: `rgba(0, 0, 0, ${opacities.hint})`,
-          };
-        case 'white':
-          return {
-            primary: `rgba(255, 255, 255, ${opacities.primary})`,
-            secondary: `rgba(255, 255, 255, ${opacities.secondary})`,
-            disabled: `rgba(255, 255, 255, ${opacities.disabled})`,
-            hint: `rgba(255, 255, 255, ${opacities.hint})`,
-          };
-      }
-    }
-    return theme.palette.text;
-  };
-
-  const userTextColors = getUserTextColors();
-
-  const nameplateTheme = user
-    ? responsiveFontSizes(
-        createMuiTheme({
-          ...theme,
-          palette: {
-            ...theme.palette,
-            primary: {
-              main:
-                user && user.palette
-                  ? userTextColors.primary
-                  : theme.palette.primary.main,
-            },
-            text: userTextColors,
-          },
-        })
-      )
-    : theme;
-
   // TODO: Add userIsMe to if statement after testing
   if (isEditing && onEdit) {
     return (
-      <MuiThemeProvider theme={nameplateTheme}>
+      <MuiThemeProvider theme={userDarkTheme}>
         <div className={classes.editContainer}>
           <TextField
             id="display-name"
@@ -221,8 +147,7 @@ export default function UserNameplate(props: UserNameplateProps) {
             {paletteColours.map(colourObj => (
               <Fab
                 size="small"
-                color="secondary"
-                aria-label="Add"
+                aria-label="palette-colour"
                 style={{
                   backgroundColor: colourObj.key,
                   marginRight: theme.spacing(1),
@@ -237,8 +162,12 @@ export default function UserNameplate(props: UserNameplateProps) {
     );
   } else {
     return (
-      <MuiThemeProvider theme={nameplateTheme}>
-        <Typography variant="h4" color="textPrimary">
+      <MuiThemeProvider theme={userDarkTheme}>
+        <Typography
+          variant="h4"
+          color="textPrimary"
+          style={{ fontWeight: 600 }}
+        >
           {user.name}
         </Typography>
         <Typography
@@ -273,13 +202,37 @@ export default function UserNameplate(props: UserNameplateProps) {
             }
             style={{ marginTop: theme.spacing(1) }}
           >
-            <DiscordLogo
-              style={{
-                marginRight: theme.spacing(1),
-                height: 28,
-                width: 28,
-              }}
-            />
+            {!userDarkTheme && (
+              <DiscordLogo
+                style={{
+                  marginRight: theme.spacing(1),
+                  height: 28,
+                  width: 28,
+                }}
+              />
+            )}
+            {userDarkTheme &&
+              user.palette &&
+              user.palette.textColor === 'primary' && (
+                <DiscordLogoDark
+                  style={{
+                    marginRight: theme.spacing(1),
+                    height: 28,
+                    width: 28,
+                  }}
+                />
+              )}
+            {userDarkTheme &&
+              user.palette &&
+              user.palette.textColor === 'white' && (
+                <DiscordLogoWhite
+                  style={{
+                    marginRight: theme.spacing(1),
+                    height: 28,
+                    width: 28,
+                  }}
+                />
+              )}
             <Typography variant="button">{msgBtnLabelCaps}</Typography>
           </Button>
         )}

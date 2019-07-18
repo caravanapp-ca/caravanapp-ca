@@ -8,7 +8,6 @@ import {
   Services,
   ProfileQuestion,
   UserQA,
-  UserPalette,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -18,11 +17,9 @@ import {
   useMediaQuery,
   useTheme,
   Tab,
-  createMuiTheme,
   Container,
 } from '@material-ui/core';
 import {
-  responsiveFontSizes,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -49,7 +46,7 @@ import {
   transformClubsToWithCurrentlyReading,
 } from '../home/Home';
 import validURL from '../../functions/validURL';
-import clsx from 'clsx';
+import { makeUserTheme, makeUserDarkTheme } from '../../theme';
 
 interface MinMax {
   min: number;
@@ -173,22 +170,8 @@ export default function UserView(props: UserViewProps) {
     }
   );
 
-  const userTheme = user
-    ? responsiveFontSizes(
-        createMuiTheme({
-          ...theme,
-          palette: {
-            ...theme.palette,
-            primary: {
-              main:
-                user && user.palette
-                  ? user.palette.key
-                  : theme.palette.primary.main,
-            },
-          },
-        })
-      )
-    : theme;
+  const userTheme = user ? makeUserTheme(user.palette) : undefined;
+  const userDarkTheme = user ? makeUserDarkTheme(user.palette) : undefined;
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -394,7 +377,7 @@ export default function UserView(props: UserViewProps) {
     setIsEditing(false);
   };
 
-  function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
+  function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
@@ -464,21 +447,25 @@ export default function UserView(props: UserViewProps) {
   }
 
   const leftComponent = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Back"
-      onClick={backButtonAction}
-    >
-      <BackIcon />
-    </IconButton>
+    <MuiThemeProvider theme={userDarkTheme}>
+      <IconButton
+        edge="start"
+        color={userDarkTheme ? 'primary' : 'inherit'}
+        aria-label="Back"
+        onClick={backButtonAction}
+      >
+        <BackIcon />
+      </IconButton>
+    </MuiThemeProvider>
   );
 
   const centerComponent = (
-    <div className={classes.centerComponent}>
-      <UserAvatar user={user} style={{ marginRight: theme.spacing(1) }} />
-      <HeaderTitle title={user.name || 'User Profile'} />
-    </div>
+    <MuiThemeProvider theme={userDarkTheme}>
+      <div className={classes.centerComponent}>
+        <UserAvatar user={user} style={{ marginRight: theme.spacing(1) }} />
+        <HeaderTitle title={user.name || 'User Profile'} />
+      </div>
+    </MuiThemeProvider>
   );
 
   const rightComponentFn = () => {
@@ -487,26 +474,30 @@ export default function UserView(props: UserViewProps) {
     } else {
       if (isEditing) {
         return (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="More"
-            disabled={!formValidated()}
-            onClick={onSaveClick}
-          >
-            <SaveIcon />
-          </IconButton>
+          <MuiThemeProvider theme={userDarkTheme}>
+            <IconButton
+              edge="start"
+              color={userDarkTheme ? 'primary' : 'inherit'}
+              aria-label="More"
+              disabled={!formValidated()}
+              onClick={onSaveClick}
+            >
+              <SaveIcon />
+            </IconButton>
+          </MuiThemeProvider>
         );
       } else {
         return (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="More"
-            onClick={() => setIsEditing(true)}
-          >
-            <EditIcon />
-          </IconButton>
+          <MuiThemeProvider theme={userDarkTheme}>
+            <IconButton
+              edge="start"
+              color={userDarkTheme ? 'primary' : 'inherit'}
+              aria-label="More"
+              onClick={() => setIsEditing(true)}
+            >
+              <EditIcon />
+            </IconButton>
+          </MuiThemeProvider>
         );
       }
     }
@@ -519,12 +510,15 @@ export default function UserView(props: UserViewProps) {
         centerComponent={scrolled > 64 ? centerComponent : undefined}
         rightComponent={rightComponentFn()}
         showBorder={scrolled > 1 ? true : false}
+        userTheme={userTheme}
+        userDarkTheme={userDarkTheme}
       />
       <div
         className={classes.nameplateContainer}
         style={{
-          backgroundColor:
-            user && user.palette ? userTheme.palette.primary.main : undefined,
+          backgroundColor: userTheme
+            ? userTheme.palette.primary.main
+            : undefined,
         }}
       >
         <UserAvatar
@@ -538,23 +532,30 @@ export default function UserView(props: UserViewProps) {
             isEditing={isEditing}
             onEdit={onEdit}
             valid={[nameValidated(), bioValidated(), websiteValidated()]}
-            palette={user.palette}
+            userDarkTheme={userDarkTheme}
           />
         </div>
       </div>
-      <Tabs
-        value={tabValue}
-        onChange={handleTabChange}
-        indicatorColor="primary"
-        textColor="primary"
-        variant={screenSmallerThanMd ? 'fullWidth' : undefined}
-        centered={!screenSmallerThanMd}
-        className={classes.tabRoot}
-      >
-        <Tab label="Bio" />
-        <Tab label="Shelf" />
-        <Tab label="Clubs" />
-      </Tabs>
+      <MuiThemeProvider theme={userDarkTheme}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+          centered={!screenSmallerThanMd}
+          className={classes.tabRoot}
+          style={
+            userTheme
+              ? { backgroundColor: userTheme.palette.primary.main }
+              : undefined
+          }
+        >
+          <Tab label="Bio" />
+          <Tab label="Shelf" />
+          <Tab label="Clubs" />
+        </Tabs>
+      </MuiThemeProvider>
       <Container maxWidth={'md'}>
         <>
           {tabValue === 0 && (

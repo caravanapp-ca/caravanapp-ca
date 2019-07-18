@@ -1,7 +1,6 @@
 import { GuildMember } from 'discord.js';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
-import { TSExpressionWithTypeArguments } from '@babel/types';
 
 declare module '@caravan/buddy-reading-types' {
   export type FilterAutoMongoKeys<Base> = Omit<
@@ -21,11 +20,26 @@ declare module '@caravan/buddy-reading-types' {
     updatedAt: Date | string;
   }
 
+  export interface Discussion {
+    date: Date;
+    label: string;
+    format: 'text' | 'voice' | 'video';
+  }
+
+  export interface ClubReadingSchedule extends DocumentFields, MongoTimestamps {
+    shelfEntryId: string;
+    startDate: Date | null;
+    duration: number | null;
+    discussionFrequency: number | null;
+    discussions: Discussion[];
+  }
+
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
     ownerDiscordId?: string;
     shelf: ShelfEntry[];
+    schedules: ClubReadingSchedule[];
     bio?: string;
     members: GuildMember[];
     maxMembers: number;
@@ -178,6 +192,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';
 
+  export type LoadableMemberStatus = MembershipStatus | 'loading';
+
   export type UserShelfReadingState = 'notStarted' | 'read';
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
@@ -199,22 +215,17 @@ declare module '@caravan/buddy-reading-types' {
     | 'first-timers'
     | 'nerdy';
 
-  export type UserPalette =
-    | '#f44336'
-    | '#e91e63'
-    | '#9c27b0'
-    | '#673ab7'
-    | '#3f51b5'
-    | '#2196f3'
-    | '#03a9f4'
-    | '#00bcd4'
-    | '#009688'
-    | '#4caf50'
-    | '#8bc34a';
-
   export interface PaletteObject {
     key: string;
     textColor: 'primary' | 'white';
+  }
+
+  // Don't use this... I did what I do had to do - Matt C.
+  export interface ClubWUninitSchedules
+    extends Omit<Services.GetClubById, 'schedules'> {
+    schedules: (
+      | ClubReadingSchedule
+      | FilterAutoMongoKeys<ClubReadingSchedule>)[];
   }
 
   export namespace Services {
@@ -225,6 +236,7 @@ declare module '@caravan/buddy-reading-types' {
         ownerId: string;
         guildId: string;
         shelf: any[];
+        schedules: ClubReadingSchedule[];
         bio?: string;
         maxMembers: number;
         memberCount: number;
@@ -244,6 +256,7 @@ declare module '@caravan/buddy-reading-types' {
       ownerId: string;
       ownerDiscordId: string;
       shelf: any[];
+      schedules: ClubReadingSchedule[];
       bio: string;
       members: any[];
       maxMembers: number;

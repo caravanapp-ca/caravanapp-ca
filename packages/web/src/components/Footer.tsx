@@ -55,16 +55,17 @@ export default function Footer(props: FooterProps) {
       window.innerHeight
   );
 
-  useEffect(() => {
-    window.addEventListener('resize', updateFooterState);
-    return () => {
-      window.removeEventListener('resize', updateFooterState);
-    };
-  }, []);
+  // TODO: Uncommenting these for perfromance
+  // useEffect(() => {
+  //   window.addEventListener('resize', updateFooterState);
+  //   return () => {
+  //     window.removeEventListener('resize', updateFooterState);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    updateFooterState();
-  }, [docHeight]);
+  // useEffect(() => {
+  //   updateFooterState();
+  // }, [docHeight]);
 
   const updateFooterState = () => {
     setDocHeightLTWinHeight(
@@ -77,10 +78,11 @@ export default function Footer(props: FooterProps) {
   };
 
   return (
-    // TODO: Fix sticky footer on mobile
+    // TODO: Fix sticky footer on everything
     <footer
       className={clsx(classes.footer, {
-        [classes.sticky]: !isMobileDevice() && docHeightLTWinHeight,
+        [classes.sticky]: false,
+        // [classes.sticky]: !isMobileDevice() && docHeightLTWinHeight,
       })}
       ref={footerHeightRef}
     >

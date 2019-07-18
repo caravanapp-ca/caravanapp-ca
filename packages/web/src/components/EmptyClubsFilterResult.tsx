@@ -15,7 +15,8 @@ export default function EmptyClubsFilterResult() {
           textAlign: 'center',
           fontStyle: 'italic',
           marginTop: theme.spacing(4),
-          marginBottom: theme.spacing(4),
+          // TODO: Change this back to theme.spacing(4) when sticky footer is fixed.
+          marginBottom: 512,
         }}
       >
         Oops..no clubs turned up! Try again with different filters.

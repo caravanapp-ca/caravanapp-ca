@@ -73,8 +73,8 @@ const mapUserShelfSchema = new Schema(mapUserShelfDefinition, {
 });
 
 const paletteSchema = new Schema({
-  key: { type: String },
-  textColor: { type: String },
+  key: { type: String, required: true },
+  textColor: { type: String, required: true },
 });
 
 const definition: SameKeysAs<
