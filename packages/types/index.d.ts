@@ -54,6 +54,7 @@ declare module '@caravan/buddy-reading-types' {
   // This format of the Club has the current book and schedule extracted for quicker access.
   export interface ClubTransformed {
     club: Services.GetClubs['clubs'][0];
+    owner: User | null;
     currentlyReading: ShelfEntry | null;
     schedule: ClubReadingSchedule | null;
   }

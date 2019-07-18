@@ -201,7 +201,9 @@ export default function UserView(props: UserViewProps) {
           getUserShelf(user, clubs).then(shelf => {
             setUserShelf(shelf);
           });
-          setUserClubsTransformed(transformClubs(clubs));
+          (async () => {
+            setUserClubsTransformed(await transformClubs(clubs));
+          })();
         });
       }
       setUser(user);

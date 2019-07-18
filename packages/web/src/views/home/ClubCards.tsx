@@ -24,11 +24,11 @@ import format from 'date-fns/esm/format';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
 import { isAfter, addDays } from 'date-fns/esm';
+import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(8),
+    padding: `${theme.spacing(4)}px 8px ${theme.spacing(8)}px`,
   },
   card: {
     height: '100%',
@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
   iconRoot: {
     display: 'flex',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   cardActions: {
     display: 'flex',
@@ -106,7 +106,9 @@ const useStyles = makeStyles(theme => ({
   progress: {
     margin: theme.spacing(2),
   },
-  clubTitle: {},
+  clubTitle: {
+    fontWeight: 600,
+  },
   attributeContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -147,7 +149,7 @@ export default function ClubCards(props: ClubCardsProps) {
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {clubsTransformed.map(c => {
-            const { club, currentlyReading, schedule } = c;
+            const { club, currentlyReading, schedule, owner } = c;
             let year;
             if (currentlyReading && currentlyReading.publishedDate) {
               year = format(new Date(currentlyReading.publishedDate), 'yyyy');
@@ -156,7 +158,7 @@ export default function ClubCards(props: ClubCardsProps) {
             let endMsg = 'End: Not set';
             if (schedule && schedule.startDate) {
               const { startDate, duration } = schedule;
-              if (isAfter(startDate, new Date())) {
+              if (isAfter(new Date(), startDate)) {
                 startMsg = `Started: ${format(startDate, 'LLL')} ${format(
                   startDate,
                   'd'
@@ -169,7 +171,7 @@ export default function ClubCards(props: ClubCardsProps) {
               }
               if (duration) {
                 const endDate = addDays(startDate, duration * 7);
-                if (isAfter(endDate, new Date())) {
+                if (isAfter(new Date(), endDate)) {
                   endMsg = `Ended: ${format(endDate, 'LLL')} ${format(
                     endDate,
                     'd'
@@ -205,14 +207,19 @@ export default function ClubCards(props: ClubCardsProps) {
                             variant="h5"
                             className={classes.imageTitleText}
                           >
-                            {currentlyReading.title}
+                            <Truncate lines={2} trimWhitespace={true}>
+                              {currentlyReading.title}
+                            </Truncate>
                           </Typography>
                           <Typography className={classes.imageText}>
-                            {currentlyReading.author}
-                            {year && `, ${year}`}
+                            {`${currentlyReading.author}${
+                              year ? `, ${year}` : ''
+                            }`}
                           </Typography>
                           <Typography className={classes.imageText}>
-                            {currentlyReading.genres.join(', ')}
+                            <Truncate lines={1} trimWhitespace={true}>
+                              {currentlyReading.genres.join(', ')}
+                            </Truncate>
                           </Typography>
                         </div>
                       </>
@@ -225,7 +232,9 @@ export default function ClubCards(props: ClubCardsProps) {
                       component="h2"
                       className={classes.clubTitle}
                     >
-                      {club.name}
+                      <Truncate lines={2} trimWhitespace={true}>
+                        {club.name}
+                      </Truncate>
                     </Typography>
                     <Typography color="textSecondary">
                       <Truncate lines={3} trimWhitespace={true}>
@@ -243,15 +252,21 @@ export default function ClubCards(props: ClubCardsProps) {
                       <Grid item xs={6}>
                         <div className={classes.attributeContainer}>
                           <GenericGroupMemberAvatar />
-                          <Typography className={classes.attributeLabel}>{`${
-                            club.memberCount
-                          } (Max ${club.maxMembers})`}</Typography>
+                          <Typography
+                            variant="body2"
+                            className={classes.attributeLabel}
+                          >{`${club.memberCount} (Max ${
+                            club.maxMembers
+                          })`}</Typography>
                         </div>
                       </Grid>
                       <Grid item xs={6}>
                         <div className={classes.attributeContainer}>
                           <StartAvatar />
-                          <Typography className={classes.attributeLabel}>
+                          <Typography
+                            variant="body2"
+                            className={classes.attributeLabel}
+                          >
                             {startMsg}
                           </Typography>
                         </div>
@@ -260,7 +275,10 @@ export default function ClubCards(props: ClubCardsProps) {
                         {groupVibeAvatar && groupVibeLabel && (
                           <div className={classes.attributeContainer}>
                             {groupVibeAvatar}
-                            <Typography className={classes.attributeLabel}>
+                            <Typography
+                              variant="body2"
+                              className={classes.attributeLabel}
+                            >
                               {groupVibeLabel}
                             </Typography>
                           </div>
@@ -268,8 +286,11 @@ export default function ClubCards(props: ClubCardsProps) {
                       </Grid>
                       <Grid item xs={6} style={{ marginTop: 16 }}>
                         <div className={classes.attributeContainer}>
-                          <StartAvatar />
-                          <Typography className={classes.attributeLabel}>
+                          <EndAvatar />
+                          <Typography
+                            variant="body2"
+                            className={classes.attributeLabel}
+                          >
                             {endMsg}
                           </Typography>
                         </div>
@@ -278,9 +299,11 @@ export default function ClubCards(props: ClubCardsProps) {
                   </CardContent>
                   <CardActions className={classes.cardActions}>
                     <div className={classes.creationInfoContainer}>
-                      <Typography variant="caption" color="textSecondary">
-                        {`Created by:`}
-                      </Typography>
+                      {owner && (
+                        <Typography variant="caption" color="textSecondary">
+                          {`Created by: ${owner.name}`}
+                        </Typography>
+                      )}
                       <Typography variant="caption" color="textSecondary">
                         {`Created on: ${format(
                           new Date(club.createdAt),

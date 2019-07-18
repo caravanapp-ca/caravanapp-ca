@@ -39,6 +39,9 @@ import FilterChips from '../../components/filters/FilterChips';
 import MembershipModal from '../../components/filters/MembershipModal';
 import EmptyClubsFilterResult from '../../components/EmptyClubsFilterResult';
 import ClubCards from './ClubCards';
+import { getUser } from '../../services/user';
+import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
+import clsx from 'clsx';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -85,31 +88,46 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     flexWrap: 'wrap',
   },
+  mdContainer: {
+    padding: '0px 8px',
+  },
 }));
 
-export function transformClubs(
-  clubs: Services.GetClubs['clubs']
-): ClubTransformed[] {
-  const clubsTransformed: ClubTransformed[] = clubs.map(club => {
-    let returnObj: ClubTransformed = {
-      club,
-      currentlyReading: null,
-      schedule: null,
-    };
-    const currentlyReading = club.shelf.find(
-      book => book.readingState === 'current'
+const transformClub = async (
+  club: Services.GetClubs['clubs'][0]
+): Promise<ClubTransformed> => {
+  let returnObj: ClubTransformed = {
+    club,
+    owner: null,
+    currentlyReading: null,
+    schedule: null,
+  };
+  const owner = await getUser(club.ownerId);
+  if (owner) {
+    returnObj = { ...returnObj, owner };
+  }
+  const currentlyReading = club.shelf.find(
+    book => book.readingState === 'current'
+  );
+  if (currentlyReading) {
+    returnObj = { ...returnObj, currentlyReading };
+    let schedule = club.schedules.find(
+      sched => sched.shelfEntryId === currentlyReading._id
     );
-    if (currentlyReading) {
-      returnObj = { ...returnObj, currentlyReading };
-      const schedule = club.schedules.find(
-        sched => sched.shelfEntryId === currentlyReading._id
-      );
-      if (schedule) {
-        returnObj = { ...returnObj, schedule };
-      }
+    if (schedule) {
+      schedule = scheduleStrToDates(schedule);
+      returnObj = { ...returnObj, schedule };
     }
-    return returnObj;
-  });
+  }
+  return returnObj;
+};
+
+export async function transformClubs(
+  clubs: Services.GetClubs['clubs']
+): Promise<ClubTransformed[]> {
+  const clubsTransformed: ClubTransformed[] = await Promise.all(
+    clubs.map(club => transformClub(club))
+  );
   return clubsTransformed;
 }
 
@@ -184,7 +202,7 @@ export default function Home(props: HomeProps) {
           res = await getAllClubs(afterQuery, pageSize, activeFilter);
         }
         if (res.data) {
-          const newClubsTransformed = transformClubs(res.data.clubs);
+          const newClubsTransformed = await transformClubs(res.data.clubs);
           setShowLoadMore(newClubsTransformed.length === pageSize);
           setClubsTransformedResult(s => ({
             status: 'loaded',
@@ -200,7 +218,7 @@ export default function Home(props: HomeProps) {
       (async () => {
         const res = await getAllClubs(afterQuery, pageSize);
         if (res.data) {
-          const newClubsTransformed = transformClubs(res.data.clubs);
+          const newClubsTransformed = await transformClubs(res.data.clubs);
           setShowLoadMore(newClubsTransformed.length === pageSize);
           setClubsTransformedResult(s => ({
             status: 'loaded',
@@ -415,7 +433,7 @@ export default function Home(props: HomeProps) {
         {/* Hero unit */}
         {showWelcomeMessage && (
           <div className={classes.heroContent}>
-            <Container maxWidth="md">
+            <Container maxWidth="md" className={classes.mdContainer}>
               <Typography
                 component="h1"
                 variant="h3"
@@ -472,7 +490,10 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
-        <Container className={classes.filterGrid} maxWidth="md">
+        <Container
+          className={clsx(classes.filterGrid, classes.mdContainer)}
+          maxWidth="md"
+        >
           <ClubFilters
             onClickGenreFilter={() => setShowGenreFilter(true)}
             onClickSpeedFilter={() => setShowSpeedFilter(true)}
