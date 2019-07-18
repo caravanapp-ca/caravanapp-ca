@@ -69,7 +69,6 @@ router.get('/', async (req, res, next) => {
     res.sendStatus(404);
     return;
   }
-
   const filteredUsers: Services.GetUsers['users'] = users
     .map(userDocument => {
       const user: Omit<User, 'createdAt' | 'updatedAt'> & {
@@ -86,10 +85,7 @@ router.get('/', async (req, res, next) => {
             ? userDocument.updatedAt.toISOString()
             : userDocument.updatedAt,
       };
-      const obj: Services.GetUsers['users'][0] = {
-        ...user,
-      };
-      return obj;
+      return user;
     })
     .filter(c => c !== null);
   const result: Services.GetUsers = {
@@ -343,7 +339,7 @@ router.put(
       res.status(200).send(userDoc);
     } catch (err) {
       console.error('Failed to save user data', err);
-      res.status(400).send('Failed to save user data');
+      res.status(500).send('Failed to save user data');
     }
   }
 );
