@@ -6,6 +6,7 @@ import {
   GoogleBooks,
   ClubReadingSchedule,
 } from '@caravan/buddy-reading-types';
+import { scheduleStrToDates } from '../../../functions/scheduleStrToDates';
 
 export function getCurrentBook(club: Club): ShelfEntry | null {
   if (club && club.shelf) {
@@ -22,18 +23,9 @@ export function getCurrentSchedule(
   currBook: ShelfEntry
 ): ClubReadingSchedule | null {
   if (club && club.schedules) {
-    const schedule = club.schedules.find(s => s.shelfEntryId === currBook._id);
+    let schedule = club.schedules.find(s => s.shelfEntryId === currBook._id);
     if (schedule) {
-      if (schedule.startDate) {
-        schedule.startDate = new Date(schedule.startDate);
-      }
-      schedule.discussions = schedule.discussions.map(disc => {
-        const discDate = new Date(disc.date);
-        return {
-          ...disc,
-          date: discDate,
-        };
-      });
+      schedule = scheduleStrToDates(schedule);
       return schedule;
     }
   }
