@@ -43,10 +43,9 @@ const useStyles = makeStyles(theme =>
     bookCover: {
       width: '100%',
       height: '100%',
-      resizeMode: 'cover',
-      'border-width': '1px 1px 1px 1px',
-      'border-style': 'solid',
-      'border-color': '#5C6BC0',
+      borderRadius: 5,
+      objectFit: 'cover',
+      border: '1px solid #E9E9E9',
     },
   })
 );

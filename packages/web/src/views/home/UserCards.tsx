@@ -15,7 +15,7 @@ import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { User } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
-import theme from '../../theme';
+import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
 import UserCardShelfList from '../club/shelf-view/UserCardShelfList';
 
@@ -165,22 +165,10 @@ export default function UserCards(props: UserCardProps) {
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {users.map(u => {
-            const userTheme = u
-              ? responsiveFontSizes(
-                  createMuiTheme({
-                    ...theme,
-                    palette: {
-                      ...theme.palette,
-                      primary: {
-                        main:
-                          u && u.palette
-                            ? u.palette.key
-                            : theme.palette.primary.main,
-                      },
-                    },
-                  })
-                )
-              : theme;
+            const userTheme = makeUserTheme(u.palette);
+
+            const userDarkTheme = makeUserDarkTheme(u.palette);
+
             const otherUsersGenres: string[] = u.selectedGenres.map(
               x => x.name
             );
@@ -221,19 +209,26 @@ export default function UserCards(props: UserCardProps) {
                     <div
                       className={classes.userHeading}
                       style={{
-                        backgroundColor:
-                          u && u.palette
-                            ? userTheme.palette.primary.main
-                            : '#5C6BC0',
+                        backgroundColor: userTheme
+                          ? userTheme.palette.primary.main
+                          : theme.palette.primary.main,
                       }}
                     >
                       <div className={classes.userTextContainer}>
-                        <Typography
-                          variant="h4"
-                          className={classes.userNameText}
-                        >
-                          {nameField}
-                        </Typography>
+                        <MuiThemeProvider theme={userDarkTheme}>
+                          <Typography
+                            variant="h4"
+                            className={classes.userNameText}
+                            color="primary"
+                            style={
+                              !userDarkTheme
+                                ? { color: theme.palette.common.white }
+                                : undefined
+                            }
+                          >
+                            {nameField}
+                          </Typography>
+                        </MuiThemeProvider>
                       </div>
                     </div>
                     <CardContent className={classes.cardContent}>
@@ -249,14 +244,22 @@ export default function UserCards(props: UserCardProps) {
                           {commonGenres.map(genre => (
                             <GenresInCommonChips
                               name={genre}
-                              backgroundColor={userTheme.palette.primary.main}
+                              backgroundColor={
+                                userTheme
+                                  ? userTheme.palette.primary.main
+                                  : theme.palette.primary.main
+                              }
                               common={true}
                             />
                           ))}
                           {otherUniqueGenres.map(genre => (
                             <GenresInCommonChips
                               name={genre}
-                              backgroundColor={userTheme.palette.primary.main}
+                              backgroundColor={
+                                userTheme
+                                  ? userTheme.palette.primary.main
+                                  : theme.palette.primary.main
+                              }
                               common={false}
                             />
                           ))}
@@ -274,6 +277,7 @@ export default function UserCards(props: UserCardProps) {
                           <Typography
                             variant="body1"
                             className={classes.emptyFieldText}
+                            color="textSecondary"
                           >
                             User has no genres...
                           </Typography>
@@ -293,6 +297,7 @@ export default function UserCards(props: UserCardProps) {
                         <Typography
                           variant="body1"
                           className={classes.emptyFieldText}
+                          color="textSecondary"
                         >
                           User has no books on their shelf...
                         </Typography>
@@ -325,6 +330,7 @@ export default function UserCards(props: UserCardProps) {
                             <Typography
                               variant="body1"
                               className={classes.emptyFieldText}
+                              color="textSecondary"
                             >
                               User hasn't answered any profile questions yet...
                             </Typography>
