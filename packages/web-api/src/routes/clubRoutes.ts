@@ -388,6 +388,41 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+// Get a club's members
+router.get('/members/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const clubDoc = await ClubModel.findById(id);
+    if (!clubDoc) {
+      res.sendStatus(404);
+      return;
+    }
+    if (clubDoc.channelSource === 'discord') {
+      const client = ReadingDiscordBot.getInstance();
+      const guild = client.guilds.first();
+      const guildMembers = await getChannelMembers(guild, clubDoc);
+      res.status(200).send(guildMembers);
+    } else {
+      res
+        .status(500)
+        .send(`Error: unknown channelSource: ${clubDoc.channelSource}`);
+      return;
+    }
+  } catch (err) {
+    if (err.name) {
+      switch (err.name) {
+        case 'CastError':
+          res.sendStatus(404);
+          return;
+        default:
+          break;
+      }
+    }
+    console.log(`Failed to get members for club ${id}`, err);
+    return next(err);
+  }
+});
+
 // Return clubs from array of clubId's.
 router.post(
   '/getClubsByIdWMembers',

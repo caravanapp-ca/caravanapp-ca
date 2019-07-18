@@ -289,6 +289,33 @@ declare module '@caravan/buddy-reading-types' {
     }
     export interface GetProfileQuestions
       extends Omit<ProfileQuestions, '_id'> {}
+      
+    export interface GetUsers {
+      users: {
+        _id: string;
+        bio?: string;
+        discordId: string;
+        discordUsername?: string;
+        goodreadsUrl?: string;
+        website?: string;
+        name?: string;
+        photoUrl?: string;
+        smallPhotoUrl?: string;
+        readingSpeed?: ReadingSpeed;
+        age?: number;
+        gender?: string;
+        location?: string;
+        isBot: boolean;
+        urlSlug: string;
+        selectedGenres: SelectedGenre[];
+        questions: UserQA[];
+        shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
+        onboardingVersion: number;
+        palette: PaletteObject | null;
+        createdAt: string;
+        updatedAt: string;
+      }[];
+    }
   }
 
   export namespace GoogleBooks {

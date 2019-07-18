@@ -8,6 +8,7 @@ import {
   ActiveFilter,
   SelectedGenre,
   ClubWUninitSchedules,
+  User,
 } from '@caravan/buddy-reading-types';
 
 const clubRoute = '/api/club';
@@ -84,6 +85,15 @@ export async function getUserClubs(
       },
     }
   );
+  return res;
+}
+
+export async function getClubMembers(clubId: string) {
+  const res = await axios.get<User[]>(`${clubRoute}/members/${clubId}`, {
+    params: {
+      clubId,
+    },
+  });
   return res;
 }
 

@@ -13,11 +13,23 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function GenericGroupMemberAvatar() {
+interface GenericGroupMemberAvatarProps {
+  style?: Object;
+  iconStyle?: Object;
+}
+
+export default function GenericGroupMemberAvatar(
+  props: GenericGroupMemberAvatarProps
+) {
   const classes = useStyles();
+  const { style, iconStyle } = props;
   return (
-    <Avatar classes={{ colorDefault: classes.colorDefault }}>
-      <GenericGroupMemberIcon color="primary" />
+    <Avatar classes={{ colorDefault: classes.colorDefault }} style={style}>
+      <GenericGroupMemberIcon
+        color="primary"
+        fontSize="large"
+        style={iconStyle}
+      />
     </Avatar>
   );
 }
