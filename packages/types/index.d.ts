@@ -289,6 +289,7 @@ declare module '@caravan/buddy-reading-types' {
     }
     export interface GetProfileQuestions
       extends Omit<ProfileQuestions, '_id'> {}
+      
     export interface GetUsers {
       users: {
         _id: string;
