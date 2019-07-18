@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClubWithCurrentlyReading } from './Home';
+import Truncate from 'react-truncate';
 import { CircularProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -7,11 +7,10 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import PersonIcon from '@material-ui/icons/PersonOutline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User } from '@caravan/buddy-reading-types';
+import { User, ClubTransformed } from '@caravan/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,
@@ -21,11 +20,15 @@ import {
   readingSpeedLabels,
 } from '../../components/reading-speed-avatars-icons-labels';
 import AdapterLink from '../../components/AdapterLink';
+import format from 'date-fns/esm/format';
+import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
+import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
+import { isAfter, addDays } from 'date-fns/esm';
+import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(8),
+    padding: `${theme.spacing(4)}px 8px ${theme.spacing(8)}px`,
   },
   card: {
     height: '100%',
@@ -49,7 +52,7 @@ const useStyles = makeStyles(theme => ({
   iconRoot: {
     display: 'flex',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   cardActions: {
     display: 'flex',
@@ -60,7 +63,7 @@ const useStyles = makeStyles(theme => ({
   },
   clubImageContainer: {
     position: 'relative',
-    'border-radius': '4px',
+    borderRadius: '4px',
     height: '194px',
     width: '100%',
   },
@@ -70,8 +73,8 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
     top: 0,
     left: 0,
-    'object-fit': 'cover',
-    'object-position': '50% 50%',
+    objectFit: 'cover',
+    objectPosition: '50% 50%',
     filter: 'blur(4px)',
   },
   clubImageShade: {
@@ -91,32 +94,51 @@ const useStyles = makeStyles(theme => ({
   },
   imageText: {
     width: '100%',
-    'text-align': 'left',
+    textAlign: 'left',
     color: '#ffffff',
   },
   imageTitleText: {
     width: '100%',
-    'text-align': 'left',
+    textAlign: 'left',
     color: '#ffffff',
     fontWeight: 600,
   },
   progress: {
     margin: theme.spacing(2),
   },
-  clubTitle: {},
+  clubTitle: {
+    fontWeight: 600,
+  },
+  attributeContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  attributeLabel: {
+    marginLeft: 8,
+  },
+  creationInfoContainer: {
+    display: 'flex',
+    flexGrow: 1,
+    height: '100%',
+    padding: 8,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+  },
 }));
 
 interface ClubCardsProps {
-  clubsWCR: ClubWithCurrentlyReading[];
+  clubsTransformed: ClubTransformed[];
   user: User | null;
 }
 
 export default function ClubCards(props: ClubCardsProps) {
   const classes = useStyles();
-  const { clubsWCR } = props;
+  const { clubsTransformed } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-  const [joinClubLoadingId, setJoinClubLoadingId] = React.useState('');
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
@@ -126,11 +148,47 @@ export default function ClubCards(props: ClubCardsProps) {
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
-          {clubsWCR.map(c => {
-            const { club, currentlyReading } = c;
+          {clubsTransformed.map(c => {
+            const { club, currentlyReading, schedule, owner } = c;
             let year;
             if (currentlyReading && currentlyReading.publishedDate) {
-              year = new Date(currentlyReading.publishedDate).getUTCFullYear();
+              year = format(new Date(currentlyReading.publishedDate), 'yyyy');
+            }
+            let startMsg = 'Start: Not set';
+            let endMsg = 'End: Not set';
+            if (schedule && schedule.startDate) {
+              const { startDate, duration } = schedule;
+              if (isAfter(new Date(), startDate)) {
+                startMsg = `Started: ${format(startDate, 'LLL')} ${format(
+                  startDate,
+                  'd'
+                )}`;
+              } else {
+                startMsg = `Starts: ${format(startDate, 'LLL')} ${format(
+                  startDate,
+                  'd'
+                )}`;
+              }
+              if (duration) {
+                const endDate = addDays(startDate, duration * 7);
+                if (isAfter(new Date(), endDate)) {
+                  endMsg = `Ended: ${format(endDate, 'LLL')} ${format(
+                    endDate,
+                    'd'
+                  )}`;
+                } else {
+                  endMsg = `Ends: ${format(endDate, 'LLL')} ${format(
+                    endDate,
+                    'd'
+                  )}`;
+                }
+              }
+            }
+            let groupVibeAvatar: JSX.Element | undefined;
+            let groupVibeLabel: string | undefined;
+            if (club.vibe) {
+              groupVibeAvatar = groupVibeIcons(club.vibe, 'avatar');
+              groupVibeLabel = groupVibeLabels(club.vibe);
             }
             return (
               <Grid item key={club._id} xs={12} sm={6}>
@@ -149,14 +207,19 @@ export default function ClubCards(props: ClubCardsProps) {
                             variant="h5"
                             className={classes.imageTitleText}
                           >
-                            {currentlyReading.title}
+                            <Truncate lines={2} trimWhitespace={true}>
+                              {currentlyReading.title}
+                            </Truncate>
                           </Typography>
                           <Typography className={classes.imageText}>
-                            {currentlyReading.author}
-                            {year && `, ${year}`}
+                            {`${currentlyReading.author}${
+                              year ? `, ${year}` : ''
+                            }`}
                           </Typography>
                           <Typography className={classes.imageText}>
-                            {currentlyReading.genres.join(', ')}
+                            <Truncate lines={1} trimWhitespace={true}>
+                              {currentlyReading.genres.join(', ')}
+                            </Truncate>
                           </Typography>
                         </div>
                       </>
@@ -169,44 +232,85 @@ export default function ClubCards(props: ClubCardsProps) {
                       component="h2"
                       className={classes.clubTitle}
                     >
-                      {club.name}
+                      <Truncate lines={2} trimWhitespace={true}>
+                        {club.name}
+                      </Truncate>
                     </Typography>
-                    <div className={classes.iconRoot}>
-                      <div className={classes.iconWithLabel}>
-                        <PersonIcon />
-                        <Typography
-                          variant="subtitle1"
-                          className={classes.iconLabel}
-                        >
-                          {`${club.memberCount}/${club.maxMembers}`}
-                        </Typography>
-                      </div>
-                      {club.readingSpeed && (
-                        <div className={classes.iconWithLabel}>
-                          {readingSpeedIcons(club.readingSpeed, 'icon')}
+                    <Typography color="textSecondary">
+                      <Truncate lines={3} trimWhitespace={true}>
+                        {club.bio}
+                      </Truncate>
+                    </Typography>
+                    <Grid
+                      container
+                      direction="row"
+                      justify="flex-start"
+                      alignItems="flex-start"
+                      spacing={1}
+                      style={{ marginTop: 16 }}
+                    >
+                      <Grid item xs={6}>
+                        <div className={classes.attributeContainer}>
+                          <GenericGroupMemberAvatar />
                           <Typography
-                            variant="subtitle1"
-                            className={classes.iconLabel}
+                            variant="body2"
+                            className={classes.attributeLabel}
                           >
-                            {readingSpeedLabels(club.readingSpeed)}
+                            {`${club.memberCount} (Max ${club.maxMembers})`}
                           </Typography>
                         </div>
-                      )}
-                      {club.vibe && (
-                        <div className={classes.iconWithLabel}>
-                          {groupVibeIcons(club.vibe, 'icon')}
+                      </Grid>
+                      <Grid item xs={6}>
+                        <div className={classes.attributeContainer}>
+                          <StartAvatar />
                           <Typography
-                            variant="subtitle1"
-                            className={classes.iconLabel}
+                            variant="body2"
+                            className={classes.attributeLabel}
                           >
-                            {groupVibeLabels(club.vibe)}
+                            {startMsg}
                           </Typography>
                         </div>
-                      )}
-                    </div>
-                    <Typography>{club.bio}</Typography>
+                      </Grid>
+                      <Grid item xs={6} style={{ marginTop: 16 }}>
+                        {groupVibeAvatar && groupVibeLabel && (
+                          <div className={classes.attributeContainer}>
+                            {groupVibeAvatar}
+                            <Typography
+                              variant="body2"
+                              className={classes.attributeLabel}
+                            >
+                              {groupVibeLabel}
+                            </Typography>
+                          </div>
+                        )}
+                      </Grid>
+                      <Grid item xs={6} style={{ marginTop: 16 }}>
+                        <div className={classes.attributeContainer}>
+                          <EndAvatar />
+                          <Typography
+                            variant="body2"
+                            className={classes.attributeLabel}
+                          >
+                            {endMsg}
+                          </Typography>
+                        </div>
+                      </Grid>
+                    </Grid>
                   </CardContent>
                   <CardActions className={classes.cardActions}>
+                    <div className={classes.creationInfoContainer}>
+                      <Typography variant="caption" color="textSecondary">
+                        {`Created on ${format(new Date(club.createdAt), 'PP')}`}
+                      </Typography>
+                      {owner && owner.name && owner.name.length > 0 && (
+                        <Typography variant="caption" color="textSecondary">
+                          {/* Truncate doesn't work as advertised, so we set an exact width here. */}
+                          <Truncate lines={1} trimWhitespace={true} width={196}>
+                            {`by ${owner.name}`}
+                          </Truncate>
+                        </Typography>
+                      )}
+                    </div>
                     <Button
                       className={classes.button}
                       color="primary"
@@ -216,22 +320,6 @@ export default function ClubCards(props: ClubCardsProps) {
                     >
                       <Typography variant="button">VIEW CLUB</Typography>
                     </Button>
-                    {/* <Button
-                        variant="contained"
-                        className={classes.button}
-                        color="primary"
-                        onClick={() =>
-                          !props.user
-                            ? setLoginModalShown(true)
-                            : setJoinClubLoadingId(club._id)
-                        }
-                        disabled={club.memberCount >= club.maxMembers}
-                      >
-                        JOIN
-                      </Button> */}
-                    {joinClubLoadingId === club._id && (
-                      <CircularProgress className={classes.progress} />
-                    )}
                   </CardActions>
                 </Card>
               </Grid>

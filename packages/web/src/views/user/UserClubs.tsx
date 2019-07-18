@@ -1,19 +1,18 @@
 import React from 'react';
-import { ClubWithCurrentlyReading } from '../home/Home';
-import { User } from '@caravan/buddy-reading-types';
+import { User, ClubTransformed } from '@caravan/buddy-reading-types';
 import ClubCards from '../home/ClubCards';
 import { Typography, useTheme, Container } from '@material-ui/core';
 
 interface UserClubsProps {
-  clubsWCR: ClubWithCurrentlyReading[];
+  clubsTransformed: ClubTransformed[];
   user: User;
   userIsMe: boolean;
 }
 
 export default function UserClubs(props: UserClubsProps) {
-  const { clubsWCR, user, userIsMe } = props;
+  const { clubsTransformed, user, userIsMe } = props;
   const theme = useTheme();
-  if (user && clubsWCR && clubsWCR.length === 0) {
+  if (user && clubsTransformed && clubsTransformed.length === 0) {
     let noClubsMessage = 'This user has not yet joined any clubs.';
     if (userIsMe) {
       noClubsMessage =
@@ -35,5 +34,5 @@ export default function UserClubs(props: UserClubsProps) {
       </Container>
     );
   }
-  return <ClubCards clubsWCR={clubsWCR} user={user} />;
+  return <ClubCards clubsTransformed={clubsTransformed} user={user} />;
 }

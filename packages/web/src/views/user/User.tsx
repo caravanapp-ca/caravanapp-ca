@@ -8,6 +8,7 @@ import {
   Services,
   ProfileQuestion,
   UserQA,
+  ClubTransformed,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -36,13 +37,10 @@ import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
 import UserClubs from './UserClubs';
-import { getClubsById, getUserClubs } from '../../services/club';
+import { getClubsByIdNoMembers, getUserClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
-import {
-  ClubWithCurrentlyReading,
-  transformClubsToWithCurrentlyReading,
-} from '../home/Home';
+import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme } from '../../theme';
 
@@ -134,8 +132,8 @@ export default function UserView(props: UserViewProps) {
     read: [],
   });
   const [shelfModified, setShelfModified] = React.useState<boolean>(false);
-  const [userClubsWCR, setUserClubsWCR] = React.useState<
-    ClubWithCurrentlyReading[]
+  const [userClubsTransformed, setUserClubsTransformed] = React.useState<
+    ClubTransformed[]
   >([]);
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
@@ -203,7 +201,9 @@ export default function UserView(props: UserViewProps) {
           getUserShelf(user, clubs).then(shelf => {
             setUserShelf(shelf);
           });
-          setUserClubsWCR(transformClubsToWithCurrentlyReading(clubs));
+          (async () => {
+            setUserClubsTransformed(await transformClubs(clubs));
+          })();
         });
       }
       setUser(user);
@@ -278,8 +278,12 @@ export default function UserView(props: UserViewProps) {
         clubIdsArr.push(s.clubId);
       }
     });
-    const rClubs = await getClubsById(clubIdsArr);
-    if (rClubs && rClubs.length === indices.length) {
+    const res = await getClubsByIdNoMembers(clubIdsArr);
+    let rClubs: Services.GetClubs['clubs'] = [];
+    if (res.status === 200) {
+      rClubs = res.data.clubs;
+    }
+    if (rClubs.length === indices.length) {
       for (let i = 0; i < rClubs.length; i++) {
         userShelf.read[indices[i]].club = rClubs[i];
       }
@@ -578,7 +582,7 @@ export default function UserView(props: UserViewProps) {
           )}
           {tabValue === 2 && (
             <UserClubs
-              clubsWCR={userClubsWCR}
+              clubsTransformed={userClubsTransformed}
               user={user}
               userIsMe={userIsMe}
             />

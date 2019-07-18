@@ -7,13 +7,13 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
-import { Club } from '@caravan/buddy-reading-types';
+import { Services } from '@caravan/buddy-reading-types';
 import AdapterLink from './AdapterLink';
 import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
 
 export interface ListElementBookProps {
   clubId?: string;
-  club?: Club;
+  club?: Services.GetClubs['clubs'][0];
   coverImage?: any;
   primaryText?: string;
   secondaryText?: string;
