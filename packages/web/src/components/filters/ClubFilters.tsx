@@ -17,6 +17,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   filterButton: {
     marginRight: 4,
