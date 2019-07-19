@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles, createStyles, Theme, Chip } from '@material-ui/core';
 import HeartIcon from '@material-ui/icons/Favorite';
+import hexToRgb from '../functions/hexToRGB';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,19 +27,8 @@ interface GenresInCommonChipsProps {
 
 export default function GenresInCommonChips(props: GenresInCommonChipsProps) {
   const classes = useStyles();
-
   const { name, backgroundColor, common } = props;
 
-  function hexToRgb(hex: string) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
-      : null;
-  }
   let backgroundColorWithOpacity = backgroundColor;
   const rgbValue = hexToRgb(backgroundColor);
   if (rgbValue) {

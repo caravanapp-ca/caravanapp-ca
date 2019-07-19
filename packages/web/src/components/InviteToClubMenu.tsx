@@ -1,17 +1,9 @@
-import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import { User, Services } from '@caravan/buddy-reading-types';
-import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
 import { washedTheme } from '../theme';
-import { logout } from '../services/user';
-import DiscordLoginModal from './DiscordLoginModal';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   headerAvatar: {
     width: 48,
     height: 48,
@@ -32,26 +24,9 @@ interface InviteToClubMenuProps {
 }
 
 export function InviteToClubMenu(props: InviteToClubMenuProps) {
-  const classes = useStyles();
-
   const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
-
   const { user, inviteClubsMenuShown, clubsToInviteTo } = props;
-
-  const [loginModalShown, setLoginModalShown] = React.useState(false);
-
-  const [
-    headerProfileMenuIsOpen,
-    setHeaderProfileMenuOpenState,
-  ] = React.useState(false);
-
-  function onCloseLoginModal() {
-    setLoginModalShown(false);
-  }
-
-  function handleProfileClick() {
-    setHeaderProfileMenuOpenState(isOpen => !isOpen);
-  }
+  const [, setHeaderProfileMenuOpenState] = React.useState(false);
 
   function handleProfileMenuClose(event: React.MouseEvent<EventTarget>) {
     if (
@@ -62,12 +37,6 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
     }
     setHeaderProfileMenuOpenState(false);
   }
-  if (user) {
-    console.log('User');
-    console.log(user.urlSlug);
-  }
-  console.log('clubs to invite');
-  console.log(clubsToInviteTo);
 
   return (
     <Menu
