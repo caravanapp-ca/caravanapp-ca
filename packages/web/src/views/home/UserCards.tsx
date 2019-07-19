@@ -1,5 +1,5 @@
 import React from 'react';
-import { CircularProgress, createMuiTheme, Avatar } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {
   makeStyles,
-  responsiveFontSizes,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -19,7 +18,6 @@ import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
 import UserCardShelfList from '../club/shelf-view/UserCardShelfList';
 import { InviteToClubMenu } from '../../components/InviteToClubMenu';
-import { getUserClubs, getClubMembers } from '../../services/club';
 import { UserWithInvitableClubs } from './Home';
 import UserAvatar from '../user/UserAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
@@ -101,7 +99,7 @@ const useStyles = makeStyles(theme => ({
     right: 16,
     zIndex: 1,
     borderRadius: '50%',
-    padding: 3,
+    padding: 4,
     backgroundColor: '#FFFFFF',
   },
   fieldTitleText: {
@@ -162,11 +160,11 @@ interface UserCardProps {
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
-  const { usersWithInvitableClubs, user, userClubs } = props;
+  const { usersWithInvitableClubs, user } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
-  const [inviteToClubMenuShown, setInviteToClubMenuShown] = React.useState(
+  const [inviteToClubMenuShown] = React.useState(
     false
   );
 
