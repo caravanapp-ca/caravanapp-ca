@@ -4,6 +4,12 @@ import { makeStyles, createStyles, Tooltip } from '@material-ui/core';
 import { ShelfEntry } from '@caravan/buddy-reading-types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { theme } from '../theme';
+import ReactResizeDetector from 'react-resize-detector';
+
+const bookCoverHeight = 96;
+const bookCoverWidth = 60;
+const bookCoverMarginRight = theme.spacing(2);
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -24,16 +30,13 @@ const useStyles = makeStyles(theme =>
       height: 20,
       width: 20,
     },
-    bookCoverTile: {
-      marginRight: theme.spacing(1),
-    },
     bookCover: {
-      width: 80,
-      height: 128,
+      width: bookCoverWidth,
+      height: bookCoverHeight,
+      marginRight: bookCoverMarginRight,
       borderRadius: 5,
       objectFit: 'cover',
       boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
-      marginRight: theme.spacing(2),
     },
   })
 );
@@ -42,20 +45,28 @@ interface UserCardShelfListProps {
   shelf: ShelfEntry[];
 }
 
-const generateSliderSettings = (shelf: ShelfEntry[]): Settings => ({
+const getSlidesToShow = (width: number): number => {
+  return Math.floor(width / (bookCoverWidth + bookCoverMarginRight));
+};
+
+const generateSliderSettings = (
+  slidesToShow: number,
+  shelf: ShelfEntry[]
+): Settings => ({
   className: 'shelf-slider',
   dots: true,
   infinite: false,
-  slidesToShow: Math.min(4, shelf.length),
-  slidesToScroll: Math.min(4, shelf.length),
-  arrows: true,
+  slidesToShow: Math.min(slidesToShow, shelf.length),
+  slidesToScroll: Math.min(slidesToShow, shelf.length),
   variableWidth: true,
 });
 
 export default function UserCardShelfList(props: UserCardShelfListProps) {
   const classes = useStyles();
   const { shelf } = props;
-  const settings = generateSliderSettings(shelf);
+  const [slidesToShow, setSlidesToShow] = React.useState<number>(4);
+
+  const settings = generateSliderSettings(slidesToShow, shelf);
 
   return (
     <div>
@@ -72,6 +83,10 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
           </div>
         ))}
       </Slider>
+      <ReactResizeDetector
+        handleWidth
+        onResize={(w, h) => setSlidesToShow(getSlidesToShow(w))}
+      />
     </div>
   );
 }

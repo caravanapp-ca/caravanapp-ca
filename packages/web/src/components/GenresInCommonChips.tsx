@@ -9,9 +9,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       zIndex: 1,
     },
-    chipText: {
-      fontStyle: 'italic',
-    },
     chipIcon: {
       color: '#AF0020',
       paddingLeft: 2,
@@ -46,7 +43,7 @@ export default function GenresInCommonChips(props: GenresInCommonChipsProps) {
   const rgbValue = hexToRgb(backgroundColor);
   if (rgbValue) {
     backgroundColorWithOpacity =
-      'rgba(' + rgbValue.r + ', ' + rgbValue.g + ', ' + rgbValue.b + ', 0.15)';
+      'rgba(' + rgbValue.r + ', ' + rgbValue.g + ', ' + rgbValue.b + ', 0.1)';
   }
 
   return (
@@ -56,7 +53,6 @@ export default function GenresInCommonChips(props: GenresInCommonChipsProps) {
       icon={common ? <HeartIcon /> : undefined}
       classes={{
         root: classes.baseChip,
-        label: classes.chipText,
         icon: classes.chipIcon,
       }}
       style={{

@@ -4,7 +4,7 @@ import { Avatar, makeStyles, Theme, createStyles } from '@material-ui/core';
 
 interface UserAvatarProps {
   user: User;
-  size?: 'large' | 'small' | 'default';
+  size?: number;
   style?: Object;
 }
 
@@ -24,21 +24,24 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function UserAvatar(props: UserAvatarProps) {
   const classes = useStyles();
   const { user, size, style } = props;
+
   let avatarClass;
-  switch (size) {
-    case 'large':
-      avatarClass = classes.userProfileImageLarge;
-      break;
-    case 'small':
-      avatarClass = classes.userProfileImageSmall;
-      break;
-    case 'default':
-      break;
-    default:
-      break;
+  if (size) {
+    avatarClass = makeStyles(() =>
+      createStyles({
+        root: {
+          height: size,
+          width: size,
+        },
+      })
+    );
   }
 
   return (
-    <Avatar src={user.photoUrl} classes={{ root: avatarClass }} style={style} />
+    <Avatar
+      src={user.photoUrl}
+      classes={avatarClass ? avatarClass() : undefined}
+      style={style}
+    />
   );
 }

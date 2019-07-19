@@ -671,19 +671,19 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
-        <Paper className={classes.tabs}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant={screenSmallerThanMd ? 'fullWidth' : undefined}
-            centered={!screenSmallerThanMd}
-          >
-            <Tab label="Clubs" />
-            <Tab label="People" />
-          </Tabs>
-        </Paper>
+        {/* <Paper className={classes.tabs}> */}
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+          centered={!screenSmallerThanMd}
+        >
+          <Tab label="Clubs" />
+          <Tab label="People" />
+        </Tabs>
+        {/* </Paper> */}
         {tabValue === 0 && (
           <>
             <Container
@@ -774,7 +774,7 @@ export default function Home(props: HomeProps) {
                 />
               </div>
             )}
-                        <GenreFilterModal
+            <GenreFilterModal
               allGenres={allGenres}
               filteredGenres={stagingClubsFilter.genres}
               onGenreSelected={onGenreSelected}

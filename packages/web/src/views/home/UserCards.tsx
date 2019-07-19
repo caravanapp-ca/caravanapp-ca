@@ -6,45 +6,36 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {
-  makeStyles,
-  MuiThemeProvider,
-} from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { User, Services } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
-import UserCardShelfList from '../club/shelf-view/UserCardShelfList';
+import UserCardShelfList from '../../components/UserCardShelfList';
 import { InviteToClubMenu } from '../../components/InviteToClubMenu';
 import { UserWithInvitableClubs } from './Home';
 import UserAvatar from '../user/UserAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
+import QuestionAnswer from '../../components/QuestionAnswer';
 
 const useStyles = makeStyles(theme => ({
-  cardGrid: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(8),
-  },
-  gridItem: {
-    marginBottom: theme.spacing(4),
-  },
   card: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+  },
+  cardGrid: {
+    padding: `${theme.spacing(4)}px 8px ${theme.spacing(8)}px`,
   },
   cardContent: {
     position: 'relative',
-    zIndex: 1,
+    // zIndex: 1,
     flexGrow: 1,
     backgroundColor: '#FFFFFF',
-    paddingBottom: 0,
+    padding: '16px 16px 0px',
   },
   iconWithLabel: {
     display: 'flex',
@@ -70,27 +61,17 @@ const useStyles = makeStyles(theme => ({
   },
   userHeading: {
     position: 'relative',
-    height: '100px',
+    height: '96px',
     width: '100%',
-  },
-  userHeadingNoPalette: {
-    position: 'relative',
-    height: '100px',
-    width: '100%',
-    'border-style': 'solid',
-    'border-color': '#5C6BC0',
-    'border-width': '0px 0px 2px 0px',
   },
   userTextContainer: {
     position: 'absolute',
-    width: '100%',
-    bottom: 10,
-    left: 10,
-    padding: theme.spacing(2),
+    width: '60%',
+    bottom: 16,
+    left: 16,
   },
   userNameText: {
     fontWeight: 600,
-    width: '74%',
   },
   userWebsiteText: {},
   userAvatarContainer: {
@@ -103,11 +84,11 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#FFFFFF',
   },
   fieldTitleText: {
-    fontStyle: 'italic',
-    marginTop: theme.spacing(2),
+    // fontStyle: 'italic',
+    marginTop: theme.spacing(3),
   },
   fieldTitleTextLessTopMargin: {
-    fontStyle: 'italic',
+    // fontStyle: 'italic',
     marginTop: theme.spacing(1),
   },
   genresInCommon: {
@@ -164,9 +145,7 @@ export default function UserCards(props: UserCardProps) {
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
-  const [inviteToClubMenuShown] = React.useState(
-    false
-  );
+  const [inviteToClubMenuShown] = React.useState(false);
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
@@ -181,27 +160,19 @@ export default function UserCards(props: UserCardProps) {
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
-          {usersWithInvitableClubs.map(u => {
+          {usersWithInvitableClubs.map((u, index) => {
             const userTheme = makeUserTheme(u.user.palette);
-
             const userDarkTheme = makeUserDarkTheme(u.user.palette);
-
             const otherUsersGenres: string[] = u.user.selectedGenres.map(
               x => x.name
             );
-
-            const otherGenresSet = new Set(otherUsersGenres);
-            const myGenresSet = new Set(myGenres);
-            let commonGenres = Array.from(
-              //@ts-ignore
-              new Set([...otherGenresSet].filter(val => myGenresSet.has(val)))
+            let commonGenres = otherUsersGenres.filter(val =>
+              myGenres.includes(val)
             );
-
             commonGenres = commonGenres.slice(
               0,
               Math.min(commonGenres.length, 5)
             );
-
             let otherUniqueGenres: string[] = [];
             if (commonGenres.length < 5) {
               otherUniqueGenres = otherUsersGenres.filter(
@@ -212,24 +183,12 @@ export default function UserCards(props: UserCardProps) {
                 Math.min(5 - commonGenres.length, 5)
               );
             }
-
-            const nameField: string = u.user.name
-              ? u.user.name
-              : u.user.urlSlug
-              ? u.user.urlSlug
-              : 'noName';
+            const nameField: string = u.user.name || u.user.urlSlug || 'noName';
 
             return (
-              <MuiThemeProvider theme={userTheme}>
-                <Grid
-                  item
-                  key={u.user._id}
-                  xs={12}
-                  sm={6}
-                  className={classes.gridItem}
-                  justify="space-around"
-                >
-                  <Card className={classes.card}>
+              <Grid item key={u.user._id} xs={12} sm={6}>
+                <Card className={classes.card}>
+                  <MuiThemeProvider theme={userTheme}>
                     <div
                       className={classes.userHeading}
                       style={{
@@ -328,33 +287,26 @@ export default function UserCards(props: UserCardProps) {
                           User has no books on their shelf...
                         </Typography>
                       )}
+                      <Typography
+                        className={classes.fieldTitleText}
+                        color="textSecondary"
+                        gutterBottom
+                      >
+                        {'Q & A'}
+                      </Typography>
                       {u.user.questions && u.user.questions.length > 0 && (
-                        <>
-                          <Typography
-                            className={classes.fieldTitleText}
-                            color="textSecondary"
-                            gutterBottom
-                          >
-                            {u.user.questions[0].title}
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            className={classes.emptyFieldText}
-                          >
-                            {u.user.questions[0].answer}
-                          </Typography>
-                        </>
+                        <QuestionAnswer
+                          key={u.user._id}
+                          questionKey={u.user.questions[0].id}
+                          question={u.user.questions[0].title}
+                          answer={u.user.questions[0].answer}
+                          numRows={2}
+                          isEditing={false}
+                        />
                       )}
                       {!u.user.questions ||
                         (u.user.questions.length === 0 && (
                           <>
-                            <Typography
-                              className={classes.fieldTitleText}
-                              color="textSecondary"
-                              gutterBottom
-                            >
-                              Profile questions
-                            </Typography>
                             <Typography
                               variant="body1"
                               className={classes.emptyFieldText}
@@ -392,14 +344,14 @@ export default function UserCards(props: UserCardProps) {
                     </CardActions>
                     {u.user && u.user.photoUrl && (
                       <div className={classes.userAvatarContainer}>
-                        <UserAvatar user={u.user} size={'small'} />
+                        <UserAvatar user={u.user} size={112} />
                       </div>
                     )}
                     {!u.user.photoUrl && (
                       <div className={classes.userAvatarContainer}>
                         <GenericGroupMemberAvatar
                           style={{ height: 112, width: 112 }}
-                          iconStyle={{ height: 80, width: 80 }}
+                          iconStyle={{ height: 72, width: 72 }}
                         />
                       </div>
                     )}
@@ -410,9 +362,9 @@ export default function UserCards(props: UserCardProps) {
                         inviteClubsMenuShown={inviteToClubMenuShown}
                       />
                     )}
-                  </Card>
-                </Grid>
-              </MuiThemeProvider>
+                  </MuiThemeProvider>
+                </Card>
+              </Grid>
             );
           })}
         </Grid>

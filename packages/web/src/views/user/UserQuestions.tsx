@@ -130,7 +130,6 @@ export default function UserQuestions(props: UserQuestionsProps) {
                 <QuestionAnswer
                   key={q.id}
                   questionKey={q.id}
-                  isNew={false}
                   index={i}
                   question={q.title}
                   answer={q.answer}
@@ -154,7 +153,6 @@ export default function UserQuestions(props: UserQuestionsProps) {
                   <QuestionAnswer
                     key={q.id}
                     questionKey={q.id}
-                    isNew={true}
                     index={i}
                     question={q.title}
                     placeholder={q.subtitle}
@@ -179,7 +177,6 @@ export default function UserQuestions(props: UserQuestionsProps) {
               <QuestionAnswer
                 key={q.id}
                 questionKey={q.id}
-                isNew={false}
                 index={i}
                 question={q.title}
                 answer={q.answer}
