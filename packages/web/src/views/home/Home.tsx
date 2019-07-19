@@ -46,6 +46,7 @@ import UserCards from './UserCards';
 import { getUser } from '../../services/user';
 import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import clsx from 'clsx';
+import shuffleArr from '../../functions/shuffleArr';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -168,15 +169,9 @@ export async function transformUserToInvitableClub(
       c => c !== null
     ) as ClubWithMemberIds[];
     const usersWIC: UserWithInvitableClubs[] = users.map(user => {
-      const filteredClubs = filteredClubsWithMembers.map(function(
-        clubWithMembers
-      ) {
-        if (clubWithMembers) {
-          if (!clubWithMembers.memberIds.includes(user._id)) {
-            return clubWithMembers.club;
-          } else {
-            return null;
-          }
+      const filteredClubs = filteredClubsWithMembers.map(clubWithMembers => {
+        if (!clubWithMembers.memberIds.includes(user._id)) {
+          return clubWithMembers.club;
         } else {
           return null;
         }
@@ -196,13 +191,6 @@ export function shuffleUser(user: User) {
   shuffleArr(user.selectedGenres);
   shuffleArr(user.questions);
   return user;
-}
-
-export function shuffleArr(arr: any[]) {
-  for (let i = arr.length; i; i--) {
-    let j = Math.floor(Math.random() * i);
-    [arr[i - 1], arr[j]] = [arr[j], arr[i - 1]];
-  }
 }
 
 export default function Home(props: HomeProps) {
