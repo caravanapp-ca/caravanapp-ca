@@ -222,18 +222,6 @@ export default function Home(props: HomeProps) {
   );
 
   const [tabValue, setTabValue] = React.useState(0);
-  console.log('props.match.params');
-  console.log(props.match.params);
-
-  console.log('props.location.state');
-  console.log(props.location.state);
-
-  const message =
-    (props.location.state && props.location.state.tabValue) != undefined
-      ? props.location.state.tabValue
-      : ' ';
-  console.log('message');
-  console.log(message);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -362,8 +350,6 @@ export default function Home(props: HomeProps) {
       if (res.data) {
         let filteredClubsWithMembers: ClubWithMemberIds[] = [];
         if (user) {
-          console.log('User');
-          console.log(user);
           const userClubsRes = await getUserClubs(
             user._id,
             undefined,

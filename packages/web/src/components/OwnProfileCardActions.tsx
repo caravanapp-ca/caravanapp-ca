@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1),
   },
   marioIcon: {
-    height: 30,
+    height: 25,
     'resize-mode': 'contain',
     paddingRight: theme.spacing(1),
   },

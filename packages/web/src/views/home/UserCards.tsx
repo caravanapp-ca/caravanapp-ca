@@ -1,16 +1,12 @@
 import React from 'react';
-import { CircularProgress, createMuiTheme, Avatar } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {
-  makeStyles,
-  responsiveFontSizes,
-  MuiThemeProvider,
-} from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { User, Services } from '@caravan/buddy-reading-types';
@@ -19,7 +15,6 @@ import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
 import UserCardShelfList from '../club/shelf-view/UserCardShelfList';
 import { InviteToClubMenu } from '../../components/InviteToClubMenu';
-import { getUserClubs, getClubMembers } from '../../services/club';
 import { UserWithInvitableClubs } from './Home';
 import UserAvatar from '../user/UserAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
@@ -163,13 +158,11 @@ interface UserCardProps {
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
-  const { usersWithInvitableClubs, user, userClubs } = props;
+  const { usersWithInvitableClubs, user } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
-  const [inviteToClubMenuShown, setInviteToClubMenuShown] = React.useState(
-    false
-  );
+  const [] = React.useState(false);
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
@@ -368,16 +361,13 @@ export default function UserCards(props: UserCardProps) {
                         ))}
                     </CardContent>
                     <CardActions classes={{ root: classes.cardActions }}>
-                      {user && user._id !== u.user._id && (
+                      {(!user || user._id !== u.user._id) && (
                         <div>
                           <Button
                             className={classes.button}
                             color="primary"
                             component={AdapterLink}
-                            to={{
-                              pathname: `/user/${u.user.urlSlug}`,
-                              state: { tabValue: 1 },
-                            }}
+                            to={`/user/${u.user.urlSlug}`}
                           >
                             <Typography variant="button">
                               View Profile
@@ -385,6 +375,8 @@ export default function UserCards(props: UserCardProps) {
                           </Button>
                           <InviteToClubMenu
                             clubsToInviteTo={u.invitableClubs}
+                            loggedInUser={user}
+                            userToInvite={u}
                           />
                         </div>
                       )}
