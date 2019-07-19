@@ -11,6 +11,7 @@ interface QuestionAnswerProps {
   numRows?: number;
   minLength?: number;
   maxLength?: number;
+  hideHelperText?: boolean;
   onEdit?: (
     id: string,
     index: number,
@@ -46,6 +47,7 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
     numRows,
     minLength,
     maxLength,
+    hideHelperText,
     isEditing,
     onEdit,
   } = props;
@@ -88,7 +90,9 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
       rows={numRows && numRows >= 1 ? numRows : 4}
       rowsMax={7}
       helperText={
-        focused && maxLength
+        hideHelperText
+          ? undefined
+          : focused && maxLength
           ? `${maxLength - currValue.length} chars remaining`
           : ' '
       }

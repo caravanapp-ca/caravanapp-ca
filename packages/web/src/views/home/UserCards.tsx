@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
   userWebsiteText: {},
   userAvatarContainer: {
     position: 'absolute',
-    top: 32,
+    top: 40,
     right: 16,
     zIndex: 1,
     borderRadius: '50%',
@@ -84,20 +84,17 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#FFFFFF',
   },
   fieldTitleText: {
-    // fontStyle: 'italic',
     marginTop: theme.spacing(3),
   },
   fieldTitleTextLessTopMargin: {
-    // fontStyle: 'italic',
-    marginTop: theme.spacing(1),
+    // marginTop: theme.spacing(1),
   },
   genresInCommon: {
     display: 'flex',
     flexWrap: 'wrap',
   },
-  emptyFieldText: {},
-  emptyFieldTitleTextLessTopMargin: {
-    marginTop: theme.spacing(1),
+  emptyFieldText: {
+    fontStyle: 'italic',
   },
   clubImage: {
     position: 'absolute',
@@ -261,7 +258,7 @@ export default function UserCards(props: UserCardProps) {
                         >
                           <Typography
                             variant="body1"
-                            className={classes.emptyFieldTitleTextLessTopMargin}
+                            className={classes.emptyFieldText}
                             color="textSecondary"
                           >
                             User has no genres...
@@ -302,6 +299,7 @@ export default function UserCards(props: UserCardProps) {
                           answer={u.user.questions[0].answer}
                           numRows={2}
                           isEditing={false}
+                          hideHelperText={true}
                         />
                       )}
                       {!u.user.questions ||
@@ -344,14 +342,14 @@ export default function UserCards(props: UserCardProps) {
                     </CardActions>
                     {u.user && u.user.photoUrl && (
                       <div className={classes.userAvatarContainer}>
-                        <UserAvatar user={u.user} size={112} />
+                        <UserAvatar user={u.user} size={96} />
                       </div>
                     )}
                     {!u.user.photoUrl && (
                       <div className={classes.userAvatarContainer}>
                         <GenericGroupMemberAvatar
-                          style={{ height: 112, width: 112 }}
-                          iconStyle={{ height: 72, width: 72 }}
+                          style={{ height: 96, width: 96 }}
+                          iconStyle={{ height: 64, width: 64 }}
                         />
                       </div>
                     )}
