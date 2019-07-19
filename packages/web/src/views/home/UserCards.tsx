@@ -270,7 +270,7 @@ export default function UserCards(props: UserCardProps) {
                         className={classes.fieldTitleText}
                         color="textSecondary"
                       >
-                        Shelf
+                        To be Read
                       </Typography>
                       {u.user.shelf.notStarted.length > 0 && (
                         <UserCardShelfList shelf={u.user.shelf.notStarted} />

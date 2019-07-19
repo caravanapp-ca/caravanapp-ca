@@ -18,6 +18,8 @@ import {
   FilterChipType,
   Membership,
   ClubTransformed,
+  ClubWithMemberIds,
+  UserWithInvitableClubs,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -48,16 +50,6 @@ import clsx from 'clsx';
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
   tabValuePassed?: number;
-}
-
-export interface ClubWithMemberIds {
-  club: Services.GetClubs['clubs'][0];
-  memberIds: string[];
-}
-
-export interface UserWithInvitableClubs {
-  user: User;
-  invitableClubs: Services.GetClubs['clubs'];
 }
 
 const useStyles = makeStyles(theme => ({
@@ -172,11 +164,9 @@ export async function transformUserToInvitableClub(
         return { club, memberIds };
       })
     );
-
     const filteredClubsWithMembers: ClubWithMemberIds[] = clubsWithMembers.filter(
       c => c !== null
     ) as ClubWithMemberIds[];
-
     const usersWIC: UserWithInvitableClubs[] = users.map(user => {
       const filteredClubs = filteredClubsWithMembers.map(function(
         clubWithMembers
@@ -671,7 +661,6 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
-        {/* <Paper className={classes.tabs}> */}
         <Tabs
           value={tabValue}
           onChange={handleTabChange}
@@ -683,7 +672,6 @@ export default function Home(props: HomeProps) {
           <Tab label="Clubs" />
           <Tab label="People" />
         </Tabs>
-        {/* </Paper> */}
         {tabValue === 0 && (
           <>
             <Container

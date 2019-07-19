@@ -59,6 +59,11 @@ declare module '@caravan/buddy-reading-types' {
     schedule: ClubReadingSchedule | null;
   }
 
+  export interface ClubWithMemberIds {
+    club: Services.GetClubs['clubs'][0];
+    memberIds: string[];
+  }
+
   export interface GroupMember extends DocumentFields, MongoTimestamps {
     userId: string;
     role: string;
@@ -122,6 +127,11 @@ declare module '@caravan/buddy-reading-types' {
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
     onboardingVersion: number;
     palette: PaletteObject | null;
+  }
+
+  export interface UserWithInvitableClubs {
+    user: User;
+    invitableClubs: Services.GetClubs['clubs'];
   }
 
   export interface Genres {
