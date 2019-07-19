@@ -306,7 +306,7 @@ export default function Home(props: HomeProps) {
         }
       })();
     }
-  }, [activeClubsFilter, afterClubsQuery]);
+  }, [activeClubsFilter, afterClubsQuery, user]);
 
   useEffect(() => {
     const pageSize = 24;
@@ -368,7 +368,7 @@ export default function Home(props: HomeProps) {
         }));
       }
     })();
-  }, [activeUsersFilter, afterUsersQuery]);
+  }, [activeUsersFilter, afterUsersQuery, user]);
 
   // Get genres on mount
   useEffect(() => {
