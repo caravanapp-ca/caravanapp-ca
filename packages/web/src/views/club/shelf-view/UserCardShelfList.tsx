@@ -1,14 +1,9 @@
 import React from 'react';
-import {
-  makeStyles,
-  createStyles,
-  useTheme,
-  Grid,
-  Tooltip,
-} from '@material-ui/core';
-import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
-import BackwardIcon from '@material-ui/icons/ArrowBackIos';
+import Slider, { Settings } from 'react-slick';
+import { makeStyles, createStyles, Tooltip } from '@material-ui/core';
 import { ShelfEntry } from '@caravan/buddy-reading-types';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -33,11 +28,12 @@ const useStyles = makeStyles(theme =>
       marginRight: theme.spacing(1),
     },
     bookCover: {
-      width: '95%',
-      height: '95%',
+      width: 80,
+      height: 128,
       borderRadius: 5,
       objectFit: 'cover',
-      border: '1px solid #E9E9E9',
+      boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+      marginRight: theme.spacing(2),
     },
   })
 );
@@ -46,55 +42,26 @@ interface UserCardShelfListProps {
   shelf: ShelfEntry[];
 }
 
+const generateSliderSettings = (shelf: ShelfEntry[]): Settings => ({
+  className: 'shelf-slider',
+  dots: true,
+  infinite: false,
+  slidesToShow: Math.min(4, shelf.length),
+  slidesToScroll: Math.min(4, shelf.length),
+  arrows: true,
+  variableWidth: true,
+});
+
 export default function UserCardShelfList(props: UserCardShelfListProps) {
   const classes = useStyles();
-
   const { shelf } = props;
-
-  const [indices, setIndices] = React.useState<number[]>([0, 4]);
-
-  function incrementIndices(val: number) {
-    let higherVal = 0;
-    let lowerVal = 0;
-    let lowerIndex = indices[0];
-    let higherIndex = indices[1];
-    if (
-      (val > 0 && higherIndex < shelf.length) ||
-      (val < 0 && lowerIndex > 0)
-    ) {
-      if (higherIndex > shelf.length) {
-        higherVal = shelf.length - Math.floor(shelf.length % 4);
-      } else {
-        higherVal = Math.min(higherIndex + val, shelf.length + 1);
-      }
-
-      if (lowerIndex === 0) {
-        lowerVal = Math.max(0, lowerIndex + val);
-      } else {
-        lowerVal = Math.min(shelf.length, lowerIndex + val);
-      }
-      setIndices([lowerVal, higherVal]);
-    }
-  }
+  const settings = generateSliderSettings(shelf);
 
   return (
-    <div className={classes.root}>
-      <div
-        className={classes.clickableIcon}
-        onClick={() => incrementIndices(-4)}
-      >
-        {indices[0] > 0 && <BackwardIcon color="primary" />}
-      </div>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="stretch"
-        spacing={1}
-        className={classes.gridListDiv}
-      >
-        {shelf.slice(indices[0], indices[1]).map(book => (
-          <Grid item key={book.sourceId} xs={3}>
+    <div>
+      <Slider {...settings}>
+        {shelf.map(book => (
+          <div>
             <Tooltip title={book.title} aria-label={book.title}>
               <img
                 src={book.coverImageURL}
@@ -102,15 +69,9 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
                 className={classes.bookCover}
               />
             </Tooltip>
-          </Grid>
+          </div>
         ))}
-      </Grid>
-      <div
-        className={classes.clickableIcon}
-        onClick={() => incrementIndices(4)}
-      >
-        {indices[1] <= shelf.length - 1 && <ForwardIcon color="primary" />}
-      </div>
+      </Slider>
     </div>
   );
 }
