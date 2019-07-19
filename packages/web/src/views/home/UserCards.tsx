@@ -22,6 +22,7 @@ import { InviteToClubMenu } from '../../components/InviteToClubMenu';
 import UserAvatar from '../user/UserAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import QuestionAnswer from '../../components/QuestionAnswer';
+import { OwnProfileCardActions } from '../../components/OwnProfileCardActions';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -282,26 +283,28 @@ export default function UserCards(props: UserCardProps) {
                         ))}
                     </CardContent>
                     <CardActions classes={{ root: classes.cardActions }}>
-                      <Button
-                        className={classes.button}
-                        color="primary"
-                        component={AdapterLink}
-                        to={{
-                          pathname: `/user/${u.user._id}`,
-                          state: { tabValue: 1 },
-                        }}
-                        variant="contained"
-                      >
-                        <Typography variant="button">View Profile</Typography>
-                      </Button>
-                      {/* <Button
-                        className={classes.button}
-                        color="primary"
-                        variant="contained"
-                        onClick={() => setInviteToClubMenuShown(true)}
-                      >
-                        <Typography variant="button">Invite to Club</Typography>
-                      </Button> */}
+                      {(!currUser || currUser._id !== u.user._id) && (
+                        <div>
+                          <Button
+                            className={classes.button}
+                            color="primary"
+                            component={AdapterLink}
+                            to={`/user/${u.user.urlSlug}`}
+                          >
+                            <Typography variant="button">
+                              View Profile
+                            </Typography>
+                          </Button>
+                          <InviteToClubMenu
+                            clubsToInviteTo={u.invitableClubs}
+                            loggedInUser={currUser}
+                            userToInvite={u}
+                          />
+                        </div>
+                      )}
+                      {currUser && currUser._id === u.user._id && (
+                        <OwnProfileCardActions user={currUser} />
+                      )}
                       {visitProfileLoadingId === u.user._id && (
                         <CircularProgress className={classes.progress} />
                       )}
@@ -318,13 +321,6 @@ export default function UserCards(props: UserCardProps) {
                           iconStyle={{ height: 64, width: 64 }}
                         />
                       </div>
-                    )}
-                    {inviteToClubMenuShown && (
-                      <InviteToClubMenu
-                        user={currUser}
-                        clubsToInviteTo={u.invitableClubs}
-                        inviteClubsMenuShown={inviteToClubMenuShown}
-                      />
                     )}
                   </MuiThemeProvider>
                 </Card>

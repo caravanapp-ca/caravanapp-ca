@@ -10,8 +10,11 @@ import {
   ClubWUninitSchedules,
   User,
 } from '@caravan/buddy-reading-types';
+import { UserWithInvitableClubs } from '../views/home/Home';
+import { getRandomInviteMessage } from '../functions/getRandomInviteMessage';
 
 const clubRoute = '/api/club';
+const discordRoute = '/api/discord';
 
 interface CreateClubProps {
   name: string;
@@ -157,5 +160,25 @@ export async function modifyClub(
   const res = await axios.put(`${clubRoute}/${_id}`, {
     newClub,
   });
+  return res;
+}
+
+export async function inviteToClub(
+  currentUser: User,
+  userToInvite: UserWithInvitableClubs,
+  clubName: string,
+  clubId: string
+) {
+  const messageContent = getRandomInviteMessage(
+    currentUser.name || currentUser.urlSlug || 'A Caravan user',
+    clubName,
+    clubId
+  );
+  const res = await axios.post(
+    `${discordRoute}/members/${userToInvite.user.discordId}/messages`,
+    {
+      messageContent,
+    }
+  );
   return res;
 }
