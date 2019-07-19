@@ -23,6 +23,7 @@ import { getUserClubs, getClubMembers } from '../../services/club';
 import { UserWithInvitableClubs } from './Home';
 import UserAvatar from '../user/UserAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
+import { OwnProfileCardActions } from '../../components/OwnProfileCardActions';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -229,7 +230,6 @@ export default function UserCards(props: UserCardProps) {
                   xs={12}
                   sm={6}
                   className={classes.gridItem}
-                  justify="space-around"
                 >
                   <Card className={classes.card}>
                     <div
@@ -368,26 +368,29 @@ export default function UserCards(props: UserCardProps) {
                         ))}
                     </CardContent>
                     <CardActions classes={{ root: classes.cardActions }}>
-                      <Button
-                        className={classes.button}
-                        color="primary"
-                        component={AdapterLink}
-                        to={{
-                          pathname: `/user/${u.user._id}`,
-                          state: { tabValue: 1 },
-                        }}
-                        variant="contained"
-                      >
-                        <Typography variant="button">View Profile</Typography>
-                      </Button>
-                      {/* <Button
-                        className={classes.button}
-                        color="primary"
-                        variant="contained"
-                        onClick={() => setInviteToClubMenuShown(true)}
-                      >
-                        <Typography variant="button">Invite to Club</Typography>
-                      </Button> */}
+                      {user && user._id !== u.user._id && (
+                        <div>
+                          <Button
+                            className={classes.button}
+                            color="primary"
+                            component={AdapterLink}
+                            to={{
+                              pathname: `/user/${u.user.urlSlug}`,
+                              state: { tabValue: 1 },
+                            }}
+                          >
+                            <Typography variant="button">
+                              View Profile
+                            </Typography>
+                          </Button>
+                          <InviteToClubMenu
+                            clubsToInviteTo={u.invitableClubs}
+                          />
+                        </div>
+                      )}
+                      {user && user._id === u.user._id && (
+                        <OwnProfileCardActions user={user} />
+                      )}
                       {visitProfileLoadingId === u.user._id && (
                         <CircularProgress className={classes.progress} />
                       )}
@@ -404,13 +407,6 @@ export default function UserCards(props: UserCardProps) {
                           iconStyle={{ height: 80, width: 80 }}
                         />
                       </div>
-                    )}
-                    {inviteToClubMenuShown && (
-                      <InviteToClubMenu
-                        user={user}
-                        clubsToInviteTo={u.invitableClubs}
-                        inviteClubsMenuShown={inviteToClubMenuShown}
-                      />
                     )}
                   </Card>
                 </Grid>

@@ -155,35 +155,16 @@ export async function transformClubs(
 
 export async function transformUserToInvitableClub(
   users: User[],
-  usersClubs: Services.GetClubs['clubs']
+  clubsWithMembers: ClubWithMemberIds[]
 ) {
-  if (usersClubs.length === 0) {
+  if (clubsWithMembers.length === 0) {
     const usersWIC = users.map(user => {
       return { user, invitableClubs: [] };
     });
     return usersWIC;
   } else {
-    const clubsWithMembers = await Promise.all(
-      usersClubs.map(async function(club) {
-        const res = await getClubMembers(club._id);
-        if (!res.data) {
-          return null;
-        }
-        const members = res.data;
-
-        const memberIds = members.map(m => m._id);
-        return { club, memberIds };
-      })
-    );
-
-    const filteredClubsWithMembers: ClubWithMemberIds[] = clubsWithMembers.filter(
-      c => c !== null
-    ) as ClubWithMemberIds[];
-
     const usersWIC: UserWithInvitableClubs[] = users.map(user => {
-      const filteredClubs = filteredClubsWithMembers.map(function(
-        clubWithMembers
-      ) {
+      const filteredClubs = clubsWithMembers.map(function(clubWithMembers) {
         if (clubWithMembers) {
           if (!clubWithMembers.memberIds.includes(user._id)) {
             return clubWithMembers.club;
@@ -228,10 +209,6 @@ export default function Home(props: HomeProps) {
     Service<ClubTransformed[]>
   >({ status: 'loading' });
 
-  // const [] = React.useState<Service<ClubTransformed[]>>({
-  //   status: 'loading',
-  // });
-
   const [currentUsersClubs, setCurrentUsersClubs] = React.useState<
     Services.GetClubs['clubs']
   >([]);
@@ -243,9 +220,21 @@ export default function Home(props: HomeProps) {
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-  const [tabValue, setTabValue] = React.useState(
-    tabValuePassed ? tabValuePassed : 0
-  );
+
+  const [tabValue, setTabValue] = React.useState(0);
+  console.log('props.match.params');
+  console.log(props.match.params);
+
+  console.log('props.location.state');
+  console.log(props.location.state);
+
+  const message =
+    (props.location.state && props.location.state.tabValue) != undefined
+      ? props.location.state.tabValue
+      : ' ';
+  console.log('message');
+  console.log(message);
+
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
@@ -371,30 +360,51 @@ export default function Home(props: HomeProps) {
       const res = await getAllUsers(afterUsersQuery, pageSize);
 
       if (res.data) {
-        let usersClubs: Services.GetClubs['clubs'] = [];
-        // if (user) {
-        //   const userClubsRes = await getUserClubs(
-        //     user._id,
-        //     undefined,
-        //     pageSize,
-        //     {
-        //       genres: [],
-        //       speed: [],
-        //       capacity: [],
-        //       membership: [
-        //         { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-        //       ],
-        //     }
-        //   );
-        //   if (userClubsRes.data) {
-        //     usersClubs = userClubsRes.data.clubs;
-        //   }
-        // }
+        let filteredClubsWithMembers: ClubWithMemberIds[] = [];
+        if (user) {
+          console.log('User');
+          console.log(user);
+          const userClubsRes = await getUserClubs(
+            user._id,
+            undefined,
+            pageSize,
+            {
+              genres: [],
+              speed: [],
+              capacity: [
+                { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
+              ],
+              membership: [
+                { key: 'myClubs', name: 'My clubs', type: 'membership' },
+              ],
+            }
+          );
+
+          if (userClubsRes.data) {
+            const loggedInUsersClubs: Services.GetClubs['clubs'] =
+              userClubsRes.data.clubs;
+            const clubsWithMembers = await Promise.all(
+              loggedInUsersClubs.map(async function(club) {
+                const res = await getClubMembers(club._id);
+                if (!res.data) {
+                  return null;
+                }
+                const members = res.data;
+
+                const memberIds = members.map(m => m._id);
+                return { club, memberIds };
+              })
+            );
+            filteredClubsWithMembers = clubsWithMembers.filter(
+              c => c !== null
+            ) as ClubWithMemberIds[];
+          }
+        }
         const newUsers = res.data.users;
         const newUsersShuffled = newUsers.map(user => shuffleUser(user));
         const newUsersWithInvitableClubs = await transformUserToInvitableClub(
           newUsersShuffled,
-          usersClubs
+          filteredClubsWithMembers
         );
         setShowLoadMoreUsers(newUsersWithInvitableClubs.length === pageSize);
         setUsersResult(s => ({
