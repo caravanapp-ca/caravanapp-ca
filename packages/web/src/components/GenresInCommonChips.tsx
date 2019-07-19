@@ -11,9 +11,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     chipIcon: {
       color: '#AF0020',
-      paddingLeft: 2,
-      height: 22,
-      width: 22,
+      marginLeft: 2,
+      height: 20,
+      width: 20,
     },
   })
 );

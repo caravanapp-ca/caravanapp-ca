@@ -418,8 +418,8 @@ router.get('/members/:id', async (req, res, next) => {
           break;
       }
     }
-    console.log(`Failed to get members for club ${id}`, err);
-    return next(err);
+    console.error(`Failed to get members for club ${id} `, err);
+    res.status(500).send(`Failed to get members for club ${id}`);
   }
 });
 
