@@ -201,11 +201,6 @@ export default function Home(props: HomeProps) {
   const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
     Service<ClubTransformed[]>
   >({ status: 'loading' });
-
-  // const [] = React.useState<Service<ClubTransformed[]>>({
-  //   status: 'loading',
-  // });
-
   const [currentUsersClubs] = React.useState<Services.GetClubs['clubs']>([]);
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
@@ -834,7 +829,7 @@ export default function Home(props: HomeProps) {
               usersResult.payload.length > 0 && (
                 <UserCards
                   usersWithInvitableClubs={usersResult.payload}
-                  user={user}
+                  currUser={user}
                   userClubs={currentUsersClubs}
                 />
               )}

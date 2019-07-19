@@ -9,7 +9,11 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User, Services, UserWithInvitableClubs } from '@caravan/buddy-reading-types';
+import {
+  User,
+  Services,
+  UserWithInvitableClubs,
+} from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
@@ -31,7 +35,6 @@ const useStyles = makeStyles(theme => ({
   },
   cardContent: {
     position: 'relative',
-    // zIndex: 1,
     flexGrow: 1,
     backgroundColor: '#FFFFFF',
     padding: '16px 16px 0px',
@@ -85,44 +88,12 @@ const useStyles = makeStyles(theme => ({
   fieldTitleText: {
     marginTop: theme.spacing(3),
   },
-  fieldTitleTextLessTopMargin: {
-    // marginTop: theme.spacing(1),
-  },
   genresInCommon: {
     display: 'flex',
     flexWrap: 'wrap',
   },
   emptyFieldText: {
     fontStyle: 'italic',
-  },
-  clubImage: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0,
-    'object-fit': 'cover',
-    'object-position': '50% 50%',
-    filter: 'blur(4px)',
-  },
-  clubImageShade: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0,
-    background: 'rgba(0, 0, 0, 0.4)',
-  },
-  imageText: {
-    width: '100%',
-    'text-align': 'left',
-    color: '#ffffff',
-  },
-  imageTitleText: {
-    width: '100%',
-    'text-align': 'left',
-    color: '#ffffff',
-    fontWeight: 600,
   },
   progress: {
     margin: theme.spacing(2),
@@ -131,13 +102,13 @@ const useStyles = makeStyles(theme => ({
 
 interface UserCardProps {
   usersWithInvitableClubs: UserWithInvitableClubs[];
-  user: User | null;
+  currUser: User | null;
   userClubs: Services.GetClubs['clubs'];
 }
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
-  const { usersWithInvitableClubs, user } = props;
+  const { usersWithInvitableClubs, currUser } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
@@ -148,8 +119,8 @@ export default function UserCards(props: UserCardProps) {
   };
 
   let myGenres: string[] = [];
-  if (user) {
-    myGenres = user.selectedGenres.map(x => x.name);
+  if (currUser) {
+    myGenres = currUser.selectedGenres.map(x => x.name);
   }
 
   return (
@@ -213,11 +184,7 @@ export default function UserCards(props: UserCardProps) {
                       </div>
                     </div>
                     <CardContent classes={{ root: classes.cardContent }}>
-                      <Typography
-                        gutterBottom
-                        className={classes.fieldTitleTextLessTopMargin}
-                        color="textSecondary"
-                      >
+                      <Typography gutterBottom color="textSecondary">
                         Genres
                       </Typography>
                       {otherUsersGenres.length > 0 && (
@@ -354,7 +321,7 @@ export default function UserCards(props: UserCardProps) {
                     )}
                     {inviteToClubMenuShown && (
                       <InviteToClubMenu
-                        user={user}
+                        user={currUser}
                         clubsToInviteTo={u.invitableClubs}
                         inviteClubsMenuShown={inviteToClubMenuShown}
                       />
