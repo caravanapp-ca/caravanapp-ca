@@ -8,9 +8,9 @@ import {
   ActiveFilter,
   SelectedGenre,
   ClubWUninitSchedules,
+  UserWithInvitableClubs,
   User,
 } from '@caravan/buddy-reading-types';
-import { UserWithInvitableClubs } from '../views/home/Home';
 import { getRandomInviteMessage } from '../functions/getRandomInviteMessage';
 
 const clubRoute = '/api/club';
