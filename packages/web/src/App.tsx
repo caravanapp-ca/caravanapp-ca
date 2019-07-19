@@ -61,6 +61,7 @@ export function App(props: AppProps) {
     cachedUser = JSON.parse(cachedUserStr);
   }
   const [user, setUser] = useState<User | null>(cachedUser);
+  const [userLoaded, setLoadedUser] = useState<boolean>(false);
   const [docHeight, setDocHeight] = useState<number>(
     document.body.scrollHeight
   );
@@ -71,15 +72,18 @@ export function App(props: AppProps) {
       getUser(userId).then(user => {
         if (user) {
           setUser(user);
+          setLoadedUser(true);
           localStorage.setItem(KEY_USER, JSON.stringify(user));
         } else {
           setUser(null);
+          setLoadedUser(true);
           localStorage.removeItem(KEY_USER);
           console.info('Are you having fun messing with cookies? :)');
         }
       });
     } else {
       setUser(null);
+      setLoadedUser(true);
       localStorage.removeItem(KEY_USER);
     }
   }, []);
@@ -117,7 +121,10 @@ export function App(props: AppProps) {
                   exact
                   path="/clubs"
                   render={props =>
-                    forceOnboard(user, <Home {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      <Home {...props} user={user} userLoaded={userLoaded} />
+                    )
                   }
                 />
                 <Route

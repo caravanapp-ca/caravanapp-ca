@@ -50,6 +50,7 @@ import shuffleArr from '../../functions/shuffleArr';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
+  userLoaded: boolean;
   tabValuePassed?: number;
 }
 
@@ -180,7 +181,7 @@ export function shuffleUser(user: User) {
 
 export default function Home(props: HomeProps) {
   const classes = useStyles();
-  const { user, tabValuePassed } = props;
+  const { user, userLoaded, tabValuePassed } = props;
   const theme = useTheme();
 
   const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
@@ -309,6 +310,9 @@ export default function Home(props: HomeProps) {
   }, [activeClubsFilter, afterClubsQuery]);
 
   useEffect(() => {
+    if (!userLoaded) {
+      return;
+    }
     const pageSize = 24;
     (async () => {
       const res = await getAllUsers(afterUsersQuery, pageSize);
