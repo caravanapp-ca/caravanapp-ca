@@ -131,6 +131,11 @@ interface ClubCardsProps {
   user: User | null;
 }
 
+// Make this approximately the height of a standard ClubCard
+const placeholderCardHeight = 500;
+// The number of cards above and below the current to load
+const lazyloadOffset = 12;
+
 export default function ClubCards(props: ClubCardsProps) {
   const classes = useStyles();
   const { clubsTransformed } = props;
@@ -190,10 +195,10 @@ export default function ClubCards(props: ClubCardsProps) {
             return (
               <LazyLoad
                 unmountIfInvisible={true}
-                offset={1000}
+                offset={placeholderCardHeight * lazyloadOffset}
                 placeholder={
                   <Grid item key={club._id} xs={12} sm={6}>
-                    <PlaceholderCard height={500} />
+                    <PlaceholderCard height={placeholderCardHeight} />
                   </Grid>
                 }
               >
