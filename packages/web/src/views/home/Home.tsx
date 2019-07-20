@@ -239,7 +239,6 @@ export default function Home(props: HomeProps) {
   const [afterUsersQuery, setAfterUsersQuery] = React.useState<
     string | undefined
   >(undefined);
-
   const clubGenreFiltersApplied = activeClubsFilter.genres.length > 0;
   const clubSpeedFiltersApplied = activeClubsFilter.speed.length > 0;
   const clubCapacityFiltersApplied = activeClubsFilter.capacity.length > 0;
@@ -360,17 +359,17 @@ export default function Home(props: HomeProps) {
   }, [activeUsersFilter, afterUsersQuery, userLoaded]);
 
   useEffect(() => {
-    if (userLoaded) {
-      // Reset user results
-      setUsersResult(s => ({
-        status: 'loading',
-        payload: [],
-      }));
-      // Now get them again
-      getUsersWithInvitableClubs();
-    } else {
+    if (!userLoaded) {
       return;
     }
+    // Reset user results
+    setUsersResult(s => ({
+      status: 'loading',
+      payload: [],
+    }));
+    setAfterUsersQuery(undefined);
+    // Now get them again
+    getUsersWithInvitableClubs();
   }, [user]);
 
   // Get genres on mount
