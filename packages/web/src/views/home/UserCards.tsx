@@ -99,6 +99,11 @@ const useStyles = makeStyles(theme => ({
   progress: {
     margin: theme.spacing(2),
   },
+  buttonsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 }));
 
 interface UserCardProps {
@@ -284,7 +289,7 @@ export default function UserCards(props: UserCardProps) {
                     </CardContent>
                     <CardActions classes={{ root: classes.cardActions }}>
                       {(!currUser || currUser._id !== u.user._id) && (
-                        <div>
+                        <div className={classes.buttonsContainer}>
                           <Button
                             className={classes.button}
                             color="primary"

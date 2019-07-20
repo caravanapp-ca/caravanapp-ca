@@ -115,32 +115,33 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
 
   return (
     <>
-      {(loggedInUser && clubsToInviteTo.length > 0) ||
-        (!loggedInUser && (
-          <Button
-            className={classes.button}
-            color="primary"
-            variant="contained"
-            onClick={handleClick}
-            disabled={false}
-          >
-            <Typography variant="button">Invite to Club</Typography>
-          </Button>
-        ))}
-      {!!(loggedInUser && clubsToInviteTo.length === 0) && (
+      {((loggedInUser && clubsToInviteTo.length > 0) || !loggedInUser) && (
+        <Button
+          className={classes.button}
+          color="primary"
+          variant="contained"
+          onClick={handleClick}
+          disabled={false}
+        >
+          <Typography variant="button">Invite to Club</Typography>
+        </Button>
+      )}
+      {loggedInUser && clubsToInviteTo.length === 0 && (
         <Tooltip
           title="No clubs to invite to!"
           aria-label="No clubs to invite this person to."
         >
-          <Button
-            className={classes.button}
-            color="primary"
-            variant="contained"
-            onClick={handleClick}
-            disabled={true}
-          >
-            <Typography variant="button">Invite to Club</Typography>
-          </Button>
+          <div>
+            <Button
+              className={classes.button}
+              color="primary"
+              variant="contained"
+              onClick={handleClick}
+              disabled={true}
+            >
+              <Typography variant="button">Invite to Club</Typography>
+            </Button>
+          </div>
         </Tooltip>
       )}
       <Menu
