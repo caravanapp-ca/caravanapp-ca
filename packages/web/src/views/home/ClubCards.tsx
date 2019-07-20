@@ -21,6 +21,7 @@ import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
 import { isAfter, addDays } from 'date-fns/esm';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
+import PlaceholderCard from '../../components/PlaceholderCard';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -187,7 +188,14 @@ export default function ClubCards(props: ClubCardsProps) {
               groupVibeLabel = groupVibeLabels(club.vibe);
             }
             return (
-              <LazyLoad>
+              <LazyLoad
+                unmountIfInvisible={true}
+                placeholder={
+                  <Grid item key={club._id} xs={12} sm={6}>
+                    <PlaceholderCard height={500} />
+                  </Grid>
+                }
+              >
                 <Grid item key={club._id} xs={12} sm={6}>
                   <Card className={classes.card}>
                     <div className={classes.clubImageContainer}>
