@@ -114,6 +114,11 @@ interface UserCardProps {
   userClubs: Services.GetClubs['clubs'];
 }
 
+// Make this approximately the height of a standard UserCard
+const placeholderCardHeight = 600;
+// The number of cards above and below the current to load
+const lazyloadOffset = 6;
+
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
   const { usersWithInvitableClubs, currUser } = props;
@@ -171,10 +176,10 @@ export default function UserCards(props: UserCardProps) {
             return (
               <LazyLoad
                 unmountIfInvisible={true}
-                offset={1200}
+                offset={placeholderCardHeight * lazyloadOffset}
                 placeholder={
                   <Grid item key={_id} xs={12} sm={6}>
-                    <PlaceholderCard height={600} />
+                    <PlaceholderCard height={placeholderCardHeight} />
                   </Grid>
                 }
               >
