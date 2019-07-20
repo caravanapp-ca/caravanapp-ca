@@ -115,7 +115,7 @@ interface UserCardProps {
 }
 
 // Make this approximately the height of a standard UserCard
-const placeholderCardHeight = 640;
+const placeholderCardHeight = 588;
 // The number of cards above and below the current to load
 const lazyloadOffset = 4;
 
