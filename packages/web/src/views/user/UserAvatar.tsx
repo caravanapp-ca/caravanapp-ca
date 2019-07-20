@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function UserAvatar(props: UserAvatarProps) {
-  const classes = useStyles();
   const { user, size, style } = props;
 
   let avatarClass;

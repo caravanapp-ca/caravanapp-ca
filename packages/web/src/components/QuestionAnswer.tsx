@@ -45,7 +45,6 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
     answer,
     placeholder,
     numRows,
-    minLength,
     maxLength,
     hideHelperText,
     isEditing,

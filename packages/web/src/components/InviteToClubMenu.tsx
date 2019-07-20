@@ -1,19 +1,20 @@
 import React from 'react';
 import {
-  User,
-  Services,
-  UserWithInvitableClubs,
-} from '@caravan/buddy-reading-types';
-import {
   makeStyles,
   Menu,
   MenuItem,
   Button,
   Typography,
   Theme,
+  Tooltip,
 } from '@material-ui/core';
-import DiscordLoginModal from './DiscordLoginModal';
 import Fade from '@material-ui/core/Fade';
+import {
+  User,
+  Services,
+  UserWithInvitableClubs,
+} from '@caravan/buddy-reading-types';
+import DiscordLoginModal from './DiscordLoginModal';
 import { washedTheme } from '../theme';
 import CustomSnackbar, {
   CustomSnackbarProps,
@@ -114,15 +115,34 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
 
   return (
     <>
-      <Button
-        className={classes.button}
-        color="primary"
-        variant="contained"
-        onClick={handleClick}
-        disabled={!!(clubsToInviteTo.length === 0 && loggedInUser)}
-      >
-        <Typography variant="button">Invite to Club</Typography>
-      </Button>
+      {(loggedInUser && clubsToInviteTo.length > 0) ||
+        (!loggedInUser && (
+          <Button
+            className={classes.button}
+            color="primary"
+            variant="contained"
+            onClick={handleClick}
+            disabled={false}
+          >
+            <Typography variant="button">Invite to Club</Typography>
+          </Button>
+        ))}
+      {!!(loggedInUser && clubsToInviteTo.length === 0) && (
+        <Tooltip
+          title="No clubs to invite to!"
+          aria-label="No clubs to invite this person to."
+        >
+          <Button
+            className={classes.button}
+            color="primary"
+            variant="contained"
+            onClick={handleClick}
+            disabled={true}
+          >
+            <Typography variant="button">Invite to Club</Typography>
+          </Button>
+        </Tooltip>
+      )}
       <Menu
         open={inviteMenuOpen}
         anchorEl={anchorEl}
