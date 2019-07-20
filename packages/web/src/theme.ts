@@ -1,8 +1,4 @@
-import {
-  createMuiTheme,
-  responsiveFontSizes,
-  Theme,
-} from '@material-ui/core/styles';
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 import { PaletteObject } from '@caravan/buddy-reading-types';
 import { TypeText } from '@material-ui/core/styles/createPalette';
 const montserrat = require('typeface-montserrat');

@@ -113,7 +113,6 @@ export default function UserCards(props: UserCardProps) {
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
-  const [inviteToClubMenuShown] = React.useState(false);
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
