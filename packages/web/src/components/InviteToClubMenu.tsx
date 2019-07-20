@@ -13,6 +13,7 @@ import {
   User,
   Services,
   UserWithInvitableClubs,
+  ClubWithMemberIds,
 } from '@caravan/buddy-reading-types';
 import DiscordLoginModal from './DiscordLoginModal';
 import { washedTheme } from '../theme';
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface InviteToClubMenuProps {
-  clubsToInviteTo: Services.GetClubs['clubs'];
+  clubsToInviteTo: ClubWithMemberIds[];
   loggedInUser: User | null;
   userToInvite: UserWithInvitableClubs;
 }
@@ -83,7 +84,7 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
-  async function handleInviteToClub(club: Services.GetClubs['clubs'][0]) {
+  async function handleInviteToClub(club: Services.GetClubById) {
     if (loggedInUser) {
       const res = await inviteToClub(
         loggedInUser,
@@ -99,7 +100,6 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
           message: 'Successfully invited to club!',
         });
       } else {
-        // TODO: determine routing based on other values of res
         setSnackbarProps({
           ...snackbarProps,
           isOpen: true,
@@ -150,9 +150,9 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
         onClose={handleInviteMenuClose}
         TransitionComponent={Fade}
       >
-        {clubsToInviteTo.map(club => (
-          <MenuItem onClick={() => handleInviteToClub(club)}>
-            {club.name}
+        {clubsToInviteTo.map(clubWMIds => (
+          <MenuItem onClick={() => handleInviteToClub(clubWMIds.club)}>
+            {clubWMIds.club.name}
           </MenuItem>
         ))}
       </Menu>

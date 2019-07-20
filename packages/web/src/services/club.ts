@@ -72,7 +72,7 @@ export async function getClubsByIdWMembers(clubIds: string[]) {
   return clubs;
 }
 
-export async function getUserClubs(
+export async function getUserClubsNoMembers(
   userId: string,
   after?: string,
   pageSize?: number,
@@ -80,6 +80,25 @@ export async function getUserClubs(
 ) {
   const res = await axios.get<{ clubs: Services.GetClubs['clubs'] }>(
     `${clubRoute}/user/${userId}`,
+    {
+      params: {
+        after,
+        pageSize,
+        activeFilter,
+      },
+    }
+  );
+  return res;
+}
+
+export async function getUserClubsWithMembers(
+  userId: string,
+  after?: string,
+  pageSize?: number,
+  activeFilter?: ActiveFilter
+) {
+  const res = await axios.get<Services.GetClubById[]>(
+    `${clubRoute}/wMembers/user/${userId}`,
     {
       params: {
         after,

@@ -60,7 +60,7 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export interface ClubWithMemberIds {
-    club: Services.GetClubs['clubs'][0];
+    club: Services.GetClubById;
     memberIds: string[];
   }
 
@@ -131,7 +131,7 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface UserWithInvitableClubs {
     user: User;
-    invitableClubs: Services.GetClubs['clubs'];
+    invitableClubs: ClubWithMemberIds[];
   }
 
   export interface Genres {
@@ -299,7 +299,7 @@ declare module '@caravan/buddy-reading-types' {
     }
     export interface GetProfileQuestions
       extends Omit<ProfileQuestions, '_id'> {}
-      
+
     export interface GetUsers {
       users: {
         _id: string;

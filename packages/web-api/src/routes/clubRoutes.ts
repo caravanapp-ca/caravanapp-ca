@@ -221,6 +221,7 @@ router.get('/', async (req, res, next) => {
 
 // Gets all of the clubs the specified user is currently in.
 // Will get unlisted clubs if the request is made by the user.
+// Returns clubs with member counts, for members see get('wMembers/user/:userId') below
 router.get('/user/:userId', async (req, res, next) => {
   const { after, pageSize, activeFilter } = req.query;
   const { userId } = req.params;
@@ -337,6 +338,129 @@ router.get('/user/:userId', async (req, res, next) => {
   const result: Services.GetClubs = {
     clubs: filteredClubsWithMemberCount,
   };
+  res.status(200).json(result);
+});
+
+// Get all of a user's clubs, with members attached.
+// Quite heavyweight, use the route for without members above if you just need a member count
+router.get('/wMembers/user/:userId', async (req, res, next) => {
+  // Get query params.
+  const { after, pageSize, activeFilter } = req.query;
+  const { userId } = req.params;
+  const currentUser = req.session.userId
+    ? await UserModel.findById(req.session.userId)
+    : null;
+  let user: UserDoc | undefined;
+  if (userId) {
+    user = await getUser(userId);
+  } else {
+    res.status(400).send('Require a valid user id to get user clubs');
+    return;
+  }
+  const query: any = {
+    channelSource: 'discord',
+  };
+  if (after) {
+    query._id = { $lt: after };
+  }
+  // Apply necessary filters
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const { discordId } = user;
+  let filterObj: ActiveFilter;
+  if (activeFilter) {
+    filterObj = JSON.parse(activeFilter);
+    if (filterObj.speed.length > 0) {
+      query.readingSpeed = { $eq: filterObj.speed[0].key };
+    }
+    if (filterObj.genres.length > 0) {
+      var genreKeys = filterObj.genres.map((g: { key: string }) => g.key);
+      query.genres = { $elemMatch: { key: { $in: genreKeys } } };
+    }
+    if (filterObj.membership.length > 0) {
+      let userInChannelBoolean = false;
+      if (filterObj.membership[0].key === 'myClubs') {
+        userInChannelBoolean = true;
+      }
+      const channels = getUserChannels(guild, discordId, userInChannelBoolean);
+      const channelIds = channels.map(c => c.id);
+      query.channelId = { $in: channelIds };
+    }
+  } else {
+    const channels = getUserChannels(guild, discordId, true);
+    const channelIds = channels.map(c => c.id);
+    query.channelId = { $in: channelIds };
+  }
+  // Calculate number of results to return
+  const size = Number.parseInt(pageSize || 0);
+  const limit = Math.min(Math.max(size, 10), 50);
+  let clubDocs: ClubDoc[];
+  try {
+    // Limit not working with capacity-based filters yet
+    if (filterObj && filterObj.capacity.length > 0) {
+      clubDocs = await ClubModel.find(query)
+        .sort({ createdAt: -1 })
+        .exec();
+    } else {
+      clubDocs = await ClubModel.find(query)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec();
+    }
+  } catch (err) {
+    console.error(`Failed to get clubs for user ${user._id}`, err);
+    res.status(500).send(err);
+  }
+  if (!clubDocs) {
+    res.status(404).send(`No clubs exist for user ${userId}`);
+    return;
+  }
+  const filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
+    clubDocs.map(async clubDoc => {
+      let discordChannel: GuildChannel | null = guild.channels.find(
+        c => c.id === clubDoc.channelId
+      );
+      if (!discordChannel) {
+        return null;
+      }
+      // If the club is unlisted
+      if (
+        clubDoc.unlisted &&
+        (!currentUser ||
+          !(discordChannel as TextChannel).members.some(
+            m => m.id === currentUser.discordId
+          ))
+      ) {
+        return null;
+      }
+      const guildMembers = await getChannelMembers(guild, clubDoc);
+      if (filterObj && filterObj.capacity.length > 0) {
+        var capacityKeys = filterObj.capacity.map(
+          (c: { key: string }) => c.key
+        );
+        if (
+          capacityKeys.includes('spotsAvailable') &&
+          guildMembers.length >= clubDoc.maxMembers
+        ) {
+          return null;
+        } else if (
+          capacityKeys.includes('full') &&
+          guildMembers.length < clubDoc.maxMembers
+        ) {
+          return null;
+        }
+      }
+      return {
+        ...clubDoc.toObject(),
+        members: guildMembers,
+        guildId: guild.id,
+      };
+    })
+  );
+  const filteredClubsWithMembers: Services.GetClubById[] = filteredClubsWithMembersNulls.filter(
+    c => c != null
+  );
+  const result: Services.GetClubById[] = filteredClubsWithMembers;
   res.status(200).json(result);
 });
 

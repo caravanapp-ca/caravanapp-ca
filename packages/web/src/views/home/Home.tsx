@@ -24,7 +24,12 @@ import {
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
 import { washedTheme } from '../../theme';
-import { getAllClubs, getUserClubs, getClubMembers } from '../../services/club';
+import {
+  getAllClubs,
+  getUserClubsWithMembers,
+  getClubMembers,
+  getUserClubsNoMembers,
+} from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import logo from '../../resources/logo.svg';
 import AdapterLink from '../../components/AdapterLink';
@@ -144,29 +149,21 @@ export async function transformClubs(
   return clubsTransformed;
 }
 
-export async function transformUserToInvitableClub(
-  users: User[],
-  clubsWithMembers: ClubWithMemberIds[]
+function transformUserToInvitableClub(
+  allUsers: User[],
+  currUsersClubWMembers: ClubWithMemberIds[]
 ) {
-  if (clubsWithMembers.length === 0) {
-    const usersWIC = users.map(user => {
+  if (currUsersClubWMembers.length === 0) {
+    const usersWIC = allUsers.map(user => {
       return { user, invitableClubs: [] };
     });
     return usersWIC;
   } else {
-    const usersWIC: UserWithInvitableClubs[] = users.map(user => {
-      const filteredClubs = clubsWithMembers.map(clubWithMembers => {
-        if (!clubWithMembers.memberIds.includes(user._id)) {
-          return clubWithMembers.club;
-        } else {
-          return null;
-        }
-      });
-      const filteredClubsNotNull: Services.GetClubs['clubs'] = filteredClubs.filter(
-        fc => fc !== null
-      ) as Services.GetClubs['clubs'];
-
-      return { user, invitableClubs: filteredClubsNotNull };
+    const usersWIC: UserWithInvitableClubs[] = allUsers.map(user => {
+      const filteredClubs = currUsersClubWMembers.filter(
+        cWM => !cWM.memberIds.includes(user._id)
+      );
+      return { user, invitableClubs: filteredClubs };
     });
     return usersWIC;
   }
@@ -269,7 +266,7 @@ export default function Home(props: HomeProps) {
         // TODO: right now this is typed as any because the response returned could be of variable type
         let res: any;
         if (user && clubMembershipFiltersApplied) {
-          res = await getUserClubs(
+          res = await getUserClubsNoMembers(
             user._id,
             afterClubsQuery,
             pageSize,
@@ -310,59 +307,51 @@ export default function Home(props: HomeProps) {
   }, [activeClubsFilter, afterClubsQuery, user]);
 
   const getUsersWithInvitableClubs = async () => {
-    const pageSize = 24;
+    const pageSize = 12;
     const res = await getAllUsers(afterUsersQuery, pageSize);
-    if (res.data) {
-      let filteredClubsWithMembers: ClubWithMemberIds[] = [];
+    if (res.status === 200) {
+      let currUserClubsWithMembers: ClubWithMemberIds[] = [];
       if (user) {
-        const userClubsRes = await getUserClubs(user._id, undefined, pageSize, {
-          genres: [],
-          speed: [],
-          capacity: [
-            { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-          ],
-          membership: [
-            { key: 'myClubs', name: 'My clubs', type: 'membership' },
-          ],
-        });
-
-        if (userClubsRes.data) {
-          const loggedInUsersClubs: Services.GetClubs['clubs'] =
-            userClubsRes.data.clubs;
-          const clubsWithMembers = await Promise.all(
-            loggedInUsersClubs.map(async function(club) {
-              const res = await getClubMembers(club._id);
-              if (!res.data) {
-                return null;
-              }
-              const members = res.data;
-
-              const memberIds = members.map(m => m._id);
-              return { club, memberIds };
-            })
-          );
-          filteredClubsWithMembers = clubsWithMembers.filter(
-            c => c !== null
-          ) as ClubWithMemberIds[];
+        const currUserClubsRes = await getUserClubsWithMembers(
+          user._id,
+          undefined,
+          pageSize,
+          {
+            genres: [],
+            speed: [],
+            capacity: [
+              { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
+            ],
+            membership: [
+              { key: 'myClubs', name: 'My clubs', type: 'membership' },
+            ],
+          }
+        );
+        if (currUserClubsRes.status === 200) {
+          currUserClubsWithMembers = currUserClubsRes.data.map(c => {
+            const memberIds: string[] = c.members.map(m => m._id);
+            return { club: c, memberIds };
+          });
         }
       }
-      const newUsers = res.data.users;
-      const newUsersShuffled = newUsers.map(user => shuffleUser(user));
-      const newUsersWithInvitableClubs = await transformUserToInvitableClub(
-        newUsersShuffled,
-        filteredClubsWithMembers
+      const allUsers = res.data.users;
+      const allUsersShuffled = allUsers.map(user => shuffleUser(user));
+      const allUsersWithInvitableClubs = transformUserToInvitableClub(
+        allUsersShuffled,
+        currUserClubsWithMembers
       );
-      setShowLoadMoreUsers(newUsersWithInvitableClubs.length === pageSize);
+      setShowLoadMoreUsers(allUsersWithInvitableClubs.length === pageSize);
       setUsersResult(s => ({
         status: 'loaded',
         payload:
           s.status === 'loaded'
-            ? [...s.payload, ...newUsersWithInvitableClubs]
-            : newUsersWithInvitableClubs,
+            ? [...s.payload, ...allUsersWithInvitableClubs]
+            : allUsersWithInvitableClubs,
       }));
     }
   };
 
+  // TODO: Fix how these are done
   useEffect(() => {
     if (!userLoaded) {
       return;
@@ -606,7 +595,7 @@ export default function Home(props: HomeProps) {
         {/* Hero unit */}
         {showWelcomeMessage && (
           <div className={classes.heroContent}>
-            <Container maxWidth="md" className={classes.mdContainer}>
+            <Container maxWidth="md">
               <Typography
                 component="h1"
                 variant="h3"
