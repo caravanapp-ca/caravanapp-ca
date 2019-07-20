@@ -67,25 +67,28 @@ export function App(props: AppProps) {
   );
 
   useEffect(() => {
-    const userId = getCookie('userId');
-    if (userId) {
-      getUser(userId).then(user => {
-        if (user) {
-          setUser(user);
-          setLoadedUser(true);
-          localStorage.setItem(KEY_USER, JSON.stringify(user));
-        } else {
-          setUser(null);
-          setLoadedUser(true);
-          localStorage.removeItem(KEY_USER);
-          console.info('Are you having fun messing with cookies? :)');
-        }
-      });
-    } else {
-      setUser(null);
-      setLoadedUser(true);
-      localStorage.removeItem(KEY_USER);
-    }
+    const getUserAsync = async () => {
+      const userId = getCookie('userId');
+      if (userId) {
+        getUser(userId).then(user => {
+          if (user) {
+            localStorage.setItem(KEY_USER, JSON.stringify(user));
+            await setUser(user);
+            setLoadedUser(true);
+          } else {
+            localStorage.removeItem(KEY_USER);
+            console.info('Are you having fun messing with cookies? :)');
+            await setUser(null);
+            setLoadedUser(true);
+          }
+        });
+      } else {
+        localStorage.removeItem(KEY_USER);
+        await setUser(null);
+        setLoadedUser(true);
+      }
+    };
+    getUserAsync();
   }, []);
 
   // Handle the `state` query to verify login
