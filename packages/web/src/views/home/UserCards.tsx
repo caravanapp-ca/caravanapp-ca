@@ -1,5 +1,5 @@
 import React from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Link, Box } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -167,7 +167,8 @@ export default function UserCards(props: UserCardProps) {
                     >
                       <div className={classes.userTextContainer}>
                         <MuiThemeProvider theme={userDarkTheme || theme}>
-                          <Typography
+                          <Link
+                            href={`/user/${u.user.urlSlug}`}
                             variant="h5"
                             className={classes.userNameText}
                             color="primary"
@@ -180,7 +181,7 @@ export default function UserCards(props: UserCardProps) {
                             }
                           >
                             {nameField}
-                          </Typography>
+                          </Link>
                         </MuiThemeProvider>
                       </div>
                     </div>
@@ -309,19 +310,21 @@ export default function UserCards(props: UserCardProps) {
                         <CircularProgress className={classes.progress} />
                       )}
                     </CardActions>
-                    {u.user && u.user.photoUrl && (
-                      <div className={classes.userAvatarContainer}>
-                        <UserAvatar user={u.user} size={96} />
-                      </div>
-                    )}
-                    {!u.user.photoUrl && (
-                      <div className={classes.userAvatarContainer}>
-                        <GenericGroupMemberAvatar
-                          style={{ height: 96, width: 96 }}
-                          iconStyle={{ height: 64, width: 64 }}
-                        />
-                      </div>
-                    )}
+                    <Link href={`/user/${u.user.urlSlug}`}>
+                      {u.user && u.user.photoUrl && (
+                        <div className={classes.userAvatarContainer}>
+                          <UserAvatar user={u.user} size={96} />
+                        </div>
+                      )}
+                      {!u.user.photoUrl && (
+                        <div className={classes.userAvatarContainer}>
+                          <GenericGroupMemberAvatar
+                            style={{ height: 96, width: 96 }}
+                            iconStyle={{ height: 64, width: 64 }}
+                          />
+                        </div>
+                      )}
+                    </Link>
                   </MuiThemeProvider>
                 </Card>
               </Grid>

@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     chipIcon: {
       color: '#AF0020',
-      marginLeft: 2,
+      paddingLeft: 2,
       height: 20,
       width: 20,
     },
