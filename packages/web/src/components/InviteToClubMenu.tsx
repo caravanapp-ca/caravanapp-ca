@@ -8,7 +8,6 @@ import {
   Theme,
   Tooltip,
 } from '@material-ui/core';
-import Fade from '@material-ui/core/Fade';
 import {
   User,
   Services,
@@ -68,7 +67,7 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
     setLoginModalShown(false);
   }
 
-  function handleInviteMenuClose(event: React.MouseEvent<EventTarget>) {
+  function handleInviteMenuClose() {
     setAnchorEl(null);
   }
 
