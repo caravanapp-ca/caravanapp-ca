@@ -115,9 +115,9 @@ interface UserCardProps {
 }
 
 // Make this approximately the height of a standard UserCard
-const placeholderCardHeight = 600;
+const placeholderCardHeight = 640;
 // The number of cards above and below the current to load
-const lazyloadOffset = 6;
+const lazyloadOffset = 4;
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
