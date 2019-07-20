@@ -1,9 +1,8 @@
-import React, { useEffect, createRef } from 'react';
+import React, { createRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import clsx from 'clsx';
-import { isMobileDevice } from '../functions/isMobileDevice';
 
 const useStyles = makeStyles(theme => ({
   footer: {

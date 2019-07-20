@@ -1,11 +1,10 @@
 import React from 'react';
-import { Capacity, FilterChip, Membership } from '@caravan/buddy-reading-types';
+import { FilterChip, Membership } from '@caravan/buddy-reading-types';
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Checkbox,
   ListItem,
   ListItemText,
   Radio,
@@ -13,7 +12,6 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import theme from '../../theme';
-import { capacityLabels } from '../capacity-labels';
 import { membershipLabels } from '../membership-labels';
 
 const useStyles = makeStyles(theme => ({

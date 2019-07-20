@@ -3,7 +3,7 @@ import { ReadingDiscordBot } from './discord';
 import { UserDoc } from '../../typings';
 import { checkObjectIdIsValid } from '../common/mongoose';
 
-const mutateUserDiscordContent = (userDoc: UserDoc) => {
+export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   if (!userDoc) {
     return;
   }

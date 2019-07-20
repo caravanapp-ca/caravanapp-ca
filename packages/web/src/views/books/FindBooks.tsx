@@ -8,22 +8,11 @@ import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import ThreeDotsIcon from '@material-ui/icons/MoreVert';
 import AdapterLink from '../../components/AdapterLink';
-import { createMuiTheme } from '@material-ui/core/styles';
-import purple from '@material-ui/core/colors/purple';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
-import SelectedBookCards from './SelectedBookCards';
 
 import Header from '../../components/Header';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: purple,
-    secondary: {
-      main: '#7289da',
-    },
-  },
-});
 const useStyles = makeStyles(theme => ({
   searchContainer: {
     paddingTop: theme.spacing(3),
@@ -100,7 +89,7 @@ export default function FindBooks() {
     </IconButton>
   );
 
-  const [bookSearchValue, setBookSearchValue] = React.useState('');
+  const [, setBookSearchValue] = React.useState('');
 
   function setSearchField(
     e: React.ChangeEvent<
@@ -110,53 +99,7 @@ export default function FindBooks() {
     setBookSearchValue(e.target.value);
   }
 
-  function bookSearch() {
-    var search = 'Taj Mahal';
-    var books = searchBooks_(search);
-  }
-
-  function searchBooks_(query: string) {
-    //   var baseUrl = "https://www.goodreads.com/book/show/",
-    //       apiUrl = "https://www.goodreads.com/search/index.xml",
-    //       apiKey = "TkXvHH6Ien5uSEGlMDkIw",
-    //       searchResults: never[] | { title: any; author: any; thumbnail: any; rating: any; url: string; }[] = [],
-    //       payload = {
-    //         q: query,
-    //         key: apiKey
-    //       },
-    //       params = {
-    //         method: "GET",
-    //         payload: payload,
-    //         muteHttpExceptions: true
-    //       };
-
-    //   var response = UrlFetchApp.fetch(apiUrl, params);
-
-    //   // API Connection Successful
-    //   if (response.getResponseCode() === 200) {
-
-    //     // Parse XML Response
-    //     var xml = XmlService.parse(response.getContentText());
-    //     var results = xml.getRootElement().getChildren('search')[0];
-
-    //     // Save the result in JSON format
-    //     results.getChild('results').getChildren().forEach(function(result) {
-    //       result.getChildren('best_book').forEach(function(book) {
-    //         searchResults.push({
-    //           title: book.getChild('title').getText(),
-    //           author: book.getChild('author').getChild('name').getText(),
-    //           thumbnail: book.getChild('image_url').getText(),
-    //           rating: result.getChild("average_rating").getText(),
-    //           url: baseUrl + result.getChild("id").getText()
-    //         });
-    //       });
-    //     });
-
-    //   }
-
-    //   return searchResults;
-    return 'yes';
-  }
+  function bookSearch() {}
 
   return (
     <React.Fragment>
