@@ -61,7 +61,7 @@ router.get('/', async (req, res, next) => {
   }
   if (onboardVersion) {
     if (onboardVersion === 0 || onboardVersion === 1) {
-      query.onboardingVersion = { $eq: onboardVersion };
+      query.onboardingVersion = onboardVersion;
     }
   }
   // Calculate number of documents to skip
