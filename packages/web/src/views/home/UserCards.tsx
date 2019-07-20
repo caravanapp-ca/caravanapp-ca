@@ -253,6 +253,8 @@ export default function UserCards(props: UserCardProps) {
                         <Typography
                           variant="body1"
                           className={classes.emptyFieldText}
+                          // This margin makes the spacing even with the QuestionAnswer component.
+                          style={{ marginBottom: 8 }}
                           color="textSecondary"
                         >
                           User has no books on their shelf...

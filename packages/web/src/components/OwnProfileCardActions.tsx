@@ -3,7 +3,7 @@ import React from 'react';
 import { User } from '@caravan/buddy-reading-types';
 import { washedTheme } from '../theme';
 import AdapterLink from './AdapterLink';
-import mario_icon from '../resources/mario-icon.png';
+import marioIcon from '../resources/mario-icon.png';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {
@@ -23,8 +23,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1),
   },
   marioIcon: {
-    height: 25,
-    'resize-mode': 'contain',
+    height: 24,
+    resizeMode: 'contain',
     paddingRight: theme.spacing(1),
   },
 }));
@@ -49,7 +49,7 @@ export function OwnProfileCardActions(props: OwnProfileCardActionsProps) {
       }}
       variant="contained"
     >
-      <img src={mario_icon} alt="Mario logo" className={classes.marioIcon} />
+      <img src={marioIcon} alt="Mario logo" className={classes.marioIcon} />
       <Typography variant="button">It's-A-Me!</Typography>
     </Button>
   );

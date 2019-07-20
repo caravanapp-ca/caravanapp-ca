@@ -106,9 +106,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     flexWrap: 'wrap',
   },
-  mdContainer: {
-    padding: '0px 8px',
-  },
 }));
 
 const transformClub = async (
@@ -350,27 +347,12 @@ export default function Home(props: HomeProps) {
     }
   };
 
-  // TODO: Fix how these are done
   useEffect(() => {
     if (!userLoaded) {
       return;
     }
     getUsersWithInvitableClubs();
   }, [activeUsersFilter, afterUsersQuery, userLoaded]);
-
-  useEffect(() => {
-    if (!userLoaded) {
-      return;
-    }
-    // Reset user results
-    setUsersResult(s => ({
-      status: 'loading',
-      payload: [],
-    }));
-    setAfterUsersQuery(undefined);
-    // Now get them again
-    getUsersWithInvitableClubs();
-  }, [user]);
 
   // Get genres on mount
   useEffect(() => {
@@ -586,7 +568,6 @@ export default function Home(props: HomeProps) {
   return (
     <>
       <Header
-        leftComponent={<div />}
         centerComponent={centerComponent}
         rightComponent={rightComponent}
       />
@@ -664,10 +645,7 @@ export default function Home(props: HomeProps) {
         </Tabs>
         {tabValue === 0 && (
           <>
-            <Container
-              className={clsx(classes.filterGrid, classes.mdContainer)}
-              maxWidth="md"
-            >
+            <Container className={classes.filterGrid} maxWidth="md">
               <ClubFilters
                 onClickGenreFilter={() => setShowGenreFilter(true)}
                 onClickSpeedFilter={() => setShowSpeedFilter(true)}
