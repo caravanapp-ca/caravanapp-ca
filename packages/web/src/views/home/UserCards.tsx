@@ -24,6 +24,7 @@ import UserAvatar from '../user/UserAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import QuestionAnswer from '../../components/QuestionAnswer';
 import { OwnProfileCardActions } from '../../components/OwnProfileCardActions';
+import PlaceholderCard from '../../components/PlaceholderCard';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -168,7 +169,14 @@ export default function UserCards(props: UserCardProps) {
             const nameField: string = name || urlSlug || 'noName';
 
             return (
-              <LazyLoad>
+              <LazyLoad
+                unmountIfInvisible={true}
+                placeholder={
+                  <Grid item key={_id} xs={12} sm={6}>
+                    <PlaceholderCard height={600} />
+                  </Grid>
+                }
+              >
                 <Grid item key={_id} xs={12} sm={6}>
                   <Card className={classes.card}>
                     <MuiThemeProvider theme={userTheme}>
