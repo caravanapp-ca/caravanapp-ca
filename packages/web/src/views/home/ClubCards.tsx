@@ -1,5 +1,6 @@
 import React from 'react';
 import Truncate from 'react-truncate';
+import LazyLoad from 'react-lazyload';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -186,138 +187,147 @@ export default function ClubCards(props: ClubCardsProps) {
               groupVibeLabel = groupVibeLabels(club.vibe);
             }
             return (
-              <Grid item key={club._id} xs={12} sm={6}>
-                <Card className={classes.card}>
-                  <div className={classes.clubImageContainer}>
-                    {currentlyReading && (
-                      <>
-                        <img
-                          src={currentlyReading.coverImageURL}
-                          alt={currentlyReading.title}
-                          className={classes.clubImage}
-                        />
-                        <div className={classes.clubImageShade} />
-                        <div className={classes.imageTextContainer}>
-                          <Typography
-                            variant="h5"
-                            className={classes.imageTitleText}
-                          >
-                            <Truncate lines={2} trimWhitespace={true}>
-                              {currentlyReading.title}
-                            </Truncate>
-                          </Typography>
-                          <Typography className={classes.imageText}>
-                            {`${currentlyReading.author}${
-                              year ? `, ${year}` : ''
-                            }`}
-                          </Typography>
-                          <Typography className={classes.imageText}>
-                            <Truncate lines={1} trimWhitespace={true}>
-                              {currentlyReading.genres.join(', ')}
-                            </Truncate>
-                          </Typography>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <CardContent className={classes.cardContent}>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="h2"
-                      className={classes.clubTitle}
-                    >
-                      <Truncate lines={2} trimWhitespace={true}>
-                        {club.name}
-                      </Truncate>
-                    </Typography>
-                    <Typography color="textSecondary">
-                      <Truncate lines={3} trimWhitespace={true}>
-                        {club.bio}
-                      </Truncate>
-                    </Typography>
-                    <Grid
-                      container
-                      direction="row"
-                      justify="flex-start"
-                      alignItems="flex-start"
-                      spacing={1}
-                      style={{ marginTop: 16 }}
-                    >
-                      <Grid item xs={6}>
-                        <div className={classes.attributeContainer}>
-                          <GenericGroupMemberAvatar />
-                          <Typography
-                            variant="body2"
-                            className={classes.attributeLabel}
-                          >
-                            {`${club.memberCount} (Max ${club.maxMembers})`}
-                          </Typography>
-                        </div>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <div className={classes.attributeContainer}>
-                          <StartAvatar />
-                          <Typography
-                            variant="body2"
-                            className={classes.attributeLabel}
-                          >
-                            {startMsg}
-                          </Typography>
-                        </div>
-                      </Grid>
-                      <Grid item xs={6} style={{ marginTop: 16 }}>
-                        {groupVibeAvatar && groupVibeLabel && (
+              <LazyLoad>
+                <Grid item key={club._id} xs={12} sm={6}>
+                  <Card className={classes.card}>
+                    <div className={classes.clubImageContainer}>
+                      {currentlyReading && (
+                        <>
+                          <img
+                            src={currentlyReading.coverImageURL}
+                            alt={currentlyReading.title}
+                            className={classes.clubImage}
+                          />
+                          <div className={classes.clubImageShade} />
+                          <div className={classes.imageTextContainer}>
+                            <Typography
+                              variant="h5"
+                              className={classes.imageTitleText}
+                            >
+                              <Truncate lines={2} trimWhitespace={true}>
+                                {currentlyReading.title}
+                              </Truncate>
+                            </Typography>
+                            <Typography className={classes.imageText}>
+                              {`${currentlyReading.author}${
+                                year ? `, ${year}` : ''
+                              }`}
+                            </Typography>
+                            <Typography className={classes.imageText}>
+                              <Truncate lines={1} trimWhitespace={true}>
+                                {currentlyReading.genres.join(', ')}
+                              </Truncate>
+                            </Typography>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    <CardContent className={classes.cardContent}>
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="h2"
+                        className={classes.clubTitle}
+                      >
+                        <Truncate lines={2} trimWhitespace={true}>
+                          {club.name}
+                        </Truncate>
+                      </Typography>
+                      <Typography color="textSecondary">
+                        <Truncate lines={3} trimWhitespace={true}>
+                          {club.bio}
+                        </Truncate>
+                      </Typography>
+                      <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                        spacing={1}
+                        style={{ marginTop: 16 }}
+                      >
+                        <Grid item xs={6}>
                           <div className={classes.attributeContainer}>
-                            {groupVibeAvatar}
+                            <GenericGroupMemberAvatar />
                             <Typography
                               variant="body2"
                               className={classes.attributeLabel}
                             >
-                              {groupVibeLabel}
+                              {`${club.memberCount} (Max ${club.maxMembers})`}
                             </Typography>
                           </div>
-                        )}
+                        </Grid>
+                        <Grid item xs={6}>
+                          <div className={classes.attributeContainer}>
+                            <StartAvatar />
+                            <Typography
+                              variant="body2"
+                              className={classes.attributeLabel}
+                            >
+                              {startMsg}
+                            </Typography>
+                          </div>
+                        </Grid>
+                        <Grid item xs={6} style={{ marginTop: 16 }}>
+                          {groupVibeAvatar && groupVibeLabel && (
+                            <div className={classes.attributeContainer}>
+                              {groupVibeAvatar}
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {groupVibeLabel}
+                              </Typography>
+                            </div>
+                          )}
+                        </Grid>
+                        <Grid item xs={6} style={{ marginTop: 16 }}>
+                          <div className={classes.attributeContainer}>
+                            <EndAvatar />
+                            <Typography
+                              variant="body2"
+                              className={classes.attributeLabel}
+                            >
+                              {endMsg}
+                            </Typography>
+                          </div>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={6} style={{ marginTop: 16 }}>
-                        <div className={classes.attributeContainer}>
-                          <EndAvatar />
-                          <Typography
-                            variant="body2"
-                            className={classes.attributeLabel}
-                          >
-                            {endMsg}
-                          </Typography>
-                        </div>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                  <CardActions className={classes.cardActions}>
-                    <div className={classes.creationInfoContainer}>
-                      <Typography variant="caption" color="textSecondary">
-                        {`Created on ${format(new Date(club.createdAt), 'PP')}`}
-                      </Typography>
-                      {owner && owner.name && owner.name.length > 0 && (
+                    </CardContent>
+                    <CardActions className={classes.cardActions}>
+                      <div className={classes.creationInfoContainer}>
                         <Typography variant="caption" color="textSecondary">
-                          {/* Truncate doesn't work as advertised, so we set an exact width here. */}
-                          <Truncate lines={1} trimWhitespace={true} width={196}>
-                            {`by ${owner.name}`}
-                          </Truncate>
+                          {`Created on ${format(
+                            new Date(club.createdAt),
+                            'PP'
+                          )}`}
                         </Typography>
-                      )}
-                    </div>
-                    <Button
-                      className={classes.button}
-                      color="primary"
-                      variant="contained"
-                      component={AdapterLink}
-                      to={`/clubs/${club._id}`}
-                    >
-                      <Typography variant="button">VIEW CLUB</Typography>
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
+                        {owner && owner.name && owner.name.length > 0 && (
+                          <Typography variant="caption" color="textSecondary">
+                            {/* Truncate doesn't work as advertised, so we set an exact width here. */}
+                            <Truncate
+                              lines={1}
+                              trimWhitespace={true}
+                              width={196}
+                            >
+                              {`by ${owner.name}`}
+                            </Truncate>
+                          </Typography>
+                        )}
+                      </div>
+                      <Button
+                        className={classes.button}
+                        color="primary"
+                        variant="contained"
+                        component={AdapterLink}
+                        to={`/clubs/${club._id}`}
+                      >
+                        <Typography variant="button">VIEW CLUB</Typography>
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              </LazyLoad>
             );
           })}
         </Grid>

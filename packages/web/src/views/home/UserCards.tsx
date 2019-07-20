@@ -1,4 +1,5 @@
 import React from 'react';
+import LazyLoad from 'react-lazyload';
 import { CircularProgress, Link, Box } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -167,183 +168,186 @@ export default function UserCards(props: UserCardProps) {
             const nameField: string = name || urlSlug || 'noName';
 
             return (
-              <Grid item key={_id} xs={12} sm={6}>
-                <Card className={classes.card}>
-                  <MuiThemeProvider theme={userTheme}>
-                    <div
-                      className={classes.userHeading}
-                      style={{
-                        backgroundColor: userTheme
-                          ? userTheme.palette.primary.main
-                          : theme.palette.primary.main,
-                      }}
-                    >
-                      <div className={classes.userTextContainer}>
-                        <MuiThemeProvider theme={userDarkTheme || theme}>
-                          <Link
-                            href={`/user/${urlSlug}`}
-                            variant="h5"
-                            className={classes.userNameText}
-                            color="primary"
-                            style={
-                              !userDarkTheme
-                                ? {
-                                    color: theme.palette.common.white,
-                                  }
-                                : undefined
-                            }
-                          >
-                            {nameField}
-                          </Link>
-                        </MuiThemeProvider>
+              <LazyLoad>
+                <Grid item key={_id} xs={12} sm={6}>
+                  <Card className={classes.card}>
+                    <MuiThemeProvider theme={userTheme}>
+                      <div
+                        className={classes.userHeading}
+                        style={{
+                          backgroundColor: userTheme
+                            ? userTheme.palette.primary.main
+                            : theme.palette.primary.main,
+                        }}
+                      >
+                        <div className={classes.userTextContainer}>
+                          <MuiThemeProvider theme={userDarkTheme || theme}>
+                            <Link
+                              href={`/user/${urlSlug}`}
+                              variant="h5"
+                              className={classes.userNameText}
+                              color="primary"
+                              style={
+                                !userDarkTheme
+                                  ? {
+                                      color: theme.palette.common.white,
+                                    }
+                                  : undefined
+                              }
+                            >
+                              {nameField}
+                            </Link>
+                          </MuiThemeProvider>
+                        </div>
                       </div>
-                    </div>
-                    <CardContent classes={{ root: classes.cardContent }}>
-                      <Typography gutterBottom color="textSecondary">
-                        Genres
-                      </Typography>
-                      {otherUsersGenres.length > 0 && (
-                        <div className={classes.genresInCommon}>
-                          {commonGenres.map(genre => (
-                            <GenresInCommonChips
-                              name={genre}
-                              backgroundColor={
-                                userTheme
-                                  ? userTheme.palette.primary.main
-                                  : theme.palette.primary.main
-                              }
-                              common={true}
-                            />
-                          ))}
-                          {otherUniqueGenres.map(genre => (
-                            <GenresInCommonChips
-                              name={genre}
-                              backgroundColor={
-                                userTheme
-                                  ? userTheme.palette.primary.main
-                                  : theme.palette.primary.main
-                              }
-                              common={false}
-                            />
-                          ))}
-                        </div>
-                      )}
-                      {otherUsersGenres.length === 0 && (
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                            height: 36,
-                          }}
-                        >
-                          <Typography
-                            variant="body1"
-                            className={classes.emptyFieldText}
-                            color="textSecondary"
-                          >
-                            User has no genres...
-                          </Typography>
-                        </div>
-                      )}
-                      <Typography
-                        gutterBottom
-                        className={classes.fieldTitleText}
-                        color="textSecondary"
-                      >
-                        To be Read
-                      </Typography>
-                      {shelf.notStarted.length > 0 && (
-                        <UserCardShelfList shelf={shelf.notStarted} />
-                      )}
-                      {shelf.notStarted.length === 0 && (
-                        <Typography
-                          variant="body1"
-                          className={classes.emptyFieldText}
-                          // This margin makes the spacing even with the QuestionAnswer component.
-                          style={{ marginBottom: 8 }}
-                          color="textSecondary"
-                        >
-                          User has no books on their shelf...
+                      <CardContent classes={{ root: classes.cardContent }}>
+                        <Typography gutterBottom color="textSecondary">
+                          Genres
                         </Typography>
-                      )}
-                      <Typography
-                        className={classes.fieldTitleText}
-                        color="textSecondary"
-                        gutterBottom
-                      >
-                        {'Q & A'}
-                      </Typography>
-                      {questions && questions.length > 0 && (
-                        <QuestionAnswer
-                          key={_id}
-                          questionKey={questions[0].id}
-                          question={questions[0].title}
-                          answer={questions[0].answer}
-                          numRows={2}
-                          rowsMax={4}
-                          isEditing={false}
-                          hideHelperText={true}
-                        />
-                      )}
-                      {!questions ||
-                        (questions.length === 0 && (
-                          <>
+                        {otherUsersGenres.length > 0 && (
+                          <div className={classes.genresInCommon}>
+                            {commonGenres.map(genre => (
+                              <GenresInCommonChips
+                                name={genre}
+                                backgroundColor={
+                                  userTheme
+                                    ? userTheme.palette.primary.main
+                                    : theme.palette.primary.main
+                                }
+                                common={true}
+                              />
+                            ))}
+                            {otherUniqueGenres.map(genre => (
+                              <GenresInCommonChips
+                                name={genre}
+                                backgroundColor={
+                                  userTheme
+                                    ? userTheme.palette.primary.main
+                                    : theme.palette.primary.main
+                                }
+                                common={false}
+                              />
+                            ))}
+                          </div>
+                        )}
+                        {otherUsersGenres.length === 0 && (
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'flex-start',
+                              alignItems: 'center',
+                              height: 36,
+                            }}
+                          >
                             <Typography
                               variant="body1"
                               className={classes.emptyFieldText}
                               color="textSecondary"
                             >
-                              User hasn't answered any profile questions yet...
+                              User has no genres...
                             </Typography>
-                          </>
-                        ))}
-                    </CardContent>
-                    <CardActions classes={{ root: classes.cardActions }}>
-                      {(!currUser || currUser._id !== _id) && (
-                        <div className={classes.buttonsContainer}>
-                          <Button
-                            className={classes.button}
-                            color="primary"
-                            component={AdapterLink}
-                            to={`/user/${urlSlug}`}
+                          </div>
+                        )}
+                        <Typography
+                          gutterBottom
+                          className={classes.fieldTitleText}
+                          color="textSecondary"
+                        >
+                          To be Read
+                        </Typography>
+                        {shelf.notStarted.length > 0 && (
+                          <UserCardShelfList shelf={shelf.notStarted} />
+                        )}
+                        {shelf.notStarted.length === 0 && (
+                          <Typography
+                            variant="body1"
+                            className={classes.emptyFieldText}
+                            // This margin makes the spacing even with the QuestionAnswer component.
+                            style={{ marginBottom: 8 }}
+                            color="textSecondary"
                           >
-                            <Typography variant="button">
-                              View Profile
-                            </Typography>
-                          </Button>
-                          <InviteToClubMenu
-                            clubsToInviteTo={u.invitableClubs}
-                            loggedInUser={currUser}
-                            userToInvite={u}
+                            User has no books on their shelf...
+                          </Typography>
+                        )}
+                        <Typography
+                          className={classes.fieldTitleText}
+                          color="textSecondary"
+                          gutterBottom
+                        >
+                          {'Q & A'}
+                        </Typography>
+                        {questions && questions.length > 0 && (
+                          <QuestionAnswer
+                            key={_id}
+                            questionKey={questions[0].id}
+                            question={questions[0].title}
+                            answer={questions[0].answer}
+                            numRows={2}
+                            rowsMax={4}
+                            isEditing={false}
+                            hideHelperText={true}
                           />
-                        </div>
-                      )}
-                      {currUser && currUser._id === _id && (
-                        <OwnProfileCardActions user={currUser} />
-                      )}
-                      {visitProfileLoadingId === _id && (
-                        <CircularProgress className={classes.progress} />
-                      )}
-                    </CardActions>
-                    <Link href={`/user/${urlSlug}`}>
-                      {u.user && photoUrl && (
-                        <div className={classes.userAvatarContainer}>
-                          <UserAvatar user={u.user} size={96} />
-                        </div>
-                      )}
-                      {!photoUrl && (
-                        <div className={classes.userAvatarContainer}>
-                          <GenericGroupMemberAvatar
-                            style={{ height: 96, width: 96 }}
-                            iconStyle={{ height: 64, width: 64 }}
-                          />
-                        </div>
-                      )}
-                    </Link>
-                  </MuiThemeProvider>
-                </Card>
-              </Grid>
+                        )}
+                        {!questions ||
+                          (questions.length === 0 && (
+                            <>
+                              <Typography
+                                variant="body1"
+                                className={classes.emptyFieldText}
+                                color="textSecondary"
+                              >
+                                User hasn't answered any profile questions
+                                yet...
+                              </Typography>
+                            </>
+                          ))}
+                      </CardContent>
+                      <CardActions classes={{ root: classes.cardActions }}>
+                        {(!currUser || currUser._id !== _id) && (
+                          <div className={classes.buttonsContainer}>
+                            <Button
+                              className={classes.button}
+                              color="primary"
+                              component={AdapterLink}
+                              to={`/user/${urlSlug}`}
+                            >
+                              <Typography variant="button">
+                                View Profile
+                              </Typography>
+                            </Button>
+                            <InviteToClubMenu
+                              clubsToInviteTo={u.invitableClubs}
+                              loggedInUser={currUser}
+                              userToInvite={u}
+                            />
+                          </div>
+                        )}
+                        {currUser && currUser._id === _id && (
+                          <OwnProfileCardActions user={currUser} />
+                        )}
+                        {visitProfileLoadingId === _id && (
+                          <CircularProgress className={classes.progress} />
+                        )}
+                      </CardActions>
+                      <Link href={`/user/${urlSlug}`}>
+                        {u.user && photoUrl && (
+                          <div className={classes.userAvatarContainer}>
+                            <UserAvatar user={u.user} size={96} />
+                          </div>
+                        )}
+                        {!photoUrl && (
+                          <div className={classes.userAvatarContainer}>
+                            <GenericGroupMemberAvatar
+                              style={{ height: 96, width: 96 }}
+                              iconStyle={{ height: 64, width: 64 }}
+                            />
+                          </div>
+                        )}
+                      </Link>
+                    </MuiThemeProvider>
+                  </Card>
+                </Grid>
+              </LazyLoad>
             );
           })}
         </Grid>
