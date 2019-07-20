@@ -59,10 +59,9 @@ router.get('/', async (req, res, next) => {
   if (after) {
     query._id = { $lt: after };
   }
-  if (onboardVersion) {
-    if (onboardVersion === 0 || onboardVersion === 1) {
-      query.onboardingVersion = onboardVersion;
-    }
+  if (onboardVersion && (onboardVersion === '0' || onboardVersion === '1')) {
+    const onboardingVersionInt = parseInt(onboardVersion);
+    query.onboardingVersion = onboardingVersionInt;
   }
   // Calculate number of documents to skip
   const size = Number.parseInt(pageSize || 0);
