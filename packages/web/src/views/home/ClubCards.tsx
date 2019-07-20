@@ -190,6 +190,7 @@ export default function ClubCards(props: ClubCardsProps) {
             return (
               <LazyLoad
                 unmountIfInvisible={true}
+                offset={1000}
                 placeholder={
                   <Grid item key={club._id} xs={12} sm={6}>
                     <PlaceholderCard height={500} />

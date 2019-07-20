@@ -171,6 +171,7 @@ export default function UserCards(props: UserCardProps) {
             return (
               <LazyLoad
                 unmountIfInvisible={true}
+                offset={1200}
                 placeholder={
                   <Grid item key={_id} xs={12} sm={6}>
                     <PlaceholderCard height={600} />
