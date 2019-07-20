@@ -1,12 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import {
-  Button,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Grid,
-} from '@material-ui/core';
+import { Button, Typography, useTheme } from '@material-ui/core';
 import { ArrowDropDown } from '@material-ui/icons';
 import { textSecondaryTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -56,8 +50,6 @@ export default function ClubFilters(props: ClubFiltersProps) {
     capacityFilterApplied,
     memberFilterApplied,
   } = props;
-
-  const theme = useTheme();
 
   return (
     <div className={classes.root}>

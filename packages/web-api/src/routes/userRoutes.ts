@@ -12,7 +12,12 @@ import {
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
-import { userSlugExists, getMe, getUser } from '../services/user';
+import {
+  userSlugExists,
+  getMe,
+  getUser,
+  mutateUserDiscordContent,
+} from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc } from '../../typings';
@@ -71,6 +76,7 @@ router.get('/', async (req, res, next) => {
   }
   const filteredUsers: Services.GetUsers['users'] = users
     .map(userDocument => {
+      mutateUserDiscordContent(userDocument);
       const user: Omit<User, 'createdAt' | 'updatedAt'> & {
         createdAt: string;
         updatedAt: string;

@@ -10,7 +10,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import {
   User,
-  ShelfEntry,
   Services,
   ReadingSpeed,
   Capacity,
@@ -18,8 +17,9 @@ import {
   ActiveFilter,
   FilterChipType,
   Membership,
-  Club,
   ClubTransformed,
+  ClubWithMemberIds,
+  UserWithInvitableClubs,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -41,26 +41,17 @@ import MembershipModal from '../../components/filters/MembershipModal';
 import EmptyClubsFilterResult from '../../components/EmptyClubsFilterResult';
 import ClubCards from './ClubCards';
 import { Paper, Tabs, Tab, useMediaQuery, useTheme } from '@material-ui/core';
-import { AllInclusiveSharp } from '@material-ui/icons';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
 import { getUser } from '../../services/user';
 import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import clsx from 'clsx';
+import shuffleArr from '../../functions/shuffleArr';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
+  userLoaded: boolean;
   tabValuePassed?: number;
-}
-
-export interface ClubWithMemberIds {
-  club: Services.GetClubs['clubs'][0];
-  memberIds: string[];
-}
-
-export interface UserWithInvitableClubs {
-  user: User;
-  invitableClubs: Services.GetClubs['clubs'];
 }
 
 const useStyles = makeStyles(theme => ({
@@ -155,41 +146,18 @@ export async function transformClubs(
 
 export async function transformUserToInvitableClub(
   users: User[],
-  usersClubs: Services.GetClubs['clubs']
+  clubsWithMembers: ClubWithMemberIds[]
 ) {
-  if (usersClubs.length === 0) {
+  if (clubsWithMembers.length === 0) {
     const usersWIC = users.map(user => {
       return { user, invitableClubs: [] };
     });
     return usersWIC;
   } else {
-    const clubsWithMembers = await Promise.all(
-      usersClubs.map(async function(club) {
-        const res = await getClubMembers(club._id);
-        if (!res.data) {
-          return null;
-        }
-        const members = res.data;
-
-        const memberIds = members.map(m => m._id);
-        return { club, memberIds };
-      })
-    );
-
-    const filteredClubsWithMembers: ClubWithMemberIds[] = clubsWithMembers.filter(
-      c => c !== null
-    ) as ClubWithMemberIds[];
-
     const usersWIC: UserWithInvitableClubs[] = users.map(user => {
-      const filteredClubs = filteredClubsWithMembers.map(function(
-        clubWithMembers
-      ) {
-        if (clubWithMembers) {
-          if (!clubWithMembers.memberIds.includes(user._id)) {
-            return clubWithMembers.club;
-          } else {
-            return null;
-          }
+      const filteredClubs = clubsWithMembers.map(clubWithMembers => {
+        if (!clubWithMembers.memberIds.includes(user._id)) {
+          return clubWithMembers.club;
         } else {
           return null;
         }
@@ -211,44 +179,24 @@ export function shuffleUser(user: User) {
   return user;
 }
 
-export function shuffleArr(arr: any[]) {
-  for (let i = arr.length; i; i--) {
-    let j = Math.floor(Math.random() * i);
-    [arr[i - 1], arr[j]] = [arr[j], arr[i - 1]];
-  }
-}
-
 export default function Home(props: HomeProps) {
   const classes = useStyles();
-  const { user, tabValuePassed } = props;
-
+  const { user, userLoaded, tabValuePassed } = props;
   const theme = useTheme();
 
   const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
     Service<ClubTransformed[]>
   >({ status: 'loading' });
-
-  // const [] = React.useState<Service<ClubTransformed[]>>({
-  //   status: 'loading',
-  // });
-
   const [currentUsersClubs, setCurrentUsersClubs] = React.useState<
     Services.GetClubs['clubs']
   >([]);
-
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
-
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-  const [tabValue, setTabValue] = React.useState(
-    tabValuePassed ? tabValuePassed : 0
-  );
-  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setTabValue(newValue);
-  };
+  const [tabValue, setTabValue] = React.useState(0);
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [afterClubsQuery, setAfterClubsQuery] = React.useState<
     string | undefined
@@ -279,17 +227,13 @@ export default function Home(props: HomeProps) {
     membership: [],
   });
 
-  const [stagingUsersFilter, setStagingUsersFilter] = React.useState<
-    ActiveFilter
-  >({
+  const [] = React.useState<ActiveFilter>({
     genres: [],
     speed: [],
     capacity: [],
     membership: [],
   });
-  const [activeUsersFilter, setActiveUsersFilter] = React.useState<
-    ActiveFilter
-  >({
+  const [activeUsersFilter] = React.useState<ActiveFilter>({
     genres: [],
     speed: [],
     capacity: [],
@@ -299,15 +243,15 @@ export default function Home(props: HomeProps) {
     string | undefined
   >(undefined);
 
-  const genreFiltersApplied = activeClubsFilter.genres.length > 0;
-  const speedFiltersApplied = activeClubsFilter.speed.length > 0;
-  const capacityFiltersApplied = activeClubsFilter.capacity.length > 0;
-  const membershipFiltersApplied = activeClubsFilter.membership.length > 0;
-  const filtersApplied =
-    genreFiltersApplied ||
-    speedFiltersApplied ||
-    capacityFiltersApplied ||
-    membershipFiltersApplied;
+  const clubGenreFiltersApplied = activeClubsFilter.genres.length > 0;
+  const clubSpeedFiltersApplied = activeClubsFilter.speed.length > 0;
+  const clubCapacityFiltersApplied = activeClubsFilter.capacity.length > 0;
+  const clubMembershipFiltersApplied = activeClubsFilter.membership.length > 0;
+  const clubFiltersApplied =
+    clubGenreFiltersApplied ||
+    clubSpeedFiltersApplied ||
+    clubCapacityFiltersApplied ||
+    clubMembershipFiltersApplied;
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -319,12 +263,12 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     const pageSize = 24;
-    if (filtersApplied) {
+    if (clubFiltersApplied) {
       // Get clubs filtered
       (async () => {
         // TODO: right now this is typed as any because the response returned could be of variable type
         let res: any;
-        if (user && activeClubsFilter.membership.length > 0) {
+        if (user && clubMembershipFiltersApplied) {
           res = await getUserClubs(
             user._id,
             afterClubsQuery,
@@ -363,50 +307,82 @@ export default function Home(props: HomeProps) {
         }
       })();
     }
-  }, [activeClubsFilter, afterClubsQuery]);
+  }, [activeClubsFilter, afterClubsQuery, user]);
+
+  const getUsersWithInvitableClubs = async () => {
+    const pageSize = 24;
+    const res = await getAllUsers(afterUsersQuery, pageSize);
+    if (res.data) {
+      let filteredClubsWithMembers: ClubWithMemberIds[] = [];
+      if (user) {
+        const userClubsRes = await getUserClubs(user._id, undefined, pageSize, {
+          genres: [],
+          speed: [],
+          capacity: [
+            { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
+          ],
+          membership: [
+            { key: 'myClubs', name: 'My clubs', type: 'membership' },
+          ],
+        });
+
+        if (userClubsRes.data) {
+          const loggedInUsersClubs: Services.GetClubs['clubs'] =
+            userClubsRes.data.clubs;
+          const clubsWithMembers = await Promise.all(
+            loggedInUsersClubs.map(async function(club) {
+              const res = await getClubMembers(club._id);
+              if (!res.data) {
+                return null;
+              }
+              const members = res.data;
+
+              const memberIds = members.map(m => m._id);
+              return { club, memberIds };
+            })
+          );
+          filteredClubsWithMembers = clubsWithMembers.filter(
+            c => c !== null
+          ) as ClubWithMemberIds[];
+        }
+      }
+      const newUsers = res.data.users;
+      const newUsersShuffled = newUsers.map(user => shuffleUser(user));
+      const newUsersWithInvitableClubs = await transformUserToInvitableClub(
+        newUsersShuffled,
+        filteredClubsWithMembers
+      );
+      setShowLoadMoreUsers(newUsersWithInvitableClubs.length === pageSize);
+      setUsersResult(s => ({
+        status: 'loaded',
+        payload:
+          s.status === 'loaded'
+            ? [...s.payload, ...newUsersWithInvitableClubs]
+            : newUsersWithInvitableClubs,
+      }));
+    }
+  };
 
   useEffect(() => {
-    const pageSize = 24;
-    (async () => {
-      const res = await getAllUsers(afterUsersQuery, pageSize);
+    if (!userLoaded) {
+      return;
+    }
+    getUsersWithInvitableClubs();
+  }, [activeUsersFilter, afterUsersQuery, userLoaded]);
 
-      if (res.data) {
-        let usersClubs: Services.GetClubs['clubs'] = [];
-        // if (user) {
-        //   const userClubsRes = await getUserClubs(
-        //     user._id,
-        //     undefined,
-        //     pageSize,
-        //     {
-        //       genres: [],
-        //       speed: [],
-        //       capacity: [],
-        //       membership: [
-        //         { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-        //       ],
-        //     }
-        //   );
-        //   if (userClubsRes.data) {
-        //     usersClubs = userClubsRes.data.clubs;
-        //   }
-        // }
-        const newUsers = res.data.users;
-        const newUsersShuffled = newUsers.map(user => shuffleUser(user));
-        const newUsersWithInvitableClubs = await transformUserToInvitableClub(
-          newUsersShuffled,
-          usersClubs
-        );
-        setShowLoadMoreUsers(newUsersWithInvitableClubs.length === pageSize);
-        setUsersResult(s => ({
-          status: 'loaded',
-          payload:
-            s.status === 'loaded'
-              ? [...s.payload, ...newUsersWithInvitableClubs]
-              : newUsersWithInvitableClubs,
-        }));
-      }
-    })();
-  }, [activeUsersFilter, afterUsersQuery]);
+  useEffect(() => {
+    if (userLoaded) {
+      // Reset user results
+      setUsersResult(s => ({
+        status: 'loading',
+        payload: [],
+      }));
+      // Now get them again
+      getUsersWithInvitableClubs();
+    } else {
+      return;
+    }
+  }, [user]);
 
   // Get genres on mount
   useEffect(() => {
@@ -419,6 +395,10 @@ export default function Home(props: HomeProps) {
     };
     getGenres();
   }, []);
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setTabValue(newValue);
+  };
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
@@ -683,19 +663,17 @@ export default function Home(props: HomeProps) {
             </Container>
           </div>
         )}
-        <Paper className={classes.tabs}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant={screenSmallerThanMd ? 'fullWidth' : undefined}
-            centered={!screenSmallerThanMd}
-          >
-            <Tab label="Clubs" />
-            <Tab label="People" />
-          </Tabs>
-        </Paper>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+          centered={!screenSmallerThanMd}
+        >
+          <Tab label="Clubs" />
+          <Tab label="People" />
+        </Tabs>
         {tabValue === 0 && (
           <>
             <Container
@@ -707,12 +685,12 @@ export default function Home(props: HomeProps) {
                 onClickSpeedFilter={() => setShowSpeedFilter(true)}
                 onClickCapacityFilter={() => setShowCapacityFilter(true)}
                 onClickMembershipFilter={onClickMembershipFilter}
-                genreFilterApplied={genreFiltersApplied}
-                readingSpeedFilterApplied={speedFiltersApplied}
-                capacityFilterApplied={capacityFiltersApplied}
-                memberFilterApplied={membershipFiltersApplied}
+                genreFilterApplied={clubGenreFiltersApplied}
+                readingSpeedFilterApplied={clubSpeedFiltersApplied}
+                capacityFilterApplied={clubCapacityFiltersApplied}
+                memberFilterApplied={clubMembershipFiltersApplied}
               />
-              {filtersApplied && (
+              {clubFiltersApplied && (
                 <div className={classes.filtersContainer}>
                   {activeClubsFilter.genres.map(genre => (
                     <FilterChips
@@ -757,6 +735,35 @@ export default function Home(props: HomeProps) {
                 </div>
               )}
             </Container>
+            {clubsTransformedResult.status === 'loaded' &&
+              clubsTransformedResult.payload.length > 0 && (
+                <ClubCards
+                  clubsTransformed={clubsTransformedResult.payload}
+                  user={user}
+                />
+              )}
+            {clubsTransformedResult.status === 'loaded' && showLoadMoreClubs && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <Button
+                  color="primary"
+                  className={classes.button}
+                  variant="outlined"
+                  onClick={() =>
+                    setAfterClubsQuery(
+                      clubsTransformedResult.payload[
+                        clubsTransformedResult.payload.length - 1
+                      ].club._id
+                    )
+                  }
+                />
+              </div>
+            )}
             <GenreFilterModal
               allGenres={allGenres}
               filteredGenres={stagingClubsFilter.genres}
@@ -814,7 +821,10 @@ export default function Home(props: HomeProps) {
               filteredMemberships={stagingClubsFilter.membership}
               onClickApply={saveMembershipSelection}
               onClickClearFilter={() =>
-                setStagingClubsFilter({ ...stagingClubsFilter, membership: [] })
+                setStagingClubsFilter({
+                  ...stagingClubsFilter,
+                  membership: [],
+                })
               }
               onMembershipSelected={(membership: Membership, label: string) =>
                 setStagingClubsFilter({
@@ -830,154 +840,6 @@ export default function Home(props: HomeProps) {
               }
               open={showMembershipFilter}
             />
-            {clubsTransformedResult.status === 'loaded' &&
-              clubsTransformedResult.payload.length > 0 && (
-                <ClubCards
-                  clubsTransformed={clubsTransformedResult.payload}
-                  user={user}
-                />
-              )}
-            {clubsTransformedResult.status === 'loaded' &&
-              filtersApplied &&
-              clubsTransformedResult.payload.length === 0 && (
-                <EmptyClubsFilterResult />
-              )}
-            {clubsTransformedResult.status === 'loaded' && showLoadMoreClubs && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                <Button
-                  color="primary"
-                  className={classes.button}
-                  variant="outlined"
-                  onClick={() =>
-                    setAfterClubsQuery(
-                      clubsTransformedResult.payload[
-                        clubsTransformedResult.payload.length - 1
-                      ].club._id
-                    )
-                  }
-                />
-                <ReadingSpeedModal
-                  filteredSpeed={stagingClubsFilter.speed}
-                  onSetSelectedSpeed={(speed: ReadingSpeed, label: string) =>
-                    setStagingClubsFilter({
-                      ...stagingClubsFilter,
-                      speed: [
-                        {
-                          name: label,
-                          key: speed,
-                          type: 'speed',
-                        },
-                      ],
-                    })
-                  }
-                  onClickApply={saveSpeedSelection}
-                  onClickClearFilter={() =>
-                    setStagingClubsFilter({
-                      ...stagingClubsFilter,
-                      speed: [],
-                    })
-                  }
-                  open={showSpeedFilter}
-                />
-                <CapacityModal
-                  filteredCapacities={stagingClubsFilter.capacity}
-                  onClickApply={saveCapacitySelection}
-                  onClickClearFilter={() =>
-                    setStagingClubsFilter({
-                      ...stagingClubsFilter,
-                      capacity: [],
-                    })
-                  }
-                  onCapacitySelected={(capacity: Capacity, label: string) =>
-                    setStagingClubsFilter({
-                      ...stagingClubsFilter,
-                      capacity: [
-                        {
-                          name: label,
-                          key: capacity,
-                          type: 'capacity',
-                        },
-                      ],
-                    })
-                  }
-                  open={showCapacityFilter}
-                />
-                <MembershipModal
-                  filteredMemberships={stagingClubsFilter.membership}
-                  onClickApply={saveMembershipSelection}
-                  onClickClearFilter={() =>
-                    setStagingClubsFilter({
-                      ...stagingClubsFilter,
-                      membership: [],
-                    })
-                  }
-                  onMembershipSelected={(
-                    membership: Membership,
-                    label: string
-                  ) =>
-                    setStagingClubsFilter({
-                      ...stagingClubsFilter,
-                      membership: [
-                        {
-                          name: label,
-                          key: membership,
-                          type: 'membership',
-                        },
-                      ],
-                    })
-                  }
-                  open={showMembershipFilter}
-                />
-                {clubsTransformedResult.status === 'loaded' &&
-                  clubsTransformedResult.payload.length > 0 && (
-                    <ClubCards
-                      clubsTransformed={clubsTransformedResult.payload}
-                      user={user}
-                    />
-                  )}
-                {clubsTransformedResult.status === 'loaded' &&
-                  filtersApplied &&
-                  clubsTransformedResult.payload.length === 0 && (
-                    <EmptyClubsFilterResult />
-                  )}
-                {clubsTransformedResult.status === 'loaded' &&
-                  showLoadMoreClubs && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      <Button
-                        color="primary"
-                        className={classes.button}
-                        variant="outlined"
-                        onClick={() =>
-                          setAfterClubsQuery(
-                            clubsTransformedResult.payload[
-                              clubsTransformedResult.payload.length - 1
-                            ].club._id
-                          )
-                        }
-                      >
-                        <Typography
-                          variant="button"
-                          style={{ textAlign: 'center' }}
-                        >
-                          LOAD MORE...
-                        </Typography>
-                      </Button>
-                    </div>
-                  )}
-              </div>
-            )}
           </>
         )}
         {tabValue === 1 && (
@@ -986,7 +848,7 @@ export default function Home(props: HomeProps) {
               usersResult.payload.length > 0 && (
                 <UserCards
                   usersWithInvitableClubs={usersResult.payload}
-                  user={user}
+                  currUser={user}
                   userClubs={currentUsersClubs}
                 />
               )}

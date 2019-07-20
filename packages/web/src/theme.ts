@@ -1,8 +1,4 @@
-import {
-  createMuiTheme,
-  responsiveFontSizes,
-  Theme,
-} from '@material-ui/core/styles';
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 import { PaletteObject } from '@caravan/buddy-reading-types';
 import { TypeText } from '@material-ui/core/styles/createPalette';
 const montserrat = require('typeface-montserrat');
@@ -184,27 +180,33 @@ export const makeUserDarkTheme = (palette: PaletteObject | null) => {
 };
 
 const getUserTextPalette = (palette: PaletteObject) => {
-  const opacities = {
+  const opacitiesDark = {
     primary: 0.87,
     secondary: 0.54,
     disabled: 0.38,
     hint: 0.38,
   };
+  const opacitiesLight = {
+    primary: 1,
+    secondary: 0.66,
+    disabled: 0.5,
+    hint: 0.5,
+  };
   switch (palette.textColor) {
     case 'primary':
       const primaryText: TypeText = {
-        primary: `rgba(0, 0, 0, ${opacities.primary})`,
-        secondary: `rgba(0, 0, 0, ${opacities.secondary})`,
-        disabled: `rgba(0, 0, 0, ${opacities.disabled})`,
-        hint: `rgba(0, 0, 0, ${opacities.hint})`,
+        primary: `rgba(0, 0, 0, ${opacitiesDark.primary})`,
+        secondary: `rgba(0, 0, 0, ${opacitiesDark.secondary})`,
+        disabled: `rgba(0, 0, 0, ${opacitiesDark.disabled})`,
+        hint: `rgba(0, 0, 0, ${opacitiesDark.hint})`,
       };
       return primaryText;
     case 'white':
       const whiteText: TypeText = {
-        primary: `rgba(255, 255, 255, ${opacities.primary})`,
-        secondary: `rgba(255, 255, 255, ${opacities.secondary})`,
-        disabled: `rgba(255, 255, 255, ${opacities.disabled})`,
-        hint: `rgba(255, 255, 255, ${opacities.hint})`,
+        primary: `rgba(255, 255, 255, ${opacitiesLight.primary})`,
+        secondary: `rgba(255, 255, 255, ${opacitiesLight.secondary})`,
+        disabled: `rgba(255, 255, 255, ${opacitiesLight.disabled})`,
+        hint: `rgba(255, 255, 255, ${opacitiesLight.hint})`,
       };
       return whiteText;
     default:

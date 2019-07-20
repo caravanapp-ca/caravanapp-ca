@@ -1,17 +1,27 @@
-import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
-import { User, Services } from '@caravan/buddy-reading-types';
-import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
-import { washedTheme } from '../theme';
-import { logout } from '../services/user';
+import {
+  makeStyles,
+  Menu,
+  MenuItem,
+  Button,
+  Typography,
+  Theme,
+  Tooltip,
+} from '@material-ui/core';
+import Fade from '@material-ui/core/Fade';
+import {
+  User,
+  Services,
+  UserWithInvitableClubs,
+} from '@caravan/buddy-reading-types';
 import DiscordLoginModal from './DiscordLoginModal';
+import { washedTheme } from '../theme';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../components/CustomSnackbar';
+import { inviteToClub } from '../services/club';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   headerAvatar: {
     width: 48,
     height: 48,
@@ -23,69 +33,134 @@ const useStyles = makeStyles(theme => ({
   profileIconCircle: {
     backgroundColor: washedTheme.palette.primary.main,
   },
+  button: {
+    marginBottom: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
 }));
 
 interface InviteToClubMenuProps {
-  user: User | null;
   clubsToInviteTo: Services.GetClubs['clubs'];
-  inviteClubsMenuShown: boolean;
+  loggedInUser: User | null;
+  userToInvite: UserWithInvitableClubs;
 }
 
 export function InviteToClubMenu(props: InviteToClubMenuProps) {
   const classes = useStyles();
+  const { clubsToInviteTo, loggedInUser, userToInvite } = props;
 
-  const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
-
-  const { user, inviteClubsMenuShown, clubsToInviteTo } = props;
-
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [loginModalShown, setLoginModalShown] = React.useState(false);
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'success',
+    }
+  );
 
-  const [
-    headerProfileMenuIsOpen,
-    setHeaderProfileMenuOpenState,
-  ] = React.useState(false);
+  const inviteMenuOpen = Boolean(anchorEl);
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
   }
 
-  function handleProfileClick() {
-    setHeaderProfileMenuOpenState(isOpen => !isOpen);
+  function handleInviteMenuClose(event: React.MouseEvent<EventTarget>) {
+    setAnchorEl(null);
   }
 
-  function handleProfileMenuClose(event: React.MouseEvent<EventTarget>) {
-    if (
-      headerProfileAnchorRef.current &&
-      headerProfileAnchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return;
+  function handleClick(event: React.MouseEvent<HTMLElement>) {
+    if (loggedInUser) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      setLoginModalShown(true);
     }
-    setHeaderProfileMenuOpenState(false);
   }
-  if (user) {
-    console.log('User');
-    console.log(user.urlSlug);
+
+  function onSnackbarClose() {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
-  console.log('clubs to invite');
-  console.log(clubsToInviteTo);
+
+  async function handleInviteToClub(club: Services.GetClubs['clubs'][0]) {
+    if (loggedInUser) {
+      const res = await inviteToClub(
+        loggedInUser,
+        userToInvite,
+        club.name,
+        club._id
+      );
+      if (res.status === 200) {
+        setSnackbarProps({
+          ...snackbarProps,
+          isOpen: true,
+          variant: 'success',
+          message: 'Successfully invited to club!',
+        });
+      } else {
+        // TODO: determine routing based on other values of res
+        setSnackbarProps({
+          ...snackbarProps,
+          isOpen: true,
+          variant: 'warning',
+          message: 'We ran into some trouble inviting to club.',
+        });
+      }
+      setAnchorEl(null);
+    } else {
+      setLoginModalShown(true);
+    }
+  }
 
   return (
-    <Menu
-      open={inviteClubsMenuShown}
-      anchorEl={headerProfileAnchorRef.current}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      onClose={handleProfileMenuClose}
-    >
-      {clubsToInviteTo.map(club => (
-        <MenuItem>{club.name}</MenuItem>
-      ))}
-    </Menu>
+    <>
+      {((loggedInUser && clubsToInviteTo.length > 0) || !loggedInUser) && (
+        <Button
+          className={classes.button}
+          color="primary"
+          variant="contained"
+          onClick={handleClick}
+          disabled={false}
+        >
+          <Typography variant="button">Invite to Club</Typography>
+        </Button>
+      )}
+      {loggedInUser && clubsToInviteTo.length === 0 && (
+        <Tooltip
+          title="No clubs to invite to!"
+          aria-label="No clubs to invite this person to."
+        >
+          <div>
+            <Button
+              className={classes.button}
+              color="primary"
+              variant="contained"
+              onClick={handleClick}
+              disabled={true}
+            >
+              <Typography variant="button">Invite to Club</Typography>
+            </Button>
+          </div>
+        </Tooltip>
+      )}
+      <Menu
+        open={inviteMenuOpen}
+        anchorEl={anchorEl}
+        onClose={handleInviteMenuClose}
+        TransitionComponent={Fade}
+      >
+        {clubsToInviteTo.map(club => (
+          <MenuItem onClick={() => handleInviteToClub(club)}>
+            {club.name}
+          </MenuItem>
+        ))}
+      </Menu>
+      <CustomSnackbar {...snackbarProps} />
+      <DiscordLoginModal
+        onCloseLoginDialog={onCloseLoginModal}
+        open={loginModalShown}
+      />
+    </>
   );
 }
