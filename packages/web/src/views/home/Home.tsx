@@ -727,7 +727,9 @@ export default function Home(props: HomeProps) {
                       ].club._id
                     )
                   }
-                />
+                >
+                  <Typography variant="button">LOAD MORE...</Typography>
+                </Button>
               </div>
             )}
             <GenreFilterModal
