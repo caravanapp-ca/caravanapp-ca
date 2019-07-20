@@ -132,7 +132,7 @@ interface ClubCardsProps {
 }
 
 // Make this approximately the height of a standard ClubCard
-const placeholderCardHeight = 570;
+const placeholderCardHeight = 525;
 // The number of cards above and below the current to load
 const lazyloadOffset = 8;
 
