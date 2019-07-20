@@ -48,18 +48,21 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res, next) => {
-  const { after, pageSize, activeFilter } = req.query;
+  const { after, pageSize, onboardVersion, activeFilter } = req.query;
   const { userId } = req.session;
   let user: UserDoc | undefined;
   if (userId) {
     user = await getUser(userId);
   }
   // Only get users who have finished onboarding
-  const query: any = {
-    onboardingVersion: 1,
-  };
+  const query: any = {};
   if (after) {
     query._id = { $lt: after };
+  }
+  if (onboardVersion) {
+    if (onboardVersion === 0 || onboardVersion === 1) {
+      query.onboardingVersion = { $eq: onboardVersion };
+    }
   }
   // Calculate number of documents to skip
   const size = Number.parseInt(pageSize || 0);

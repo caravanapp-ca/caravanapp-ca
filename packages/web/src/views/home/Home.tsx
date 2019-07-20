@@ -308,7 +308,7 @@ export default function Home(props: HomeProps) {
 
   const getUsersWithInvitableClubs = async () => {
     const pageSize = 12;
-    const res = await getAllUsers(afterUsersQuery, pageSize);
+    const res = await getAllUsers(afterUsersQuery, 1, pageSize);
     if (res.status === 200) {
       let currUserClubsWithMembers: ClubWithMemberIds[] = [];
       if (user) {
