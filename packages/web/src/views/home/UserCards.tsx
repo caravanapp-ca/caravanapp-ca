@@ -134,12 +134,19 @@ export default function UserCards(props: UserCardProps) {
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {usersWithInvitableClubs.map((u, index) => {
-            const { _id, name, palette, photoUrl, questions, selectedGenres, shelf, urlSlug } = u.user;
+            const {
+              _id,
+              name,
+              palette,
+              photoUrl,
+              questions,
+              selectedGenres,
+              shelf,
+              urlSlug,
+            } = u.user;
             const userTheme = makeUserTheme(palette);
             const userDarkTheme = makeUserDarkTheme(palette);
-            const otherUsersGenres: string[] = selectedGenres.map(
-              x => x.name
-            );
+            const otherUsersGenres: string[] = selectedGenres.map(x => x.name);
             let commonGenres = otherUsersGenres.filter(val =>
               myGenres.includes(val)
             );
@@ -274,6 +281,7 @@ export default function UserCards(props: UserCardProps) {
                           question={questions[0].title}
                           answer={questions[0].answer}
                           numRows={2}
+                          rowsMax={4}
                           isEditing={false}
                           hideHelperText={true}
                         />

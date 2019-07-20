@@ -9,6 +9,7 @@ interface QuestionAnswerProps {
   answer?: string;
   placeholder?: string;
   numRows?: number;
+  rowsMax?: number;
   minLength?: number;
   maxLength?: number;
   hideHelperText?: boolean;
@@ -45,6 +46,7 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
     answer,
     placeholder,
     numRows,
+    rowsMax,
     maxLength,
     hideHelperText,
     isEditing,
@@ -87,7 +89,11 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
       defaultValue={answer}
       placeholder={placeholder}
       rows={numRows && numRows >= 1 ? numRows : 4}
-      rowsMax={numRows && numRows >= 1 ? numRows : 7}
+      rowsMax={
+        rowsMax && rowsMax >= 1 && (!numRows || rowsMax >= numRows)
+          ? rowsMax
+          : 7
+      }
       helperText={
         hideHelperText
           ? undefined
