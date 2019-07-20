@@ -309,70 +309,80 @@ export default function Home(props: HomeProps) {
     }
   }, [activeClubsFilter, afterClubsQuery, user]);
 
+  const getUsersWithInvitableClubs = async () => {
+    const pageSize = 24;
+    const res = await getAllUsers(afterUsersQuery, pageSize);
+    if (res.data) {
+      let filteredClubsWithMembers: ClubWithMemberIds[] = [];
+      if (user) {
+        const userClubsRes = await getUserClubs(user._id, undefined, pageSize, {
+          genres: [],
+          speed: [],
+          capacity: [
+            { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
+          ],
+          membership: [
+            { key: 'myClubs', name: 'My clubs', type: 'membership' },
+          ],
+        });
+
+        if (userClubsRes.data) {
+          const loggedInUsersClubs: Services.GetClubs['clubs'] =
+            userClubsRes.data.clubs;
+          const clubsWithMembers = await Promise.all(
+            loggedInUsersClubs.map(async function(club) {
+              const res = await getClubMembers(club._id);
+              if (!res.data) {
+                return null;
+              }
+              const members = res.data;
+
+              const memberIds = members.map(m => m._id);
+              return { club, memberIds };
+            })
+          );
+          filteredClubsWithMembers = clubsWithMembers.filter(
+            c => c !== null
+          ) as ClubWithMemberIds[];
+        }
+      }
+      const newUsers = res.data.users;
+      const newUsersShuffled = newUsers.map(user => shuffleUser(user));
+      const newUsersWithInvitableClubs = await transformUserToInvitableClub(
+        newUsersShuffled,
+        filteredClubsWithMembers
+      );
+      setShowLoadMoreUsers(newUsersWithInvitableClubs.length === pageSize);
+      setUsersResult(s => ({
+        status: 'loaded',
+        payload:
+          s.status === 'loaded'
+            ? [...s.payload, ...newUsersWithInvitableClubs]
+            : newUsersWithInvitableClubs,
+      }));
+    }
+  };
+
   useEffect(() => {
     if (!userLoaded) {
       return;
     }
-    const pageSize = 24;
-    (async () => {
-      const res = await getAllUsers(afterUsersQuery, pageSize);
+    getUsersWithInvitableClubs();
+  }, [activeUsersFilter, afterUsersQuery, userLoaded]);
 
-      if (res.data) {
-        let filteredClubsWithMembers: ClubWithMemberIds[] = [];
-        if (user) {
-          const userClubsRes = await getUserClubs(
-            user._id,
-            undefined,
-            pageSize,
-            {
-              genres: [],
-              speed: [],
-              capacity: [
-                { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-              ],
-              membership: [
-                { key: 'myClubs', name: 'My clubs', type: 'membership' },
-              ],
-            }
-          );
-
-          if (userClubsRes.data) {
-            const loggedInUsersClubs: Services.GetClubs['clubs'] =
-              userClubsRes.data.clubs;
-            const clubsWithMembers = await Promise.all(
-              loggedInUsersClubs.map(async function(club) {
-                const res = await getClubMembers(club._id);
-                if (!res.data) {
-                  return null;
-                }
-                const members = res.data;
-
-                const memberIds = members.map(m => m._id);
-                return { club, memberIds };
-              })
-            );
-            filteredClubsWithMembers = clubsWithMembers.filter(
-              c => c !== null
-            ) as ClubWithMemberIds[];
-          }
-        }
-        const newUsers = res.data.users;
-        const newUsersShuffled = newUsers.map(user => shuffleUser(user));
-        const newUsersWithInvitableClubs = await transformUserToInvitableClub(
-          newUsersShuffled,
-          filteredClubsWithMembers
-        );
-        setShowLoadMoreUsers(newUsersWithInvitableClubs.length === pageSize);
-        setUsersResult(s => ({
-          status: 'loaded',
-          payload:
-            s.status === 'loaded'
-              ? [...s.payload, ...newUsersWithInvitableClubs]
-              : newUsersWithInvitableClubs,
-        }));
-      }
-    })();
-  }, [activeUsersFilter, afterUsersQuery, user]);
+  useEffect(() => {
+    if (userLoaded) {
+      // Reset user results
+      setUsersResult(s => ({
+        status: 'loading',
+        payload: [],
+      }));
+      // Now get them again
+      getUsersWithInvitableClubs();
+    } else {
+      return;
+    }
+  }, [user]);
 
   // Get genres on mount
   useEffect(() => {
