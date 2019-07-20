@@ -126,15 +126,17 @@ export default function ButtonAppBar(props: HeaderProps) {
         >
           <MuiThemeProvider theme={userDarkTheme}>
             <div className={classes.toolBarContainer}>
-              <div
-                className={
-                  screenSmallerThanSm
-                    ? classes.toolBarLeftContainerMobile
-                    : classes.toolBarLeftContainerDesktop
-                }
-              >
-                {leftComponent}
-              </div>
+              {(!screenSmallerThanSm || leftComponent) && (
+                <div
+                  className={
+                    screenSmallerThanSm
+                      ? classes.toolBarLeftContainerMobile
+                      : classes.toolBarLeftContainerDesktop
+                  }
+                >
+                  {leftComponent}
+                </div>
+              )}
               <div
                 className={
                   screenSmallerThanSm

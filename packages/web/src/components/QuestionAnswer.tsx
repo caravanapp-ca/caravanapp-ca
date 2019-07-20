@@ -3,14 +3,16 @@ import { TextField, makeStyles } from '@material-ui/core';
 
 interface QuestionAnswerProps {
   questionKey: string;
-  isNew: boolean;
-  index: number;
   question: string;
+  isEditing: boolean;
+  index?: number;
   answer?: string;
   placeholder?: string;
+  numRows?: number;
+  rowsMax?: number;
   minLength?: number;
   maxLength?: number;
-  isEditing: boolean;
+  hideHelperText?: boolean;
   onEdit?: (
     id: string,
     index: number,
@@ -39,13 +41,14 @@ const useStyles = makeStyles(theme => ({
 export default function QuestionAnswer(props: QuestionAnswerProps) {
   const {
     questionKey,
-    isNew,
     index,
     question,
     answer,
     placeholder,
-    minLength,
+    numRows,
+    rowsMax,
     maxLength,
+    hideHelperText,
     isEditing,
     onEdit,
   } = props;
@@ -57,7 +60,7 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
     <TextField
       ref={ref}
       onChange={
-        onEdit && isEditing
+        onEdit && isEditing && index
           ? // TODO: Add support for visible, and sort here (params 3-4)
             e => {
               onEdit(questionKey, index, e.target.value, true, 0);
@@ -85,10 +88,16 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
       label={question}
       defaultValue={answer}
       placeholder={placeholder}
-      rows={4}
-      rowsMax={7}
+      rows={numRows && numRows >= 1 ? numRows : 4}
+      rowsMax={
+        rowsMax && rowsMax >= 1 && (!numRows || rowsMax >= numRows)
+          ? rowsMax
+          : 7
+      }
       helperText={
-        focused && maxLength
+        hideHelperText
+          ? undefined
+          : focused && maxLength
           ? `${maxLength - currValue.length} chars remaining`
           : ' '
       }

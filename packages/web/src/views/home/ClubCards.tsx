@@ -1,6 +1,5 @@
 import React from 'react';
 import Truncate from 'react-truncate';
-import { CircularProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -15,10 +14,6 @@ import {
   groupVibeIcons,
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
-import {
-  readingSpeedIcons,
-  readingSpeedLabels,
-} from '../../components/reading-speed-avatars-icons-labels';
 import AdapterLink from '../../components/AdapterLink';
 import format from 'date-fns/esm/format';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
@@ -28,7 +23,7 @@ import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAva
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
-    padding: `${theme.spacing(4)}px 8px ${theme.spacing(8)}px`,
+    padding: `${theme.spacing(4)}px 16px ${theme.spacing(8)}px`,
   },
   card: {
     height: '100%',

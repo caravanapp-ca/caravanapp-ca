@@ -17,7 +17,6 @@ import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
 import Home from './views/home/Home';
 import Onboarding from './views/onboarding/Onboarding';
-import FindBooks from './views/books/FindBooks';
 import Privacy from './views/privacy/Privacy';
 import UpdateBook from './views/club/UpdateBook';
 import UserView from './views/user/User';
@@ -61,27 +60,34 @@ export function App(props: AppProps) {
     cachedUser = JSON.parse(cachedUserStr);
   }
   const [user, setUser] = useState<User | null>(cachedUser);
+  const [userLoaded, setLoadedUser] = useState<boolean>(false);
   const [docHeight, setDocHeight] = useState<number>(
     document.body.scrollHeight
   );
 
   useEffect(() => {
-    const userId = getCookie('userId');
-    if (userId) {
-      getUser(userId).then(user => {
-        if (user) {
-          setUser(user);
-          localStorage.setItem(KEY_USER, JSON.stringify(user));
-        } else {
-          setUser(null);
-          localStorage.removeItem(KEY_USER);
-          console.info('Are you having fun messing with cookies? :)');
-        }
-      });
-    } else {
-      setUser(null);
-      localStorage.removeItem(KEY_USER);
-    }
+    const getUserAsync = async () => {
+      const userId = getCookie('userId');
+      if (userId) {
+        getUser(userId).then(async user => {
+          if (user) {
+            await setUser(user);
+            setLoadedUser(true);
+            localStorage.setItem(KEY_USER, JSON.stringify(user));
+          } else {
+            await setUser(null);
+            setLoadedUser(true);
+            localStorage.removeItem(KEY_USER);
+            console.info('Are you having fun messing with cookies? :)');
+          }
+        });
+      } else {
+        await setUser(null);
+        setLoadedUser(true);
+        localStorage.removeItem(KEY_USER);
+      }
+    };
+    getUserAsync();
   }, []);
 
   // Handle the `state` query to verify login
@@ -117,7 +123,10 @@ export function App(props: AppProps) {
                   exact
                   path="/clubs"
                   render={props =>
-                    forceOnboard(user, <Home {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      <Home {...props} user={user} userLoaded={userLoaded} />
+                    )
                   }
                 />
                 <Route
@@ -136,11 +145,6 @@ export function App(props: AppProps) {
                       <Onboarding {...props} user={user} />
                     )
                   }
-                />
-                <Route
-                  exact
-                  path="/findbooks"
-                  render={props => forceOnboard(user, <FindBooks />)}
                 />
                 <Route
                   exact

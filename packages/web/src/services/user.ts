@@ -4,6 +4,8 @@ import {
   User,
   UserShelfEntry,
   FilterAutoMongoKeys,
+  ActiveFilter,
+  Services,
 } from '@caravan/buddy-reading-types';
 import { clearStorageAuthState } from '../common/localStorage';
 import { clearCookieAuthState } from '../common/cookies';
@@ -19,6 +21,23 @@ export async function getUser(userId: string) {
   const res = await axios.get<User | null>(`${userRoute}/${userId}`);
   const user = res.data;
   return user;
+}
+
+export async function getAllUsers(
+  after?: string,
+  onboardVersion?: number,
+  pageSize?: number,
+  activeFilter?: ActiveFilter
+) {
+  const res = await axios.get<Services.GetUsers>(userRoute, {
+    params: {
+      after,
+      onboardVersion,
+      pageSize,
+      activeFilter,
+    },
+  });
+  return res;
 }
 
 export async function isSlugAvailable(slug: string) {

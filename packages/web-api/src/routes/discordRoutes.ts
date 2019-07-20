@@ -4,6 +4,7 @@ import { check, validationResult } from 'express-validator';
 import SessionModel from '../models/session';
 import { ReadingDiscordBot } from '../services/discord';
 import { hasScope } from '../common/discordbot';
+import user from '../models/user';
 
 const router = express.Router();
 
@@ -48,6 +49,28 @@ router.post(
     ) as TextChannel;
 
     const result = await channel.send(req.body.content, req.body);
+    console.log(`Sent discord bot message ${result.toString()}`);
+    res.status(200).send(`Sent: ${result.toString()}`);
+  }
+);
+
+router.post(
+  '/members/:userToInviteDiscordId/messages',
+  check('userToInviteDiscordId').isString(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorArr = errors.array();
+      return res.status(422).json({ errors: errorArr });
+    }
+    const { messageContent } = req.body;
+    const { userToInviteDiscordId } = req.params;
+
+    const client = ReadingDiscordBot.getInstance();
+
+    const member = await client.fetchUser(userToInviteDiscordId);
+
+    const result = await member.send(messageContent);
     console.log(`Sent discord bot message ${result.toString()}`);
     res.status(200).send(`Sent: ${result.toString()}`);
   }
