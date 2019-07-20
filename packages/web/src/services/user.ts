@@ -25,12 +25,14 @@ export async function getUser(userId: string) {
 
 export async function getAllUsers(
   after?: string,
+  onboardVersion?: number,
   pageSize?: number,
   activeFilter?: ActiveFilter
 ) {
   const res = await axios.get<Services.GetUsers>(userRoute, {
     params: {
       after,
+      onboardVersion,
       pageSize,
       activeFilter,
     },
