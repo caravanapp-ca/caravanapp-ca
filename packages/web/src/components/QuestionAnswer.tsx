@@ -87,7 +87,7 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
       defaultValue={answer}
       placeholder={placeholder}
       rows={numRows && numRows >= 1 ? numRows : 4}
-      rowsMax={7}
+      rowsMax={numRows && numRows >= 1 ? numRows : 7}
       helperText={
         hideHelperText
           ? undefined

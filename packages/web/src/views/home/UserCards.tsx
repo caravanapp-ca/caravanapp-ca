@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
   },
   cardGrid: {
-    padding: `${theme.spacing(4)}px 8px ${theme.spacing(8)}px`,
+    padding: `${theme.spacing(4)}px 16px ${theme.spacing(8)}px`,
   },
   cardContent: {
     position: 'relative',
@@ -123,6 +123,7 @@ export default function UserCards(props: UserCardProps) {
     setLoginModalShown(false);
   };
 
+  // TODO: Going to move this outside
   let myGenres: string[] = [];
   if (currUser) {
     myGenres = currUser.selectedGenres.map(x => x.name);
@@ -133,9 +134,10 @@ export default function UserCards(props: UserCardProps) {
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {usersWithInvitableClubs.map((u, index) => {
-            const userTheme = makeUserTheme(u.user.palette);
-            const userDarkTheme = makeUserDarkTheme(u.user.palette);
-            const otherUsersGenres: string[] = u.user.selectedGenres.map(
+            const { _id, name, palette, photoUrl, questions, selectedGenres, shelf, urlSlug } = u.user;
+            const userTheme = makeUserTheme(palette);
+            const userDarkTheme = makeUserDarkTheme(palette);
+            const otherUsersGenres: string[] = selectedGenres.map(
               x => x.name
             );
             let commonGenres = otherUsersGenres.filter(val =>
@@ -155,10 +157,10 @@ export default function UserCards(props: UserCardProps) {
                 Math.min(5 - commonGenres.length, 5)
               );
             }
-            const nameField: string = u.user.name || u.user.urlSlug || 'noName';
+            const nameField: string = name || urlSlug || 'noName';
 
             return (
-              <Grid item key={u.user._id} xs={12} sm={6}>
+              <Grid item key={_id} xs={12} sm={6}>
                 <Card className={classes.card}>
                   <MuiThemeProvider theme={userTheme}>
                     <div
@@ -172,7 +174,7 @@ export default function UserCards(props: UserCardProps) {
                       <div className={classes.userTextContainer}>
                         <MuiThemeProvider theme={userDarkTheme || theme}>
                           <Link
-                            href={`/user/${u.user.urlSlug}`}
+                            href={`/user/${urlSlug}`}
                             variant="h5"
                             className={classes.userNameText}
                             color="primary"
@@ -244,13 +246,15 @@ export default function UserCards(props: UserCardProps) {
                       >
                         To be Read
                       </Typography>
-                      {u.user.shelf.notStarted.length > 0 && (
-                        <UserCardShelfList shelf={u.user.shelf.notStarted} />
+                      {shelf.notStarted.length > 0 && (
+                        <UserCardShelfList shelf={shelf.notStarted} />
                       )}
-                      {u.user.shelf.notStarted.length === 0 && (
+                      {shelf.notStarted.length === 0 && (
                         <Typography
                           variant="body1"
                           className={classes.emptyFieldText}
+                          // This margin makes the spacing even with the QuestionAnswer component.
+                          style={{ marginBottom: 8 }}
                           color="textSecondary"
                         >
                           User has no books on their shelf...
@@ -263,19 +267,19 @@ export default function UserCards(props: UserCardProps) {
                       >
                         {'Q & A'}
                       </Typography>
-                      {u.user.questions && u.user.questions.length > 0 && (
+                      {questions && questions.length > 0 && (
                         <QuestionAnswer
-                          key={u.user._id}
-                          questionKey={u.user.questions[0].id}
-                          question={u.user.questions[0].title}
-                          answer={u.user.questions[0].answer}
+                          key={_id}
+                          questionKey={questions[0].id}
+                          question={questions[0].title}
+                          answer={questions[0].answer}
                           numRows={2}
                           isEditing={false}
                           hideHelperText={true}
                         />
                       )}
-                      {!u.user.questions ||
-                        (u.user.questions.length === 0 && (
+                      {!questions ||
+                        (questions.length === 0 && (
                           <>
                             <Typography
                               variant="body1"
@@ -288,13 +292,13 @@ export default function UserCards(props: UserCardProps) {
                         ))}
                     </CardContent>
                     <CardActions classes={{ root: classes.cardActions }}>
-                      {(!currUser || currUser._id !== u.user._id) && (
+                      {(!currUser || currUser._id !== _id) && (
                         <div className={classes.buttonsContainer}>
                           <Button
                             className={classes.button}
                             color="primary"
                             component={AdapterLink}
-                            to={`/user/${u.user.urlSlug}`}
+                            to={`/user/${urlSlug}`}
                           >
                             <Typography variant="button">
                               View Profile
@@ -307,20 +311,20 @@ export default function UserCards(props: UserCardProps) {
                           />
                         </div>
                       )}
-                      {currUser && currUser._id === u.user._id && (
+                      {currUser && currUser._id === _id && (
                         <OwnProfileCardActions user={currUser} />
                       )}
-                      {visitProfileLoadingId === u.user._id && (
+                      {visitProfileLoadingId === _id && (
                         <CircularProgress className={classes.progress} />
                       )}
                     </CardActions>
-                    <Link href={`/user/${u.user.urlSlug}`}>
-                      {u.user && u.user.photoUrl && (
+                    <Link href={`/user/${urlSlug}`}>
+                      {u.user && photoUrl && (
                         <div className={classes.userAvatarContainer}>
                           <UserAvatar user={u.user} size={96} />
                         </div>
                       )}
-                      {!u.user.photoUrl && (
+                      {!photoUrl && (
                         <div className={classes.userAvatarContainer}>
                           <GenericGroupMemberAvatar
                             style={{ height: 96, width: 96 }}

@@ -46,18 +46,25 @@ router.get('/@me', async (req, res, next) => {
   }
 });
 
+// Get all users route
 router.get('/', async (req, res, next) => {
-  const { after, pageSize, activeFilter } = req.query;
+  const { after, pageSize, onboardVersion, activeFilter } = req.query;
   const { userId } = req.session;
   let user: UserDoc | undefined;
   if (userId) {
     user = await getUser(userId);
   }
-  // Calculate number of documents to skip
+  // Only get users who have finished onboarding
   const query: any = {};
   if (after) {
     query._id = { $lt: after };
   }
+  if (onboardVersion) {
+    if (onboardVersion === 0 || onboardVersion === 1) {
+      query.onboardingVersion = { $eq: onboardVersion };
+    }
+  }
+  // Calculate number of documents to skip
   const size = Number.parseInt(pageSize || 0);
   const limit = Math.min(Math.max(size, 10), 50);
   let users: UserDoc[];
@@ -68,7 +75,7 @@ router.get('/', async (req, res, next) => {
       .exec();
   } catch (err) {
     console.error('Failed to get all users, ', err);
-    res.status(500).send(`Failed to get all users: ${err}`);
+    res.status(500).send('Failed to get all users.');
   }
   if (!users) {
     res.sendStatus(404);

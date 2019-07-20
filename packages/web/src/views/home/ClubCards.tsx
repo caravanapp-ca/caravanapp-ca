@@ -23,7 +23,7 @@ import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAva
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
-    padding: `${theme.spacing(4)}px 8px ${theme.spacing(8)}px`,
+    padding: `${theme.spacing(4)}px 16px ${theme.spacing(8)}px`,
   },
   card: {
     height: '100%',
