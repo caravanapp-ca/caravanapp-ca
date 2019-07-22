@@ -1,0 +1,15 @@
+import React from 'react';
+import { makeStyles } from '@material-ui/styles';
+import { Theme, createStyles } from '@material-ui/core';
+
+const useStyles = makeStyles((theme: Theme) => createStyles({}));
+
+interface FilterSearchProps {
+  example?: string;
+}
+
+export default function FilterSearch(props: FilterSearchProps) {
+  const { example } = props;
+  const classes = useStyles();
+  return <div />;
+}

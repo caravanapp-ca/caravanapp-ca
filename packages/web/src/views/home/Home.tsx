@@ -646,6 +646,7 @@ export default function Home(props: HomeProps) {
         {tabValue === 0 && (
           <>
             <Container className={classes.filterGrid} maxWidth="md">
+              <FilterSearch/>
               <ClubFilters
                 onClickGenreFilter={() => setShowGenreFilter(true)}
                 onClickSpeedFilter={() => setShowSpeedFilter(true)}
