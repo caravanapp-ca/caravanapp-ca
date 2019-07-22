@@ -45,7 +45,14 @@ import FilterChips from '../../components/filters/FilterChips';
 import MembershipModal from '../../components/filters/MembershipModal';
 import EmptyClubsFilterResult from '../../components/EmptyClubsFilterResult';
 import ClubCards from './ClubCards';
-import { Paper, Tabs, Tab, useMediaQuery, useTheme } from '@material-ui/core';
+import {
+  Paper,
+  Tabs,
+  Tab,
+  useMediaQuery,
+  useTheme,
+  CircularProgress,
+} from '@material-ui/core';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
 import { getUser } from '../../services/user';
@@ -187,6 +194,12 @@ export default function Home(props: HomeProps) {
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
+  const [loadingMoreUsers, setLoadingMoreUsers] = React.useState<boolean>(
+    false
+  );
+  const [loadingMoreClubs, setLoadingMoreClubs] = React.useState<boolean>(
+    false
+  );
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
@@ -255,6 +268,10 @@ export default function Home(props: HomeProps) {
   }, [showWelcomeMessage]);
 
   useEffect(() => {
+    if (!userLoaded) {
+      return;
+    }
+    setLoadingMoreClubs(true);
     const pageSize = 24;
     if (clubFiltersApplied) {
       // Get clubs filtered
@@ -281,6 +298,7 @@ export default function Home(props: HomeProps) {
                 ? [...s.payload, ...newClubsTransformed]
                 : newClubsTransformed,
           }));
+          setLoadingMoreClubs(false);
         }
       })();
     } else {
@@ -297,10 +315,11 @@ export default function Home(props: HomeProps) {
                 ? [...s.payload, ...newClubsTransformed]
                 : newClubsTransformed,
           }));
+          setLoadingMoreClubs(false);
         }
       })();
     }
-  }, [activeClubsFilter, afterClubsQuery, user]);
+  }, [activeClubsFilter, afterClubsQuery, userLoaded]);
 
   const getUsersWithInvitableClubs = async () => {
     const pageSize = 12;
@@ -344,6 +363,7 @@ export default function Home(props: HomeProps) {
             ? [...s.payload, ...allUsersWithInvitableClubs]
             : allUsersWithInvitableClubs,
       }));
+      setLoadingMoreUsers(false);
     }
   };
 
@@ -352,6 +372,7 @@ export default function Home(props: HomeProps) {
       return;
     }
     getUsersWithInvitableClubs();
+    setLoadingMoreUsers(true);
   }, [activeUsersFilter, afterUsersQuery, userLoaded]);
 
   // Get genres on mount
@@ -709,30 +730,45 @@ export default function Home(props: HomeProps) {
                   user={user}
                 />
               )}
-            {clubsTransformedResult.status === 'loaded' && showLoadMoreClubs && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                <Button
-                  color="primary"
-                  className={classes.button}
-                  variant="outlined"
-                  onClick={() =>
-                    setAfterClubsQuery(
-                      clubsTransformedResult.payload[
-                        clubsTransformedResult.payload.length - 1
-                      ].club._id
-                    )
-                  }
+            {clubsTransformedResult.status === 'loaded' &&
+              showLoadMoreClubs &&
+              !loadingMoreClubs && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
                 >
-                  <Typography variant="button">LOAD MORE...</Typography>
-                </Button>
-              </div>
-            )}
+                  <Button
+                    color="primary"
+                    className={classes.button}
+                    variant="outlined"
+                    onClick={() =>
+                      setAfterClubsQuery(
+                        clubsTransformedResult.payload[
+                          clubsTransformedResult.payload.length - 1
+                        ].club._id
+                      )
+                    }
+                  >
+                    <Typography variant="button">LOAD MORE...</Typography>
+                  </Button>
+                </div>
+              )}
+            {clubsTransformedResult.status === 'loaded' &&
+              showLoadMoreClubs &&
+              loadingMoreClubs && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <CircularProgress />
+                </div>
+              )}
             <GenreFilterModal
               allGenres={allGenres}
               filteredGenres={stagingClubsFilter.genres}
@@ -821,31 +857,49 @@ export default function Home(props: HomeProps) {
                   userClubs={currentUsersClubs}
                 />
               )}
-            {usersResult.status === 'loaded' && showLoadMoreUsers && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                <Button
-                  color="primary"
-                  className={classes.button}
-                  variant="outlined"
-                  onClick={() =>
-                    setAfterUsersQuery(
-                      usersResult.payload[usersResult.payload.length - 1].user
-                        ._id
-                    )
-                  }
+            {usersResult.status === 'loaded' &&
+              showLoadMoreUsers &&
+              !loadingMoreUsers && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
                 >
-                  <Typography variant="button" style={{ textAlign: 'center' }}>
-                    LOAD MORE...
-                  </Typography>
-                </Button>
-              </div>
-            )}
+                  <Button
+                    color="primary"
+                    className={classes.button}
+                    variant="outlined"
+                    onClick={() =>
+                      setAfterUsersQuery(
+                        usersResult.payload[usersResult.payload.length - 1].user
+                          ._id
+                      )
+                    }
+                  >
+                    <Typography
+                      variant="button"
+                      style={{ textAlign: 'center' }}
+                    >
+                      LOAD MORE...
+                    </Typography>
+                  </Button>
+                </div>
+              )}
+            {usersResult.status === 'loaded' &&
+              showLoadMoreUsers &&
+              loadingMoreUsers && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <CircularProgress />
+                </div>
+              )}
           </>
         )}
       </main>
