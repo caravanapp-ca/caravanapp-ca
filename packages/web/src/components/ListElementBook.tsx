@@ -50,6 +50,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+function redirectToAmazon(link: string | undefined) {
+  window.open(link ? link : 'https://amazon.com', '_blank');
+}
+
 export default function ListElementBook(props: ListElementBookProps) {
   const classes = useStyles();
 
@@ -94,7 +98,11 @@ export default function ListElementBook(props: ListElementBookProps) {
               </Typography>
             </div>
 
-            <Typography variant="body1" style={{ fontWeight: 600 }}>
+            <Typography
+              variant="body1"
+              color="textPrimary"
+              style={{ fontWeight: 600 }}
+            >
               {shortenedTitle}
             </Typography>
             <Typography variant="body2" color="textSecondary">
@@ -113,9 +121,12 @@ export default function ListElementBook(props: ListElementBookProps) {
           </div>
         )}
         {tertiary && (
-          <Link href={tertiaryLink ? tertiaryLink : 'https://amazon.com'}>
-            <div className={classes.buyButton}>{tertiary}</div>
-          </Link>
+          <div
+            className={classes.buyButton}
+            onClick={() => redirectToAmazon(tertiaryLink)}
+          >
+            {tertiary}
+          </div>
         )}
       </div>
       {secondary && (
