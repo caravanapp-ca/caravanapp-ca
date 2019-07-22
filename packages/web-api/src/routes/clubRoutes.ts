@@ -140,7 +140,6 @@ router.get('/', async (req, res, next) => {
       query.genres = { $elemMatch: { key: { $in: genreKeys } } };
     }
   }
-  // MARKER 1
   const size = Number.parseInt(pageSize || 0);
   const limit = Math.min(Math.max(size, 10), 50);
   let clubs: ClubDoc[];
@@ -617,7 +616,6 @@ router.post(
 
 // Get clubs by Id but with member counts instead of members themselves
 // Lightweight option for when you don't need all the member's information
-// MARKER 2
 router.post(
   '/getClubsByIdNoMembers',
   check('clubIds').isArray(),
