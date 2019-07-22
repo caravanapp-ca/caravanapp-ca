@@ -1,9 +1,14 @@
 import React, { ChangeEvent } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Theme, createStyles, TextField, IconButton } from '@material-ui/core';
-import { Services } from '@caravan/buddy-reading-types';
+import {
+  Theme,
+  createStyles,
+  TextField,
+  IconButton,
+  useMediaQuery,
+} from '@material-ui/core';
 import { Search } from '@material-ui/icons';
-import { searchClubs } from '../../services/club';
+import theme from '../../theme';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,11 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface FilterSearchProps {
   onClearSearch: () => void;
-  onSearchResRetrieved: (clubs: Services.GetClubs['clubs']) => void;
+  onSearchSubmitted: (search: string) => void;
 }
 
-const validSearch = (searchStr: string): boolean => {
-  if (searchStr.trim().length === 0) {
+const validSearch = (search: string): boolean => {
+  if (search.trim().length === 0) {
     return false;
   } else {
     return true;
@@ -32,34 +37,26 @@ const validSearch = (searchStr: string): boolean => {
 
 export default function FilterSearch(props: FilterSearchProps) {
   const classes = useStyles();
-  const { onClearSearch, onSearchResRetrieved } = props;
-  const [searchStr, setSearchStr] = React.useState<string>('');
-
-  const callSearchClubs = async () => {
-    const res = await searchClubs(searchStr);
-    if (res.status === 200) {
-      onSearchResRetrieved(res.data);
-    } else {
-      // TODO: Failed search error handling
-    }
-  };
+  const { onClearSearch, onSearchSubmitted } = props;
+  const [search, setSearch] = React.useState<string>('');
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleOnKeyDown = (e: React.KeyboardEvent<any>) => {
-    if (e.key === 'Enter' && validSearch(searchStr)) {
-      callSearchClubs();
+    if (e.key === 'Enter' && validSearch(search)) {
+      onSearchSubmitted(search);
     }
   };
 
   const handleSearchClick = () => {
-    if (validSearch(searchStr)) {
-      callSearchClubs();
+    if (validSearch(search)) {
+      onSearchSubmitted(search);
     }
   };
 
   const handleOnChange = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>
   ) => {
-    setSearchStr(e.target.value);
+    setSearch(e.target.value);
     if (e.target.value.length === 0) {
       onClearSearch();
     }
@@ -76,7 +73,11 @@ export default function FilterSearch(props: FilterSearchProps) {
       </IconButton>
       <TextField
         id="club-search"
-        label="Search clubs by club name, book title, or author"
+        label={
+          screenSmallerThanSm
+            ? 'Search clubs'
+            : 'Search clubs by club name, book title, or author'
+        }
         type="search"
         onChange={handleOnChange}
         onKeyDown={handleOnKeyDown}

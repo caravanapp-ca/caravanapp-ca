@@ -37,7 +37,7 @@ import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
 import UserClubs from './UserClubs';
-import { getClubsByIdNoMembers, getUserClubsNoMembers } from '../../services/club';
+import { getClubsByIdNoMembers, getAllClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
 import { transformClubs } from '../home/Home';
@@ -193,7 +193,7 @@ export default function UserView(props: UserViewProps) {
           getGenres();
           getQuestions(user);
         }
-        getUserClubsNoMembers(userId).then(res => {
+        getAllClubs(userId).then(res => {
           if (!res.data) {
             // TODO: Error checking
           }

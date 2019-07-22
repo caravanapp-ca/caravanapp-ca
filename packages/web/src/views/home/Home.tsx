@@ -24,12 +24,7 @@ import {
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
 import { washedTheme } from '../../theme';
-import {
-  getAllClubs,
-  getUserClubsWithMembers,
-  getClubMembers,
-  getUserClubsNoMembers,
-} from '../../services/club';
+import { getAllClubs, getUserClubsWithMembers } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import logo from '../../resources/logo.svg';
 import AdapterLink from '../../components/AdapterLink';
@@ -60,6 +55,7 @@ import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import clsx from 'clsx';
 import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
+import { AxiosResponse } from 'axios';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -234,13 +230,6 @@ export default function Home(props: HomeProps) {
     capacity: [],
     membership: [],
   });
-
-  const [] = React.useState<ActiveFilter>({
-    genres: [],
-    speed: [],
-    capacity: [],
-    membership: [],
-  });
   const [activeUsersFilter] = React.useState<ActiveFilter>({
     genres: [],
     speed: [],
@@ -259,6 +248,7 @@ export default function Home(props: HomeProps) {
     clubSpeedFiltersApplied ||
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
+  const [search, setSearch] = React.useState<string>('');
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -268,54 +258,42 @@ export default function Home(props: HomeProps) {
     }
   }, [showWelcomeMessage]);
 
-  const getAllClubsFn = async () => {
+  const getAllClubsFn = async (
+    activeClubsFilter: ActiveFilter,
+    afterClubsQuery: string | undefined,
+    search: string
+  ) => {
     setLoadingMoreClubs(true);
     const pageSize = 24;
-    if (clubFiltersApplied) {
-      // Get clubs filtered
-      (async () => {
-        // TODO: right now this is typed as any because the response returned could be of variable type
-        let res: any;
-        if (user && clubMembershipFiltersApplied) {
-          res = await getUserClubsNoMembers(
-            user._id,
-            afterClubsQuery,
-            pageSize,
-            activeClubsFilter
-          );
-        } else {
-          res = await getAllClubs(afterClubsQuery, pageSize, activeClubsFilter);
-        }
-        if (res.data) {
-          const newClubsTransformed = await transformClubs(res.data.clubs);
-          setShowLoadMoreClubs(newClubsTransformed.length === pageSize);
-          setClubsTransformedResult(s => ({
-            status: 'loaded',
-            payload:
-              s.status === 'loaded'
-                ? [...s.payload, ...newClubsTransformed]
-                : newClubsTransformed,
-          }));
-          setLoadingMoreClubs(false);
-        }
-      })();
+    let res: AxiosResponse<Services.GetClubs>;
+    if (user && clubMembershipFiltersApplied) {
+      res = await getAllClubs(
+        user._id,
+        afterClubsQuery,
+        pageSize,
+        activeClubsFilter,
+        search
+      );
     } else {
-      // Normal get all clubs
-      (async () => {
-        const res = await getAllClubs(afterClubsQuery, pageSize);
-        if (res.data) {
-          const newClubsTransformed = await transformClubs(res.data.clubs);
-          setShowLoadMoreClubs(newClubsTransformed.length === pageSize);
-          setClubsTransformedResult(s => ({
-            status: 'loaded',
-            payload:
-              s.status === 'loaded'
-                ? [...s.payload, ...newClubsTransformed]
-                : newClubsTransformed,
-          }));
-          setLoadingMoreClubs(false);
-        }
-      })();
+      res = await getAllClubs(
+        undefined,
+        afterClubsQuery,
+        pageSize,
+        activeClubsFilter,
+        search
+      );
+    }
+    if (res.data) {
+      const newClubsTransformed = await transformClubs(res.data.clubs);
+      setShowLoadMoreClubs(newClubsTransformed.length === pageSize);
+      setClubsTransformedResult(s => ({
+        status: 'loaded',
+        payload:
+          s.status === 'loaded'
+            ? [...s.payload, ...newClubsTransformed]
+            : newClubsTransformed,
+      }));
+      setLoadingMoreClubs(false);
     }
   };
 
@@ -323,8 +301,8 @@ export default function Home(props: HomeProps) {
     if (!userLoaded) {
       return;
     }
-    getAllClubsFn();
-  }, [activeClubsFilter, afterClubsQuery, userLoaded]);
+    getAllClubsFn(activeClubsFilter, afterClubsQuery, search);
+  }, [activeClubsFilter, afterClubsQuery, search, userLoaded]);
 
   const getUsersWithInvitableClubs = async () => {
     const pageSize = 12;
@@ -448,7 +426,7 @@ export default function Home(props: HomeProps) {
       }
     }
     if (genreFiltersChanged) {
-      await resetFilters();
+      await resetLoadMoreClubs();
       setActiveClubsFilter({
         ...activeClubsFilter,
         genres: stagingClubsFilter.genres,
@@ -470,7 +448,7 @@ export default function Home(props: HomeProps) {
       }
     }
     if (speedFiltersChanged) {
-      await resetFilters();
+      await resetLoadMoreClubs();
       setActiveClubsFilter({
         ...activeClubsFilter,
         speed: stagingClubsFilter.speed,
@@ -493,7 +471,7 @@ export default function Home(props: HomeProps) {
       capacityFiltersChanged = true;
     }
     if (capacityFiltersChanged) {
-      await resetFilters();
+      await resetLoadMoreClubs();
       setActiveClubsFilter({
         ...activeClubsFilter,
         capacity: stagingClubsFilter.capacity,
@@ -518,7 +496,7 @@ export default function Home(props: HomeProps) {
       membershipFiltersChanged = true;
     }
     if (membershipFiltersChanged) {
-      await resetFilters();
+      await resetLoadMoreClubs();
       setActiveClubsFilter({
         ...activeClubsFilter,
         membership: stagingClubsFilter.membership,
@@ -528,7 +506,7 @@ export default function Home(props: HomeProps) {
   }
 
   async function removeFilterChip(key: string, type: FilterChipType) {
-    await resetFilters();
+    await resetLoadMoreClubs();
     if (type === 'speed') {
       setActiveClubsFilter({ ...activeClubsFilter, speed: [] });
       setStagingClubsFilter({ ...stagingClubsFilter, speed: [] });
@@ -545,7 +523,7 @@ export default function Home(props: HomeProps) {
     }
   }
 
-  const resetFilters = async () => {
+  const resetLoadMoreClubs = async () => {
     await setClubsTransformedResult(s => ({
       ...s,
       status: 'loading',
@@ -554,16 +532,17 @@ export default function Home(props: HomeProps) {
   };
 
   const onClearSearch = async () => {
-    await resetFilters();
-    getAllClubsFn();
+    if (search !== '') {
+      await resetLoadMoreClubs();
+      setSearch('');
+    }
   };
 
-  const onSearchResRetrieved = async (clubs: Services.GetClubs['clubs']) => {
-    const clubsTransformed = await transformClubs(clubs);
-    setClubsTransformedResult(s => ({
-      status: 'loaded',
-      payload: clubsTransformed,
-    }));
+  const onSearchSubmitted = async (str: string) => {
+    if (str !== search) {
+      await resetLoadMoreClubs();
+      setSearch(str);
+    }
   };
 
   const centerComponent = (
@@ -603,6 +582,16 @@ export default function Home(props: HomeProps) {
       <ProfileHeaderIcon user={user} />
     </>
   );
+
+  let emptyFilterResultMsg = 'Oops... no clubs turned up!';
+  if (search.length > 0 && clubFiltersApplied) {
+    emptyFilterResultMsg +=
+      ' Try other search terms, or relaxing your filters.';
+  } else if (search.length > 0) {
+    emptyFilterResultMsg += ' Try other search terms.';
+  } else if (clubFiltersApplied) {
+    emptyFilterResultMsg += ' Try relaxing your filters.';
+  }
 
   return (
     <>
@@ -687,7 +676,7 @@ export default function Home(props: HomeProps) {
             <Container className={classes.filterGrid} maxWidth="md">
               <FilterSearch
                 onClearSearch={onClearSearch}
-                onSearchResRetrieved={onSearchResRetrieved}
+                onSearchSubmitted={onSearchSubmitted}
               />
               <ClubFilters
                 onClickGenreFilter={() => setShowGenreFilter(true)}
@@ -750,6 +739,21 @@ export default function Home(props: HomeProps) {
                   clubsTransformed={clubsTransformedResult.payload}
                   user={user}
                 />
+              )}
+            {clubsTransformedResult.status === 'loaded' &&
+              clubsTransformedResult.payload.length === 0 &&
+              (clubFiltersApplied || search.length > 0) && (
+                <Typography
+                  color="textSecondary"
+                  style={{
+                    textAlign: 'center',
+                    fontStyle: 'italic',
+                    marginTop: theme.spacing(4),
+                    marginBottom: theme.spacing(4),
+                  }}
+                >
+                  {emptyFilterResultMsg}
+                </Typography>
               )}
             {clubsTransformedResult.status === 'loaded' &&
               showLoadMoreClubs &&
