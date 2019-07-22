@@ -1,4 +1,5 @@
 import express from 'express';
+import Fuse from 'Fuse.js';
 import {
   ChannelCreationOverwrites,
   ChannelData,
@@ -29,7 +30,6 @@ import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
 import { ClubDoc, UserDoc } from '../../typings';
 import { getUser } from '../services/user';
-import { exists } from 'fs';
 
 const router = express.Router();
 
@@ -117,12 +117,12 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
 
 router.get('/', async (req, res, next) => {
   const { after, pageSize, activeFilter } = req.query;
+  // TODO: We're not using this user for anything!
   const { userId } = req.session;
   let user: UserDoc | undefined;
   if (userId) {
     user = await getUser(userId);
   }
-  // Calculate number of documents to skip
   const query: any = {
     unlisted: { $eq: false },
   };
@@ -140,6 +140,7 @@ router.get('/', async (req, res, next) => {
       query.genres = { $elemMatch: { key: { $in: genreKeys } } };
     }
   }
+  // Calculate number of documents to skip
   const size = Number.parseInt(pageSize || 0);
   const limit = Math.min(Math.max(size, 10), 50);
   let clubs: ClubDoc[];
@@ -1190,5 +1191,72 @@ router.put(
     res.status(200).send(members);
   }
 );
+
+// Search clubs
+router.get('/search/:searchStr', async (req, res, next) => {
+  const { searchStr } = req.params;
+  // First get all clubs
+  const query: any = {
+    unlisted: { $eq: false },
+  };
+  let clubs: ClubDoc[];
+  try {
+    clubs = await ClubModel.find(query);
+  } catch (err) {
+    console.error('Failed to get all clubs, ', err);
+    res.status(500).send(`Failed to get all clubs: ${err}`);
+    return;
+  }
+  if (!clubs) {
+    console.error('No clubs found in database.');
+    res
+      .status(404)
+      .send(
+        "For some reason we weren't able to find any clubs in database. ¯_(ツ)_/¯"
+      );
+    return;
+  }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
+    .map(clubDoc => {
+      let discordChannel: GuildChannel | null = guild.channels.find(
+        c => c.id === clubDoc.channelId
+      );
+      if (!discordChannel) {
+        return null;
+      }
+      const memberCount = getCountableMembersInChannel(discordChannel, clubDoc)
+        .size;
+      const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
+        createdAt: string;
+        updatedAt: string;
+      } = {
+        ...clubDoc.toObject(),
+        createdAt:
+          clubDoc.createdAt instanceof Date
+            ? clubDoc.createdAt.toISOString()
+            : clubDoc.createdAt,
+        updatedAt:
+          clubDoc.updatedAt instanceof Date
+            ? clubDoc.updatedAt.toISOString()
+            : clubDoc.updatedAt,
+      };
+      const obj: Services.GetClubs['clubs'][0] = {
+        ...club,
+        guildId: guild.id,
+        memberCount,
+      };
+      return obj;
+    })
+    .filter(c => c !== null);
+  const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
+    // @ts-ignore
+    keys: ['name', 'shelf.title', 'shelf.author'],
+  };
+  const fuse = new Fuse(filteredClubsWithMemberCounts, fuseOptions);
+  const fuseRes = fuse.search(searchStr);
+  res.status(200).send(fuseRes);
+});
 
 export default router;
