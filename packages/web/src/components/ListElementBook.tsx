@@ -11,6 +11,7 @@ import { useTheme } from '@material-ui/styles';
 import { Services } from '@caravan/buddy-reading-types';
 import AdapterLink from './AdapterLink';
 import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
+import Truncate from 'react-truncate';
 
 export interface ListElementBookProps {
   clubId?: string;
@@ -93,12 +94,15 @@ export default function ListElementBook(props: ListElementBookProps) {
                 {club.name}
               </Typography>
             </div>
-
             <Typography variant="body1" style={{ fontWeight: 600 }}>
-              {shortenedTitle}
+              <Truncate lines={1} trimWhitespace={true}>
+                {primaryText}
+              </Truncate>
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              {secondaryText}
+              <Truncate lines={1} trimWhitespace={true}>
+                {secondaryText}
+              </Truncate>
             </Typography>
           </Link>
         )}

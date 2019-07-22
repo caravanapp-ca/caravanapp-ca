@@ -29,15 +29,19 @@ interface CreateClubProps {
 }
 
 export async function getAllClubs(
+  userId?: string,
   after?: string,
   pageSize?: number,
-  activeFilter?: ActiveFilter
+  activeFilter?: ActiveFilter,
+  search?: string
 ) {
   const res = await axios.get<Services.GetClubs>(clubRoute, {
     params: {
+      userId,
       after,
       pageSize,
       activeFilter,
+      search,
     },
   });
   return res;
@@ -70,25 +74,6 @@ export async function getClubsByIdWMembers(clubIds: string[]) {
   );
   const clubs = res.data;
   return clubs;
-}
-
-export async function getUserClubsNoMembers(
-  userId: string,
-  after?: string,
-  pageSize?: number,
-  activeFilter?: ActiveFilter
-) {
-  const res = await axios.get<{ clubs: Services.GetClubs['clubs'] }>(
-    `${clubRoute}/user/${userId}`,
-    {
-      params: {
-        after,
-        pageSize,
-        activeFilter,
-      },
-    }
-  );
-  return res;
 }
 
 export async function getUserClubsWithMembers(
@@ -202,7 +187,9 @@ export async function inviteToClub(
   return res;
 }
 
-export async function searchClubs(searchStr: string) {
-  const res = await axios.get<Services.GetClubs['clubs']>(`${clubRoute}/search/${searchStr}`);
+export async function searchClubs(search: string) {
+  const res = await axios.get<Services.GetClubs['clubs']>(
+    `${clubRoute}/search/${search}`
+  );
   return res;
 }
