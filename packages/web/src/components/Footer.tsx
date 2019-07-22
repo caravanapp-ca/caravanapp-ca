@@ -54,7 +54,7 @@ export default function Footer(props: FooterProps) {
       window.innerHeight
   );
 
-  // TODO: Uncommenting these for perfromance
+  // TODO: Uncommenting these for performance
   // useEffect(() => {
   //   window.addEventListener('resize', updateFooterState);
   //   return () => {
@@ -103,11 +103,6 @@ export default function Footer(props: FooterProps) {
         {'View our '}
         <Link href="/privacy">privacy policy.</Link>
       </Typography>
-      <div id="amzn-assoc-ad-50924e70-544f-4a5f-97ed-b8e15318c577" />
-      <script
-        async
-        src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=50924e70-544f-4a5f-97ed-b8e15318c577"
-      />
     </footer>
   );
 }

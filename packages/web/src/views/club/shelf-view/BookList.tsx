@@ -7,9 +7,10 @@ import {
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListElementBook from '../../../components/ListElementBook';
-import { Radio, IconButton, Paper } from '@material-ui/core';
+import { Radio, IconButton, Paper, Link } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlusIcon from '@material-ui/icons/Add';
+import AmazonBuyButton from '../../../components/AmazonBuyButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +28,7 @@ interface BookListProps {
     | FilterAutoMongoKeys<UserShelfEntry>[];
   primary?: 'radio';
   secondary?: 'delete' | 'add';
+  tertiary?: 'buy';
   onClick?: any;
   onRadioPress?: (value: string) => void;
   radioValue?: string;
@@ -41,6 +43,7 @@ export default function BookList(props: BookListProps) {
     data,
     primary,
     secondary,
+    tertiary,
     onClick,
     onRadioPress,
     radioValue,
@@ -109,6 +112,14 @@ export default function BookList(props: BookListProps) {
     }
   }
 
+  function buyButton(b: ShelfEntry): JSX.Element | undefined {
+    if (b.amazonLink) {
+      return <AmazonBuyButton />;
+    } else {
+      return undefined;
+    }
+  }
+
   return (
     <Paper>
       <List dense={false}>
@@ -132,6 +143,11 @@ export default function BookList(props: BookListProps) {
               secondaryElement = addIcon(b, index);
               break;
           }
+          let tertiaryElement;
+          switch (tertiary) {
+            case 'buy':
+              tertiaryElement = buyButton(b);
+          }
           return (
             <ListElementBook
               clubId={b.clubId}
@@ -142,6 +158,8 @@ export default function BookList(props: BookListProps) {
               key={b.isbn || index}
               primary={primaryElement}
               secondary={secondaryElement}
+              tertiary={tertiaryElement}
+              tertiaryLink={b.amazonLink}
               onClick={onClick}
               selected={selected}
             />
