@@ -5,6 +5,7 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   Typography,
+  Link,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 import { Services } from '@caravan/buddy-reading-types';
@@ -19,6 +20,8 @@ export interface ListElementBookProps {
   secondaryText?: string;
   primary?: JSX.Element;
   secondary?: JSX.Element;
+  tertiary?: JSX.Element;
+  tertiaryLink?: string;
   onClick?: any;
   selected?: boolean;
 }
@@ -42,6 +45,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
   },
+  buyButton: {
+    marginTop: theme.spacing(1),
+  },
 }));
 
 export default function ListElementBook(props: ListElementBookProps) {
@@ -57,6 +63,8 @@ export default function ListElementBook(props: ListElementBookProps) {
     secondaryText,
     primary,
     secondary,
+    tertiary,
+    tertiaryLink,
     selected,
   } = props;
 
@@ -69,8 +77,6 @@ export default function ListElementBook(props: ListElementBookProps) {
     <ListItem
       // @ts-ignore
       button={clubId ? true : false}
-      component={clubId ? AdapterLink : undefined}
-      to={clubId ? `/clubs/${clubId}` : undefined}
     >
       {primary && <ListItemIcon>{primary}</ListItemIcon>}
       <img
@@ -80,17 +86,37 @@ export default function ListElementBook(props: ListElementBookProps) {
       />
       <div className={classes.textContainer}>
         {club && (
-          <div className={classes.clubNameContainer}>
-            <GroupIcon color="primary" />
-            <Typography variant="body1" color="primary">
-              {club.name}
+          <Link href={clubId ? `/clubs/${clubId}` : undefined}>
+            <div className={classes.clubNameContainer}>
+              <GroupIcon color="primary" />
+              <Typography variant="body1" color="primary">
+                {club.name}
+              </Typography>
+            </div>
+
+            <Typography variant="body1" style={{ fontWeight: 600 }}>
+              {shortenedTitle}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              {secondaryText}
+            </Typography>
+          </Link>
+        )}
+        {!club && (
+          <div>
+            <Typography variant="body1" style={{ fontWeight: 600 }}>
+              {shortenedTitle}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              {secondaryText}
             </Typography>
           </div>
         )}
-        <Typography variant="body1">{shortenedTitle}</Typography>
-        <Typography variant="body2" color="textSecondary">
-          {secondaryText}
-        </Typography>
+        {tertiary && (
+          <Link href={tertiaryLink ? tertiaryLink : 'https://amazon.com'}>
+            <div className={classes.buyButton}>{tertiary}</div>
+          </Link>
+        )}
       </div>
       {secondary && (
         <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
