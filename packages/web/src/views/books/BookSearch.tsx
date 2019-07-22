@@ -184,7 +184,7 @@ export default function BookSearch(props: BookSearchProps) {
         <Paper className={classes.searchBarContainer} ref={searchRef}>
           <IconButton
             className={classes.iconButton}
-            aria-label="Menu"
+            aria-label="Search"
             onClick={handleSearchClick}
           >
             <SearchIcon />

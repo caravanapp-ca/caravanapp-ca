@@ -59,6 +59,7 @@ import { getUser } from '../../services/user';
 import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import clsx from 'clsx';
 import shuffleArr from '../../functions/shuffleArr';
+import FilterSearch from '../../components/filters/FilterSearch';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -267,10 +268,7 @@ export default function Home(props: HomeProps) {
     }
   }, [showWelcomeMessage]);
 
-  useEffect(() => {
-    if (!userLoaded) {
-      return;
-    }
+  const getAllClubsFn = async () => {
     setLoadingMoreClubs(true);
     const pageSize = 24;
     if (clubFiltersApplied) {
@@ -319,6 +317,13 @@ export default function Home(props: HomeProps) {
         }
       })();
     }
+  };
+
+  useEffect(() => {
+    if (!userLoaded) {
+      return;
+    }
+    getAllClubsFn();
   }, [activeClubsFilter, afterClubsQuery, userLoaded]);
 
   const getUsersWithInvitableClubs = async () => {
@@ -548,6 +553,19 @@ export default function Home(props: HomeProps) {
     await setAfterClubsQuery(undefined);
   };
 
+  const onClearSearch = async () => {
+    await resetFilters();
+    getAllClubsFn();
+  };
+
+  const onSearchResRetrieved = async (clubs: Services.GetClubs['clubs']) => {
+    const clubsTransformed = await transformClubs(clubs);
+    setClubsTransformedResult(s => ({
+      status: 'loaded',
+      payload: clubsTransformed,
+    }));
+  };
+
   const centerComponent = (
     <img
       src={logo}
@@ -667,7 +685,10 @@ export default function Home(props: HomeProps) {
         {tabValue === 0 && (
           <>
             <Container className={classes.filterGrid} maxWidth="md">
-              <FilterSearch/>
+              <FilterSearch
+                onClearSearch={onClearSearch}
+                onSearchResRetrieved={onSearchResRetrieved}
+              />
               <ClubFilters
                 onClickGenreFilter={() => setShowGenreFilter(true)}
                 onClickSpeedFilter={() => setShowSpeedFilter(true)}
