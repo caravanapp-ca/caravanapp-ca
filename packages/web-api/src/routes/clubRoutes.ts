@@ -1,5 +1,5 @@
 import express from 'express';
-import Fuse from 'Fuse.js';
+import Fuse from 'fuse.js';
 import {
   ChannelCreationOverwrites,
   ChannelData,

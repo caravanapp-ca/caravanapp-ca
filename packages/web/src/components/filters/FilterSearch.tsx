@@ -1,9 +1,16 @@
 import React, { ChangeEvent } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Theme, createStyles, TextField, IconButton } from '@material-ui/core';
+import {
+  Theme,
+  createStyles,
+  TextField,
+  IconButton,
+  useMediaQuery,
+} from '@material-ui/core';
 import { Services } from '@caravan/buddy-reading-types';
 import { Search } from '@material-ui/icons';
 import { searchClubs } from '../../services/club';
+import theme from '../../theme';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +41,7 @@ export default function FilterSearch(props: FilterSearchProps) {
   const classes = useStyles();
   const { onClearSearch, onSearchResRetrieved } = props;
   const [searchStr, setSearchStr] = React.useState<string>('');
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const callSearchClubs = async () => {
     const res = await searchClubs(searchStr);
@@ -76,7 +84,11 @@ export default function FilterSearch(props: FilterSearchProps) {
       </IconButton>
       <TextField
         id="club-search"
-        label="Search clubs by club name, book title, or author"
+        label={
+          screenSmallerThanSm
+            ? 'Search clubs'
+            : 'Search clubs by club name, book title, or author'
+        }
         type="search"
         onChange={handleOnChange}
         onKeyDown={handleOnKeyDown}

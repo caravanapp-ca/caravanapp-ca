@@ -189,6 +189,9 @@ export default function Home(props: HomeProps) {
   const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
     Service<ClubTransformed[]>
   >({ status: 'loading' });
+  const [emptySearchResult, setEmptySearchResult] = React.useState<boolean>(
+    false
+  );
   const [currentUsersClubs, setCurrentUsersClubs] = React.useState<
     Services.GetClubs['clubs']
   >([]);
@@ -229,13 +232,6 @@ export default function Home(props: HomeProps) {
   const [activeClubsFilter, setActiveClubsFilter] = React.useState<
     ActiveFilter
   >({
-    genres: [],
-    speed: [],
-    capacity: [],
-    membership: [],
-  });
-
-  const [] = React.useState<ActiveFilter>({
     genres: [],
     speed: [],
     capacity: [],
@@ -556,6 +552,7 @@ export default function Home(props: HomeProps) {
   const onClearSearch = async () => {
     await resetFilters();
     getAllClubsFn();
+    setEmptySearchResult(false);
   };
 
   const onSearchResRetrieved = async (clubs: Services.GetClubs['clubs']) => {
@@ -564,6 +561,11 @@ export default function Home(props: HomeProps) {
       status: 'loaded',
       payload: clubsTransformed,
     }));
+    if (clubsTransformed.length === 0) {
+      setEmptySearchResult(true);
+    } else {
+      setEmptySearchResult(false);
+    }
   };
 
   const centerComponent = (
@@ -603,6 +605,13 @@ export default function Home(props: HomeProps) {
       <ProfileHeaderIcon user={user} />
     </>
   );
+
+  let emptyFilterResultMsg = 'Oops... no clubs turned up!';
+  if (emptySearchResult) {
+    emptyFilterResultMsg += ' Try other search terms.';
+  } else if (clubFiltersApplied) {
+    emptyFilterResultMsg += ' Try relaxing your filters.';
+  }
 
   return (
     <>
@@ -750,6 +759,21 @@ export default function Home(props: HomeProps) {
                   clubsTransformed={clubsTransformedResult.payload}
                   user={user}
                 />
+              )}
+            {clubsTransformedResult.status === 'loaded' &&
+              clubsTransformedResult.payload.length === 0 &&
+              (clubFiltersApplied || emptySearchResult) && (
+                <Typography
+                  color="textSecondary"
+                  style={{
+                    textAlign: 'center',
+                    fontStyle: 'italic',
+                    marginTop: theme.spacing(4),
+                    marginBottom: theme.spacing(4),
+                  }}
+                >
+                  {emptyFilterResultMsg}
+                </Typography>
               )}
             {clubsTransformedResult.status === 'loaded' &&
               showLoadMoreClubs &&
