@@ -257,7 +257,7 @@ export default function UpdateBook(props: UpdateBookProps) {
               <Typography className={classes.instructionText}>
                 Your club is currently reading:
               </Typography>
-              <BookList data={[currBook]} />
+              <BookList data={[currBook]} tertiary="buy" />
               <Typography />
               <FormControl component="fieldset" className={classes.formControl}>
                 <FormLabel component="legend">{`What do you want to do with ${
@@ -307,6 +307,7 @@ export default function UpdateBook(props: UpdateBookProps) {
                 data={wantToRead}
                 primary="radio"
                 secondary="delete"
+                tertiary="buy"
                 onDelete={onWantToReadDelete}
                 onRadioPress={onWantToReadSelect}
                 radioValue={

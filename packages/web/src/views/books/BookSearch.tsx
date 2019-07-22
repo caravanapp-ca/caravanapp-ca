@@ -223,7 +223,8 @@ export default function BookSearch(props: BookSearchProps) {
                 data={
                   getShelfFromGoogleBooks(searchResults.items) as ShelfEntry[]
                 }
-                secondary={'add'}
+                secondary="add"
+                tertiary="buy"
                 onAdd={onAddBook}
                 footerElement={
                   <Typography
@@ -252,6 +253,7 @@ export default function BookSearch(props: BookSearchProps) {
             data={selectedBooks}
             primary={primary ? primary : undefined}
             secondary={secondary ? secondary : undefined}
+            tertiary="buy"
             onRadioPress={onChangeBookToRead}
             radioValue={radioValue ? radioValue : undefined}
             onDelete={onDeleteSelectedBook}

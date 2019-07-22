@@ -92,6 +92,7 @@ declare module '@caravan/buddy-reading-types' {
     publishedDate?: string;
     coverImageURL?: string;
     genres: string[];
+    amazonLink?: string;
   }
 
   export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {

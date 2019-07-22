@@ -73,7 +73,8 @@ export default function UserShelfEditable(props: UserShelfEditableProps) {
       {readingState === 'read' && (
         <BookList
           data={shelf[readingState]}
-          secondary={'delete'}
+          secondary="delete"
+          tertiary="buy"
           onDelete={openAlertDialog}
         />
       )}
