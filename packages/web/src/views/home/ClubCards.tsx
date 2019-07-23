@@ -7,7 +7,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { User, ClubTransformed } from '@caravan/buddy-reading-types';
@@ -19,9 +19,12 @@ import AdapterLink from '../../components/AdapterLink';
 import format from 'date-fns/esm/format';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
-import { isAfter, addDays } from 'date-fns/esm';
+import { isAfter, addDays, differenceInHours } from 'date-fns/esm';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 import PlaceholderCard from '../../components/PlaceholderCard';
+import theme, { washedTheme, successTheme } from '../../theme';
+import clsx from 'clsx';
+import { differenceInDays } from 'date-fns';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -100,13 +103,11 @@ const useStyles = makeStyles(theme => ({
     color: '#ffffff',
     fontWeight: 600,
   },
-  progress: {
-    margin: theme.spacing(2),
-  },
+  progressText: {},
   clubTitle: {
     fontWeight: 600,
   },
-  attributeContainer: {
+  attributeElement: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -123,6 +124,38 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
+  },
+  clubAttributesContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  clubAttributesSubcontainer: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+  },
+  clubAttributesCell: {
+    marginTop: theme.spacing(1),
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  topCell: {
+    alignItems: 'flex-start',
+  },
+  bottomCell: {
+    alignItems: 'flex-end',
+  },
+  clubAttributesProgress: {
+    display: 'flex',
+    marginTop: theme.spacing(1),
+    width: '100%',
+    marginLeft: 19,
+    paddingLeft: 19 + theme.spacing(1),
+    borderLeft: `2px solid ${washedTheme.palette.primary.main}`,
   },
 }));
 
@@ -166,6 +199,8 @@ export default function ClubCards(props: ClubCardsProps) {
             }
             let startMsg = 'Start: Not set';
             let endMsg = 'End: Not set';
+            let progressPercentage = 0;
+            let progress = 0;
             if (schedule && schedule.startDate) {
               const { startDate, duration } = schedule;
               if (isAfter(new Date(), startDate)) {
@@ -181,6 +216,14 @@ export default function ClubCards(props: ClubCardsProps) {
               }
               if (duration) {
                 const endDate = addDays(startDate, duration * 7);
+                progress = Math.min(
+                  Math.max(
+                    differenceInHours(new Date(), startDate) /
+                      differenceInHours(endDate, startDate),
+                    0
+                  ),
+                  1
+                );
                 if (isAfter(new Date(), endDate)) {
                   endMsg = `Ended: ${format(endDate, 'LLL')} ${format(
                     endDate,
@@ -192,6 +235,7 @@ export default function ClubCards(props: ClubCardsProps) {
                     'd'
                   )}`;
                 }
+                progressPercentage = 3;
               }
             }
             let groupVibeAvatar: JSX.Element | undefined;
@@ -260,61 +304,92 @@ export default function ClubCards(props: ClubCardsProps) {
                           {club.bio}
                         </Truncate>
                       </Typography>
-                      <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="flex-start"
-                        spacing={1}
-                        style={{ marginTop: 16 }}
-                      >
-                        <Grid item xs={6}>
-                          <div className={classes.attributeContainer}>
-                            <GenericGroupMemberAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {`${club.memberCount} (Max ${club.maxMembers})`}
-                            </Typography>
-                          </div>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <div className={classes.attributeContainer}>
-                            <StartAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {startMsg}
-                            </Typography>
-                          </div>
-                        </Grid>
-                        <Grid item xs={6} style={{ marginTop: 16 }}>
-                          {groupVibeAvatar && groupVibeLabel && (
-                            <div className={classes.attributeContainer}>
-                              {groupVibeAvatar}
+                      <div className={classes.clubAttributesContainer}>
+                        <div className={classes.clubAttributesSubcontainer}>
+                          {/* Member Count */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.topCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <GenericGroupMemberAvatar />
                               <Typography
                                 variant="body2"
                                 className={classes.attributeLabel}
                               >
-                                {groupVibeLabel}
+                                {`${club.memberCount} (Max ${club.maxMembers})`}
                               </Typography>
                             </div>
-                          )}
-                        </Grid>
-                        <Grid item xs={6} style={{ marginTop: 16 }}>
-                          <div className={classes.attributeContainer}>
-                            <EndAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {endMsg}
-                            </Typography>
                           </div>
-                        </Grid>
-                      </Grid>
+                          {/* Club Vibe */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.bottomCell
+                            )}
+                          >
+                            {groupVibeAvatar && groupVibeLabel && (
+                              <div className={classes.attributeElement}>
+                                {groupVibeAvatar}
+                                <Typography
+                                  variant="body2"
+                                  className={classes.attributeLabel}
+                                >
+                                  {groupVibeLabel}
+                                </Typography>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className={classes.clubAttributesSubcontainer}>
+                          {/* Start Date */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.topCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <StartAvatar />
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {startMsg}
+                              </Typography>
+                            </div>
+                          </div>
+                          {/* Progress */}
+                          <div className={classes.clubAttributesProgress}>
+                            <MuiThemeProvider
+                              theme={progress >= 1 ? successTheme : theme}
+                            >
+                              <Typography variant="caption" color="primary">
+                                {`${Math.round(progress * 100)}% complete`}
+                              </Typography>
+                            </MuiThemeProvider>
+                          </div>
+                          {/* End Date */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.bottomCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <EndAvatar />
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {endMsg}
+                              </Typography>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </CardContent>
                     <CardActions className={classes.cardActions}>
                       <div className={classes.creationInfoContainer}>
