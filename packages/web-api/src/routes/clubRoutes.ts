@@ -246,13 +246,12 @@ router.get('/', async (req, res, next) => {
     filteredClubsWithMemberCounts = fuse.search(search);
   }
   if (
-    (!search ||
-      search.length > 0 ||
+    ((search && search.length > 0) ||
       (filterObj && filterObj.capacity.length > 0)) &&
     after
   ) {
     const afterIndex = filteredClubsWithMemberCounts.findIndex(
-      c => c._id === after
+      c => c._id.toString() === after
     );
     if (afterIndex >= 0) {
       filteredClubsWithMemberCounts = filteredClubsWithMemberCounts.slice(

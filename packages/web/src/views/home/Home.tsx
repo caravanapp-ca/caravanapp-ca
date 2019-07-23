@@ -38,10 +38,8 @@ import ReadingSpeedModal from '../../components/filters/ReadingSpeedModal';
 import CapacityModal from '../../components/filters/CapacityModal';
 import FilterChips from '../../components/filters/FilterChips';
 import MembershipModal from '../../components/filters/MembershipModal';
-import EmptyClubsFilterResult from '../../components/EmptyClubsFilterResult';
 import ClubCards from './ClubCards';
 import {
-  Paper,
   Tabs,
   Tab,
   useMediaQuery,
@@ -52,7 +50,6 @@ import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
 import { getUser } from '../../services/user';
 import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
-import clsx from 'clsx';
 import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
 import { AxiosResponse } from 'axios';
@@ -179,15 +176,13 @@ export function shuffleUser(user: User) {
 
 export default function Home(props: HomeProps) {
   const classes = useStyles();
-  const { user, userLoaded, tabValuePassed } = props;
+  const { user, userLoaded } = props;
   const theme = useTheme();
 
   const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
     Service<ClubTransformed[]>
   >({ status: 'loading' });
-  const [currentUsersClubs, setCurrentUsersClubs] = React.useState<
-    Services.GetClubs['clubs']
-  >([]);
+  const [currentUsersClubs] = React.useState<Services.GetClubs['clubs']>([]);
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
@@ -260,11 +255,11 @@ export default function Home(props: HomeProps) {
 
   const getAllClubsFn = async (
     activeClubsFilter: ActiveFilter,
-    afterClubsQuery: string | undefined,
-    search: string
+    pageSize: number,
+    search: string,
+    afterClubsQuery?: string
   ) => {
     setLoadingMoreClubs(true);
-    const pageSize = 24;
     let res: AxiosResponse<Services.GetClubs>;
     if (user && clubMembershipFiltersApplied) {
       res = await getAllClubs(
@@ -284,16 +279,7 @@ export default function Home(props: HomeProps) {
       );
     }
     if (res.data) {
-      const newClubsTransformed = await transformClubs(res.data.clubs);
-      setShowLoadMoreClubs(newClubsTransformed.length === pageSize);
-      setClubsTransformedResult(s => ({
-        status: 'loaded',
-        payload:
-          s.status === 'loaded'
-            ? [...s.payload, ...newClubsTransformed]
-            : newClubsTransformed,
-      }));
-      setLoadingMoreClubs(false);
+      return await transformClubs(res.data.clubs);
     }
   };
 
@@ -301,7 +287,29 @@ export default function Home(props: HomeProps) {
     if (!userLoaded) {
       return;
     }
-    getAllClubsFn(activeClubsFilter, afterClubsQuery, search);
+    let didCancel = false;
+    (async () => {
+      const pageSize = 24;
+      const clubs = await getAllClubsFn(
+        activeClubsFilter,
+        pageSize,
+        search,
+        afterClubsQuery
+      );
+      // Ignore if we started fetching something else
+      if (clubs && !didCancel) {
+        setShowLoadMoreClubs(clubs.length === pageSize);
+        setClubsTransformedResult(s => ({
+          status: 'loaded',
+          payload: s.status === 'loaded' ? [...s.payload, ...clubs] : clubs,
+        }));
+        setLoadingMoreClubs(false);
+      }
+    })();
+    // Remember if we start fetching something else.
+    return () => {
+      didCancel = true;
+    };
   }, [activeClubsFilter, afterClubsQuery, search, userLoaded]);
 
   const getUsersWithInvitableClubs = async () => {
@@ -733,7 +741,9 @@ export default function Home(props: HomeProps) {
                 </div>
               )}
             </Container>
-            {clubsTransformedResult.status === 'loaded' &&
+            {(clubsTransformedResult.status === 'loaded' ||
+              clubsTransformedResult.status === 'loading') &&
+              clubsTransformedResult.payload &&
               clubsTransformedResult.payload.length > 0 && (
                 <ClubCards
                   clubsTransformed={clubsTransformedResult.payload}
