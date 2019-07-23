@@ -52,7 +52,7 @@ const getUserChannels = (
 ) => {
   const channels = guild.channels.filter(c => {
     const cTyped = c as TextChannel | VoiceChannel;
-    const inThisChannel = !!cTyped.members.get(discordId);
+    const inThisChannel = !!cTyped.guild.members.get(discordId);
     return (
       (c.type === 'text' || c.type === 'voice') && inChannels === inThisChannel
     );
