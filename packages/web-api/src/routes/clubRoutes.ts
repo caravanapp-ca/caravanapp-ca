@@ -51,11 +51,13 @@ const getUserChannels = (
   inChannels: boolean
 ) => {
   const channels = guild.channels.filter(c => {
-    const cTyped = c as TextChannel | VoiceChannel;
-    const inThisChannel = !!cTyped.guild.members.get(discordId);
-    return (
-      (c.type === 'text' || c.type === 'voice') && inChannels === inThisChannel
-    );
+    if (c.type === 'text' || c.type === 'voice') {
+      const cTyped = c as TextChannel | VoiceChannel;
+      const inThisChannel = !!cTyped.members.get(discordId);
+      return inChannels === inThisChannel;
+    } else {
+      return false;
+    }
   });
   return channels;
 };
