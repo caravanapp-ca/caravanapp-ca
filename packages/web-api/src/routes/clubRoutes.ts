@@ -117,9 +117,13 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
 router.get('/', async (req, res, next) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
   const currUserId = req.session.userId;
-  let user: UserDoc | undefined;
+  let currUser: UserDoc | undefined;
   if (currUserId) {
-    user = await getUser(currUserId);
+    currUser = await getUser(currUserId);
+  }
+  let user: UserDoc | undefined;
+  if (userId) {
+    user = await getUser(userId);
   }
   const query: any = {};
   if ((!search || search.length === 0) && after) {
@@ -188,9 +192,9 @@ router.get('/', async (req, res, next) => {
       // If the club is unlisted and the current user is not in it, filter it out
       if (
         clubDoc.unlisted &&
-        (!user ||
+        (!currUser ||
           !(discordChannel as TextChannel).members.some(
-            m => m.id === user.discordId
+            m => m.id === currUser.discordId
           ))
       ) {
         return null;
