@@ -157,7 +157,6 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 19,
     paddingLeft: 19 + theme.spacing(1),
     borderLeft: `2px solid ${washedTheme.palette.primary.main}`,
-    // backgroundColor: 'red',
   },
 }));
 
