@@ -182,7 +182,6 @@ export default function CreateClub(props: CreateClubProps) {
       }
       return book;
     });
-
     const clubObj: any = {
       name: selectedGroupName,
       shelf: selectedBooksWReadingState,
