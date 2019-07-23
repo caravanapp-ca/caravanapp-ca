@@ -186,10 +186,3 @@ export async function inviteToClub(
   );
   return res;
 }
-
-export async function searchClubs(search: string) {
-  const res = await axios.get<Services.GetClubs['clubs']>(
-    `${clubRoute}/search/${search}`
-  );
-  return res;
-}

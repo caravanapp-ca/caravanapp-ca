@@ -287,6 +287,7 @@ export default function Home(props: HomeProps) {
     if (!userLoaded) {
       return;
     }
+    // Implementing request canceling
     let didCancel = false;
     (async () => {
       const pageSize = 24;

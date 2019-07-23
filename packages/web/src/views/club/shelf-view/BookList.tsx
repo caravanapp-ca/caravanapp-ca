@@ -124,13 +124,13 @@ export default function BookList(props: BookListProps) {
           if (radioValue && radioValue === b._id) {
             selected = true;
           }
-          let primaryElement;
+          let primaryElement: JSX.Element | undefined;
           switch (primary) {
             case 'radio':
               primaryElement = radio(b, index);
               break;
           }
-          let secondaryElement;
+          let secondaryElement: JSX.Element | undefined;
           switch (secondary) {
             case 'delete':
               secondaryElement = deleteIcon(b, index);
@@ -139,7 +139,7 @@ export default function BookList(props: BookListProps) {
               secondaryElement = addIcon(b, index);
               break;
           }
-          let tertiaryElement;
+          let tertiaryElement: JSX.Element | undefined;
           switch (tertiary) {
             case 'buy':
               tertiaryElement = buyButton(b.amazonLink);

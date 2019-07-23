@@ -28,6 +28,7 @@ interface FilterSearchProps {
 }
 
 const validSearch = (search: string): boolean => {
+  // TODO: Can add more comprehensive checks here.
   if (search.trim().length === 0) {
     return false;
   } else {

@@ -168,7 +168,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     if (res.status === 200) {
       // TODO: show snack bar on next page
       props.history.goBack();
-      const res = notifyOfClubShelfUpdate(clubId);
+      notifyOfClubShelfUpdate(clubId);
     } else {
       // TODO: need to do error handling here based on error code
       return;
@@ -332,7 +332,6 @@ export default function UpdateBook(props: UpdateBookProps) {
               }
               primary="radio"
               secondary="delete"
-              user={user}
             />
           </div>
           <div className={classes.saveButtonContainer}>
