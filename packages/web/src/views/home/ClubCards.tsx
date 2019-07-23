@@ -102,9 +102,7 @@ const useStyles = makeStyles(theme => ({
     color: '#ffffff',
     fontWeight: 600,
   },
-  progress: {
-    margin: theme.spacing(2),
-  },
+  progressText: {},
   clubTitle: {
     fontWeight: 600,
   },
@@ -192,6 +190,7 @@ export default function ClubCards(props: ClubCardsProps) {
             }
             let startMsg = 'Start: Not set';
             let endMsg = 'End: Not set';
+            let progressPercentage = 0;
             if (schedule && schedule.startDate) {
               const { startDate, duration } = schedule;
               if (isAfter(new Date(), startDate)) {
@@ -218,6 +217,7 @@ export default function ClubCards(props: ClubCardsProps) {
                     'd'
                   )}`;
                 }
+                progressPercentage = 3;
               }
             }
             let groupVibeAvatar: JSX.Element | undefined;
@@ -368,51 +368,6 @@ export default function ClubCards(props: ClubCardsProps) {
                           </div>
                         </div>
                       </div>
-                      {/* <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="flex-start"
-                        spacing={1}
-                        style={{ marginTop: 16 }}
-                      >
-                        <Grid item xs={6}>
-                          <div className={classes.attributeElement}>
-                            <GenericGroupMemberAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {`${club.memberCount} (Max ${club.maxMembers})`}
-                            </Typography>
-                          </div>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <div className={classes.attributeElement}>
-                            <StartAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {startMsg}
-                            </Typography>
-                          </div>
-                        </Grid>
-                        <Grid item xs={6} style={{ marginTop: 16 }}>
-
-                        </Grid>
-                        <Grid item xs={6} style={{ marginTop: 16 }}>
-                          <div className={classes.attributeElement}>
-                            <EndAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {endMsg}
-                            </Typography>
-                          </div>
-                        </Grid>
-                      </Grid> */}
                     </CardContent>
                     <CardActions className={classes.cardActions}>
                       <div className={classes.creationInfoContainer}>

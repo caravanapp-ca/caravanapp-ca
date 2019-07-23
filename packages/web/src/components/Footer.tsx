@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import clsx from 'clsx';
+import { Container } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   footer: {
@@ -85,24 +86,30 @@ export default function Footer(props: FooterProps) {
       })}
       ref={footerHeightRef}
     >
-      <MadeWithLove />
-      <Typography
-        variant="body2"
-        color="textSecondary"
-        align="center"
-        component="p"
-      >
-        {'We recommend downloading the Discord app for chat. '}
-        <Link href="https://discordapp.com/download">Download here.</Link>
-        <br />
-        {'We want to hear what you have to say! Check out our '}
-        <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdpPzKPO9Spx7ovBKh5Q6n977hgBRbxTgiKVPaDIRnkjfb9jQ/viewform">
-          feedback form.
-        </Link>
-        <br />
-        {'View our '}
-        <Link href="/privacy">privacy policy.</Link>
-      </Typography>
+      <Container maxWidth="sm">
+        <MadeWithLove />
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          align="center"
+          component="p"
+        >
+          {'We recommend downloading the Discord app for chat. '}
+          <Link href="https://discordapp.com/download">Download here.</Link>
+          <br />
+          {'We want to hear what you have to say! Check out our '}
+          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdpPzKPO9Spx7ovBKh5Q6n977hgBRbxTgiKVPaDIRnkjfb9jQ/viewform">
+            feedback form.
+          </Link>
+          <br />
+          {'To learn more about user privacy on Caravan, view our '}
+          <Link href="/privacy">privacy policy.</Link>
+          <br />
+          {
+            'Caravan is a participant in the Amazon Associates Program, meaning we receive a small portion of purchases made through links on our site.'
+          }
+        </Typography>
+      </Container>
     </footer>
   );
 }
