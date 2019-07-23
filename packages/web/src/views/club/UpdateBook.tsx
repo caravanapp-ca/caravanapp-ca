@@ -28,6 +28,7 @@ import { updateCurrentlyReadBook, getClub } from '../../services/club';
 import { getCurrentBook, getWantToRead } from './functions/ClubFunctions';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import HeaderTitle from '../../components/HeaderTitle';
+import { notifyOfClubShelfUpdate } from '../../services/book';
 
 interface UpdateBookRouteParams {
   id: string;
@@ -167,6 +168,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     if (res.status === 200) {
       // TODO: show snack bar on next page
       props.history.goBack();
+      notifyOfClubShelfUpdate(clubId);
     } else {
       // TODO: need to do error handling here based on error code
       return;
@@ -257,7 +259,7 @@ export default function UpdateBook(props: UpdateBookProps) {
               <Typography className={classes.instructionText}>
                 Your club is currently reading:
               </Typography>
-              <BookList data={[currBook]} />
+              <BookList data={[currBook]} tertiary="buy" />
               <Typography />
               <FormControl component="fieldset" className={classes.formControl}>
                 <FormLabel component="legend">{`What do you want to do with ${
@@ -307,6 +309,7 @@ export default function UpdateBook(props: UpdateBookProps) {
                 data={wantToRead}
                 primary="radio"
                 secondary="delete"
+                tertiary="buy"
                 onDelete={onWantToReadDelete}
                 onRadioPress={onWantToReadSelect}
                 radioValue={
