@@ -34,5 +34,5 @@ export default function UserClubs(props: UserClubsProps) {
       </Container>
     );
   }
-  return <ClubCards clubsTransformed={clubsTransformed} user={user} />;
+  return <ClubCards clubsTransformed={clubsTransformed} />;
 }

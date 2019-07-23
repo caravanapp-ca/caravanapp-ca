@@ -128,7 +128,8 @@ const useStyles = makeStyles(theme => ({
 
 interface ClubCardsProps {
   clubsTransformed: ClubTransformed[];
-  user: User | null;
+  showResultsCount?: boolean;
+  resultsLoaded?: boolean;
 }
 
 // Make this approximately the height of a standard ClubCard
@@ -138,7 +139,7 @@ const lazyloadOffset = 8;
 
 export default function ClubCards(props: ClubCardsProps) {
   const classes = useStyles();
-  const { clubsTransformed } = props;
+  const { clubsTransformed, showResultsCount, resultsLoaded } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
@@ -149,6 +150,13 @@ export default function ClubCards(props: ClubCardsProps) {
   return (
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
+        {showResultsCount && resultsLoaded && (
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {`${clubsTransformed.length} result${
+              clubsTransformed.length === 1 ? '' : 's'
+            }`}
+          </Typography>
+        )}
         <Grid container spacing={4}>
           {clubsTransformed.map(c => {
             const { club, currentlyReading, schedule, owner } = c;
