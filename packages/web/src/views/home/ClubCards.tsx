@@ -7,7 +7,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { User, ClubTransformed } from '@caravan/buddy-reading-types';
@@ -19,11 +19,12 @@ import AdapterLink from '../../components/AdapterLink';
 import format from 'date-fns/esm/format';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
-import { isAfter, addDays } from 'date-fns/esm';
+import { isAfter, addDays, differenceInHours } from 'date-fns/esm';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 import PlaceholderCard from '../../components/PlaceholderCard';
-import { washedTheme } from '../../theme';
+import theme, { washedTheme, successTheme } from '../../theme';
 import clsx from 'clsx';
+import { differenceInDays } from 'date-fns';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -191,6 +192,7 @@ export default function ClubCards(props: ClubCardsProps) {
             let startMsg = 'Start: Not set';
             let endMsg = 'End: Not set';
             let progressPercentage = 0;
+            let progress = 0;
             if (schedule && schedule.startDate) {
               const { startDate, duration } = schedule;
               if (isAfter(new Date(), startDate)) {
@@ -206,6 +208,14 @@ export default function ClubCards(props: ClubCardsProps) {
               }
               if (duration) {
                 const endDate = addDays(startDate, duration * 7);
+                progress = Math.min(
+                  Math.max(
+                    differenceInHours(new Date(), startDate) /
+                      differenceInHours(endDate, startDate),
+                    0
+                  ),
+                  1
+                );
                 if (isAfter(new Date(), endDate)) {
                   endMsg = `Ended: ${format(endDate, 'LLL')} ${format(
                     endDate,
@@ -345,9 +355,13 @@ export default function ClubCards(props: ClubCardsProps) {
                           </div>
                           {/* Progress */}
                           <div className={classes.clubAttributesProgress}>
-                            <Typography variant="caption" color="primary">
-                              34% complete
-                            </Typography>
+                            <MuiThemeProvider
+                              theme={progress >= 1 ? successTheme : theme}
+                            >
+                              <Typography variant="caption" color="primary">
+                                {`${Math.round(progress * 100)}% complete`}
+                              </Typography>
+                            </MuiThemeProvider>
                           </div>
                           {/* End Date */}
                           <div
