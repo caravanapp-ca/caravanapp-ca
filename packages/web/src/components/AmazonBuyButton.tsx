@@ -1,12 +1,12 @@
 import React from 'react';
-import { Button, makeStyles, Typography, Chip } from '@material-ui/core';
+import { Button, makeStyles, Typography, Chip, Link } from '@material-ui/core';
 
-export interface AmazonBuyButtonProps {}
+export interface AmazonBuyButtonProps {
+  link: string | undefined;
+}
 
 const useStyles = makeStyles(theme => ({
-  chip: {
-    textTransform: 'none',
-  },
+  chip: {},
   leftIcon: {
     color: 'white',
     marginRight: theme.spacing(1),
@@ -16,13 +16,15 @@ const useStyles = makeStyles(theme => ({
 export default function AmazonBuyButton(props: AmazonBuyButtonProps) {
   const classes = useStyles();
 
+  const { link } = props;
+
   return (
-    <Chip
-      label="BUY ON AMAZON"
+    <Link
       className={classes.chip}
-      color="primary"
-      variant="outlined"
-      clickable
-    />
+      href={link ? link : 'http://bit.ly/2Y6Teus'}
+      target={'_blank'}
+    >
+      <Typography variant="caption">BUY ON AMAZON</Typography>
+    </Link>
   );
 }
