@@ -54,7 +54,7 @@ export default function Footer(props: FooterProps) {
       window.innerHeight
   );
 
-  // TODO: Uncommenting these for performance
+  // TODO: Commenting these for performance
   // useEffect(() => {
   //   window.addEventListener('resize', updateFooterState);
   //   return () => {
