@@ -193,7 +193,8 @@ export default function UserView(props: UserViewProps) {
           getGenres();
           getQuestions(user);
         }
-        getAllClubs(userId).then(res => {
+        // Setting max page size here so we get all the user's clubs
+        getAllClubs(userId, undefined, 50).then(res => {
           if (!res.data) {
             // TODO: Error checking
           }
