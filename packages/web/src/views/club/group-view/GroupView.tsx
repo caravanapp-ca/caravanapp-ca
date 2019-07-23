@@ -13,6 +13,7 @@ import {
 } from '../../../components/group-vibe-avatars-icons-labels';
 import MemberList from './MemberList';
 import GroupSizeSelector from '../../../components/GroupSizeSelector';
+import ClubPrivacySlider from '../../../components/ClubPrivacySlider';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,8 +41,8 @@ interface GroupViewProps {
   club: Club;
   isEditing: boolean;
   onEdit: (
-    field: 'bio' | 'maxMembers' | 'name' | 'readingSpeed' | 'vibe',
-    newValue: string | number
+    field: 'bio' | 'maxMembers' | 'name' | 'readingSpeed' | 'unlisted' | 'vibe',
+    newValue: string | number | boolean
   ) => void;
 }
 
@@ -88,7 +89,15 @@ const validBio = (bio: string): boolean => {
 export default function GroupView(props: GroupViewProps) {
   const classes = useStyles();
   const { isEditing, onEdit } = props;
-  const { bio, maxMembers, members, name, vibe, readingSpeed } = props.club;
+  const {
+    bio,
+    maxMembers,
+    members,
+    name,
+    readingSpeed,
+    unlisted,
+    vibe,
+  } = props.club;
   const [focused, setFocused] = React.useState<{ bio: boolean; name: boolean }>(
     {
       bio: false,
@@ -112,6 +121,15 @@ export default function GroupView(props: GroupViewProps) {
   if (isEditing) {
     return (
       <div>
+        <div className={classes.sectionContainer}>
+          <Typography variant={'h6'} className={classes.sectionLabel}>
+            Visibility
+          </Typography>
+          <ClubPrivacySlider
+            unlisted={unlisted}
+            onChange={newUnlisted => onEdit('unlisted', newUnlisted)}
+          />
+        </div>
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
             Bio

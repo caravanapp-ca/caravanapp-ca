@@ -357,14 +357,8 @@ export default function ClubComponent(props: ClubProps) {
   }
 
   const onEdit = (
-    field:
-      | 'bio'
-      | 'maxMembers'
-      | 'name'
-      | 'readingSpeed'
-      | 'vibe'
-      | 'maxMembers',
-    newValue: string | number
+    field: 'bio' | 'maxMembers' | 'name' | 'readingSpeed' | 'unlisted' | 'vibe',
+    newValue: string | number | boolean
   ) => {
     if (!club) {
       return;
