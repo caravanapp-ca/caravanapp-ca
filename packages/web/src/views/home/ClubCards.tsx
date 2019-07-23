@@ -22,6 +22,8 @@ import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/Star
 import { isAfter, addDays } from 'date-fns/esm';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 import PlaceholderCard from '../../components/PlaceholderCard';
+import { washedTheme } from '../../theme';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -106,7 +108,7 @@ const useStyles = makeStyles(theme => ({
   clubTitle: {
     fontWeight: 600,
   },
-  attributeContainer: {
+  attributeElement: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -123,6 +125,39 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
+  },
+  clubAttributesContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  clubAttributesSubcontainer: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+  },
+  clubAttributesCell: {
+    marginTop: theme.spacing(1),
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  topCell: {
+    alignItems: 'flex-start',
+  },
+  bottomCell: {
+    alignItems: 'flex-end',
+  },
+  clubAttributesProgress: {
+    display: 'flex',
+    marginTop: theme.spacing(1),
+    width: '100%',
+    marginLeft: 19,
+    paddingLeft: 19 + theme.spacing(1),
+    borderLeft: `2px solid ${washedTheme.palette.primary.main}`,
+    // backgroundColor: 'red',
   },
 }));
 
@@ -252,7 +287,89 @@ export default function ClubCards(props: ClubCardsProps) {
                           {club.bio}
                         </Truncate>
                       </Typography>
-                      <Grid
+                      <div className={classes.clubAttributesContainer}>
+                        <div className={classes.clubAttributesSubcontainer}>
+                          {/* Member Count */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.topCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <GenericGroupMemberAvatar />
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {`${club.memberCount} (Max ${club.maxMembers})`}
+                              </Typography>
+                            </div>
+                          </div>
+                          {/* Club Vibe */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.bottomCell
+                            )}
+                          >
+                            {groupVibeAvatar && groupVibeLabel && (
+                              <div className={classes.attributeElement}>
+                                {groupVibeAvatar}
+                                <Typography
+                                  variant="body2"
+                                  className={classes.attributeLabel}
+                                >
+                                  {groupVibeLabel}
+                                </Typography>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className={classes.clubAttributesSubcontainer}>
+                          {/* Start Date */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.topCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <StartAvatar />
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {startMsg}
+                              </Typography>
+                            </div>
+                          </div>
+                          {/* Progress */}
+                          <div className={classes.clubAttributesProgress}>
+                            <Typography variant="caption" color="primary">
+                              34% complete
+                            </Typography>
+                          </div>
+                          {/* End Date */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.bottomCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <EndAvatar />
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {endMsg}
+                              </Typography>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* <Grid
                         container
                         direction="row"
                         justify="flex-start"
@@ -261,7 +378,7 @@ export default function ClubCards(props: ClubCardsProps) {
                         style={{ marginTop: 16 }}
                       >
                         <Grid item xs={6}>
-                          <div className={classes.attributeContainer}>
+                          <div className={classes.attributeElement}>
                             <GenericGroupMemberAvatar />
                             <Typography
                               variant="body2"
@@ -272,7 +389,7 @@ export default function ClubCards(props: ClubCardsProps) {
                           </div>
                         </Grid>
                         <Grid item xs={6}>
-                          <div className={classes.attributeContainer}>
+                          <div className={classes.attributeElement}>
                             <StartAvatar />
                             <Typography
                               variant="body2"
@@ -283,20 +400,10 @@ export default function ClubCards(props: ClubCardsProps) {
                           </div>
                         </Grid>
                         <Grid item xs={6} style={{ marginTop: 16 }}>
-                          {groupVibeAvatar && groupVibeLabel && (
-                            <div className={classes.attributeContainer}>
-                              {groupVibeAvatar}
-                              <Typography
-                                variant="body2"
-                                className={classes.attributeLabel}
-                              >
-                                {groupVibeLabel}
-                              </Typography>
-                            </div>
-                          )}
+
                         </Grid>
                         <Grid item xs={6} style={{ marginTop: 16 }}>
-                          <div className={classes.attributeContainer}>
+                          <div className={classes.attributeElement}>
                             <EndAvatar />
                             <Typography
                               variant="body2"
@@ -306,7 +413,7 @@ export default function ClubCards(props: ClubCardsProps) {
                             </Typography>
                           </div>
                         </Grid>
-                      </Grid>
+                      </Grid> */}
                     </CardContent>
                     <CardActions className={classes.cardActions}>
                       <div className={classes.creationInfoContainer}>
