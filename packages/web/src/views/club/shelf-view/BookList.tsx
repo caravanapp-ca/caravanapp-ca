@@ -7,7 +7,7 @@ import {
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListElementBook from '../../../components/ListElementBook';
-import { Radio, IconButton, Paper, Link } from '@material-ui/core';
+import { Radio, IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlusIcon from '@material-ui/icons/Add';
 import AmazonBuyButton from '../../../components/AmazonBuyButton';
@@ -112,12 +112,8 @@ export default function BookList(props: BookListProps) {
     }
   }
 
-  function buyButton(b: ShelfEntry): JSX.Element | undefined {
-    if (b.amazonLink) {
-      return <AmazonBuyButton />;
-    } else {
-      return undefined;
-    }
+  function buyButton(link: string | undefined): JSX.Element {
+    return <AmazonBuyButton link={link} />;
   }
 
   return (
@@ -146,7 +142,7 @@ export default function BookList(props: BookListProps) {
           let tertiaryElement;
           switch (tertiary) {
             case 'buy':
-              tertiaryElement = buyButton(b);
+              tertiaryElement = buyButton(b.amazonLink);
           }
           return (
             <ListElementBook
@@ -159,7 +155,6 @@ export default function BookList(props: BookListProps) {
               primary={primaryElement}
               secondary={secondaryElement}
               tertiary={tertiaryElement}
-              tertiaryLink={b.amazonLink}
               onClick={onClick}
               selected={selected}
             />

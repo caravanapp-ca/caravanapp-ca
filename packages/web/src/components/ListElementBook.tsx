@@ -47,13 +47,9 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'row',
   },
   buyButton: {
-    marginTop: theme.spacing(1),
+    //marginTop: theme.spacing(1),
   },
 }));
-
-function redirectToAmazon(link: string | undefined) {
-  window.open(link ? link : 'https://amazon.com', '_blank');
-}
 
 export default function ListElementBook(props: ListElementBookProps) {
   const classes = useStyles();
@@ -69,7 +65,6 @@ export default function ListElementBook(props: ListElementBookProps) {
     primary,
     secondary,
     tertiary,
-    tertiaryLink,
     selected,
   } = props;
 
@@ -124,14 +119,7 @@ export default function ListElementBook(props: ListElementBookProps) {
             </Typography>
           </div>
         )}
-        {tertiary && (
-          <div
-            className={classes.buyButton}
-            onClick={() => redirectToAmazon(tertiaryLink)}
-          >
-            {tertiary}
-          </div>
-        )}
+        {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
       </div>
       {secondary && (
         <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>

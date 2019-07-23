@@ -3,6 +3,7 @@ import {
   GoogleBooks,
   ShelfEntry,
   FilterAutoMongoKeys,
+  User,
 } from '@caravan/buddy-reading-types';
 import {
   Container,
@@ -60,6 +61,7 @@ interface BookSearchProps {
   primary?: 'radio';
   secondary?: 'delete';
   initialSelectedBooks?: FilterAutoMongoKeys<ShelfEntry>[];
+  user?: User | null;
 }
 
 const searchRef = React.createRef();
@@ -73,6 +75,7 @@ export default function BookSearch(props: BookSearchProps) {
     primary,
     secondary,
     initialSelectedBooks,
+    user,
   } = props;
 
   const maxSelected = props.maxSelected || 1000;
