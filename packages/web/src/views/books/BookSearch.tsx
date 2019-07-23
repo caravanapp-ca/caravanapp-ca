@@ -3,6 +3,7 @@ import {
   GoogleBooks,
   ShelfEntry,
   FilterAutoMongoKeys,
+  User,
 } from '@caravan/buddy-reading-types';
 import {
   Container,

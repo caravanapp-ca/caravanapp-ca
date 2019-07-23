@@ -28,6 +28,7 @@ import { updateCurrentlyReadBook, getClub } from '../../services/club';
 import { getCurrentBook, getWantToRead } from './functions/ClubFunctions';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import HeaderTitle from '../../components/HeaderTitle';
+import { notifyOfClubShelfUpdate } from '../../services/book';
 
 interface UpdateBookRouteParams {
   id: string;
@@ -167,6 +168,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     if (res.status === 200) {
       // TODO: show snack bar on next page
       props.history.goBack();
+      notifyOfClubShelfUpdate(clubId);
     } else {
       // TODO: need to do error handling here based on error code
       return;

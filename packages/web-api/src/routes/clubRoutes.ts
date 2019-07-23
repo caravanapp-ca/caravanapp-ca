@@ -171,11 +171,10 @@ router.get('/', async (req, res, next) => {
     }
   } catch (err) {
     console.error('Failed to get all clubs, ', err);
-    res.status(500).send(`Failed to get all clubs: ${err}`);
+    return res.status(500).send(`Failed to get all clubs: ${err}`);
   }
   if (!clubs) {
-    res.sendStatus(404);
-    return;
+    return res.sendStatus(404);
   }
   let filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
     .map(clubDoc => {
@@ -246,13 +245,12 @@ router.get('/', async (req, res, next) => {
     filteredClubsWithMemberCounts = fuse.search(search);
   }
   if (
-    (!search ||
-      search.length > 0 ||
+    ((search && search.length > 0) ||
       (filterObj && filterObj.capacity.length > 0)) &&
     after
   ) {
     const afterIndex = filteredClubsWithMemberCounts.findIndex(
-      c => c._id === after
+      c => c._id.toString() === after
     );
     if (afterIndex >= 0) {
       filteredClubsWithMemberCounts = filteredClubsWithMemberCounts.slice(
@@ -269,7 +267,7 @@ router.get('/', async (req, res, next) => {
   const result: Services.GetClubs = {
     clubs: filteredClubsWithMemberCounts,
   };
-  res.status(200).json(result);
+  return res.status(200).json(result);
 });
 
 // Get all of a user's clubs, with members attached.
@@ -285,8 +283,7 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
   if (userId) {
     user = await getUser(userId);
   } else {
-    res.status(400).send('Require a valid user id to get user clubs');
-    return;
+    return res.status(400).send('Require a valid user id to get user clubs');
   }
   // Apply necessary filters
   const query: any = {
@@ -295,9 +292,6 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
   if ((!search || search.length === 0) && after) {
     query._id = { $lt: after };
   }
-  const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
-  const { discordId } = user;
   let filterObj: ActiveFilter;
   let userInChannelBoolean = true;
   if (activeFilter) {
@@ -316,6 +310,9 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
       userInChannelBoolean = false;
     }
   }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const { discordId } = user;
   const channels = getUserChannels(guild, discordId, userInChannelBoolean);
   const channelIds = channels.map(c => c.id);
   query.channelId = { $in: channelIds };
@@ -324,9 +321,10 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let clubDocs: ClubDoc[];
   try {
-    if (search.length > 0) {
-      clubDocs = await ClubModel.find(query);
-    } else if (filterObj && filterObj.capacity.length > 0) {
+    if (
+      (search && search.length > 0) ||
+      (filterObj && filterObj.capacity.length > 0)
+    ) {
       clubDocs = await ClubModel.find(query)
         .sort({ createdAt: -1 })
         .exec();
@@ -338,17 +336,17 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
     }
   } catch (err) {
     console.error(`Failed to get clubs for user ${user._id}`, err);
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
   if (!clubDocs) {
-    res.status(404).send(`No clubs exist for user ${userId}`);
-    return;
+    return res.status(404).send(`No clubs exist for user ${userId}`);
   }
   let filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
     clubDocs.map(async clubDoc => {
       let discordChannel: GuildChannel | null = guild.channels.find(
         c => c.id === clubDoc.channelId
       );
+      // If there's no Discord channel for this club, filter it out
       if (!discordChannel) {
         return null;
       }
@@ -389,7 +387,7 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
   let filteredClubsWithMembers: Services.GetClubById[] = filteredClubsWithMembersNulls.filter(
     c => c != null
   );
-  if (search.length > 0) {
+  if (search && search.length > 0) {
     const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
       // TODO: Typescript doesn't like the use of keys here.
       // @ts-ignore
@@ -404,7 +402,9 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
       (filterObj && filterObj.capacity.length > 0)) &&
     after
   ) {
-    const afterIndex = filteredClubsWithMembers.findIndex(c => c._id === after);
+    const afterIndex = filteredClubsWithMembers.findIndex(
+      c => c._id.toString() === after
+    );
     if (afterIndex >= 0) {
       filteredClubsWithMembers = filteredClubsWithMembers.slice(afterIndex + 1);
     }
@@ -413,7 +413,7 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
     filteredClubsWithMembers = filteredClubsWithMembers.slice(0, limit);
   }
   const result: Services.GetClubById[] = filteredClubsWithMembers;
-  res.status(200).json(result);
+  return res.status(200).json(result);
 });
 
 // Get a club
@@ -442,12 +442,11 @@ router.get('/:id', async (req, res, next) => {
             ? clubDoc.updatedAt.toISOString()
             : clubDoc.updatedAt,
       };
-      res.status(200).send(clubWithDiscord);
+      return res.status(200).send(clubWithDiscord);
     } else {
-      res
+      return res
         .status(500)
         .send(`Error: unknown channelSource: ${clubDoc.channelSource}`);
-      return;
     }
   } catch (err) {
     if (err.name) {
@@ -477,12 +476,11 @@ router.get('/members/:id', async (req, res, next) => {
       const client = ReadingDiscordBot.getInstance();
       const guild = client.guilds.first();
       const guildMembers = await getChannelMembers(guild, clubDoc);
-      res.status(200).send(guildMembers);
+      return res.status(200).send(guildMembers);
     } else {
-      res
+      return res
         .status(500)
         .send(`Error: unknown channelSource: ${clubDoc.channelSource}`);
-      return;
     }
   } catch (err) {
     if (err.name) {
@@ -495,7 +493,7 @@ router.get('/members/:id', async (req, res, next) => {
       }
     }
     console.error(`Failed to get members for club ${id} `, err);
-    res.status(500).send(`Failed to get members for club ${id}`);
+    return res.status(500).send(`Failed to get members for club ${id}`);
   }
 });
 
@@ -559,7 +557,7 @@ router.post(
         }
         // TODO: Add other channel sources
       });
-      res.status(200).send(clubsWithMemberObjs);
+      return res.status(200).send(clubsWithMemberObjs);
     } catch (err) {
       console.log('Failed to get clubs.', err);
       return next(err);
@@ -584,12 +582,11 @@ router.post(
         .sort({ createdAt: -1 })
         .exec();
       if (!clubs) {
-        res.sendStatus(404);
-        return;
+        return res.sendStatus(404);
       }
     } catch (err) {
       console.error('Failed to save club data', err);
-      res.status(400).send('Failed to save club data');
+      return res.status(400).send('Failed to save club data');
     }
     const client = ReadingDiscordBot.getInstance();
     const guild = client.guilds.first();
@@ -630,7 +627,7 @@ router.post(
     const result: Services.GetClubs = {
       clubs: filteredClubsWithMemberCounts,
     };
-    res.status(200).json(result);
+    return res.status(200).json(result);
   }
 );
 
@@ -731,7 +728,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       discord: newChannel,
     };
 
-    res.status(201).send(result);
+    return res.status(201).send(result);
   } catch (err) {
     console.log('Failed to create new club', err);
     return next(err);
@@ -789,8 +786,7 @@ router.put(
           req.user.name
         }} failed club update.\n${errorArr.toString()}\n${req.body}`
       );
-      res.status(422).json({ errors: errorArr });
-      return;
+      return res.status(422).json({ errors: errorArr });
     }
     const clubId = req.params.id;
     const newClub: Services.GetClubById = req.body.newClub;
@@ -799,8 +795,7 @@ router.put(
       console.warn(
         `User ${req.user._id} attempted to edit club ${clubId} without valid permission.`
       );
-      res.status(422).send('Only the club owner may update a club!');
-      return;
+      return res.status(422).send('Only the club owner may update a club!');
     }
     if (newClub.maxMembers < newClub.members.length) {
       console.warn(
@@ -839,16 +834,16 @@ router.put(
         new: true,
       });
       if (result) {
-        res.status(200).send(result);
+        return res.status(200).send(result);
       } else {
         console.warn(
           `User ${req.user._id} attempted to edit club ${clubId} but the club was not found.`
         );
-        res.status(404).send(`Unable to find club ${clubId}`);
+        return res.status(404).send(`Unable to find club ${clubId}`);
       }
     } catch (err) {
       console.error('Failed to save club data', err);
-      res.status(400).send('Failed to save club data');
+      return res.status(400).send('Failed to save club data');
     }
   }
 );
@@ -862,8 +857,7 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   try {
     clubDoc = await ClubModel.findById(clubId);
   } catch (err) {
-    res.status(400).send(`Could not find club ${clubId}`);
-    return;
+    return res.status(400).send(`Could not find club ${clubId}`);
   }
 
   const discordClient = ReadingDiscordBot.getInstance();
@@ -872,8 +866,7 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
     c => c.id === clubDoc.channelId
   );
   if (!channel) {
-    res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
-    return;
+    return res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
   }
 
   const memberInChannel = (channel as VoiceChannel | TextChannel).members.find(
@@ -889,18 +882,20 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
       console.log(
         `Deleted club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
       );
-      res.status(204).send(`Deleted channel ${deletedChannel.id}`);
+      return res.status(204).send(`Deleted channel ${deletedChannel.id}`);
     } catch (err) {
       console.log(
         `Failed to delete club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
       );
-      res.status(500).send(err);
+      return res.status(500).send(err);
     }
   } else {
-    res.status(401).send("You don't have permission to delete this channel.");
     console.log(
       `User ${user.id} failed to authenticate to delete club {${clubDoc.id},${clubDoc.name}} with channel {${channel.id}, ${channel.name}} by user ${user.id}`
     );
+    return res
+      .status(401)
+      .send("You don't have permission to delete this channel.");
   }
 });
 
@@ -1068,8 +1063,7 @@ router.put(
     try {
       club = await ClubModel.findById(clubId);
     } catch (err) {
-      res.status(400).send(`Could not find club ${clubId}`);
-      return;
+      return res.status(400).send(`Could not find club ${clubId}`);
     }
     const isOwner = club.ownerId === userId.toHexString();
     const discordClient = ReadingDiscordBot.getInstance();
@@ -1078,8 +1072,7 @@ router.put(
       c => c.id === club.channelId
     );
     if (!channel) {
-      res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
-      return;
+      return res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
     }
     const memberInChannel = (channel as
       | VoiceChannel
@@ -1089,8 +1082,7 @@ router.put(
       const { size } = getCountableMembersInChannel(channel, club);
       if (memberInChannel) {
         // already a member
-        res.status(401).send("You're already a member of the club!");
-        return;
+        return res.status(401).send("You're already a member of the club!");
       } else if (size >= club.maxMembers) {
         res
           .status(401)
@@ -1103,8 +1095,9 @@ router.put(
           | VoiceChannel
           | TextChannel).memberPermissions(memberInChannel);
         if (permissions && permissions.hasPermission('READ_MESSAGES')) {
-          res.status(401).send('You already have access to the channel!');
-          return;
+          return res
+            .status(401)
+            .send('You already have access to the channel!');
         }
         await (channel as VoiceChannel | TextChannel).overwritePermissions(
           userDiscordId,
@@ -1118,12 +1111,10 @@ router.put(
       }
     } else {
       if (isOwner) {
-        res.status(401).send('An owner cannot leave a club.');
-        return;
+        return res.status(401).send('An owner cannot leave a club.');
       }
       if (!memberInChannel) {
-        res.status(401).send("You're not a member of the club already!");
-        return;
+        return res.status(401).send("You're not a member of the club already!");
       }
       await (channel as VoiceChannel | TextChannel).overwritePermissions(
         userDiscordId,
@@ -1136,7 +1127,7 @@ router.put(
       );
     }
     const members = await getChannelMembers(guild, club);
-    res.status(200).send(members);
+    return res.status(200).send(members);
   }
 );
 

@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'row',
   },
   buyButton: {
-    marginTop: theme.spacing(1),
+    //marginTop: theme.spacing(1),
   },
 }));
 
@@ -65,7 +65,6 @@ export default function ListElementBook(props: ListElementBookProps) {
     primary,
     secondary,
     tertiary,
-    tertiaryLink,
     selected,
   } = props;
 
@@ -94,7 +93,11 @@ export default function ListElementBook(props: ListElementBookProps) {
                 {club.name}
               </Typography>
             </div>
-            <Typography variant="body1" style={{ fontWeight: 600 }}>
+            <Typography
+              variant="body1"
+              color="textPrimary"
+              style={{ fontWeight: 600 }}
+            >
               <Truncate lines={1} trimWhitespace={true}>
                 {primaryText}
               </Truncate>
@@ -116,11 +119,7 @@ export default function ListElementBook(props: ListElementBookProps) {
             </Typography>
           </div>
         )}
-        {tertiary && (
-          <Link href={tertiaryLink ? tertiaryLink : 'https://amazon.com'}>
-            <div className={classes.buyButton}>{tertiary}</div>
-          </Link>
-        )}
+        {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
       </div>
       {secondary && (
         <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
