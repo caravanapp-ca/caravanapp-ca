@@ -24,12 +24,7 @@ import {
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
 import { washedTheme } from '../../theme';
-import {
-  getAllClubs,
-  getUserClubsWithMembers,
-  getClubMembers,
-  getUserClubsNoMembers,
-} from '../../services/club';
+import { getAllClubs, getUserClubsWithMembers } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import logo from '../../resources/logo.svg';
 import AdapterLink from '../../components/AdapterLink';
@@ -43,10 +38,8 @@ import ReadingSpeedModal from '../../components/filters/ReadingSpeedModal';
 import CapacityModal from '../../components/filters/CapacityModal';
 import FilterChips from '../../components/filters/FilterChips';
 import MembershipModal from '../../components/filters/MembershipModal';
-import EmptyClubsFilterResult from '../../components/EmptyClubsFilterResult';
 import ClubCards from './ClubCards';
 import {
-  Paper,
   Tabs,
   Tab,
   useMediaQuery,
@@ -57,8 +50,9 @@ import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
 import { getUser } from '../../services/user';
 import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
-import clsx from 'clsx';
 import shuffleArr from '../../functions/shuffleArr';
+import FilterSearch from '../../components/filters/FilterSearch';
+import { AxiosResponse } from 'axios';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -104,6 +98,7 @@ const useStyles = makeStyles(theme => ({
   },
   filterGrid: {
     marginTop: theme.spacing(4),
+    padding: '0px 16px',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -182,15 +177,13 @@ export function shuffleUser(user: User) {
 
 export default function Home(props: HomeProps) {
   const classes = useStyles();
-  const { user, userLoaded, tabValuePassed } = props;
+  const { user, userLoaded } = props;
   const theme = useTheme();
 
   const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
     Service<ClubTransformed[]>
   >({ status: 'loading' });
-  const [currentUsersClubs, setCurrentUsersClubs] = React.useState<
-    Services.GetClubs['clubs']
-  >([]);
+  const [currentUsersClubs] = React.useState<Services.GetClubs['clubs']>([]);
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
@@ -233,13 +226,6 @@ export default function Home(props: HomeProps) {
     capacity: [],
     membership: [],
   });
-
-  const [] = React.useState<ActiveFilter>({
-    genres: [],
-    speed: [],
-    capacity: [],
-    membership: [],
-  });
   const [activeUsersFilter] = React.useState<ActiveFilter>({
     genres: [],
     speed: [],
@@ -258,6 +244,7 @@ export default function Home(props: HomeProps) {
     clubSpeedFiltersApplied ||
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
+  const [search, setSearch] = React.useState<string>('');
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -267,59 +254,65 @@ export default function Home(props: HomeProps) {
     }
   }, [showWelcomeMessage]);
 
+  const getAllClubsFn = async (
+    activeClubsFilter: ActiveFilter,
+    pageSize: number,
+    search: string,
+    afterClubsQuery?: string
+  ) => {
+    setLoadingMoreClubs(true);
+    let res: AxiosResponse<Services.GetClubs>;
+    if (user && clubMembershipFiltersApplied) {
+      res = await getAllClubs(
+        user._id,
+        afterClubsQuery,
+        pageSize,
+        activeClubsFilter,
+        search
+      );
+    } else {
+      res = await getAllClubs(
+        undefined,
+        afterClubsQuery,
+        pageSize,
+        activeClubsFilter,
+        search
+      );
+    }
+    if (res.data) {
+      return await transformClubs(res.data.clubs);
+    }
+  };
+
   useEffect(() => {
     if (!userLoaded) {
       return;
     }
-    setLoadingMoreClubs(true);
-    const pageSize = 24;
-    if (clubFiltersApplied) {
-      // Get clubs filtered
-      (async () => {
-        // TODO: right now this is typed as any because the response returned could be of variable type
-        let res: any;
-        if (user && clubMembershipFiltersApplied) {
-          res = await getUserClubsNoMembers(
-            user._id,
-            afterClubsQuery,
-            pageSize,
-            activeClubsFilter
-          );
-        } else {
-          res = await getAllClubs(afterClubsQuery, pageSize, activeClubsFilter);
-        }
-        if (res.data) {
-          const newClubsTransformed = await transformClubs(res.data.clubs);
-          setShowLoadMoreClubs(newClubsTransformed.length === pageSize);
-          setClubsTransformedResult(s => ({
-            status: 'loaded',
-            payload:
-              s.status === 'loaded'
-                ? [...s.payload, ...newClubsTransformed]
-                : newClubsTransformed,
-          }));
-          setLoadingMoreClubs(false);
-        }
-      })();
-    } else {
-      // Normal get all clubs
-      (async () => {
-        const res = await getAllClubs(afterClubsQuery, pageSize);
-        if (res.data) {
-          const newClubsTransformed = await transformClubs(res.data.clubs);
-          setShowLoadMoreClubs(newClubsTransformed.length === pageSize);
-          setClubsTransformedResult(s => ({
-            status: 'loaded',
-            payload:
-              s.status === 'loaded'
-                ? [...s.payload, ...newClubsTransformed]
-                : newClubsTransformed,
-          }));
-          setLoadingMoreClubs(false);
-        }
-      })();
-    }
-  }, [activeClubsFilter, afterClubsQuery, userLoaded]);
+    // Implementing request canceling
+    let didCancel = false;
+    (async () => {
+      const pageSize = 24;
+      const clubs = await getAllClubsFn(
+        activeClubsFilter,
+        pageSize,
+        search,
+        afterClubsQuery
+      );
+      // Ignore if we started fetching something else
+      if (clubs && !didCancel) {
+        setShowLoadMoreClubs(clubs.length === pageSize);
+        setClubsTransformedResult(s => ({
+          status: 'loaded',
+          payload: s.status === 'loaded' ? [...s.payload, ...clubs] : clubs,
+        }));
+        setLoadingMoreClubs(false);
+      }
+    })();
+    // Remember if we start fetching something else.
+    return () => {
+      didCancel = true;
+    };
+  }, [activeClubsFilter, afterClubsQuery, search, userLoaded]);
 
   const getUsersWithInvitableClubs = async () => {
     const pageSize = 12;
@@ -443,7 +436,7 @@ export default function Home(props: HomeProps) {
       }
     }
     if (genreFiltersChanged) {
-      await resetFilters();
+      await resetLoadMoreClubs();
       setActiveClubsFilter({
         ...activeClubsFilter,
         genres: stagingClubsFilter.genres,
@@ -465,7 +458,7 @@ export default function Home(props: HomeProps) {
       }
     }
     if (speedFiltersChanged) {
-      await resetFilters();
+      await resetLoadMoreClubs();
       setActiveClubsFilter({
         ...activeClubsFilter,
         speed: stagingClubsFilter.speed,
@@ -488,7 +481,7 @@ export default function Home(props: HomeProps) {
       capacityFiltersChanged = true;
     }
     if (capacityFiltersChanged) {
-      await resetFilters();
+      await resetLoadMoreClubs();
       setActiveClubsFilter({
         ...activeClubsFilter,
         capacity: stagingClubsFilter.capacity,
@@ -513,7 +506,7 @@ export default function Home(props: HomeProps) {
       membershipFiltersChanged = true;
     }
     if (membershipFiltersChanged) {
-      await resetFilters();
+      await resetLoadMoreClubs();
       setActiveClubsFilter({
         ...activeClubsFilter,
         membership: stagingClubsFilter.membership,
@@ -523,7 +516,7 @@ export default function Home(props: HomeProps) {
   }
 
   async function removeFilterChip(key: string, type: FilterChipType) {
-    await resetFilters();
+    await resetLoadMoreClubs();
     if (type === 'speed') {
       setActiveClubsFilter({ ...activeClubsFilter, speed: [] });
       setStagingClubsFilter({ ...stagingClubsFilter, speed: [] });
@@ -540,12 +533,26 @@ export default function Home(props: HomeProps) {
     }
   }
 
-  const resetFilters = async () => {
+  const resetLoadMoreClubs = async () => {
     await setClubsTransformedResult(s => ({
       ...s,
       status: 'loading',
     }));
     await setAfterClubsQuery(undefined);
+  };
+
+  const onClearSearch = async () => {
+    if (search !== '') {
+      await resetLoadMoreClubs();
+      setSearch('');
+    }
+  };
+
+  const onSearchSubmitted = async (str: string) => {
+    if (str !== search) {
+      await resetLoadMoreClubs();
+      setSearch(str);
+    }
   };
 
   const centerComponent = (
@@ -585,6 +592,16 @@ export default function Home(props: HomeProps) {
       <ProfileHeaderIcon user={user} />
     </>
   );
+
+  let emptyFilterResultMsg = 'Oops... no clubs turned up!';
+  if (search.length > 0 && clubFiltersApplied) {
+    emptyFilterResultMsg +=
+      ' Try other search terms, or relaxing your filters.';
+  } else if (search.length > 0) {
+    emptyFilterResultMsg += ' Try other search terms.';
+  } else if (clubFiltersApplied) {
+    emptyFilterResultMsg += ' Try relaxing your filters.';
+  }
 
   return (
     <>
@@ -667,6 +684,10 @@ export default function Home(props: HomeProps) {
         {tabValue === 0 && (
           <>
             <Container className={classes.filterGrid} maxWidth="md">
+              <FilterSearch
+                onClearSearch={onClearSearch}
+                onSearchSubmitted={onSearchSubmitted}
+              />
               <ClubFilters
                 onClickGenreFilter={() => setShowGenreFilter(true)}
                 onClickSpeedFilter={() => setShowSpeedFilter(true)}
@@ -722,12 +743,30 @@ export default function Home(props: HomeProps) {
                 </div>
               )}
             </Container>
-            {clubsTransformedResult.status === 'loaded' &&
+            {(clubsTransformedResult.status === 'loaded' ||
+              clubsTransformedResult.status === 'loading') &&
+              clubsTransformedResult.payload &&
               clubsTransformedResult.payload.length > 0 && (
                 <ClubCards
                   clubsTransformed={clubsTransformedResult.payload}
-                  user={user}
+                  showResultsCount={search.length > 0 || clubFiltersApplied}
+                  resultsLoaded={clubsTransformedResult.status === 'loaded'}
                 />
+              )}
+            {clubsTransformedResult.status === 'loaded' &&
+              clubsTransformedResult.payload.length === 0 &&
+              (clubFiltersApplied || search.length > 0) && (
+                <Typography
+                  color="textSecondary"
+                  style={{
+                    textAlign: 'center',
+                    fontStyle: 'italic',
+                    marginTop: theme.spacing(4),
+                    marginBottom: theme.spacing(4),
+                  }}
+                >
+                  {emptyFilterResultMsg}
+                </Typography>
               )}
             {clubsTransformedResult.status === 'loaded' &&
               showLoadMoreClubs &&

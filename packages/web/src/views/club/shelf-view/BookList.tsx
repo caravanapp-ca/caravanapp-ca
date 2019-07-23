@@ -10,6 +10,7 @@ import ListElementBook from '../../../components/ListElementBook';
 import { Radio, IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlusIcon from '@material-ui/icons/Add';
+import AmazonBuyButton from '../../../components/AmazonBuyButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +28,7 @@ interface BookListProps {
     | FilterAutoMongoKeys<UserShelfEntry>[];
   primary?: 'radio';
   secondary?: 'delete' | 'add';
+  tertiary?: 'buy';
   onClick?: any;
   onRadioPress?: (value: string) => void;
   radioValue?: string;
@@ -41,6 +43,7 @@ export default function BookList(props: BookListProps) {
     data,
     primary,
     secondary,
+    tertiary,
     onClick,
     onRadioPress,
     radioValue,
@@ -109,6 +112,10 @@ export default function BookList(props: BookListProps) {
     }
   }
 
+  function buyButton(link: string | undefined): JSX.Element {
+    return <AmazonBuyButton link={link} />;
+  }
+
   return (
     <Paper>
       <List dense={false}>
@@ -117,13 +124,13 @@ export default function BookList(props: BookListProps) {
           if (radioValue && radioValue === b._id) {
             selected = true;
           }
-          let primaryElement;
+          let primaryElement: JSX.Element | undefined;
           switch (primary) {
             case 'radio':
               primaryElement = radio(b, index);
               break;
           }
-          let secondaryElement;
+          let secondaryElement: JSX.Element | undefined;
           switch (secondary) {
             case 'delete':
               secondaryElement = deleteIcon(b, index);
@@ -131,6 +138,11 @@ export default function BookList(props: BookListProps) {
             case 'add':
               secondaryElement = addIcon(b, index);
               break;
+          }
+          let tertiaryElement: JSX.Element | undefined;
+          switch (tertiary) {
+            case 'buy':
+              tertiaryElement = buyButton(b.amazonLink);
           }
           return (
             <ListElementBook
@@ -142,6 +154,7 @@ export default function BookList(props: BookListProps) {
               key={b.isbn || index}
               primary={primaryElement}
               secondary={secondaryElement}
+              tertiary={tertiaryElement}
               onClick={onClick}
               selected={selected}
             />

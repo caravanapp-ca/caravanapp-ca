@@ -69,7 +69,7 @@ export default function UserShelf(props: UserShelfProps) {
           <Typography variant="h6" className={classes.sectionLabel}>
             Currently Reading
           </Typography>
-          <BookList data={shelf.current} />
+          <BookList data={shelf.current} tertiary="buy" />
         </div>
       )}
       {shelf.notStarted.length > 0 && (
@@ -83,7 +83,9 @@ export default function UserShelf(props: UserShelfProps) {
           <Typography variant="h6" className={classes.sectionLabel}>
             Wants to Read
           </Typography>
-          {(!isEditing || !onEdit) && <BookList data={shelf.notStarted} />}
+          {(!isEditing || !onEdit) && (
+            <BookList data={shelf.notStarted} tertiary="buy" />
+          )}
         </div>
       )}
       {isEditing && onEdit && (
