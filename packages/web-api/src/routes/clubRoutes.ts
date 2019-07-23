@@ -172,6 +172,7 @@ router.get('/', async (req, res, next) => {
   } catch (err) {
     console.error('Failed to get all clubs, ', err);
     res.status(500).send(`Failed to get all clubs: ${err}`);
+    return;
   }
   if (!clubs) {
     res.sendStatus(404);
@@ -294,9 +295,6 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
   if ((!search || search.length === 0) && after) {
     query._id = { $lt: after };
   }
-  const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
-  const { discordId } = user;
   let filterObj: ActiveFilter;
   let userInChannelBoolean = true;
   if (activeFilter) {
@@ -315,6 +313,9 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
       userInChannelBoolean = false;
     }
   }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const { discordId } = user;
   const channels = getUserChannels(guild, discordId, userInChannelBoolean);
   const channelIds = channels.map(c => c.id);
   query.channelId = { $in: channelIds };
@@ -323,9 +324,10 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let clubDocs: ClubDoc[];
   try {
-    if (search.length > 0) {
-      clubDocs = await ClubModel.find(query);
-    } else if (filterObj && filterObj.capacity.length > 0) {
+    if (
+      (search && search.length > 0) ||
+      (filterObj && filterObj.capacity.length > 0)
+    ) {
       clubDocs = await ClubModel.find(query)
         .sort({ createdAt: -1 })
         .exec();
@@ -338,6 +340,7 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
   } catch (err) {
     console.error(`Failed to get clubs for user ${user._id}`, err);
     res.status(500).send(err);
+    return;
   }
   if (!clubDocs) {
     res.status(404).send(`No clubs exist for user ${userId}`);
@@ -348,6 +351,7 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
       let discordChannel: GuildChannel | null = guild.channels.find(
         c => c.id === clubDoc.channelId
       );
+      // If there's no Discord channel for this club, filter it out
       if (!discordChannel) {
         return null;
       }
@@ -388,7 +392,7 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
   let filteredClubsWithMembers: Services.GetClubById[] = filteredClubsWithMembersNulls.filter(
     c => c != null
   );
-  if (search.length > 0) {
+  if (search && search.length > 0) {
     const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
       // TODO: Typescript doesn't like the use of keys here.
       // @ts-ignore
@@ -403,7 +407,9 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
       (filterObj && filterObj.capacity.length > 0)) &&
     after
   ) {
-    const afterIndex = filteredClubsWithMembers.findIndex(c => c._id === after);
+    const afterIndex = filteredClubsWithMembers.findIndex(
+      c => c._id.toString() === after
+    );
     if (afterIndex >= 0) {
       filteredClubsWithMembers = filteredClubsWithMembers.slice(afterIndex + 1);
     }
