@@ -98,6 +98,7 @@ const useStyles = makeStyles(theme => ({
   },
   filterGrid: {
     marginTop: theme.spacing(4),
+    padding: '0px 16px',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -748,7 +749,8 @@ export default function Home(props: HomeProps) {
               clubsTransformedResult.payload.length > 0 && (
                 <ClubCards
                   clubsTransformed={clubsTransformedResult.payload}
-                  user={user}
+                  showResultsCount={search.length > 0 || clubFiltersApplied}
+                  resultsLoaded={clubsTransformedResult.status === 'loaded'}
                 />
               )}
             {clubsTransformedResult.status === 'loaded' &&
