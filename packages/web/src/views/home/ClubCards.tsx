@@ -100,9 +100,7 @@ const useStyles = makeStyles(theme => ({
     color: '#ffffff',
     fontWeight: 600,
   },
-  progress: {
-    margin: theme.spacing(2),
-  },
+  progressText: {},
   clubTitle: {
     fontWeight: 600,
   },
@@ -158,6 +156,7 @@ export default function ClubCards(props: ClubCardsProps) {
             }
             let startMsg = 'Start: Not set';
             let endMsg = 'End: Not set';
+            let progressPercentage = 0;
             if (schedule && schedule.startDate) {
               const { startDate, duration } = schedule;
               if (isAfter(new Date(), startDate)) {
@@ -184,6 +183,7 @@ export default function ClubCards(props: ClubCardsProps) {
                     'd'
                   )}`;
                 }
+                progressPercentage = 3;
               }
             }
             let groupVibeAvatar: JSX.Element | undefined;
@@ -281,8 +281,24 @@ export default function ClubCards(props: ClubCardsProps) {
                               {startMsg}
                             </Typography>
                           </div>
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <Typography
+                              variant="caption"
+                              color="textSecondary"
+                              className={classes.progressText}
+                            >
+                              {progressPercentage}% complete
+                            </Typography>
+                          </div>
                         </Grid>
-                        <Grid item xs={6} style={{ marginTop: 16 }}>
+                        <Grid item xs={6}>
                           {groupVibeAvatar && groupVibeLabel && (
                             <div className={classes.attributeContainer}>
                               {groupVibeAvatar}
@@ -295,7 +311,7 @@ export default function ClubCards(props: ClubCardsProps) {
                             </div>
                           )}
                         </Grid>
-                        <Grid item xs={6} style={{ marginTop: 16 }}>
+                        <Grid item xs={6}>
                           <div className={classes.attributeContainer}>
                             <EndAvatar />
                             <Typography
