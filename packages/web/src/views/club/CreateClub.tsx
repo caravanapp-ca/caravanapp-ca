@@ -36,6 +36,7 @@ import { getAllGenres } from '../../services/genre';
 import GenreChip from '../../components/GenreChip';
 import { useMediaQuery } from '@material-ui/core';
 import theme from '../../theme';
+import ClubPrivacySlider from '../../components/ClubPrivacySlider';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -133,7 +134,7 @@ export default function CreateClub(props: CreateClubProps) {
   const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
     []
   );
-  const [unlistedClub] = React.useState(false);
+  const [unlistedClub, setUnlistedClub] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
     createdClub,
@@ -306,6 +307,17 @@ export default function CreateClub(props: CreateClubProps) {
             </div>
           </div>
         )}
+        <div className={classes.sectionContainer}>
+          <Typography variant="subtitle1" className={classes.sectionHeader}>
+            What's your club's privacy setting?
+          </Typography>
+          <ClubPrivacySlider
+            onChange={(unlistedValue: boolean) =>
+              setUnlistedClub(unlistedValue)
+            }
+            unlisted={unlistedClub}
+          />
+        </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
             How many club members do you want?
