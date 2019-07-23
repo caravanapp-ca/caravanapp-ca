@@ -50,28 +50,20 @@ const getUserChannels = (
   discordId: string,
   inChannels: boolean
 ) => {
-  if (inChannels) {
-    const channels = guild.channels.filter(c => {
-      const cTyped = c as TextChannel | VoiceChannel;
-      return (
-        (c.type === 'text' || c.type === 'voice') &&
-        cTyped.members.some(m => m.id === discordId)
-      );
-    });
-    return channels;
-  } else {
-    const channels = guild.channels.filter(c => {
-      const cTyped = c as TextChannel | VoiceChannel;
-      return (
-        (c.type === 'text' || c.type === 'voice') &&
-        !cTyped.members.get(discordId)
-      );
-    });
-    return channels;
-  }
+  const channels = guild.channels.filter(c => {
+    const cTyped = c as TextChannel | VoiceChannel;
+    const inThisChannel = !!cTyped.members.get(discordId);
+    return (
+      (c.type === 'text' || c.type === 'voice') && inChannels === inThisChannel
+    );
+  });
+  return channels;
 };
 
 async function getChannelMembers(guild: Guild, club: ClubDoc) {
+  // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
+  const _members = await guild.fetchMembers();
+  //
   let discordChannel = guild.channels.find(c => c.id === club.channelId);
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
