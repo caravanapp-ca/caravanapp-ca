@@ -442,7 +442,7 @@ export default function UserView(props: UserViewProps) {
   // }
 
   function backButtonAction() {
-    if (props.history.length > 1) {
+    if (props.history.length > 2) {
       props.history.goBack();
     } else {
       props.history.replace('/');
