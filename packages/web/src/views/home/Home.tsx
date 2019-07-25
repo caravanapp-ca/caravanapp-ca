@@ -761,9 +761,6 @@ export default function Home(props: HomeProps) {
                   </Button>
                 </div>
               )}
-            {/* May need to add these back into the conditional */}
-            {/* clubsTransformedResult.status === 'loaded' &&
-            showLoadMoreClubs &&  */}
             {loadingMoreClubs && (
               <div
                 style={{
