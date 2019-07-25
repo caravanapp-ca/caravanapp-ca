@@ -651,66 +651,6 @@ export default function Home(props: HomeProps) {
             onSeeClubsClick={onSeeClubsClick}
           />
         )}
-        {/* Hero unit */}
-        {/* {showWelcomeMessage && (
-          <div className={classes.heroContent}>
-            <Container maxWidth="md">
-              <Typography
-                component="h1"
-                variant="h3"
-                align="center"
-                color="primary"
-                style={{ fontWeight: 600 }}
-                gutterBottom
-              >
-                Find your perfect reading buddies.
-              </Typography>
-              <Typography
-                variant="h5"
-                align="center"
-                color="textSecondary"
-                paragraph
-              >
-                Browse below to find others to read with. If you can't find
-                anything that matches your interest, create a club so others can
-                find you!
-              </Typography>
-              <div className={classes.heroButtons}>
-                <Grid container spacing={2} justify="center">
-                  {!user && (
-                    <Grid item>
-                      <JoinCaravanButton
-                        onClick={() => setLoginModalShown(true)}
-                      />
-                    </Grid>
-                  )}
-                  {user && showWelcomeMessage && (
-                    <>
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={() => openChat()}
-                        >
-                          <Typography variant="button">OPEN CHAT</Typography>
-                        </Button>
-                      </Grid>
-                      <Grid item>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={() => setShowWelcomeMessage(false)}
-                        >
-                          <Typography variant="button">CLOSE</Typography>
-                        </Button>
-                      </Grid>
-                    </>
-                  )}
-                </Grid>
-              </div>
-            </Container>
-          </div>
-        )} */}
         <Element name="tabs">
           <Tabs
             value={tabValue}
