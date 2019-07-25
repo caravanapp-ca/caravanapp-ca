@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       flexWrap: 'wrap',
+      zIndex: 1,
     },
     button: {
       margin: theme.spacing(1),
@@ -115,8 +116,8 @@ export default function Splash(props: SplashProps) {
             <span className={classes.tagPeriod}>{'.'}</span>
           </Typography>
           <Typography color="textSecondary" variant="h5" className={classes.p1}>
-            Browse clubs below to find others to read with. If nothing seems
-            quite right, you can create a club so others can find you!
+            Start by browsing and joining existing clubs, or by creating your
+            own club!
           </Typography>
           <Typography color="textSecondary" variant="h5" className={classes.p2}>
             When you join or create a club you'll be automatically added to the
