@@ -624,7 +624,6 @@ export default function Home(props: HomeProps) {
         onHeightChange={onHeaderHeightChange}
       />
       <main>
-        {/* TODO: Add showWelcomeMessage check here */}
         {showWelcomeMessage && (
           <Splash
             user={user}
