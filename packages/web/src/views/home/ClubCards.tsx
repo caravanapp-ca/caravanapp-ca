@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User, ClubTransformed } from '@caravan/buddy-reading-types';
+import { ClubTransformed } from '@caravan/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,
@@ -192,7 +192,7 @@ export default function ClubCards(props: ClubCardsProps) {
         )}
         <Grid container spacing={4}>
           {clubsTransformed.map(c => {
-            const { club, currentlyReading, schedule, owner } = c;
+            const { club, currentlyReading, schedule } = c;
             let year;
             if (currentlyReading && currentlyReading.publishedDate) {
               year = format(new Date(currentlyReading.publishedDate), 'yyyy');
@@ -399,7 +399,7 @@ export default function ClubCards(props: ClubCardsProps) {
                             'PP'
                           )}`}
                         </Typography>
-                        {owner && owner.name && owner.name.length > 0 && (
+                        {club && club.ownerName && club.ownerName.length > 0 && (
                           <Typography variant="caption" color="textSecondary">
                             {/* Truncate doesn't work as advertised, so we set an exact width here. */}
                             <Truncate
@@ -407,7 +407,7 @@ export default function ClubCards(props: ClubCardsProps) {
                               trimWhitespace={true}
                               width={196}
                             >
-                              {`by ${owner.name}`}
+                              {`by ${club.ownerName}`}
                             </Truncate>
                           </Typography>
                         )}

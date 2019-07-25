@@ -115,14 +115,9 @@ const transformClub = async (
 ): Promise<ClubTransformed> => {
   let returnObj: ClubTransformed = {
     club,
-    owner: null,
     currentlyReading: null,
     schedule: null,
   };
-  const owner = await getUser(club.ownerId);
-  if (owner) {
-    returnObj = { ...returnObj, owner };
-  }
   const currentlyReading = club.shelf.find(
     book => book.readingState === 'current'
   );
@@ -261,24 +256,14 @@ export default function Home(props: HomeProps) {
     afterClubsQuery?: string
   ) => {
     setLoadingMoreClubs(true);
-    let res: AxiosResponse<Services.GetClubs>;
-    if (user && clubMembershipFiltersApplied) {
-      res = await getAllClubs(
-        user._id,
-        afterClubsQuery,
-        pageSize,
-        activeClubsFilter,
-        search
-      );
-    } else {
-      res = await getAllClubs(
-        undefined,
-        afterClubsQuery,
-        pageSize,
-        activeClubsFilter,
-        search
-      );
-    }
+    const userId = user && clubMembershipFiltersApplied ? user._id : undefined;
+    const res = await getAllClubs(
+      userId,
+      afterClubsQuery,
+      pageSize,
+      activeClubsFilter,
+      search
+    );
     if (res.data) {
       return await transformClubs(res.data.clubs);
     }
