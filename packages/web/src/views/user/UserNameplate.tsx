@@ -16,6 +16,7 @@ import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
+import getReferralLink from '../../functions/getReferralLink';
 
 interface UserNameplateProps {
   user: User;
@@ -155,18 +156,20 @@ export default function UserNameplate(props: UserNameplateProps) {
             margin="normal"
             variant="outlined"
           />
-          <div className={classes.referralLinkField}>
-            <Typography color="textSecondary" style={{ fontWeight: 600 }}>
-              Referral link:{' '}
-              <Link
-                onClick={() =>
-                  copyToClipboard(`https://caravanapp.ca?ref=${user.urlSlug}`)
-                }
-              >
-                https://caravanapp.ca/ref?{user._id}
-              </Link>
-            </Typography>
-          </div>
+          <Button
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(getReferralLink(user._id, 'profile'))
+            }
+            style={{
+              width: '20%',
+              justifyContent: 'flex-start',
+              marginBottom: theme.spacing(2),
+              fontWeight: 600,
+            }}
+          >
+            <Typography variant="button">Copy Referral Link</Typography>
+          </Button>
           <Typography color="textSecondary">Palette</Typography>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {paletteColours.map(colourObj => (
@@ -259,6 +262,17 @@ export default function UserNameplate(props: UserNameplateProps) {
                 />
               )}
             <Typography variant="button">{msgBtnLabelCaps}</Typography>
+          </Button>
+        )}
+        {user && userIsMe && (
+          <Button
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(getReferralLink(user._id, 'profile'))
+            }
+            style={{ marginTop: theme.spacing(1) }}
+          >
+            <Typography variant="button">Copy Referral Link</Typography>
           </Button>
         )}
       </MuiThemeProvider>
