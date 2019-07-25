@@ -24,8 +24,9 @@ import {
   clearStorageAuthState,
   KEY_DISCORD_OAUTH_STATE,
   KEY_USER,
+  KEY_REFERRER_USER_ID,
 } from './common/localStorage';
-import { deleteCookie, getCookie } from './common/cookies';
+import { deleteCookie, getCookie, setCookie } from './common/cookies';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 import { getUser } from './services/user';
@@ -85,6 +86,11 @@ export function App(props: AppProps) {
         await setUser(null);
         setLoadedUser(true);
         localStorage.removeItem(KEY_USER);
+      }
+      // TODO we probably only want to do this if they're *not* yet logged in
+      if (window.location.href.includes('?ref=') && !getCookie('ref')) {
+        const referrerId = window.location.href.split('?ref=')[1];
+        setCookie('ref', referrerId, 3);
       }
     };
     getUserAsync();

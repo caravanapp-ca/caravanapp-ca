@@ -27,6 +27,7 @@ interface UserNameplateProps {
   ) => void;
   valid: [boolean, string][];
   userDarkTheme?: Theme;
+  copyToClipboard: (refLink: string) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,13 +46,25 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
+    referralLinkField: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   })
 );
 
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { user, userIsMe, isEditing, onEdit, valid, userDarkTheme } = props;
+  const {
+    user,
+    userIsMe,
+    isEditing,
+    onEdit,
+    valid,
+    userDarkTheme,
+    copyToClipboard,
+  } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
     bio: boolean;
@@ -142,6 +155,18 @@ export default function UserNameplate(props: UserNameplateProps) {
             margin="normal"
             variant="outlined"
           />
+          <div className={classes.referralLinkField}>
+            <Typography color="textSecondary" style={{ fontWeight: 600 }}>
+              Referral link:{' '}
+              <Link
+                onClick={() =>
+                  copyToClipboard(`https://caravanapp.ca?ref=${user.urlSlug}`)
+                }
+              >
+                https://caravanapp.ca/ref?{user._id}
+              </Link>
+            </Typography>
+          </div>
           <Typography color="textSecondary">Palette</Typography>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {paletteColours.map(colourObj => (
