@@ -761,19 +761,20 @@ export default function Home(props: HomeProps) {
                   </Button>
                 </div>
               )}
-            {clubsTransformedResult.status === 'loaded' &&
-              showLoadMoreClubs &&
-              loadingMoreClubs && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <CircularProgress />
-                </div>
-              )}
+            {/* May need to add these back into the conditional */}
+            {/* clubsTransformedResult.status === 'loaded' &&
+            showLoadMoreClubs &&  */}
+            {loadingMoreClubs && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <CircularProgress />
+              </div>
+            )}
             <GenreFilterModal
               allGenres={allGenres}
               filteredGenres={stagingClubsFilter.genres}
