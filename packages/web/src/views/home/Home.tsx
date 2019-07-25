@@ -238,7 +238,6 @@ export default function Home(props: HomeProps) {
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
   const [search, setSearch] = React.useState<string>('');
-  const [headerHeight, setHeaderHeight] = React.useState<number>();
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -539,12 +538,6 @@ export default function Home(props: HomeProps) {
     }
   };
 
-  const onHeaderHeightChange = (newHeight: number) => {
-    if (newHeight > 0) {
-      setHeaderHeight(newHeight);
-    }
-  };
-
   const onAboutClick = () => {
     props.history.push('/about');
   };
@@ -606,14 +599,11 @@ export default function Home(props: HomeProps) {
       <Header
         centerComponent={centerComponent}
         rightComponent={rightComponent}
-        listenToHeightChanges={true}
-        onHeightChange={onHeaderHeightChange}
       />
       <main>
         {showWelcomeMessage && (
           <Splash
             user={user}
-            headerHeight={headerHeight}
             onAboutClick={onAboutClick}
             onLoginClick={() => setLoginModalShown(true)}
             onOpenChatClick={openChat}

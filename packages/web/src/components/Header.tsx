@@ -12,7 +12,6 @@ import {
   Theme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
-import ReactResizeDetector from 'react-resize-detector';
 
 interface ScrollProps {
   children: React.ReactElement;
@@ -26,8 +25,6 @@ interface HeaderProps {
   showBorder?: boolean;
   userTheme?: Theme;
   userDarkTheme?: Theme;
-  listenToHeightChanges?: boolean;
-  onHeightChange?: (newHeight: number) => void;
 }
 
 const useStyles = makeStyles(() =>
@@ -114,8 +111,6 @@ export default function ButtonAppBar(props: HeaderProps) {
     showBorder,
     userTheme,
     userDarkTheme,
-    listenToHeightChanges,
-    onHeightChange,
   } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -160,9 +155,6 @@ export default function ButtonAppBar(props: HeaderProps) {
               >
                 {rightComponent}
               </div>
-              {listenToHeightChanges && onHeightChange && (
-                <ReactResizeDetector onResize={(w, h) => onHeightChange(h)} />
-              )}
             </div>
           </MuiThemeProvider>
         </Toolbar>
