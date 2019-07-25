@@ -1,7 +1,15 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import * as Scroll from 'react-scroll';
+import {
+  Link,
+  Element,
+  Events,
+  animateScroll as scroll,
+  scrollSpy,
+  scroller,
+} from 'react-scroll';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -45,6 +53,7 @@ import {
   useMediaQuery,
   useTheme,
   CircularProgress,
+  Paper,
 } from '@material-ui/core';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
@@ -53,6 +62,7 @@ import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
 import { AxiosResponse } from 'axios';
+import Splash from './Splash';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -97,7 +107,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: 16,
   },
   filterGrid: {
-    marginTop: theme.spacing(4),
+    marginTop: '16px',
     padding: '0px 16px',
     display: 'flex',
     flexDirection: 'column',
@@ -245,8 +255,11 @@ export default function Home(props: HomeProps) {
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
   const [search, setSearch] = React.useState<string>('');
+  const [headerHeight, setHeaderHeight] = React.useState<number>();
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const headerRef = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
     if (!showWelcomeMessage) {
@@ -555,6 +568,20 @@ export default function Home(props: HomeProps) {
     }
   };
 
+  const onHeaderHeightChange = (newHeight: number) => {
+    if (newHeight > 0) {
+      setHeaderHeight(newHeight);
+    }
+  };
+
+  const onAboutClick = () => {
+    props.history.push('/about');
+  };
+
+  const onSeeClubsClick = () => {
+    scroller.scrollTo('tabs', { smooth: true });
+  };
+
   const centerComponent = (
     <img
       src={logo}
@@ -608,10 +635,24 @@ export default function Home(props: HomeProps) {
       <Header
         centerComponent={centerComponent}
         rightComponent={rightComponent}
+        listenToHeightChanges={true}
+        onHeightChange={onHeaderHeightChange}
       />
       <main>
-        {/* Hero unit */}
+        {/* TODO: Add showWelcomeMessage check here */}
         {showWelcomeMessage && (
+          <Splash
+            user={user}
+            headerHeight={headerHeight}
+            onAboutClick={onAboutClick}
+            onLoginClick={() => setLoginModalShown(true)}
+            onOpenChatClick={openChat}
+            onDismissClick={() => setShowWelcomeMessage(false)}
+            onSeeClubsClick={onSeeClubsClick}
+          />
+        )}
+        {/* Hero unit */}
+        {/* {showWelcomeMessage && (
           <div className={classes.heroContent}>
             <Container maxWidth="md">
               <Typography
@@ -669,18 +710,20 @@ export default function Home(props: HomeProps) {
               </div>
             </Container>
           </div>
-        )}
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
-          centered={!screenSmallerThanMd}
-        >
-          <Tab label="Clubs" />
-          <Tab label="People" />
-        </Tabs>
+        )} */}
+        <Element name="tabs">
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+            centered={!screenSmallerThanMd}
+          >
+            <Tab label="Clubs" />
+            <Tab label="People" />
+          </Tabs>
+        </Element>
         {tabValue === 0 && (
           <>
             <Container className={classes.filterGrid} maxWidth="md">

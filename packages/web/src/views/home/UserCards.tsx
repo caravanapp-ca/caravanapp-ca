@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
   },
   cardGrid: {
-    padding: `${theme.spacing(4)}px 16px ${theme.spacing(8)}px`,
+    padding: `${theme.spacing(8)}px 16px`,
   },
   cardContent: {
     position: 'relative',

@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User, ClubTransformed } from '@caravan/buddy-reading-types';
+import { ClubTransformed } from '@caravan/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,
@@ -24,7 +24,6 @@ import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAva
 import PlaceholderCard from '../../components/PlaceholderCard';
 import theme, { washedTheme, successTheme } from '../../theme';
 import clsx from 'clsx';
-import { differenceInDays } from 'date-fns';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
