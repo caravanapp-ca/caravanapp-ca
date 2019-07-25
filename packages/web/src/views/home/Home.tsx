@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { Element, scroller } from 'react-scroll';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -29,7 +29,6 @@ import { getAllGenres } from '../../services/genre';
 import logo from '../../resources/logo.svg';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import JoinCaravanButton from '../../components/JoinCaravanButton';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import ClubFilters from '../../components/filters/ClubFilters';
@@ -48,11 +47,10 @@ import {
 } from '@material-ui/core';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
-import { getUser } from '../../services/user';
 import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
-import { AxiosResponse } from 'axios';
+import Splash from './Splash';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -97,7 +95,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: 16,
   },
   filterGrid: {
-    marginTop: theme.spacing(4),
+    marginTop: '16px',
     padding: '0px 16px',
     display: 'flex',
     flexDirection: 'column',
@@ -115,14 +113,9 @@ const transformClub = async (
 ): Promise<ClubTransformed> => {
   let returnObj: ClubTransformed = {
     club,
-    owner: null,
     currentlyReading: null,
     schedule: null,
   };
-  const owner = await getUser(club.ownerId);
-  if (owner) {
-    returnObj = { ...returnObj, owner };
-  }
   const currentlyReading = club.shelf.find(
     book => book.readingState === 'current'
   );
@@ -261,24 +254,14 @@ export default function Home(props: HomeProps) {
     afterClubsQuery?: string
   ) => {
     setLoadingMoreClubs(true);
-    let res: AxiosResponse<Services.GetClubs>;
-    if (user && clubMembershipFiltersApplied) {
-      res = await getAllClubs(
-        user._id,
-        afterClubsQuery,
-        pageSize,
-        activeClubsFilter,
-        search
-      );
-    } else {
-      res = await getAllClubs(
-        undefined,
-        afterClubsQuery,
-        pageSize,
-        activeClubsFilter,
-        search
-      );
-    }
+    const userId = user && clubMembershipFiltersApplied ? user._id : undefined;
+    const res = await getAllClubs(
+      userId,
+      afterClubsQuery,
+      pageSize,
+      activeClubsFilter,
+      search
+    );
     if (res.data) {
       return await transformClubs(res.data.clubs);
     }
@@ -555,6 +538,14 @@ export default function Home(props: HomeProps) {
     }
   };
 
+  const onAboutClick = () => {
+    props.history.push('/about');
+  };
+
+  const onSeeClubsClick = () => {
+    scroller.scrollTo('tabs', { smooth: true });
+  };
+
   const centerComponent = (
     <img
       src={logo}
@@ -610,77 +601,29 @@ export default function Home(props: HomeProps) {
         rightComponent={rightComponent}
       />
       <main>
-        {/* Hero unit */}
         {showWelcomeMessage && (
-          <div className={classes.heroContent}>
-            <Container maxWidth="md">
-              <Typography
-                component="h1"
-                variant="h3"
-                align="center"
-                color="primary"
-                style={{ fontWeight: 600 }}
-                gutterBottom
-              >
-                Find your perfect reading buddies.
-              </Typography>
-              <Typography
-                variant="h5"
-                align="center"
-                color="textSecondary"
-                paragraph
-              >
-                Browse below to find others to read with. If you can't find
-                anything that matches your interest, create a club so others can
-                find you!
-              </Typography>
-              <div className={classes.heroButtons}>
-                <Grid container spacing={2} justify="center">
-                  {!user && (
-                    <Grid item>
-                      <JoinCaravanButton
-                        onClick={() => setLoginModalShown(true)}
-                      />
-                    </Grid>
-                  )}
-                  {user && showWelcomeMessage && (
-                    <>
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={() => openChat()}
-                        >
-                          <Typography variant="button">OPEN CHAT</Typography>
-                        </Button>
-                      </Grid>
-                      <Grid item>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={() => setShowWelcomeMessage(false)}
-                        >
-                          <Typography variant="button">CLOSE</Typography>
-                        </Button>
-                      </Grid>
-                    </>
-                  )}
-                </Grid>
-              </div>
-            </Container>
-          </div>
+          <Splash
+            user={user}
+            onAboutClick={onAboutClick}
+            onLoginClick={() => setLoginModalShown(true)}
+            onOpenChatClick={openChat}
+            onDismissClick={() => setShowWelcomeMessage(false)}
+            onSeeClubsClick={onSeeClubsClick}
+          />
         )}
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
-          centered={!screenSmallerThanMd}
-        >
-          <Tab label="Clubs" />
-          <Tab label="People" />
-        </Tabs>
+        <Element name="tabs">
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+            centered={!screenSmallerThanMd}
+          >
+            <Tab label="Clubs" />
+            <Tab label="People" />
+          </Tabs>
+        </Element>
         {tabValue === 0 && (
           <>
             <Container className={classes.filterGrid} maxWidth="md">
@@ -794,19 +737,17 @@ export default function Home(props: HomeProps) {
                   </Button>
                 </div>
               )}
-            {clubsTransformedResult.status === 'loaded' &&
-              showLoadMoreClubs &&
-              loadingMoreClubs && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <CircularProgress />
-                </div>
-              )}
+            {loadingMoreClubs && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <CircularProgress />
+              </div>
+            )}
             <GenreFilterModal
               allGenres={allGenres}
               filteredGenres={stagingClubsFilter.genres}

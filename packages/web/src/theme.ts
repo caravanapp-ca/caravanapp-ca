@@ -1,4 +1,8 @@
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  Theme,
+} from '@material-ui/core/styles';
 import { PaletteObject } from '@caravan/buddy-reading-types';
 import { TypeText } from '@material-ui/core/styles/createPalette';
 const montserrat = require('typeface-montserrat');
@@ -93,6 +97,21 @@ export const textSecondaryTheme = responsiveFontSizes(
       ...themeObj.palette,
       primary: {
         main: theme.palette.text.secondary,
+      },
+    },
+  })
+);
+
+export const whiteTheme = responsiveFontSizes(
+  createMuiTheme({
+    ...themeObj,
+    palette: {
+      ...themeObj.palette,
+      primary: {
+        main: '#FFFFFF',
+      },
+      secondary: {
+        main: themeObj.palette.primary.main,
       },
     },
   })
@@ -213,6 +232,9 @@ const getUserTextPalette = (palette: PaletteObject) => {
       return theme.palette.text;
   }
 };
+
+// paletteColours[1] is the location of Caravan Blurple
+export const darkTheme = makeUserDarkTheme(paletteColours[1]) as Theme;
 
 export const linkColor: string = '#0365D6';
 

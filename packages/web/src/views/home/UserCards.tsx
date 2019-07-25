@@ -1,6 +1,6 @@
 import React from 'react';
 import LazyLoad from 'react-lazyload';
-import { CircularProgress, Link, Box } from '@material-ui/core';
+import { CircularProgress, Link } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
   },
   cardGrid: {
-    padding: `${theme.spacing(4)}px 16px ${theme.spacing(8)}px`,
+    padding: `${theme.spacing(8)}px 16px`,
   },
   cardContent: {
     position: 'relative',
