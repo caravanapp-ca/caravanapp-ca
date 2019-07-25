@@ -1,4 +1,3 @@
-import React from 'react';
 import { Membership } from '@caravan/buddy-reading-types';
 
 export function membershipLabels(

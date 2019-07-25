@@ -180,7 +180,7 @@ export default function Splash(props: SplashProps) {
           )}
         </div>
       </Container>
-      <img src={splash} alt="Splash image" className={classes.splashImg} />
+      <img src={splash} alt="Splash" className={classes.splashImg} />
     </div>
   );
 }
