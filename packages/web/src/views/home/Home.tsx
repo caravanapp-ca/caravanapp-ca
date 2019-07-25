@@ -610,7 +610,6 @@ export default function Home(props: HomeProps) {
         onHeightChange={onHeaderHeightChange}
       />
       <main>
-        {/* TODO: Add showWelcomeMessage check here */}
         {showWelcomeMessage && (
           <Splash
             user={user}
@@ -748,19 +747,17 @@ export default function Home(props: HomeProps) {
                   </Button>
                 </div>
               )}
-            {clubsTransformedResult.status === 'loaded' &&
-              showLoadMoreClubs &&
-              loadingMoreClubs && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <CircularProgress />
-                </div>
-              )}
+            {loadingMoreClubs && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <CircularProgress />
+              </div>
+            )}
             <GenreFilterModal
               allGenres={allGenres}
               filteredGenres={stagingClubsFilter.genres}

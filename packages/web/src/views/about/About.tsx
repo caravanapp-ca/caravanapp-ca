@@ -1,4 +1,5 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
 import {
   Theme,
@@ -9,7 +10,6 @@ import {
 } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
 import { User } from '@caravan/buddy-reading-types';
-import { RouteComponentProps } from 'react-router-dom';
 import Header from '../../components/Header';
 import logo from '../../resources/logo.svg';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
