@@ -297,7 +297,7 @@ export default function ClubComponent(props: ClubProps) {
   };
 
   function backButtonAction() {
-    if (props.history.length > 1) {
+    if (props.history.length > 2) {
       props.history.goBack();
     } else {
       props.history.replace('/');
