@@ -71,7 +71,7 @@ export default function About(props: AboutProps) {
   const classes = useStyles();
 
   const handleBack = () => {
-    if (props.history.length > 1) {
+    if (props.history.length > 2) {
       props.history.goBack();
     } else {
       props.history.replace('/');
