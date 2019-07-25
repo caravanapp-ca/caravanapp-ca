@@ -24,7 +24,6 @@ import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAva
 import PlaceholderCard from '../../components/PlaceholderCard';
 import theme, { washedTheme, successTheme } from '../../theme';
 import clsx from 'clsx';
-import { differenceInDays } from 'date-fns';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {

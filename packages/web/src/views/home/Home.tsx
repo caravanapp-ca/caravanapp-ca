@@ -1,7 +1,15 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import * as Scroll from 'react-scroll';
+import {
+  Link,
+  Element,
+  Events,
+  animateScroll as scroll,
+  scrollSpy,
+  scroller,
+} from 'react-scroll';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -45,6 +53,7 @@ import {
   useMediaQuery,
   useTheme,
   CircularProgress,
+  Paper,
 } from '@material-ui/core';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
@@ -53,6 +62,7 @@ import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
 import { AxiosResponse } from 'axios';
+import Splash from './Splash';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -97,7 +107,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: 16,
   },
   filterGrid: {
-    marginTop: theme.spacing(4),
+    marginTop: '16px',
     padding: '0px 16px',
     display: 'flex',
     flexDirection: 'column',
@@ -240,8 +250,11 @@ export default function Home(props: HomeProps) {
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
   const [search, setSearch] = React.useState<string>('');
+  const [headerHeight, setHeaderHeight] = React.useState<number>();
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const headerRef = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
     if (!showWelcomeMessage) {
@@ -540,6 +553,20 @@ export default function Home(props: HomeProps) {
     }
   };
 
+  const onHeaderHeightChange = (newHeight: number) => {
+    if (newHeight > 0) {
+      setHeaderHeight(newHeight);
+    }
+  };
+
+  const onAboutClick = () => {
+    props.history.push('/about');
+  };
+
+  const onSeeClubsClick = () => {
+    scroller.scrollTo('tabs', { smooth: true });
+  };
+
   const centerComponent = (
     <img
       src={logo}
@@ -593,79 +620,35 @@ export default function Home(props: HomeProps) {
       <Header
         centerComponent={centerComponent}
         rightComponent={rightComponent}
+        listenToHeightChanges={true}
+        onHeightChange={onHeaderHeightChange}
       />
       <main>
-        {/* Hero unit */}
+        {/* TODO: Add showWelcomeMessage check here */}
         {showWelcomeMessage && (
-          <div className={classes.heroContent}>
-            <Container maxWidth="md">
-              <Typography
-                component="h1"
-                variant="h3"
-                align="center"
-                color="primary"
-                style={{ fontWeight: 600 }}
-                gutterBottom
-              >
-                Find your perfect reading buddies.
-              </Typography>
-              <Typography
-                variant="h5"
-                align="center"
-                color="textSecondary"
-                paragraph
-              >
-                Browse below to find others to read with. If you can't find
-                anything that matches your interest, create a club so others can
-                find you!
-              </Typography>
-              <div className={classes.heroButtons}>
-                <Grid container spacing={2} justify="center">
-                  {!user && (
-                    <Grid item>
-                      <JoinCaravanButton
-                        onClick={() => setLoginModalShown(true)}
-                      />
-                    </Grid>
-                  )}
-                  {user && showWelcomeMessage && (
-                    <>
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={() => openChat()}
-                        >
-                          <Typography variant="button">OPEN CHAT</Typography>
-                        </Button>
-                      </Grid>
-                      <Grid item>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={() => setShowWelcomeMessage(false)}
-                        >
-                          <Typography variant="button">CLOSE</Typography>
-                        </Button>
-                      </Grid>
-                    </>
-                  )}
-                </Grid>
-              </div>
-            </Container>
-          </div>
+          <Splash
+            user={user}
+            headerHeight={headerHeight}
+            onAboutClick={onAboutClick}
+            onLoginClick={() => setLoginModalShown(true)}
+            onOpenChatClick={openChat}
+            onDismissClick={() => setShowWelcomeMessage(false)}
+            onSeeClubsClick={onSeeClubsClick}
+          />
         )}
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
-          centered={!screenSmallerThanMd}
-        >
-          <Tab label="Clubs" />
-          <Tab label="People" />
-        </Tabs>
+        <Element name="tabs">
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+            centered={!screenSmallerThanMd}
+          >
+            <Tab label="Clubs" />
+            <Tab label="People" />
+          </Tabs>
+        </Element>
         {tabValue === 0 && (
           <>
             <Container className={classes.filterGrid} maxWidth="md">
