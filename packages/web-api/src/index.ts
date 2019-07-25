@@ -19,6 +19,7 @@ import {
   disconnect as disconnectFromDb,
 } from './db/config';
 import { ReadingDiscordBot } from './services/discord';
+import { handleReferral } from './middleware/referral';
 
 (async () => {
   const app = express();
@@ -56,6 +57,8 @@ import { ReadingDiscordBot } from './services/discord';
   );
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
+
+  app.use(handleReferral);
 
   app.use('/api/test', testRoutes);
   app.use('/api/club', clubRoutes);

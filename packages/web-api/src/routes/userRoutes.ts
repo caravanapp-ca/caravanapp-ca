@@ -10,7 +10,7 @@ import {
   Services,
   ActiveFilter,
   Referral,
-  ReferralActionType,
+  ReferralAction,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -23,6 +23,7 @@ import {
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc } from '../../typings';
+import { createReferralAction } from '../services/referral';
 
 const router = express.Router();
 
@@ -349,6 +350,7 @@ router.put(
         // Perhaps send email or whatever.
         userDoc.onboardingVersion = 1;
         userDoc = await userDoc.save();
+        createReferralAction(userDoc.id, 'onboarded');
       }
       res.status(200).send(userDoc);
     } catch (err) {
@@ -357,55 +359,5 @@ router.put(
     }
   }
 );
-
-// Modify a user
-router.put(
-  '/logReferral/:referrerId',
-  isAuthenticatedButNotNecessarilyOnboarded,
-  async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorArr = errors.array();
-      console.warn('Problem logging referral');
-      res.status(422).json({ errors: errorArr });
-      return;
-    }
-    const { userId } = req.session;
-    const user: User = req.body;
-
-    const newReferralUser: FilterAutoMongoKeys<Referral> = {
-      userId,
-      referredIds: [],
-      referralCount: 0,
-    };
-
-    try {
-      let userDoc = await UserModel.findByIdAndUpdate(userId, newReferralUser, {
-        new: true,
-      });
-      if (
-        userDoc &&
-        userDoc.onboardingVersion === 0 &&
-        user.onboardingVersion === 1
-      ) {
-        // Can do extra on-boarding behind-the-scenes logic here onInit, but for now not necessary...
-        // Perhaps send email or whatever.
-        userDoc.onboardingVersion = 1;
-        userDoc = await userDoc.save();
-      }
-      res.status(200).send(userDoc);
-    } catch (err) {
-      console.error('Failed to save user data', err);
-      res.status(500).send('Failed to save user data');
-    }
-  }
-);
-
-async function logReferralAction(
-  referredById: string,
-  referredId: string,
-  action: ReferralActionType,
-  timestamp: Date
-) {}
 
 export default router;

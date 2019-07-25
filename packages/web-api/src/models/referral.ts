@@ -3,7 +3,6 @@ import {
   FilterAutoMongoKeys,
   SameKeysAs,
   Referral,
-  UserReferred,
   UserReferredAction,
 } from '@caravan/buddy-reading-types';
 import { ReferralDoc } from '../../typings';
@@ -33,6 +32,8 @@ const referralDefinition: SameKeysAs<FilterAutoMongoKeys<Referral>> = {
   },
   referralCount: { type: Number, required: true, default: 0 },
   referredById: { type: String, index: true },
+  referredAndNotJoined: { type: Boolean, default: false },
+  source: { type: String },
 };
 
 const referralSchema = new Schema<ReferralDoc>(referralDefinition, {
