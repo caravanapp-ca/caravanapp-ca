@@ -16,7 +16,7 @@ import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
-import UserBadgeSmall from '../../components/UserBadgeSmall';
+import UserBadgeIcon from '../../components/UserBadgeIcon';
 import { referralTiers } from '../../common/globalConstants';
 
 interface UserNameplateProps {
@@ -186,7 +186,7 @@ export default function UserNameplate(props: UserNameplateProps) {
           >
             {user.name}
           </Typography>
-          {badgeToDisplay && <UserBadgeSmall badge={badgeToDisplay} />}
+          {badgeToDisplay && <UserBadgeIcon badge={badgeToDisplay} />}
         </div>
         <Typography
           variant="body1"

@@ -6,7 +6,6 @@ import {
   UserQA,
   UserShelfEntry,
   BookSource,
-  Badge,
   UserBadge,
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings';
@@ -83,7 +82,6 @@ const userBadgeDefinition: FilterAutoMongoKeys<SameKeysAs<UserBadge>> = {
   key: { type: String, required: true },
   name: { type: String, required: true },
   description: { type: String },
-  image: { type: String },
 };
 
 const userBadgeSchema = new Schema(userBadgeDefinition, {
