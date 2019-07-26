@@ -37,18 +37,21 @@ export async function handleReferral(
   const validatedUtmSource =
     utm_source && !validUtmSources[utm_source] ? undefined : utm_source;
 
-  if (ref && !userId && !req.session.referredTempUid) {
+  if (ref && !userId) {
     // If there's a ref in the URL and the user isn't signed in,
     // create a temp user id for referral tracking and store the onVisit
     // in the database
+    let referredTempUid: string | undefined = req.session.referredTempUid;
+    if (!referredTempUid) {
+      try {
+        referredTempUid = generateUuid();
+      } catch (err) {
+        console.error('Failed to get temp uid', err);
+      }
+      req.session.referredTempUid = referredTempUid;
 
-    try {
-      const referredTempUid = generateUuid();
       // Don't bother awaiting, fire-and-forget, no need to hold up execution
       handleFirstVisit(referredTempUid, ref, validatedUtmSource);
-      req.session.referredTempUid = referredTempUid;
-    } catch (err) {
-      console.error('Failed to get temp uid', err);
     }
   }
   next();

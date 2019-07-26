@@ -13,6 +13,7 @@ import bookRoutes from './routes/bookRoutes';
 import profileRoutes from './routes/profileRoutes';
 import testRoutes from './routes/testRoutes';
 import discordRoutes from './routes/discordRoutes';
+import referralRoutes from './routes/referralRoutes';
 
 import {
   connect as connectToDb,
@@ -58,7 +59,6 @@ import { getCookie } from '../../web/src/common/cookies';
   );
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(handleReferral);
 
   app.use('/api/test', testRoutes);
   app.use('/api/club', clubRoutes);
@@ -67,6 +67,7 @@ import { getCookie } from '../../web/src/common/cookies';
   app.use('/api/books', bookRoutes);
   app.use('/api/profile', profileRoutes);
   app.use('/api/discord', discordRoutes);
+  app.use('/api/referrals', referralRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

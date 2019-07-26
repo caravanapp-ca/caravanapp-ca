@@ -30,6 +30,7 @@ import { deleteCookie, getCookie, setCookie } from './common/cookies';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 import { getUser } from './services/user';
+import { handleReferral } from './services/referral';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -86,10 +87,6 @@ export function App(props: AppProps) {
         await setUser(null);
         setLoadedUser(true);
         localStorage.removeItem(KEY_USER);
-        if (window.location.href.includes('?ref=') && !getCookie('ref')) {
-          const referrerId = window.location.href.split('?ref=')[1];
-          setCookie('ref', referrerId, 3);
-        }
       }
     };
     getUserAsync();
@@ -107,6 +104,14 @@ export function App(props: AppProps) {
     }
     if (!getCookie('userId')) {
       clearStorageAuthState();
+    }
+    if (
+      window.location.href.includes('?ref=') &&
+      !getCookie('compRef') &&
+      !getCookie('userId')
+    ) {
+      const referrerId = window.location.href.split('?ref=')[1];
+      handleReferral(referrerId);
     }
   }, []);
 

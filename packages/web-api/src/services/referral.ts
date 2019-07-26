@@ -55,19 +55,41 @@ export async function createReferralActionByDoc(
       break;
     case 'createClub':
     case 'joinClub':
+      const userId = referralDoc.referredById;
       const updateReferrerQuery = {
         $inc: {
           referralCount: 1,
         },
-        $addToSet: { referredIds: referralDoc.userId },
+        $addToSet: { referredUsers: referralDoc.userId },
       };
-      ReferralModel.findByIdAndUpdate(
-        referralDoc.referredById,
+      let referrerDoc = await ReferralModel.findOneAndUpdate(
+        { userId },
         updateReferrerQuery,
         { new: true }
       );
+      if (!referrerDoc) {
+        const referrerObj: Omit<
+          FilterAutoMongoKeys<Referral>,
+          'referredById' | 'source'
+        > = {
+          userId: referralDoc.referredById,
+          actions: [
+            {
+              action: 'successfulReferral',
+              timestamp: new Date(),
+            },
+          ],
+          referralCount: 1,
+          referredUsers: [referralDoc.userId],
+          referredAndNotJoined: false,
+        };
+        referrerDoc = await new ReferralModel(referrerObj).save();
+      }
+
       referralDoc.referredAndNotJoined = false;
+
       break;
+
     default:
       throw new Error(`Unknown referral action ${action}`);
   }
