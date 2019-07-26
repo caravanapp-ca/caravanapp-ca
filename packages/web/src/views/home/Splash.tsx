@@ -72,22 +72,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SplashProps {
   user: User | null;
-  onAboutClick: () => void;
   onLoginClick: () => void;
-  onOpenChatClick: () => void;
   onDismissClick: () => void;
   onSeeClubsClick: () => void;
 }
 
 export default function Splash(props: SplashProps) {
-  const {
-    user,
-    onAboutClick,
-    onLoginClick,
-    onOpenChatClick,
-    onDismissClick,
-    onSeeClubsClick,
-  } = props;
+  const { user, onLoginClick, onDismissClick, onSeeClubsClick } = props;
   const classes = useStyles();
   const theme = useTheme();
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -128,8 +119,8 @@ export default function Splash(props: SplashProps) {
               variant="h3"
               className={classes.tagText}
             >
-              {'Find your perfect reading buddies'}
-              <span className={classes.tagPeriod}>{'.'}</span>
+              Find your perfect reading buddies
+              <span className={classes.tagPeriod}>.</span>
             </Typography>
             <Typography
               color="textSecondary"
@@ -177,7 +168,7 @@ export default function Splash(props: SplashProps) {
               variant="contained"
               color="primary"
               className={classes.button}
-              onClick={onAboutClick}
+              href={'/about'}
             >
               <Typography color="secondary" variant="button">
                 {aboutButtonMsg}
@@ -199,7 +190,8 @@ export default function Splash(props: SplashProps) {
               variant="contained"
               color="secondary"
               className={classes.button}
-              onClick={onOpenChatClick}
+              href="https://discordapp.com/channels/592761082523680798/592761082523680806"
+              target="_blank"
             >
               <Typography variant="button">OPEN CHAT</Typography>
             </Button>
