@@ -10,7 +10,7 @@ export default function getReferralLink(
       // TODO add more cases - should we parse URL?
       switch (location) {
         case 'profile':
-          return 'https://caravanapp.ca?ref=' + userId;
+          return 'localhost:3000/clubs?ref=' + userId;
         default:
           break;
       }
