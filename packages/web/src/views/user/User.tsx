@@ -525,7 +525,7 @@ export default function UserView(props: UserViewProps) {
             : undefined,
         }}
       >
-        <UserAvatar user={user} size={screenSmallerThanSm ? 112 : 144} />
+        <UserAvatar user={user} size={screenSmallerThanSm ? 96 : 144} />
         <div style={{ marginLeft: theme.spacing(2) }}>
           <UserNameplate
             user={user}
