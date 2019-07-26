@@ -3,13 +3,9 @@ import {
   makeStyles,
   createStyles,
   Typography,
-  Button,
   useTheme,
-  Grid,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import Switch from '@material-ui/core/Switch';
 
 const useStyles = makeStyles(theme =>
   createStyles({

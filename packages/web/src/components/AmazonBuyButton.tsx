@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, makeStyles, Typography, Chip, Link } from '@material-ui/core';
+import { makeStyles, Typography, Link } from '@material-ui/core';
 
 export interface AmazonBuyButtonProps {
   link: string | undefined;

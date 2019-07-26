@@ -1,4 +1,3 @@
-import React from 'react';
 import { Capacity } from '@caravan/buddy-reading-types';
 
 export function capacityLabels(

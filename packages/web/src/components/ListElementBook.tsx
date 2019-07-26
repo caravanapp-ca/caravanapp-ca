@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 import { Services } from '@caravan/buddy-reading-types';
-import AdapterLink from './AdapterLink';
 import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
 import Truncate from 'react-truncate';
 
@@ -86,13 +85,15 @@ export default function ListElementBook(props: ListElementBookProps) {
       />
       <div className={classes.textContainer}>
         {club && (
-          <Link href={clubId ? `/clubs/${clubId}` : undefined}>
-            <div className={classes.clubNameContainer}>
-              <GroupIcon color="primary" />
-              <Typography variant="body1" color="primary">
-                {club.name}
-              </Typography>
-            </div>
+          <>
+            <Link href={clubId ? `/clubs/${clubId}` : undefined}>
+              <div className={classes.clubNameContainer}>
+                <GroupIcon color="primary" />
+                <Typography variant="body1" color="primary">
+                  {club.name}
+                </Typography>
+              </div>
+            </Link>
             <Typography
               variant="body1"
               color="textPrimary"
@@ -107,7 +108,7 @@ export default function ListElementBook(props: ListElementBookProps) {
                 {secondaryText}
               </Truncate>
             </Typography>
-          </Link>
+          </>
         )}
         {!club && (
           <div>
