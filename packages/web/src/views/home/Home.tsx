@@ -371,13 +371,6 @@ export default function Home(props: HomeProps) {
     setLoginModalShown(false);
   }
 
-  function openChat() {
-    window.open(
-      'https://discordapp.com/channels/592761082523680798/592761082523680806',
-      '_blank'
-    );
-  }
-
   function onClickMembershipFilter() {
     if (user) {
       setShowMembershipFilter(true);
@@ -538,10 +531,6 @@ export default function Home(props: HomeProps) {
     }
   };
 
-  const onAboutClick = () => {
-    props.history.push('/about');
-  };
-
   const onSeeClubsClick = () => {
     scroller.scrollTo('tabs', { smooth: true });
   };
@@ -604,9 +593,7 @@ export default function Home(props: HomeProps) {
         {showWelcomeMessage && (
           <Splash
             user={user}
-            onAboutClick={onAboutClick}
             onLoginClick={() => setLoginModalShown(true)}
-            onOpenChatClick={openChat}
             onDismissClick={() => setShowWelcomeMessage(false)}
             onSeeClubsClick={onSeeClubsClick}
           />
