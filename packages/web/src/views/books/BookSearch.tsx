@@ -3,7 +3,6 @@ import {
   GoogleBooks,
   ShelfEntry,
   FilterAutoMongoKeys,
-  User,
 } from '@caravan/buddy-reading-types';
 import {
   Container,
@@ -200,6 +199,7 @@ export default function BookSearch(props: BookSearchProps) {
             onKeyDown={handleOnKeyDown}
           />
           <img
+            alt="Google"
             src={googleLogo}
             aria-label="Google"
             className={classes.googleLogo}

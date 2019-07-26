@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
   Theme,
@@ -13,6 +13,7 @@ import { darkTheme, whiteTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import splash from '../../resources/splash.svg';
 import { User } from '@caravan/buddy-reading-types';
+import ReactResizeDetector from 'react-resize-detector';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,6 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       resizeMode: 'contain',
     },
+    textContainer: {
+      zIndex: 1,
+    },
     buttonsContainer: {
       marginTop: theme.spacing(4),
       display: 'flex',
@@ -55,6 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       flexWrap: 'wrap',
+      zIndex: 1,
     },
     button: {
       margin: theme.spacing(1),
@@ -66,62 +71,74 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SplashProps {
-  headerHeight?: number;
   user: User | null;
-  onAboutClick: () => void;
   onLoginClick: () => void;
-  onOpenChatClick: () => void;
   onDismissClick: () => void;
   onSeeClubsClick: () => void;
 }
 
 export default function Splash(props: SplashProps) {
-  const {
-    headerHeight,
-    user,
-    onAboutClick,
-    onLoginClick,
-    onOpenChatClick,
-    onDismissClick,
-    onSeeClubsClick,
-  } = props;
+  const { user, onLoginClick, onDismissClick, onSeeClubsClick } = props;
   const classes = useStyles();
   const theme = useTheme();
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
+  const [winHeight, setWinHeight] = React.useState<number>(window.innerHeight);
+
+  const headerHeight = screenSmallerThanSm ? 56 : 64;
+
   let logInButtonMsg = 'LOG IN WITH DISCORD';
   let aboutButtonMsg = 'ABOUT US';
   if (screenSmallerThanSm) {
     logInButtonMsg = 'LOG IN';
     aboutButtonMsg = 'ABOUT';
   }
+
+  const handleWinResize = () => {
+    setWinHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleWinResize);
+    return () => {
+      window.removeEventListener('resize', handleWinResize);
+    };
+  }, []);
+
   return (
     <div
       className={classes.root}
       style={{
-        height: headerHeight
-          ? window.innerHeight - headerHeight
-          : // 56 is the min height of the header
-            window.innerHeight - 56,
+        height: winHeight - headerHeight,
       }}
     >
       <Container maxWidth="md" className={classes.rootContainer}>
         <MuiThemeProvider theme={darkTheme}>
-          <Typography
-            color="textPrimary"
-            variant="h3"
-            className={classes.tagText}
-          >
-            {'Find your perfect reading buddies'}
-            <span className={classes.tagPeriod}>{'.'}</span>
-          </Typography>
-          <Typography color="textSecondary" variant="h5" className={classes.p1}>
-            Browse clubs below to find others to read with. If nothing seems
-            quite right, you can create a club so others can find you!
-          </Typography>
-          <Typography color="textSecondary" variant="h5" className={classes.p2}>
-            When you join or create a club you'll be automatically added to the
-            club's Discord channel.
-          </Typography>
+          <div className={classes.textContainer}>
+            <Typography
+              color="textPrimary"
+              variant="h3"
+              className={classes.tagText}
+            >
+              Find your perfect reading buddies
+              <span className={classes.tagPeriod}>.</span>
+            </Typography>
+            <Typography
+              color="textSecondary"
+              variant="h5"
+              className={classes.p1}
+            >
+              Start by browsing and joining existing clubs, or by creating your
+              own club!
+            </Typography>
+            <Typography
+              color="textSecondary"
+              variant="h5"
+              className={classes.p2}
+            >
+              When you join or create a club you'll be automatically added to
+              the club's Discord channel.
+            </Typography>
+          </div>
         </MuiThemeProvider>
         <div className={classes.buttonsContainer}>
           <MuiThemeProvider theme={whiteTheme}>
@@ -151,7 +168,7 @@ export default function Splash(props: SplashProps) {
               variant="contained"
               color="primary"
               className={classes.button}
-              onClick={onAboutClick}
+              href={'/about'}
             >
               <Typography color="secondary" variant="button">
                 {aboutButtonMsg}
@@ -173,14 +190,15 @@ export default function Splash(props: SplashProps) {
               variant="contained"
               color="secondary"
               className={classes.button}
-              onClick={onOpenChatClick}
+              href="https://discordapp.com/channels/592761082523680798/592761082523680806"
+              target="_blank"
             >
               <Typography variant="button">OPEN CHAT</Typography>
             </Button>
           )}
         </div>
       </Container>
-      <img src={splash} alt="Splash image" className={classes.splashImg} />
+      <img src={splash} alt="Splash" className={classes.splashImg} />
     </div>
   );
 }

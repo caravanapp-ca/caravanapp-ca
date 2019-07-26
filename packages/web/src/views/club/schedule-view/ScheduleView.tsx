@@ -607,6 +607,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
                     id={`discussion-${index + 1}`}
                     label={`Discussion ${index + 1}: ${format(d.date, 'PPP')}`}
                     placeholder={`Chapters ${3 * index + 1}-${3 * (index + 1)}`}
+                    //eslint-disable-next-line react/jsx-no-duplicate-props
                     inputProps={{ maxLength: discussionLabelMax }}
                     onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
                     onBlur={() => onBlurFocusDiscussionLabel('blur', index)}

@@ -1,14 +1,6 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import * as Scroll from 'react-scroll';
-import {
-  Link,
-  Element,
-  Events,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller,
-} from 'react-scroll';
+import { Element, scroller } from 'react-scroll';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -37,7 +29,6 @@ import { getAllGenres } from '../../services/genre';
 import logo from '../../resources/logo.svg';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import JoinCaravanButton from '../../components/JoinCaravanButton';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import ClubFilters from '../../components/filters/ClubFilters';
@@ -53,15 +44,12 @@ import {
   useMediaQuery,
   useTheme,
   CircularProgress,
-  Paper,
 } from '@material-ui/core';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
-import { getUser } from '../../services/user';
 import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
-import { AxiosResponse } from 'axios';
 import Splash from './Splash';
 
 interface HomeProps extends RouteComponentProps<{}> {
@@ -250,11 +238,8 @@ export default function Home(props: HomeProps) {
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
   const [search, setSearch] = React.useState<string>('');
-  const [headerHeight, setHeaderHeight] = React.useState<number>();
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const headerRef = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
     if (!showWelcomeMessage) {
@@ -384,13 +369,6 @@ export default function Home(props: HomeProps) {
 
   function onCloseLoginModal() {
     setLoginModalShown(false);
-  }
-
-  function openChat() {
-    window.open(
-      'https://discordapp.com/channels/592761082523680798/592761082523680806',
-      '_blank'
-    );
   }
 
   function onClickMembershipFilter() {
@@ -553,16 +531,6 @@ export default function Home(props: HomeProps) {
     }
   };
 
-  const onHeaderHeightChange = (newHeight: number) => {
-    if (newHeight > 0) {
-      setHeaderHeight(newHeight);
-    }
-  };
-
-  const onAboutClick = () => {
-    props.history.push('/about');
-  };
-
   const onSeeClubsClick = () => {
     scroller.scrollTo('tabs', { smooth: true });
   };
@@ -620,17 +588,12 @@ export default function Home(props: HomeProps) {
       <Header
         centerComponent={centerComponent}
         rightComponent={rightComponent}
-        listenToHeightChanges={true}
-        onHeightChange={onHeaderHeightChange}
       />
       <main>
         {showWelcomeMessage && (
           <Splash
             user={user}
-            headerHeight={headerHeight}
-            onAboutClick={onAboutClick}
             onLoginClick={() => setLoginModalShown(true)}
-            onOpenChatClick={openChat}
             onDismissClick={() => setShowWelcomeMessage(false)}
             onSeeClubsClick={onSeeClubsClick}
           />

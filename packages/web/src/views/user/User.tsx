@@ -1,4 +1,4 @@
-import React, { useEffect, SyntheticEvent } from 'react';
+import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
@@ -170,6 +170,8 @@ export default function UserView(props: UserViewProps) {
   const userTheme = user ? makeUserTheme(user.palette) : undefined;
   const userDarkTheme = user ? makeUserDarkTheme(user.palette) : undefined;
 
+  const myUserId = props.user ? props.user._id : undefined;
+
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -188,7 +190,7 @@ export default function UserView(props: UserViewProps) {
   useEffect(() => {
     getUser(userId).then(user => {
       if (user) {
-        const isUserMe = (props.user && props.user._id === user._id) || false;
+        const isUserMe = myUserId === user._id;
         setUserIsMe(isUserMe);
         if (isUserMe) {
           getGenres();
@@ -210,7 +212,7 @@ export default function UserView(props: UserViewProps) {
       }
       setUser(user);
     });
-  }, [userId, props.user && props.user._id]);
+  }, [userId, myUserId]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 
@@ -443,7 +445,7 @@ export default function UserView(props: UserViewProps) {
   // }
 
   function backButtonAction() {
-    if (props.history.length > 1) {
+    if (props.history.length > 2) {
       props.history.goBack();
     } else {
       props.history.replace('/');
