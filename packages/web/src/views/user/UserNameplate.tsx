@@ -16,6 +16,7 @@ import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
+import UserBadgeSmall from '../../components/UserBadgeSmall';
 
 interface UserNameplateProps {
   user: User;
@@ -44,6 +45,11 @@ const useStyles = makeStyles((theme: Theme) =>
     textField: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
+    },
+    nameAndBadge: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
     },
   })
 );
@@ -78,8 +84,11 @@ export default function UserNameplate(props: UserNameplateProps) {
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
-  // TODO: Add userIsMe to if statement after testing
-  if (isEditing && onEdit) {
+  const badgeIncrements = ['30Ref', '20Ref', '10Ref', '5Ref', '3Ref'];
+  // TODO: How can we cleverly ensure badgeToDisplay is always the highest earned badge?
+  const badgeToDisplay = user.badges.find(b => badgeIncrements.includes(b.key));
+
+  if (userIsMe && isEditing && onEdit) {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
         <div className={classes.editContainer}>
@@ -163,13 +172,16 @@ export default function UserNameplate(props: UserNameplateProps) {
   } else {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <Typography
-          variant="h4"
-          color="textPrimary"
-          style={{ fontWeight: 600 }}
-        >
-          {user.name}
-        </Typography>
+        <div className={classes.nameAndBadge}>
+          <Typography
+            variant="h4"
+            color="textPrimary"
+            style={{ fontWeight: 600 }}
+          >
+            {user.name}
+          </Typography>
+          {badgeToDisplay && <UserBadgeSmall badge={badgeToDisplay} />}
+        </div>
         <Typography
           variant="body1"
           color="textPrimary"

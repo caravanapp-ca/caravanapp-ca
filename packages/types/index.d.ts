@@ -127,6 +127,14 @@ declare module '@caravan/buddy-reading-types' {
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
     onboardingVersion: number;
     palette: PaletteObject | null;
+    badges: Badge[];
+  }
+
+  export interface Badge {
+    key: string;
+    name: string;
+    description: string;
+    timestamp: Date;
   }
 
   export interface UserWithInvitableClubs {
@@ -323,6 +331,7 @@ declare module '@caravan/buddy-reading-types' {
         shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
         onboardingVersion: number;
         palette: PaletteObject | null;
+        badges: Badge[];
         createdAt: string;
         updatedAt: string;
       }[];

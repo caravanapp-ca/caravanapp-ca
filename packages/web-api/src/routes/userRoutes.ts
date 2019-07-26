@@ -322,6 +322,7 @@ router.put(
       questions: userQA,
       shelf: userShelf,
       palette: user.palette,
+      badges: user.badges,
     };
 
     const writeableObj: any = newUserButWithPossibleNullValues;
