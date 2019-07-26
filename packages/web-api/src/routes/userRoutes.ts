@@ -9,6 +9,8 @@ import {
   UserQA,
   Services,
   ActiveFilter,
+  Referral,
+  ReferralAction,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -21,6 +23,7 @@ import {
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc } from '../../typings';
+import { createReferralAction } from '../services/referral';
 
 const router = express.Router();
 
@@ -348,6 +351,7 @@ router.put(
         // Perhaps send email or whatever.
         userDoc.onboardingVersion = 1;
         userDoc = await userDoc.save();
+        createReferralAction(userDoc.id, 'onboarded');
       }
       res.status(200).send(userDoc);
     } catch (err) {

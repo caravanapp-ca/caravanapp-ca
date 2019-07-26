@@ -189,6 +189,26 @@ declare module '@caravan/buddy-reading-types' {
     max: number;
   }
 
+  export interface UserReferredAction {
+    action: ReferralAction;
+    timestamp: Date | string;
+  }
+
+  export interface Referral extends DocumentFields, MongoTimestamps {
+    userId: string;
+    referredUsers: string[];
+    actions: UserReferredAction[];
+    referralCount: number;
+    referredById?: string;
+    source: ReferralSource;
+    referredAndNotJoined: boolean;
+  }
+
+  export interface Referrals {
+    _id: string;
+    referrals: Referral[];
+  }
+
   export interface FilterChip {
     type: FilterChipType;
     name: string;
@@ -244,6 +264,17 @@ declare module '@caravan/buddy-reading-types' {
   export type Membership = 'myClubs' | 'clubsImNotIn';
 
   export type FilterChipType = 'genres' | 'speed' | 'capacity' | 'membership';
+
+  export type ReferralAction =
+    | 'click'
+    | 'login'
+    | 'onboarded'
+    | 'joinClub'
+    | 'createClub';
+
+  export type ReferralSource = 'personal' | 'facebook' | 'twitter';
+
+  export type ReferralLocation = 'profile' | 'club';
 
   export type GroupVibe =
     | 'chill'
@@ -319,6 +350,8 @@ declare module '@caravan/buddy-reading-types' {
     }
     export interface GetProfileQuestions
       extends Omit<ProfileQuestions, '_id'> {}
+
+    export interface GetReferrals extends Omit<Referrals, '_id'> {}
 
     export interface GetUsers {
       users: {

@@ -387,6 +387,22 @@ export default function UserView(props: UserViewProps) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
+  function copyToClipboard(refLink: string) {
+    const el = document.createElement('textarea');
+    el.value = refLink;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'info',
+      message:
+        'Copied referral link to clipboard - spread that baby like WILDFIRE!',
+    });
+  }
+
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
@@ -536,6 +552,7 @@ export default function UserView(props: UserViewProps) {
             onEdit={onEdit}
             valid={[nameValidated(), bioValidated(), websiteValidated()]}
             userDarkTheme={userDarkTheme}
+            copyToClipboard={copyToClipboard}
           />
         </div>
       </div>

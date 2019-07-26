@@ -30,6 +30,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
 import { ClubDoc, UserDoc } from '../../typings';
 import { getUser } from '../services/user';
+import { createReferralAction } from '../services/referral';
 
 const router = express.Router();
 
@@ -747,6 +748,8 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
 
+    createReferralAction(userId, 'createClub');
+
     const result: Services.CreateClubResult = {
       //@ts-ignore
       club: newClub,
@@ -1078,7 +1081,7 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    const userId = req.user._id;
+    const userId = req.user.id;
     const userDiscordId = req.user.discordId;
     const { clubId } = req.params;
     const { isMember } = req.body;
@@ -1088,7 +1091,7 @@ router.put(
     } catch (err) {
       return res.status(400).send(`Could not find club ${clubId}`);
     }
-    const isOwner = club.ownerId === userId.toHexString();
+    const isOwner = club.ownerId === userId;
     const discordClient = ReadingDiscordBot.getInstance();
     const guild = discordClient.guilds.first();
     const channel: GuildChannel = guild.channels.get(club.channelId);
@@ -1129,6 +1132,7 @@ router.put(
             MANAGE_MESSAGES: isOwner,
           }
         );
+        createReferralAction(userId, 'joinClub');
       }
     } else {
       if (isOwner) {

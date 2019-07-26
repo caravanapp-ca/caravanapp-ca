@@ -498,9 +498,13 @@ export default function ClubComponent(props: ClubProps) {
     }
   };
 
-  const copyToClipboard = (str: string) => {
+  const copyToClipboard = (clubId: string) => {
     const el = document.createElement('textarea');
-    el.value = str;
+    let urlString = 'localhost:3000/clubs/' + clubId;
+    if (user) {
+      urlString += '?ref=' + user._id;
+    }
+    el.value = urlString;
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
@@ -585,7 +589,7 @@ export default function ClubComponent(props: ClubProps) {
                     color="secondary"
                     className={classes.button}
                     onClick={() =>
-                      props.user
+                      user
                         ? addOrRemoveMeFromClub('add')
                         : setLoginDialogVisible(true)
                     }
@@ -635,7 +639,7 @@ export default function ClubComponent(props: ClubProps) {
                     variant="contained"
                     color="primary"
                     className={classes.button}
-                    onClick={() => copyToClipboard(window.location.href)}
+                    onClick={() => copyToClipboard(club._id)}
                   >
                     <Typography
                       variant="button"
@@ -704,7 +708,7 @@ export default function ClubComponent(props: ClubProps) {
                 color="secondary"
                 className={classes.fab}
                 onClick={() =>
-                  props.user
+                  user
                     ? addOrRemoveMeFromClub('add')
                     : setLoginDialogVisible(true)
                 }

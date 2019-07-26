@@ -18,6 +18,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
 import { referralTiers } from '../../common/globalConstants';
+import getReferralLink from '../../functions/getReferralLink';
 
 interface UserNameplateProps {
   user: User;
@@ -29,6 +30,7 @@ interface UserNameplateProps {
   ) => void;
   valid: [boolean, string][];
   userDarkTheme?: Theme;
+  copyToClipboard: (refLink: string) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -52,6 +54,10 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
     },
+    referralLinkField: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   })
 );
 
@@ -65,7 +71,15 @@ const getBadgeToDisplay = (badges: UserBadge[]) => {
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { user, userIsMe, isEditing, onEdit, valid, userDarkTheme } = props;
+  const {
+    user,
+    userIsMe,
+    isEditing,
+    onEdit,
+    valid,
+    userDarkTheme,
+    copyToClipboard,
+  } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
     bio: boolean;
@@ -157,6 +171,20 @@ export default function UserNameplate(props: UserNameplateProps) {
             margin="normal"
             variant="outlined"
           />
+          <Button
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(getReferralLink(user._id, 'profile'))
+            }
+            style={{
+              width: '20%',
+              justifyContent: 'flex-start',
+              marginBottom: theme.spacing(2),
+              fontWeight: 600,
+            }}
+          >
+            <Typography variant="button">Copy Referral Link</Typography>
+          </Button>
           <Typography color="textSecondary">Palette</Typography>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {paletteColours.map(colourObj => (
@@ -252,6 +280,17 @@ export default function UserNameplate(props: UserNameplateProps) {
                 />
               )}
             <Typography variant="button">{msgBtnLabelCaps}</Typography>
+          </Button>
+        )}
+        {user && userIsMe && (
+          <Button
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(getReferralLink(user._id, 'profile'))
+            }
+            style={{ marginTop: theme.spacing(1) }}
+          >
+            <Typography variant="button">Copy Referral Link</Typography>
           </Button>
         )}
       </MuiThemeProvider>
