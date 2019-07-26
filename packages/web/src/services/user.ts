@@ -6,6 +6,7 @@ import {
   FilterAutoMongoKeys,
   ActiveFilter,
   Services,
+  UserBadge,
 } from '@caravan/buddy-reading-types';
 import { clearStorageAuthState } from '../common/localStorage';
 import { clearCookieAuthState } from '../common/cookies';

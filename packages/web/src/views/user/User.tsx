@@ -9,6 +9,7 @@ import {
   ProfileQuestion,
   UserQA,
   ClubTransformed,
+  UserBadge,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,

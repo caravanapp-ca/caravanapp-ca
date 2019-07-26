@@ -9,9 +9,15 @@ import {
   ProfileQuestions,
   MongoTimestamps,
   ProfileQuestion,
+  Badges,
 } from '@caravan/buddy-reading-types';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
+
+declare module '*.svg' {
+  const content: string;
+  export default content;
+}
 
 export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
   _id: MongooseTypes.ObjectId;
@@ -19,6 +25,10 @@ export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
 }
 
 export interface GenreDoc extends Document, Omit<Genres, '_id'> {
+  _id: MongooseTypes.ObjectId;
+}
+
+export interface BadgeDoc extends Document, Omit<Badges, '_id'> {
   _id: MongooseTypes.ObjectId;
 }
 

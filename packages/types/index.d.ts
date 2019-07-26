@@ -127,14 +127,25 @@ declare module '@caravan/buddy-reading-types' {
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
     onboardingVersion: number;
     palette: PaletteObject | null;
-    badges: Badge[];
+    badges: UserBadge[];
+  }
+
+  export interface UserBadge extends MongoTimestamps {
+    key: string;
+    name?: string;
+    description?: string;
   }
 
   export interface Badge {
-    key: string;
     name: string;
     description: string;
-    timestamp: Date;
+  }
+
+  export interface Badges extends DocumentFields {
+    badgeKeys: string[];
+    badges: {
+      [key: string]: Badge;
+    };
   }
 
   export interface UserWithInvitableClubs {
@@ -331,7 +342,7 @@ declare module '@caravan/buddy-reading-types' {
         shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
         onboardingVersion: number;
         palette: PaletteObject | null;
-        badges: Badge[];
+        badges: UserBadge[];
         createdAt: string;
         updatedAt: string;
       }[];

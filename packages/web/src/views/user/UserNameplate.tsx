@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, PaletteObject } from '@caravan/buddy-reading-types';
+import { User, PaletteObject, UserBadge } from '@caravan/buddy-reading-types';
 import {
   Typography,
   Button,
@@ -17,6 +17,7 @@ import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
 import UserBadgeSmall from '../../components/UserBadgeSmall';
+import { referralTiers } from '../../common/globalConstants';
 
 interface UserNameplateProps {
   user: User;
@@ -54,6 +55,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const getBadgeToDisplay = (badges: UserBadge[]) => {
+  for (let i = 0; i < referralTiers.length; i++) {
+    return badges.find(b => b.key === `ref${referralTiers[i]}`);
+  }
+  return;
+};
+
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
@@ -84,9 +92,7 @@ export default function UserNameplate(props: UserNameplateProps) {
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
-  const badgeIncrements = ['30Ref', '20Ref', '10Ref', '5Ref', '3Ref'];
-  // TODO: How can we cleverly ensure badgeToDisplay is always the highest earned badge?
-  const badgeToDisplay = user.badges.find(b => badgeIncrements.includes(b.key));
+  const badgeToDisplay = getBadgeToDisplay(user.badges);
 
   if (userIsMe && isEditing && onEdit) {
     return (
