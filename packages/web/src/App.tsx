@@ -31,6 +31,7 @@ import { GAListener } from './common/GAListener';
 import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
+import About from './views/about/About';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -155,6 +156,13 @@ export function App(props: AppProps) {
                       user,
                       <Onboarding {...props} user={user} />
                     )
+                  }
+                />
+                <Route
+                  exact
+                  path="/about"
+                  render={props =>
+                    forceOnboard(user, <About {...props} user={user} />)
                   }
                 />
                 <Route

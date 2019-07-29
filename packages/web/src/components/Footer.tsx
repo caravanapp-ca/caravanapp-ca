@@ -10,14 +10,29 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     paddingTop: theme.spacing(6),
     paddingBottom: theme.spacing(6),
-    paddingLeft: theme.spacing(4),
-    paddingRight: theme.spacing(4),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    textAlign: 'center',
+  },
+  footerContainer: {
+    padding: 0,
+  },
+  linksContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
   sticky: {
     position: 'fixed',
     width: '100%',
     bottom: 0,
     left: 0,
+  },
+  link: {
+    margin: '0px 8px',
   },
 }));
 
@@ -86,28 +101,28 @@ export default function Footer(props: FooterProps) {
       })}
       ref={footerHeightRef}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" className={classes.footerContainer}>
         <MadeWithLove />
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          align="center"
-          component="p"
-        >
-          {'We recommend downloading the Discord app for chat. '}
-          <Link href="https://discordapp.com/download">Download here.</Link>
-          <br />
-          {'We want to hear what you have to say! Check out our '}
-          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdpPzKPO9Spx7ovBKh5Q6n977hgBRbxTgiKVPaDIRnkjfb9jQ/viewform">
-            feedback form.
+        <div className={classes.linksContainer}>
+          <Link href="https://discordapp.com/download" className={classes.link}>
+            Download Discord
           </Link>
-          <br />
-          {'To learn more about user privacy on Caravan, view our '}
-          <Link href="/privacy">privacy policy.</Link>
-          <br />
-          {
-            'Caravan is a participant in the Amazon Associates Program, meaning we receive a small portion of purchases made through links on our site.'
-          }
+          <Link
+            href="https://forms.gle/rzcHzCMgwMx7wxgRA"
+            className={classes.link}
+          >
+            Feedback
+          </Link>
+          <Link href="/privacy" className={classes.link}>
+            Privacy Policy
+          </Link>
+          <Link href="/about" className={classes.link}>
+            About Us
+          </Link>
+        </div>
+        <Typography variant="caption" color="textSecondary" align="center">
+          Caravan is a participant in the Amazon Associates Program, meaning we
+          receive a small portion of purchases made through links on our site.
         </Typography>
       </Container>
     </footer>

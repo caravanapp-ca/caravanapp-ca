@@ -78,6 +78,7 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
           notchedOutline: classes.notchedOutline,
         },
       }}
+      //eslint-disable-next-line react/jsx-no-duplicate-props
       inputProps={{ maxLength }}
       InputLabelProps={{
         classes: {

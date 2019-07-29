@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GoogleBooks, User } from '@caravan/buddy-reading-types';
+import { GoogleBooks } from '@caravan/buddy-reading-types';
 
 const discordRoute = '/api/discord';
 
