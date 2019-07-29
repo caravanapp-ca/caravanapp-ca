@@ -79,66 +79,126 @@ export default function ListElementBook(props: ListElementBookProps) {
     shortenedTitle = shortenedTitle.substring(0, 96) + '...';
   }
 
-  return (
-    <Draggable draggableId={id} index={index}>
-      {(provided, snapshot) => (
-        <ListItem
-          // @ts-ignore
-          button={clubId ? true : false}
-          innerRef={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          {primary && <ListItemIcon>{primary}</ListItemIcon>}
-          <img
-            src={coverImage || require('../resources/generic-book-cover.jpg')}
-            alt={primaryText}
-            className={classes.coverImage}
-          />
-          <div className={classes.textContainer}>
-            {club && (
-              <>
-                <Link href={clubId ? `/clubs/${clubId}` : undefined}>
-                  <div className={classes.clubNameContainer}>
-                    <GroupIcon color="primary" />
-                    <Typography variant="body1" color="primary">
-                      {club.name}
-                    </Typography>
-                  </div>
-                </Link>
-                <Typography
-                  variant="body1"
-                  color="textPrimary"
-                  style={{ fontWeight: 600 }}
-                >
-                  <Truncate lines={1} trimWhitespace={true}>
-                    {primaryText}
-                  </Truncate>
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  <Truncate lines={1} trimWhitespace={true}>
+  // If you're making changes to the render here you will need to replicate them in both the draggable and regular cases.
+  // TODO: Make this cleaner.
+  if (draggable) {
+    return (
+      <Draggable draggableId={id} index={index}>
+        {(provided, snapshot) => (
+          <ListItem
+            // @ts-ignore
+            button={clubId ? true : false}
+            innerRef={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            {primary && <ListItemIcon>{primary}</ListItemIcon>}
+            <img
+              src={coverImage || require('../resources/generic-book-cover.jpg')}
+              alt={primaryText}
+              className={classes.coverImage}
+            />
+            <div className={classes.textContainer}>
+              {club && (
+                <>
+                  <Link href={clubId ? `/clubs/${clubId}` : undefined}>
+                    <div className={classes.clubNameContainer}>
+                      <GroupIcon color="primary" />
+                      <Typography variant="body1" color="primary">
+                        {club.name}
+                      </Typography>
+                    </div>
+                  </Link>
+                  <Typography
+                    variant="body1"
+                    color="textPrimary"
+                    style={{ fontWeight: 600 }}
+                  >
+                    <Truncate lines={1} trimWhitespace={true}>
+                      {primaryText}
+                    </Truncate>
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <Truncate lines={1} trimWhitespace={true}>
+                      {secondaryText}
+                    </Truncate>
+                  </Typography>
+                </>
+              )}
+              {!club && (
+                <div>
+                  <Typography variant="body1" style={{ fontWeight: 600 }}>
+                    {shortenedTitle}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
                     {secondaryText}
-                  </Truncate>
-                </Typography>
-              </>
+                  </Typography>
+                </div>
+              )}
+              {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
+            </div>
+            {secondary && (
+              <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
             )}
-            {!club && (
-              <div>
-                <Typography variant="body1" style={{ fontWeight: 600 }}>
-                  {shortenedTitle}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
+          </ListItem>
+        )}
+      </Draggable>
+    );
+  } else {
+    return (
+      <ListItem
+        // @ts-ignore
+        button={clubId ? true : false}
+      >
+        {primary && <ListItemIcon>{primary}</ListItemIcon>}
+        <img
+          src={coverImage || require('../resources/generic-book-cover.jpg')}
+          alt={primaryText}
+          className={classes.coverImage}
+        />
+        <div className={classes.textContainer}>
+          {club && (
+            <>
+              <Link href={clubId ? `/clubs/${clubId}` : undefined}>
+                <div className={classes.clubNameContainer}>
+                  <GroupIcon color="primary" />
+                  <Typography variant="body1" color="primary">
+                    {club.name}
+                  </Typography>
+                </div>
+              </Link>
+              <Typography
+                variant="body1"
+                color="textPrimary"
+                style={{ fontWeight: 600 }}
+              >
+                <Truncate lines={1} trimWhitespace={true}>
+                  {primaryText}
+                </Truncate>
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <Truncate lines={1} trimWhitespace={true}>
                   {secondaryText}
-                </Typography>
-              </div>
-            )}
-            {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
-          </div>
-          {secondary && (
-            <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
+                </Truncate>
+              </Typography>
+            </>
           )}
-        </ListItem>
-      )}
-    </Draggable>
-  );
+          {!club && (
+            <div>
+              <Typography variant="body1" style={{ fontWeight: 600 }}>
+                {shortenedTitle}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {secondaryText}
+              </Typography>
+            </div>
+          )}
+          {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
+        </div>
+        {secondary && (
+          <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
+        )}
+      </ListItem>
+    );
+  }
 }

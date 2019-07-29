@@ -124,6 +124,24 @@ async function getUserMap(guild: Guild, clubDocs: ClubDoc[]) {
   return foundUsers;
 }
 
+const sanitizeClubShelf = (shelf: FilterAutoMongoKeys<ShelfEntry>[]) => {
+  const newShelf = shelf.map(item => {
+    if (
+      item &&
+      item.coverImageURL &&
+      knownHttpsRedirects.find(url => item.coverImageURL.startsWith(url))
+    ) {
+      const newItem: FilterAutoMongoKeys<ShelfEntry> = {
+        ...item,
+        coverImageURL: item.coverImageURL.replace('http:', 'https:'),
+      };
+      return newItem;
+    }
+    return item;
+  });
+  return newShelf;
+};
+
 router.get('/', async (req, res, next) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
   const currUserId = req.session.userId;
@@ -713,20 +731,13 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    const shelf = body.shelf.map(item => {
-      if (
-        item &&
-        item.coverImageURL &&
-        knownHttpsRedirects.find(url => item.coverImageURL.startsWith(url))
-      ) {
-        const newItem: CreateClubBody['shelf'][0] = {
-          ...item,
-          coverImageURL: item.coverImageURL.replace('http:', 'https:'),
-        };
-        return newItem;
+    let newShelf = body.shelf;
+    for (var key in newShelf) {
+      const keyTyped = key as ReadingState;
+      if (newShelf[keyTyped].length > 0) {
+        newShelf[keyTyped] = sanitizeClubShelf(newShelf[keyTyped]);
       }
-      return item;
-    });
+    }
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
@@ -734,7 +745,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       maxMembers: body.maxMembers,
       readingSpeed: body.readingSpeed,
       genres: body.genres,
-      shelf,
+      shelf: newShelf,
       schedules: body.schedules,
       ownerId: userId,
       ownerDiscordId: req.user.discordId,
@@ -920,6 +931,35 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
       .status(401)
       .send("You don't have permission to delete this channel.");
   }
+});
+
+router.put('/:id/updateShelf', isAuthenticated, async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const errorArr = errors.array();
+    return res.status(422).json({ errors: errorArr });
+  }
+  const { id: clubId } = req.params;
+  const { newShelf } = req.body;
+  // TODO: We should do more validation on newShelf here, or, find a way to catch the Mongoose Model errors.
+  let updatedClub: ClubDoc;
+  try {
+    updatedClub = await ClubModel.findByIdAndUpdate(
+      clubId,
+      {
+        shelf: newShelf,
+      },
+      { new: true }
+    );
+  } catch (err) {
+    console.error(`Failed to update shelf for club ${clubId}: ${err}`);
+    return res.status(400).send(`Failed to update shelf for club ${clubId}`);
+  }
+  if (!updatedClub) {
+    console.error(`Could not find club ${clubId}`);
+    return res.status(404).send(`Could not find club ${clubId}`);
+  }
+  return res.status(200).send(updatedClub);
 });
 
 // Update a club's currently read book

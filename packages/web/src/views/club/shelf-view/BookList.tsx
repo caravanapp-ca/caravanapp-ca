@@ -121,56 +121,118 @@ export default function BookList(props: BookListProps) {
     return <AmazonBuyButton link={link} />;
   }
 
-  return (
-    <Paper>
-      <Droppable droppableId={id}>
-        {(provided, snapshot) => (
-          <List dense={false}>
-            {(data as UserShelfEntry[]).map((b, index) => {
-              let selected = false;
-              if (radioValue && radioValue === b._id) {
-                selected = true;
-              }
-              let primaryElement: JSX.Element | undefined;
-              switch (primary) {
-                case 'radio':
-                  primaryElement = radio(b, index);
-                  break;
-              }
-              let secondaryElement: JSX.Element | undefined;
-              switch (secondary) {
-                case 'delete':
-                  secondaryElement = deleteIcon(b, index);
-                  break;
-                case 'add':
-                  secondaryElement = addIcon(b, index);
-                  break;
-              }
-              let tertiaryElement: JSX.Element | undefined;
-              switch (tertiary) {
-                case 'buy':
-                  tertiaryElement = buyButton(b.amazonLink);
-              }
-              return (
-                <ListElementBook
-                  clubId={b.clubId}
-                  club={b.club}
-                  coverImage={b.coverImageURL}
-                  primaryText={b.title}
-                  secondaryText={b.author}
-                  key={b.isbn || index}
-                  primary={primaryElement}
-                  secondary={secondaryElement}
-                  tertiary={tertiaryElement}
-                  onClick={onClick}
-                  selected={selected}
-                />
-              );
-            })}
-            {footerElement}
-          </List>
-        )}
-      </Droppable>
-    </Paper>
-  );
+  // If you're making changes to the render here you will need to replicate them in both the droppable and regular cases.
+  // TODO: Make this cleaner.
+  if (droppable) {
+    return (
+      <Paper>
+        <Droppable droppableId={id}>
+          {(provided, snapshot) => (
+            <List
+              dense={false}
+              innerRef={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {(data as UserShelfEntry[]).map((b, index) => {
+                let selected = false;
+                if (radioValue && radioValue === b._id) {
+                  selected = true;
+                }
+                let primaryElement: JSX.Element | undefined;
+                switch (primary) {
+                  case 'radio':
+                    primaryElement = radio(b, index);
+                    break;
+                }
+                let secondaryElement: JSX.Element | undefined;
+                switch (secondary) {
+                  case 'delete':
+                    secondaryElement = deleteIcon(b, index);
+                    break;
+                  case 'add':
+                    secondaryElement = addIcon(b, index);
+                    break;
+                }
+                let tertiaryElement: JSX.Element | undefined;
+                switch (tertiary) {
+                  case 'buy':
+                    tertiaryElement = buyButton(b.amazonLink);
+                }
+                return (
+                  <ListElementBook
+                    id={b.isbn || index.toString()}
+                    index={index}
+                    clubId={b.clubId}
+                    club={b.club}
+                    coverImage={b.coverImageURL}
+                    primaryText={b.title}
+                    secondaryText={b.author}
+                    key={b.isbn || index}
+                    primary={primaryElement}
+                    secondary={secondaryElement}
+                    tertiary={tertiaryElement}
+                    onClick={onClick}
+                    selected={selected}
+                    draggable={droppable}
+                  />
+                );
+              })}
+              {footerElement}
+            </List>
+          )}
+        </Droppable>
+      </Paper>
+    );
+  } else {
+    return (
+      <Paper>
+        <List dense={false}>
+          {(data as UserShelfEntry[]).map((b, index) => {
+            let selected = false;
+            if (radioValue && radioValue === b._id) {
+              selected = true;
+            }
+            let primaryElement: JSX.Element | undefined;
+            switch (primary) {
+              case 'radio':
+                primaryElement = radio(b, index);
+                break;
+            }
+            let secondaryElement: JSX.Element | undefined;
+            switch (secondary) {
+              case 'delete':
+                secondaryElement = deleteIcon(b, index);
+                break;
+              case 'add':
+                secondaryElement = addIcon(b, index);
+                break;
+            }
+            let tertiaryElement: JSX.Element | undefined;
+            switch (tertiary) {
+              case 'buy':
+                tertiaryElement = buyButton(b.amazonLink);
+            }
+            return (
+              <ListElementBook
+                id={b.isbn || index.toString()}
+                index={index}
+                clubId={b.clubId}
+                club={b.club}
+                coverImage={b.coverImageURL}
+                primaryText={b.title}
+                secondaryText={b.author}
+                key={b.isbn || index}
+                primary={primaryElement}
+                secondary={secondaryElement}
+                tertiary={tertiaryElement}
+                onClick={onClick}
+                selected={selected}
+              />
+            );
+          })}
+          {footerElement}
+        </List>
+      </Paper>
+    );
+  }
 }

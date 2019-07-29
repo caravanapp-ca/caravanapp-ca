@@ -191,14 +191,14 @@ export default function ClubCards(props: ClubCardsProps) {
         )}
         <Grid container spacing={4}>
           {clubsTransformed.map(c => {
-            const { club, currentlyReading, schedule } = c;
+            const { club, schedule } = c;
+            const currentlyReading = club.shelf.current[0];
             let year;
             if (currentlyReading && currentlyReading.publishedDate) {
               year = format(new Date(currentlyReading.publishedDate), 'yyyy');
             }
             let startMsg = 'Start: Not set';
             let endMsg = 'End: Not set';
-            let progressPercentage = 0;
             let progress = 0;
             if (schedule && schedule.startDate) {
               const { startDate, duration } = schedule;
@@ -234,7 +234,6 @@ export default function ClubCards(props: ClubCardsProps) {
                     'd'
                   )}`;
                 }
-                progressPercentage = 3;
               }
             }
             let groupVibeAvatar: JSX.Element | undefined;

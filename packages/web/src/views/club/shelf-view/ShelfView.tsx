@@ -2,20 +2,11 @@ import React, { useMemo } from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
 import BookList from './BookList';
 import {
-  ShelfEntry,
-  ReadingState,
   SelectedGenre,
   Services,
+  ClubShelfType,
 } from '@caravan/buddy-reading-types';
 import GenreChip from '../../../components/GenreChip';
-
-interface ShelfViewProps {
-  genres?: Services.GetGenres;
-  isEditing: boolean;
-  onGenreClick: (key: string, currActive: boolean) => void;
-  selectedGenres: SelectedGenre[];
-  shelf: ShelfEntry[];
-}
 
 const useStyles = makeStyles(theme => ({
   sectionContainer: {
@@ -31,21 +22,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+interface ShelfViewProps {
+  genres?: Services.GetGenres;
+  isEditing: boolean;
+  onGenreClick: (key: string, currActive: boolean) => void;
+  selectedGenres: SelectedGenre[];
+  shelf: ClubShelfType;
+}
+
 export default function ShelfView(props: ShelfViewProps) {
   const classes = useStyles();
   const { genres, isEditing, onGenreClick, selectedGenres, shelf } = props;
-
-  const shelfMap = useMemo(() => {
-    const map: { [key in ReadingState]: ShelfEntry[] } = {
-      current: [],
-      notStarted: [],
-      read: [],
-    };
-    shelf.forEach(s => {
-      map[s.readingState].push(s);
-    });
-    return map;
-  }, [shelf]);
 
   return (
     <div>
@@ -94,28 +81,28 @@ export default function ShelfView(props: ShelfViewProps) {
           </div>
         </>
       )}
-      {shelfMap.current.length > 0 && (
+      {shelf.current.length > 0 && (
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
             Currently Reading
           </Typography>
-          <BookList id="current" data={shelfMap.current} tertiary="buy" />
+          <BookList id="current" data={shelf.current} tertiary="buy" />
         </div>
       )}
-      {shelfMap.notStarted.length > 0 && (
+      {shelf.notStarted.length > 0 && (
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
             To be Read
           </Typography>
-          <BookList id="to-be-read" data={shelfMap.notStarted} tertiary="buy" />
+          <BookList id="to-be-read" data={shelf.notStarted} tertiary="buy" />
         </div>
       )}
-      {shelfMap.read.length > 0 && (
+      {shelf.read.length > 0 && (
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
             Previously Read
           </Typography>
-          <BookList id="previously-read" data={shelfMap.read} tertiary="buy" />
+          <BookList id="previously-read" data={shelf.read} tertiary="buy" />
         </div>
       )}
     </div>

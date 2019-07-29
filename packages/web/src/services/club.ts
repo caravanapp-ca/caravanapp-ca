@@ -1,13 +1,10 @@
 import axios from 'axios';
 import {
   Services,
-  ChannelSource,
   ShelfEntry,
   FilterAutoMongoKeys,
-  CurrBookAction,
   ReadingState,
   ActiveFilter,
-  SelectedGenre,
   ClubWUninitSchedules,
   UserWithInvitableClubs,
   User,
@@ -16,18 +13,6 @@ import { getRandomInviteMessage } from '../functions/getRandomInviteMessage';
 
 const clubRoute = '/api/club';
 const discordRoute = '/api/discord';
-
-interface CreateClubProps {
-  name: string;
-  shelf?: any;
-  bio: string;
-  maxMembers: string;
-  vibe: string;
-  genres: SelectedGenre[];
-  readingSpeed: string;
-  channelSource: ChannelSource;
-  unlisted: boolean;
-}
 
 export async function getAllClubs(
   userId?: string,
@@ -150,7 +135,7 @@ export async function updateShelf(
   return res;
 }
 
-export async function createClub(props: CreateClubProps) {
+export async function createClub(props: Services.CreateClubProps) {
   const body = {
     name: props.name,
     shelf: props.shelf,

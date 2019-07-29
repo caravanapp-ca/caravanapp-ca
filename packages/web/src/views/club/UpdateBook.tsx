@@ -8,19 +8,12 @@ import {
   ReadingState,
 } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  IconButton,
-  Typography,
-  Button,
-  Box,
-  Container,
-} from '@material-ui/core';
+import { IconButton, Typography, Button, Container } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
 import Header from '../../components/Header';
 import BookList from './shelf-view/BookList';
 import BookSearch from '../books/BookSearch';
 import { getClub, updateShelf } from '../../services/club';
-import { sortShelf } from './functions/ClubFunctions';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import HeaderTitle from '../../components/HeaderTitle';
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -93,8 +86,7 @@ export default function UpdateBook(props: UpdateBookProps) {
         const club = await getClub(clubId);
         setClub(club);
         if (club) {
-          const sortedShelf = sortShelf(club);
-          setSortedShelf(sortedShelf);
+          setSortedShelf(club.shelf);
           setLoadedClub(true);
         }
       } catch (err) {
@@ -109,9 +101,10 @@ export default function UpdateBook(props: UpdateBookProps) {
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
   ) {
     setSearchedBooks(selectedBooks);
+    setMadeSavableMods(true);
   }
 
-  async function onSaveSelection2() {
+  async function onSaveSelection() {
     if (!sortedShelf) {
       return;
     }
@@ -165,7 +158,12 @@ export default function UpdateBook(props: UpdateBookProps) {
               <Typography variant="h6" gutterBottom>
                 Currently Reading
               </Typography>
-              <BookList id="currently-reading" data={sortedShelf.current} />
+              <BookList
+                id="currently-reading"
+                data={sortedShelf.current}
+                tertiary="buy"
+                droppable
+              />
             </div>
           )}
           {sortedShelf.notStarted && (
@@ -177,6 +175,7 @@ export default function UpdateBook(props: UpdateBookProps) {
                 id="not-started"
                 data={sortedShelf.notStarted}
                 tertiary="buy"
+                droppable
               />
             </div>
           )}
@@ -189,6 +188,7 @@ export default function UpdateBook(props: UpdateBookProps) {
                 id="previously-read"
                 data={sortedShelf.read}
                 tertiary="buy"
+                droppable
               />
             </div>
           )}
@@ -207,7 +207,7 @@ export default function UpdateBook(props: UpdateBookProps) {
               variant="contained"
               color="secondary"
               className={classes.button}
-              onClick={onSaveSelection2}
+              onClick={onSaveSelection}
               disabled={!sortedShelf || !madeSavableMods}
             >
               SAVE
