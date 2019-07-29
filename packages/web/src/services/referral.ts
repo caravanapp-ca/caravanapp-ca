@@ -23,7 +23,7 @@ export async function handleReferral(referrerId: string) {
     {}
   );
   if (res.status === 200) {
-    setCookie('compRef', 'true', 3);
+    setCookie('refClickComplete', 'true', 3);
   }
   return res;
 }

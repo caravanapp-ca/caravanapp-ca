@@ -60,7 +60,12 @@ export async function createReferralActionByDoc(
         $inc: {
           referralCount: 1,
         },
-        $addToSet: { referredUsers: referralDoc.userId },
+        $addToSet: {
+          referredUsers: {
+            referredUserId: referralDoc.userId,
+            timestamp: new Date(),
+          },
+        },
       };
       let referrerDoc = await ReferralModel.findOneAndUpdate(
         { userId },
@@ -73,14 +78,11 @@ export async function createReferralActionByDoc(
           'referredById' | 'source'
         > = {
           userId: referralDoc.referredById,
-          actions: [
-            {
-              action: 'successfulReferral',
-              timestamp: new Date(),
-            },
-          ],
+          actions: [],
           referralCount: 1,
-          referredUsers: [referralDoc.userId],
+          referredUsers: [
+            { referredUserId: referralDoc.userId, timestamp: new Date() },
+          ],
           referredAndNotJoined: false,
         };
         referrerDoc = await new ReferralModel(referrerObj).save();
@@ -100,5 +102,3 @@ export async function createReferralActionByDoc(
 export function getReferralDoc(userId: string) {
   return ReferralModel.findOne({ userId });
 }
-
-export function finishReferral() {}

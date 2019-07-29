@@ -33,9 +33,12 @@ router.post(
       referredAndNotJoined: true,
     };
     try {
-      const newReferralObject = await new ReferralModel(newReferral).save();
+      const newReferralDoc = await new ReferralModel(newReferral).save();
+      console.log(
+        `[Referral] UserId: ${newReferralDoc.userId}, Referrer: ${newReferralDoc.referredById}, Action: click`
+      );
       req.session.referredTempUid = referredTempUid;
-      return res.status(200).send(newReferralObject);
+      return res.status(200).send();
     } catch (err) {
       console.error('Failed to save new referral object', err);
       return res.status(400).send('Failed to save new referral object');

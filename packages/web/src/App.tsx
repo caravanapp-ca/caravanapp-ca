@@ -105,12 +105,13 @@ export function App(props: AppProps) {
     if (!getCookie('userId')) {
       clearStorageAuthState();
     }
-    if (
-      window.location.href.includes('?ref=') &&
-      !getCookie('compRef') &&
-      !getCookie('userId')
-    ) {
-      const referrerId = window.location.href.split('?ref=')[1];
+    if (queries.ref && !getCookie('refClickComplete') && !getCookie('userId')) {
+      let referrerId: string;
+      if (Array.isArray(queries.ref)) {
+        referrerId = queries.ref[0];
+      } else {
+        referrerId = queries.ref;
+      }
       handleReferral(referrerId);
     }
   }, []);

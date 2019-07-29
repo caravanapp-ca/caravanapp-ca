@@ -4,6 +4,7 @@ import {
   SameKeysAs,
   Referral,
   UserReferredAction,
+  ReferredUser,
 } from '@caravan/buddy-reading-types';
 import { ReferralDoc } from '../../typings';
 
@@ -21,8 +22,17 @@ const userReferredActionSchema = new Schema(
   }
 );
 
+const userReferredDefinition: SameKeysAs<FilterAutoMongoKeys<ReferredUser>> = {
+  referredUserId: { type: String, required: true },
+  timestamp: { type: Date, required: true },
+};
+
+const userReferredSchema = new Schema(userReferredDefinition, {
+  _id: false,
+});
+
 const referralDefinition: SameKeysAs<FilterAutoMongoKeys<Referral>> = {
-  referredUsers: { type: [String], required: true, default: [] },
+  referredUsers: { type: [userReferredSchema], required: true, default: [] },
   // This id will change over time. Initially, when you're not signed up
   userId: { type: String, required: true, unique: true, index: true },
   actions: {

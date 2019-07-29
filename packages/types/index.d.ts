@@ -176,9 +176,14 @@ declare module '@caravan/buddy-reading-types' {
     timestamp: Date | string;
   }
 
+  export interface ReferredUser {
+    referredUserId: string;
+    timestamp: Date | string;
+  }
+
   export interface Referral extends DocumentFields, MongoTimestamps {
     userId: string;
-    referredUsers: string[];
+    referredUsers: ReferredUser[];
     actions: UserReferredAction[];
     referralCount: number;
     referredById?: string;
