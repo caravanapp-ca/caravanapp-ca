@@ -59,19 +59,41 @@ export async function createReferralActionByDoc(
       break;
     case 'createClub':
     case 'joinClub':
+      const userId = referralDoc.referredById;
       const updateReferrerQuery = {
         $inc: {
           referralCount: 1,
         },
-        $addToSet: { referredIds: referralDoc.userId },
+        $addToSet: {
+          referredUsers: {
+            referredUserId: referralDoc.userId,
+            timestamp: new Date(),
+          },
+        },
       };
-      const referrer = await ReferralModel.findByIdAndUpdate(
-        referralDoc.referredById,
+      let referrerDoc = await ReferralModel.findOneAndUpdate(
+        { userId },
         updateReferrerQuery,
         { new: true }
       );
-      // TODO: Check if referrer has entered a new referral tier.
-      if (referrer.referralCount > 0) {
+      if (!referrerDoc) {
+        const referrerObj: Omit<
+          FilterAutoMongoKeys<Referral>,
+          'referredById' | 'source'
+        > = {
+          userId: referralDoc.referredById,
+          actions: [],
+          referralCount: 1,
+          referredUsers: [
+            { referredUserId: referralDoc.userId, timestamp: new Date() },
+          ],
+          referredAndNotJoined: false,
+        };
+        referrerDoc = await new ReferralModel(referrerObj).save();
+      }
+      referralDoc.referredAndNotJoined = false;
+      // Check if referrer has entered a new referral tier.
+      if (referrerDoc.referralCount > 0) {
         const referralTierDoc = await ReferralTierModel.find();
         if (referralTierDoc.length === 0) {
           console.error('Did not find any referral tiers in database!');
@@ -79,17 +101,17 @@ export async function createReferralActionByDoc(
         }
         const referralTiers = referralTierDoc[0].tiers;
         const newTier = referralTiers.find(
-          ut => ut.referralCount === referrer.referralCount
+          ut => ut.referralCount === referrerDoc.referralCount
         );
         if (newTier) {
           console.log(
-            `User ${referrer.userId} entered referral tier ${newTier.tierNumber}`
+            `User ${referrerDoc.userId} entered referral tier ${newTier.tierNumber}`
           );
           if (newTier.badgeKey) {
-            giveUserBadge(referrer.userId, newTier.badgeKey);
+            giveUserBadge(referrerDoc.userId, newTier.badgeKey);
           }
           if (newTier.discordRole) {
-            giveDiscordRole(referrer.userId, newTier.discordRole);
+            giveDiscordRole(referrerDoc.userId, newTier.discordRole);
           }
         }
       }
@@ -104,5 +126,3 @@ export async function createReferralActionByDoc(
 export function getReferralDoc(userId: string) {
   return ReferralModel.findOne({ userId });
 }
-
-export function finishReferral() {}

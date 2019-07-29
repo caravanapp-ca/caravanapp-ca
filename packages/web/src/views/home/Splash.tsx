@@ -81,7 +81,6 @@ export default function Splash(props: SplashProps) {
   const classes = useStyles();
   const theme = useTheme();
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
-  const [winHeight, setWinHeight] = React.useState<number>(window.innerHeight);
 
   const headerHeight = screenSmallerThanSm ? 56 : 64;
 
@@ -92,22 +91,11 @@ export default function Splash(props: SplashProps) {
     aboutButtonMsg = 'ABOUT';
   }
 
-  const handleWinResize = () => {
-    setWinHeight(window.innerHeight);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleWinResize);
-    return () => {
-      window.removeEventListener('resize', handleWinResize);
-    };
-  }, []);
-
   return (
     <div
       className={classes.root}
       style={{
-        height: winHeight - headerHeight,
+        height: window.innerHeight - headerHeight,
       }}
     >
       <Container maxWidth="md" className={classes.rootContainer}>

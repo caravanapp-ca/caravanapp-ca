@@ -23,7 +23,7 @@ const router = express.Router();
 
 export function destroySession(req: Request, res: Response) {
   req.session = null;
-  res.cookie('userId', '');
+  res.clearCookie('userId');
 }
 
 router.get('/discord/login', (req, res) => {
@@ -125,7 +125,7 @@ router.get('/discord/callback', async (req, res) => {
       );
     }
 
-    const referredTempUid = req.session.referredTempUid;
+    const { referredTempUid } = req.session;
     if (referredTempUid) {
       // The person was referred.
       const currentReferredDoc = await getReferralDoc(referredTempUid);
@@ -135,6 +135,7 @@ router.get('/discord/callback', async (req, res) => {
       createReferralActionByDoc(currentReferredDoc, 'login');
 
       req.session.referredTempUid = undefined;
+      res.clearCookie('refClickComplete');
     }
   }
 

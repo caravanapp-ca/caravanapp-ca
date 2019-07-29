@@ -206,9 +206,14 @@ declare module '@caravan/buddy-reading-types' {
     tiers: ReferralTier[];
   }
 
+  export interface ReferredUser {
+    referredUserId: string;
+    timestamp: Date | string;
+  }
+
   export interface Referral extends DocumentFields, MongoTimestamps {
     userId: string;
-    referredUsers: string[];
+    referredUsers: ReferredUser[];
     actions: UserReferredAction[];
     referralCount: number;
     referredById?: string;
@@ -282,7 +287,8 @@ declare module '@caravan/buddy-reading-types' {
     | 'login'
     | 'onboarded'
     | 'joinClub'
-    | 'createClub';
+    | 'createClub'
+    | 'successfulReferral';
 
   export type ReferralSource = 'personal' | 'facebook' | 'twitter';
 

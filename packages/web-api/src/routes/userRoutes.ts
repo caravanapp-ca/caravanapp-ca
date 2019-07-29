@@ -349,7 +349,7 @@ router.put(
         // Perhaps send email or whatever.
         userDoc.onboardingVersion = 1;
         userDoc = await userDoc.save();
-        createReferralAction(userDoc.id, 'onboarded');
+        createReferralAction(userId, 'onboarded');
       }
       res.status(200).send(userDoc);
     } catch (err) {
