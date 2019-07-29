@@ -194,6 +194,18 @@ declare module '@caravan/buddy-reading-types' {
     timestamp: Date | string;
   }
 
+  export interface ReferralTier {
+    tierNumber: number;
+    referralCount?: number;
+    title: string;
+    badgeKey?: string;
+    discordRole?: string;
+  }
+
+  export interface ReferralTiers {
+    tiers: ReferralTier[];
+  }
+
   export interface Referral extends DocumentFields, MongoTimestamps {
     userId: string;
     referredUsers: string[];

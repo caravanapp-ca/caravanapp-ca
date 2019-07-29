@@ -6,8 +6,12 @@ import {
   SameKeysAs,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
+import UserModel from '../models/user';
 import ReferralModel from '../models/referral';
+import ReferralTierModel from '../models/referralTier';
 import { ReferralDoc } from '../../typings';
+import { giveUserBadge } from './badge';
+import { giveDiscordRole } from './discord';
 
 export async function handleFirstVisit(
   referredTempUid: string,
@@ -61,12 +65,34 @@ export async function createReferralActionByDoc(
         },
         $addToSet: { referredIds: referralDoc.userId },
       };
-      ReferralModel.findByIdAndUpdate(
+      const referrer = await ReferralModel.findByIdAndUpdate(
         referralDoc.referredById,
         updateReferrerQuery,
         { new: true }
       );
-      referralDoc.referredAndNotJoined = false;
+      // TODO: Check if referrer has entered a new referral tier.
+      if (referrer.referralCount > 0) {
+        const referralTierDoc = await ReferralTierModel.find();
+        if (referralTierDoc.length === 0) {
+          console.error('Did not find any referral tiers in database!');
+          return;
+        }
+        const referralTiers = referralTierDoc[0].tiers;
+        const newTier = referralTiers.find(
+          ut => ut.referralCount === referrer.referralCount
+        );
+        if (newTier) {
+          console.log(
+            `User ${referrer.userId} entered referral tier ${newTier.tierNumber}`
+          );
+          if (newTier.badgeKey) {
+            giveUserBadge(referrer.userId, newTier.badgeKey);
+          }
+          if (newTier.discordRole) {
+            giveDiscordRole(referrer.userId, newTier.discordRole);
+          }
+        }
+      }
       break;
     default:
       throw new Error(`Unknown referral action ${action}`);
