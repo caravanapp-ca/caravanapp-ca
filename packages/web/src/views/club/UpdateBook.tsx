@@ -24,6 +24,7 @@ import { sortShelf } from './functions/ClubFunctions';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import HeaderTitle from '../../components/HeaderTitle';
 import { DragDropContext } from 'react-beautiful-dnd';
+import { notifyOfClubShelfUpdate } from '../../services/book';
 
 interface UpdateBookRouteParams {
   id: string;
@@ -118,6 +119,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     if (res.status === 200) {
       // TODO: show snack bar on next page
       props.history.goBack();
+      notifyOfClubShelfUpdate(clubId);
     } else {
       // TODO: need to do error handling here based on error code
       return;
@@ -125,7 +127,7 @@ export default function UpdateBook(props: UpdateBookProps) {
   }
 
   function backButtonAction() {
-    if (props.history.length > 1) {
+    if (props.history.length > 2) {
       props.history.goBack();
     } else {
       props.history.replace('/');
@@ -171,7 +173,11 @@ export default function UpdateBook(props: UpdateBookProps) {
               <Typography variant="h6" gutterBottom>
                 To be Read
               </Typography>
-              <BookList id="not-started" data={sortedShelf.notStarted} />
+              <BookList
+                id="not-started"
+                data={sortedShelf.notStarted}
+                tertiary="buy"
+              />
             </div>
           )}
           {sortedShelf.read && (
@@ -179,7 +185,11 @@ export default function UpdateBook(props: UpdateBookProps) {
               <Typography variant="h6" gutterBottom>
                 Previously Read
               </Typography>
-              <BookList id="previously-read" data={sortedShelf.read} />
+              <BookList
+                id="previously-read"
+                data={sortedShelf.read}
+                tertiary="buy"
+              />
             </div>
           )}
           <div className={classes.sectionContainer}>

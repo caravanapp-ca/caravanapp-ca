@@ -7,6 +7,7 @@ import {
   GroupVibe,
   Services,
   FilterAutoMongoKeys,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -31,6 +32,11 @@ import {
 } from '../../components/group-vibe-avatars-icons-labels';
 import HeaderTitle from '../../components/HeaderTitle';
 import GroupSizeSelector from '../../components/GroupSizeSelector';
+import { getAllGenres } from '../../services/genre';
+import GenreChip from '../../components/GenreChip';
+import { useMediaQuery } from '@material-ui/core';
+import theme from '../../theme';
+import ClubPrivacySlider from '../../components/ClubPrivacySlider';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -49,6 +55,11 @@ const useStyles = makeStyles(theme => ({
   },
   sectionHeader: {
     marginBottom: theme.spacing(1),
+  },
+  genresContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 }));
 
@@ -104,6 +115,7 @@ export default function CreateClub(props: CreateClubProps) {
   //   </IconButton>
   // );
 
+  const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
   const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<
     ReadingSpeed
@@ -119,7 +131,10 @@ export default function CreateClub(props: CreateClubProps) {
   const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
     ShelfEntry
   > | null>(null);
-  const [unlistedClub] = React.useState(false);
+  const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
+    []
+  );
+  const [unlistedClub, setUnlistedClub] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
     createdClub,
@@ -133,6 +148,11 @@ export default function CreateClub(props: CreateClubProps) {
     setSelectedBooks(selectedBooks);
     setBookToRead(bookToRead);
   }
+
+  // Things to do on mount.
+  useEffect(() => {
+    getGenres();
+  }, []);
 
   useEffect(() => {
     if (createdClub) {
@@ -162,13 +182,13 @@ export default function CreateClub(props: CreateClubProps) {
       }
       return book;
     });
-
     const clubObj: any = {
       name: selectedGroupName,
       shelf: selectedBooksWReadingState,
       bio: selectedGroupBio,
       maxMembers: selectedGroupSize,
       vibe: selectedGroupVibe,
+      genres: selectedGenres,
       readingSpeed: selectedGroupSpeed,
       channelSource: 'discord',
       unlisted: unlistedClub,
@@ -181,10 +201,48 @@ export default function CreateClub(props: CreateClubProps) {
     }
   }
 
-  // let unlistedSwitchLabel = 'Anyone can find and join my club.';
-  // if (unlistedClub) {
-  //   unlistedSwitchLabel = 'Only friends I share the link with can join my club.';
-  // }
+  const getGenres = async () => {
+    const res = await getAllGenres();
+    if (res.status === 200) {
+      setGenres(res.data);
+    } else {
+      // TODO: error handling
+    }
+  };
+
+  const onGenreClick = (key: string, currActive: boolean) => {
+    if (!genres) {
+      return;
+    }
+    let selectedGenresNew: SelectedGenre[];
+    if (!currActive) {
+      selectedGenresNew = [...selectedGenres];
+      selectedGenresNew.push({
+        key,
+        name: genres.genres[key].name,
+      });
+    } else {
+      selectedGenresNew = selectedGenres.filter(sg => sg.key !== key);
+    }
+    setSelectedGenres(selectedGenresNew);
+  };
+
+  const validateForm = (): boolean => {
+    if (selectedGroupBio === '') {
+      return false;
+    } else if (selectedGroupName === '') {
+      return false;
+    } else if (!bookToRead) {
+      return false;
+    } else if (selectedBooks.length === 0) {
+      return false;
+    } else if (selectedGenres.length === 0) {
+      return false;
+    }
+    return true;
+  };
+
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
     <>
@@ -226,6 +284,37 @@ export default function CreateClub(props: CreateClubProps) {
             }
             primary={'radio'}
             secondary={'delete'}
+          />
+        </div>
+        {genres && (
+          <div className={classes.sectionContainer}>
+            <Typography variant="subtitle1">
+              What genres will your club be reading?
+            </Typography>
+            <div className={classes.genresContainer}>
+              {genres.mainGenres.map(g => (
+                <GenreChip
+                  key={g}
+                  genreKey={g}
+                  name={genres.genres[g].name}
+                  active={selectedGenres.some(sg => sg.key === g)}
+                  clickable={true}
+                  onClick={onGenreClick}
+                  small={screenSmallerThanSm}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+        <div className={classes.sectionContainer}>
+          <Typography variant="subtitle1" className={classes.sectionHeader}>
+            What's your club's privacy setting?
+          </Typography>
+          <ClubPrivacySlider
+            onChange={(unlistedValue: boolean) =>
+              setUnlistedClub(unlistedValue)
+            }
+            unlisted={unlistedClub}
           />
         </div>
         <div className={classes.sectionContainer}>
@@ -340,12 +429,7 @@ export default function CreateClub(props: CreateClubProps) {
             {!creatingClub && (
               <Button
                 variant="contained"
-                disabled={
-                  selectedGroupBio === '' ||
-                  selectedGroupName === '' ||
-                  !bookToRead ||
-                  selectedBooks.length === 0
-                }
+                disabled={!validateForm()}
                 onClick={createClubOnClick}
                 color="secondary"
               >

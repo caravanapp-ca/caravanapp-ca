@@ -4,7 +4,9 @@ import {
   FilterAutoMongoKeys,
   ReadingState,
   GoogleBooks,
+  ClubReadingSchedule,
 } from '@caravan/buddy-reading-types';
+import { scheduleStrToDates } from '../../../functions/scheduleStrToDates';
 
 export function getCurrentBook(club: Club): ShelfEntry | null {
   const currBook = club.shelf.find(b => b.readingState === 'current');
@@ -21,6 +23,30 @@ export function sortShelf(club: Club): { [key in ReadingState]: ShelfEntry[] } {
     sortedShelf[book.readingState].push(book);
   });
   return sortedShelf;
+}
+
+export function getCurrentSchedule(
+  club: Club,
+  currBook: ShelfEntry
+): ClubReadingSchedule | null {
+  if (club && club.schedules) {
+    let schedule = club.schedules.find(s => s.shelfEntryId === currBook._id);
+    if (schedule) {
+      schedule = scheduleStrToDates(schedule);
+      return schedule;
+    }
+  }
+  return null;
+}
+
+export function getWantToRead(club: Club): ShelfEntry[] {
+  if (club && club.shelf) {
+    const wantToRead = club.shelf.filter(
+      book => book.readingState === 'notStarted'
+    );
+    return wantToRead;
+  }
+  return [];
 }
 
 export function getShelfFromGoogleBooks(

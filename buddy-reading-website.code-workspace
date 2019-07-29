@@ -22,8 +22,11 @@
     "editor.tabSize": 2,
     "typescript.tsdk": "./node_modules/typescript/lib",
     "cSpell.words": [
+      "Invitable",
       "Snackbar",
       "Wkspc",
+      "clsx",
+      "destructured",
       "workspaces"
     ]
   }

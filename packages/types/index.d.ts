@@ -20,19 +20,47 @@ declare module '@caravan/buddy-reading-types' {
     updatedAt: Date | string;
   }
 
+  export interface Discussion {
+    date: Date;
+    label: string;
+    format: 'text' | 'voice' | 'video';
+  }
+
+  export interface ClubReadingSchedule extends DocumentFields, MongoTimestamps {
+    shelfEntryId: string;
+    startDate: Date | null;
+    duration: number | null;
+    discussionFrequency: number | null;
+    discussions: Discussion[];
+  }
+
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
     ownerDiscordId?: string;
     shelf: ShelfEntry[];
+    schedules: ClubReadingSchedule[];
     bio?: string;
     members: GuildMember[];
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
+    genres: SelectedGenre[];
     channelSource: ChannelSource;
     channelId: string;
     unlisted: boolean;
+  }
+
+  // This format of the Club has the current book, schedule, and owner extracted for quicker access.
+  export interface ClubTransformed {
+    club: Services.GetClubs['clubs'][0];
+    currentlyReading: ShelfEntry | null;
+    schedule: ClubReadingSchedule | null;
+  }
+
+  export interface ClubWithMemberIds {
+    club: Services.GetClubById;
+    memberIds: string[];
   }
 
   export interface GroupMember extends DocumentFields, MongoTimestamps {
@@ -63,17 +91,18 @@ declare module '@caravan/buddy-reading-types' {
     publishedDate?: string;
     coverImageURL?: string;
     genres: string[];
+    amazonLink?: string;
   }
 
   export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {
     readingState: ReadingState;
     clubId?: string;
-    club?: Club;
+    club?: Services.GetClubs['clubs'][0];
   }
 
   export type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
 
-  export interface UserSelectedGenre {
+  export interface SelectedGenre {
     key: string;
     name: string;
   }
@@ -93,10 +122,16 @@ declare module '@caravan/buddy-reading-types' {
     location?: string;
     isBot: boolean;
     urlSlug: string;
-    selectedGenres: UserSelectedGenre[];
+    selectedGenres: SelectedGenre[];
     questions: UserQA[];
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
     onboardingVersion: number;
+    palette: PaletteObject | null;
+  }
+
+  export interface UserWithInvitableClubs {
+    user: User;
+    invitableClubs: ClubWithMemberIds[];
   }
 
   export interface Genres {
@@ -135,6 +170,19 @@ declare module '@caravan/buddy-reading-types' {
     max: number;
   }
 
+  export interface FilterChip {
+    type: FilterChipType;
+    name: string;
+    key: string;
+  }
+
+  export interface ActiveFilter {
+    genres: FilterChip[];
+    speed: FilterChip[];
+    capacity: FilterChip[];
+    membership: FilterChip[];
+  }
+
   export type EditableUserField =
     | 'bio'
     | 'goodreadsUrl'
@@ -147,7 +195,8 @@ declare module '@caravan/buddy-reading-types' {
     | 'location'
     | 'selectedGenres'
     | 'questions'
-    | 'shelf';
+    | 'shelf'
+    | 'palette';
 
   export type BookSource =
     | 'google'
@@ -161,6 +210,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export type MembershipStatus = 'notMember' | 'member' | 'owner';
 
+  export type LoadableMemberStatus = MembershipStatus | 'loading';
+
   export type UserShelfReadingState = 'notStarted' | 'read';
 
   export type ReadingState = 'notStarted' | 'current' | 'read';
@@ -169,6 +220,12 @@ declare module '@caravan/buddy-reading-types' {
 
   export type ReadingSpeed = 'slow' | 'moderate' | 'fast';
 
+  export type Capacity = 'full' | 'spotsAvailable';
+
+  export type Membership = 'myClubs' | 'clubsImNotIn';
+
+  export type FilterChipType = 'genres' | 'speed' | 'capacity' | 'membership';
+
   export type GroupVibe =
     | 'chill'
     | 'power'
@@ -176,19 +233,35 @@ declare module '@caravan/buddy-reading-types' {
     | 'first-timers'
     | 'nerdy';
 
+  export interface PaletteObject {
+    key: string;
+    textColor: 'primary' | 'white';
+  }
+
+  // Don't use this... I did what I do had to do - Matt C.
+  export interface ClubWUninitSchedules
+    extends Omit<Services.GetClubById, 'schedules'> {
+    schedules: (
+      | ClubReadingSchedule
+      | FilterAutoMongoKeys<ClubReadingSchedule>)[];
+  }
+
   export namespace Services {
     export interface GetClubs {
       clubs: {
         _id: string;
         name: string;
         ownerId: string;
+        ownerName: string;
         guildId: string;
-        shelf: any[];
+        shelf: ShelfEntry[];
+        schedules: ClubReadingSchedule[];
         bio?: string;
         maxMembers: number;
         memberCount: number;
         vibe?: GroupVibe;
         readingSpeed?: ReadingSpeed;
+        genres: SelectedGenre[];
         channelSource?: ChannelSource;
         channelId: string;
         createdAt: string;
@@ -201,12 +274,14 @@ declare module '@caravan/buddy-reading-types' {
       name: string;
       ownerId: string;
       ownerDiscordId: string;
-      shelf: any[];
+      shelf: ShelfEntry[];
+      schedules: ClubReadingSchedule[];
       bio: string;
       members: any[];
       maxMembers: number;
       vibe: GroupVibe;
       readingSpeed: ReadingSpeed;
+      genres: SelectedGenre[];
       guildId: string;
       channelSource: ChannelSource;
       channelId: string;
@@ -225,6 +300,33 @@ declare module '@caravan/buddy-reading-types' {
     }
     export interface GetProfileQuestions
       extends Omit<ProfileQuestions, '_id'> {}
+
+    export interface GetUsers {
+      users: {
+        _id: string;
+        bio?: string;
+        discordId: string;
+        discordUsername?: string;
+        goodreadsUrl?: string;
+        website?: string;
+        name?: string;
+        photoUrl?: string;
+        smallPhotoUrl?: string;
+        readingSpeed?: ReadingSpeed;
+        age?: number;
+        gender?: string;
+        location?: string;
+        isBot: boolean;
+        urlSlug: string;
+        selectedGenres: SelectedGenre[];
+        questions: UserQA[];
+        shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
+        onboardingVersion: number;
+        palette: PaletteObject | null;
+        createdAt: string;
+        updatedAt: string;
+      }[];
+    }
   }
 
   export namespace GoogleBooks {

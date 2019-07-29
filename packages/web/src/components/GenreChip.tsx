@@ -14,6 +14,8 @@ const useStyles = makeStyles(theme =>
   createStyles({
     button: {
       margin: theme.spacing(1),
+      textTransform: 'none',
+      minWidth: '25px',
     },
     chip: {
       display: 'flex',
@@ -47,6 +49,7 @@ interface GenreChipProps {
   genreKey: string;
   name: string;
   active: boolean;
+  small?: boolean;
   clickable?: boolean;
   onClick?: (genreKey: string, currActive: boolean) => void;
 }
@@ -54,15 +57,14 @@ interface GenreChipProps {
 export default function GenreChip(props: GenreChipProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { genreKey, name, active, clickable, onClick } = props;
+  const { genreKey, name, active, clickable, onClick, small } = props;
   if (!clickable || !onClick) {
     return (
       <div
-        className={
-          active
-            ? clsx(classes.chip, classes.chipActive)
-            : clsx(classes.chip, classes.chipInactive)
-        }
+        className={clsx(classes.chip, {
+          [classes.chipActive]: active,
+          [classes.chipInactive]: !active,
+        })}
       >
         <Typography variant="body1">{name}</Typography>
       </div>
@@ -71,13 +73,15 @@ export default function GenreChip(props: GenreChipProps) {
     return (
       <MuiThemeProvider theme={active ? theme : washedTheme}>
         <Button
-          className={classes.button}
+          classes={{
+            root: classes.button,
+          }}
           color="primary"
-          variant="contained"
           key={genreKey}
           onClick={() => onClick(genreKey, active)}
+          variant="contained"
+          size={small ? 'small' : 'medium'}
         >
-          {/* TODO: Prevent capitalization */}
           <Typography>{name}</Typography>
         </Button>
       </MuiThemeProvider>

@@ -1,4 +1,4 @@
-import React, { useEffect, SyntheticEvent } from 'react';
+import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   User,
@@ -8,6 +8,7 @@ import {
   Services,
   ProfileQuestion,
   UserQA,
+  ClubTransformed,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -19,6 +20,7 @@ import {
   Tab,
   Container,
 } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
@@ -35,14 +37,12 @@ import UserBio from './UserBio';
 import UserShelf from './UserShelf';
 import UserNameplate from './UserNameplate';
 import UserClubs from './UserClubs';
-import { getClubsById, getUserClubs } from '../../services/club';
+import { getClubsByIdNoMembers, getAllClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
-import {
-  ClubWithCurrentlyReading,
-  transformClubsToWithCurrentlyReading,
-} from '../home/Home';
+import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
+import { makeUserTheme, makeUserDarkTheme } from '../../theme';
 
 interface MinMax {
   min: number;
@@ -70,6 +70,7 @@ const EditableUserFieldStringsArr: EditableUserField[] = [
   'readingSpeed',
   'gender',
   'location',
+  'palette',
 ];
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -131,8 +132,8 @@ export default function UserView(props: UserViewProps) {
     read: [],
   });
   const [shelfModified, setShelfModified] = React.useState<boolean>(false);
-  const [userClubsWCR, setUserClubsWCR] = React.useState<
-    ClubWithCurrentlyReading[]
+  const [userClubsTransformed, setUserClubsTransformed] = React.useState<
+    ClubTransformed[]
   >([]);
   const [isEditing, setIsEditing] = React.useState(false);
   const [userIsMe, setUserIsMe] = React.useState(false);
@@ -165,6 +166,11 @@ export default function UserView(props: UserViewProps) {
     }
   );
 
+  const userTheme = user ? makeUserTheme(user.palette) : undefined;
+  const userDarkTheme = user ? makeUserDarkTheme(user.palette) : undefined;
+
+  const myUserId = props.user ? props.user._id : undefined;
+
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -183,26 +189,29 @@ export default function UserView(props: UserViewProps) {
   useEffect(() => {
     getUser(userId).then(user => {
       if (user) {
-        const isUserMe = (props.user && props.user._id === user._id) || false;
+        const isUserMe = myUserId === user._id;
         setUserIsMe(isUserMe);
         if (isUserMe) {
           getGenres();
           getQuestions(user);
         }
-        getUserClubs(userId).then(res => {
+        // Setting max page size here so we get all the user's clubs
+        getAllClubs(userId, undefined, 50).then(res => {
           if (!res.data) {
             // TODO: Error checking
           }
-          const clubs = res.data;
+          const { clubs } = res.data;
           getUserShelf(user, clubs).then(shelf => {
             setUserShelf(shelf);
           });
-          setUserClubsWCR(transformClubsToWithCurrentlyReading(clubs));
+          (async () => {
+            setUserClubsTransformed(await transformClubs(clubs));
+          })();
         });
       }
       setUser(user);
     });
-  }, [userId, props.user && props.user._id]);
+  }, [userId, myUserId]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 
@@ -272,8 +281,12 @@ export default function UserView(props: UserViewProps) {
         clubIdsArr.push(s.clubId);
       }
     });
-    const rClubs = await getClubsById(clubIdsArr);
-    if (rClubs && rClubs.length === indices.length) {
+    const res = await getClubsByIdNoMembers(clubIdsArr);
+    let rClubs: Services.GetClubs['clubs'] = [];
+    if (res.status === 200) {
+      rClubs = res.data.clubs;
+    }
+    if (rClubs.length === indices.length) {
       for (let i = 0; i < rClubs.length; i++) {
         userShelf.read[indices[i]].club = rClubs[i];
       }
@@ -306,6 +319,17 @@ export default function UserView(props: UserViewProps) {
       } else if (field === 'questions') {
         setQuestionsModified(true);
         setUserQuestionsWkspc(newValue);
+      } else if (
+        field === 'palette' &&
+        typeof newValue.key === 'string' &&
+        typeof newValue.textColor === 'string'
+      ) {
+        if (newValue.key === '#FFFFFF') {
+          const userCopy: User = { ...user, [field]: null };
+          setUser(userCopy);
+        } else {
+          writeChange = true;
+        }
       }
       if (writeChange) {
         const userCopy: User = { ...user, [field]: newValue };
@@ -358,7 +382,7 @@ export default function UserView(props: UserViewProps) {
     setIsEditing(false);
   };
 
-  function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
+  function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
@@ -420,7 +444,7 @@ export default function UserView(props: UserViewProps) {
   // }
 
   function backButtonAction() {
-    if (props.history.length > 1) {
+    if (props.history.length > 2) {
       props.history.goBack();
     } else {
       props.history.replace('/');
@@ -428,21 +452,25 @@ export default function UserView(props: UserViewProps) {
   }
 
   const leftComponent = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Back"
-      onClick={backButtonAction}
-    >
-      <BackIcon />
-    </IconButton>
+    <MuiThemeProvider theme={userDarkTheme}>
+      <IconButton
+        edge="start"
+        color={userDarkTheme ? 'primary' : 'inherit'}
+        aria-label="Back"
+        onClick={backButtonAction}
+      >
+        <BackIcon />
+      </IconButton>
+    </MuiThemeProvider>
   );
 
   const centerComponent = (
-    <div className={classes.centerComponent}>
-      <UserAvatar user={user} style={{ marginRight: theme.spacing(1) }} />
-      <HeaderTitle title={user.name || 'User Profile'} />
-    </div>
+    <MuiThemeProvider theme={userDarkTheme}>
+      <div className={classes.centerComponent}>
+        <UserAvatar user={user} style={{ marginRight: theme.spacing(1) }} />
+        <HeaderTitle title={user.name || 'User Profile'} />
+      </div>
+    </MuiThemeProvider>
   );
 
   const rightComponentFn = () => {
@@ -451,44 +479,54 @@ export default function UserView(props: UserViewProps) {
     } else {
       if (isEditing) {
         return (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="More"
-            disabled={!formValidated()}
-            onClick={onSaveClick}
-          >
-            <SaveIcon />
-          </IconButton>
+          <MuiThemeProvider theme={userDarkTheme}>
+            <IconButton
+              edge="start"
+              color={userDarkTheme ? 'primary' : 'inherit'}
+              aria-label="More"
+              disabled={!formValidated()}
+              onClick={onSaveClick}
+            >
+              <SaveIcon />
+            </IconButton>
+          </MuiThemeProvider>
         );
       } else {
         return (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="More"
-            onClick={() => setIsEditing(true)}
-          >
-            <EditIcon />
-          </IconButton>
+          <MuiThemeProvider theme={userDarkTheme}>
+            <IconButton
+              edge="start"
+              color={userDarkTheme ? 'primary' : 'inherit'}
+              aria-label="More"
+              onClick={() => setIsEditing(true)}
+            >
+              <EditIcon />
+            </IconButton>
+          </MuiThemeProvider>
         );
       }
     }
   };
 
   return (
-    <>
+    <MuiThemeProvider theme={userTheme}>
       <Header
         leftComponent={leftComponent}
         centerComponent={scrolled > 64 ? centerComponent : undefined}
         rightComponent={rightComponentFn()}
         showBorder={scrolled > 1 ? true : false}
+        userTheme={userTheme}
+        userDarkTheme={userDarkTheme}
       />
-      <div className={classes.nameplateContainer}>
-        <UserAvatar
-          user={user}
-          size={screenSmallerThanSm ? 'small' : 'large'}
-        />
+      <div
+        className={classes.nameplateContainer}
+        style={{
+          backgroundColor: userTheme
+            ? userTheme.palette.primary.main
+            : undefined,
+        }}
+      >
+        <UserAvatar user={user} size={screenSmallerThanSm ? 112 : 144} />
         <div style={{ marginLeft: theme.spacing(2) }}>
           <UserNameplate
             user={user}
@@ -496,22 +534,30 @@ export default function UserView(props: UserViewProps) {
             isEditing={isEditing}
             onEdit={onEdit}
             valid={[nameValidated(), bioValidated(), websiteValidated()]}
+            userDarkTheme={userDarkTheme}
           />
         </div>
       </div>
-      <Tabs
-        value={tabValue}
-        onChange={handleTabChange}
-        indicatorColor="primary"
-        textColor="primary"
-        variant={screenSmallerThanMd ? 'fullWidth' : undefined}
-        centered={!screenSmallerThanMd}
-        className={classes.tabRoot}
-      >
-        <Tab label="Bio" />
-        <Tab label="Shelf" />
-        <Tab label="Clubs" />
-      </Tabs>
+      <MuiThemeProvider theme={userDarkTheme}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant={screenSmallerThanMd ? 'fullWidth' : undefined}
+          centered={!screenSmallerThanMd}
+          className={classes.tabRoot}
+          style={
+            userTheme
+              ? { backgroundColor: userTheme.palette.primary.main }
+              : undefined
+          }
+        >
+          <Tab label="Bio" />
+          <Tab label="Shelf" />
+          <Tab label="Clubs" />
+        </Tabs>
+      </MuiThemeProvider>
       <Container maxWidth={'md'}>
         <>
           {tabValue === 0 && (
@@ -536,7 +582,7 @@ export default function UserView(props: UserViewProps) {
           )}
           {tabValue === 2 && (
             <UserClubs
-              clubsWCR={userClubsWCR}
+              clubsTransformed={userClubsTransformed}
               user={user}
               userIsMe={userIsMe}
             />
@@ -544,6 +590,6 @@ export default function UserView(props: UserViewProps) {
         </>
       </Container>
       <CustomSnackbar {...snackbarProps} />
-    </>
+    </MuiThemeProvider>
   );
 }

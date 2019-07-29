@@ -6,22 +6,25 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   Typography,
+  Link,
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
-import { Club } from '@caravan/buddy-reading-types';
-import AdapterLink from './AdapterLink';
+import { Services } from '@caravan/buddy-reading-types';
 import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
+import Truncate from 'react-truncate';
 
 export interface ListElementBookProps {
   id: string;
   index: number;
   clubId?: string;
-  club?: Club;
+  club?: Services.GetClubs['clubs'][0];
   coverImage?: any;
   primaryText?: string;
   secondaryText?: string;
   primary?: JSX.Element;
   secondary?: JSX.Element;
+  tertiary?: JSX.Element;
+  tertiaryLink?: string;
   onClick?: any;
   selected?: boolean;
   draggable?: boolean;
@@ -46,6 +49,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
   },
+  buyButton: {
+    //marginTop: theme.spacing(1),
+  },
 }));
 
 export default function ListElementBook(props: ListElementBookProps) {
@@ -63,6 +69,7 @@ export default function ListElementBook(props: ListElementBookProps) {
     secondaryText,
     primary,
     secondary,
+    tertiary,
     selected,
     draggable,
   } = props;
@@ -78,7 +85,6 @@ export default function ListElementBook(props: ListElementBookProps) {
         <ListItem
           // @ts-ignore
           button={clubId ? true : false}
-          href={clubId ? `/clubs/${clubId}` : undefined}
           innerRef={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
@@ -91,17 +97,42 @@ export default function ListElementBook(props: ListElementBookProps) {
           />
           <div className={classes.textContainer}>
             {club && (
-              <div className={classes.clubNameContainer}>
-                <GroupIcon color="primary" />
-                <Typography variant="body1" color="primary">
-                  {club.name}
+              <>
+                <Link href={clubId ? `/clubs/${clubId}` : undefined}>
+                  <div className={classes.clubNameContainer}>
+                    <GroupIcon color="primary" />
+                    <Typography variant="body1" color="primary">
+                      {club.name}
+                    </Typography>
+                  </div>
+                </Link>
+                <Typography
+                  variant="body1"
+                  color="textPrimary"
+                  style={{ fontWeight: 600 }}
+                >
+                  <Truncate lines={1} trimWhitespace={true}>
+                    {primaryText}
+                  </Truncate>
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  <Truncate lines={1} trimWhitespace={true}>
+                    {secondaryText}
+                  </Truncate>
+                </Typography>
+              </>
+            )}
+            {!club && (
+              <div>
+                <Typography variant="body1" style={{ fontWeight: 600 }}>
+                  {shortenedTitle}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {secondaryText}
                 </Typography>
               </div>
             )}
-            <Typography variant="body1">{shortenedTitle}</Typography>
-            <Typography variant="body2" color="textSecondary">
-              {secondaryText}
-            </Typography>
+            {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
           </div>
           {secondary && (
             <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>

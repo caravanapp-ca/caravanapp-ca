@@ -1,31 +1,33 @@
 import React from 'react';
-import { ClubWithCurrentlyReading } from './Home';
-import { CircularProgress } from '@material-ui/core';
+import Truncate from 'react-truncate';
+import LazyLoad from 'react-lazyload';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import PersonIcon from '@material-ui/icons/PersonOutline';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User } from '@caravan/buddy-reading-types';
+import { ClubTransformed } from '@caravan/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
-import {
-  readingSpeedIcons,
-  readingSpeedLabels,
-} from '../../components/reading-speed-avatars-icons-labels';
 import AdapterLink from '../../components/AdapterLink';
+import format from 'date-fns/esm/format';
+import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
+import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
+import { isAfter, addDays, differenceInHours } from 'date-fns/esm';
+import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
+import PlaceholderCard from '../../components/PlaceholderCard';
+import theme, { washedTheme, successTheme } from '../../theme';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
+    padding: `${theme.spacing(4)}px 16px ${theme.spacing(8)}px`,
   },
   card: {
     height: '100%',
@@ -49,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   iconRoot: {
     display: 'flex',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   cardActions: {
     display: 'flex',
@@ -60,7 +62,7 @@ const useStyles = makeStyles(theme => ({
   },
   clubImageContainer: {
     position: 'relative',
-    'border-radius': '4px',
+    borderRadius: '4px',
     height: '194px',
     width: '100%',
   },
@@ -70,8 +72,8 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
     top: 0,
     left: 0,
-    'object-fit': 'cover',
-    'object-position': '50% 50%',
+    objectFit: 'cover',
+    objectPosition: '50% 50%',
     filter: 'blur(4px)',
   },
   clubImageShade: {
@@ -91,32 +93,87 @@ const useStyles = makeStyles(theme => ({
   },
   imageText: {
     width: '100%',
-    'text-align': 'left',
+    textAlign: 'left',
     color: '#ffffff',
   },
   imageTitleText: {
     width: '100%',
-    'text-align': 'left',
+    textAlign: 'left',
     color: '#ffffff',
     fontWeight: 600,
   },
-  progress: {
-    margin: theme.spacing(2),
+  progressText: {},
+  clubTitle: {
+    fontWeight: 600,
   },
-  clubTitle: {},
+  attributeElement: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  attributeLabel: {
+    marginLeft: 8,
+  },
+  creationInfoContainer: {
+    display: 'flex',
+    flexGrow: 1,
+    height: '100%',
+    padding: 8,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+  },
+  clubAttributesContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  clubAttributesSubcontainer: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+  },
+  clubAttributesCell: {
+    marginTop: theme.spacing(1),
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  topCell: {
+    alignItems: 'flex-start',
+  },
+  bottomCell: {
+    alignItems: 'flex-end',
+  },
+  clubAttributesProgress: {
+    display: 'flex',
+    marginTop: theme.spacing(1),
+    width: '100%',
+    marginLeft: 19,
+    paddingLeft: 19 + theme.spacing(1),
+    borderLeft: `2px solid ${washedTheme.palette.primary.main}`,
+  },
 }));
 
 interface ClubCardsProps {
-  clubsWCR: ClubWithCurrentlyReading[];
-  user: User | null;
+  clubsTransformed: ClubTransformed[];
+  showResultsCount?: boolean;
+  resultsLoaded?: boolean;
 }
+
+// Make this approximately the height of a standard ClubCard
+const placeholderCardHeight = 525;
+// The number of cards above and below the current to load
+const lazyloadOffset = 8;
 
 export default function ClubCards(props: ClubCardsProps) {
   const classes = useStyles();
-  const { clubsWCR } = props;
+  const { clubsTransformed, showResultsCount, resultsLoaded } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-  const [joinClubLoadingId, setJoinClubLoadingId] = React.useState('');
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
@@ -125,116 +182,248 @@ export default function ClubCards(props: ClubCardsProps) {
   return (
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
+        {showResultsCount && resultsLoaded && (
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {`${clubsTransformed.length} result${
+              clubsTransformed.length === 1 ? '' : 's'
+            }`}
+          </Typography>
+        )}
         <Grid container spacing={4}>
-          {clubsWCR.map(c => {
-            const { club, currentlyReading } = c;
+          {clubsTransformed.map(c => {
+            const { club, currentlyReading, schedule } = c;
             let year;
             if (currentlyReading && currentlyReading.publishedDate) {
-              year = new Date(currentlyReading.publishedDate).getUTCFullYear();
+              year = format(new Date(currentlyReading.publishedDate), 'yyyy');
+            }
+            let startMsg = 'Start: Not set';
+            let endMsg = 'End: Not set';
+            let progressPercentage = 0;
+            let progress = 0;
+            if (schedule && schedule.startDate) {
+              const { startDate, duration } = schedule;
+              if (isAfter(new Date(), startDate)) {
+                startMsg = `Started: ${format(startDate, 'LLL')} ${format(
+                  startDate,
+                  'd'
+                )}`;
+              } else {
+                startMsg = `Starts: ${format(startDate, 'LLL')} ${format(
+                  startDate,
+                  'd'
+                )}`;
+              }
+              if (duration) {
+                const endDate = addDays(startDate, duration * 7);
+                progress = Math.min(
+                  Math.max(
+                    differenceInHours(new Date(), startDate) /
+                      differenceInHours(endDate, startDate),
+                    0
+                  ),
+                  1
+                );
+                if (isAfter(new Date(), endDate)) {
+                  endMsg = `Ended: ${format(endDate, 'LLL')} ${format(
+                    endDate,
+                    'd'
+                  )}`;
+                } else {
+                  endMsg = `Ends: ${format(endDate, 'LLL')} ${format(
+                    endDate,
+                    'd'
+                  )}`;
+                }
+                progressPercentage = 3;
+              }
+            }
+            let groupVibeAvatar: JSX.Element | undefined;
+            let groupVibeLabel: string | undefined;
+            if (club.vibe) {
+              groupVibeAvatar = groupVibeIcons(club.vibe, 'avatar');
+              groupVibeLabel = groupVibeLabels(club.vibe);
             }
             return (
-              <Grid item key={club._id} xs={12} sm={6}>
-                <Card className={classes.card}>
-                  <div className={classes.clubImageContainer}>
-                    {currentlyReading && (
-                      <>
-                        <img
-                          src={currentlyReading.coverImageURL}
-                          alt={currentlyReading.title}
-                          className={classes.clubImage}
-                        />
-                        <div className={classes.clubImageShade} />
-                        <div className={classes.imageTextContainer}>
-                          <Typography
-                            variant="h5"
-                            className={classes.imageTitleText}
-                          >
-                            {currentlyReading.title}
-                          </Typography>
-                          <Typography className={classes.imageText}>
-                            {currentlyReading.author}
-                            {year && `, ${year}`}
-                          </Typography>
-                          <Typography className={classes.imageText}>
-                            {currentlyReading.genres.join(', ')}
-                          </Typography>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <CardContent className={classes.cardContent}>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="h2"
-                      className={classes.clubTitle}
-                    >
-                      {club.name}
-                    </Typography>
-                    <div className={classes.iconRoot}>
-                      <div className={classes.iconWithLabel}>
-                        <PersonIcon />
-                        <Typography
-                          variant="subtitle1"
-                          className={classes.iconLabel}
-                        >
-                          {`${club.memberCount}/${club.maxMembers}`}
-                        </Typography>
-                      </div>
-                      {club.readingSpeed && (
-                        <div className={classes.iconWithLabel}>
-                          {readingSpeedIcons(club.readingSpeed, 'icon')}
-                          <Typography
-                            variant="subtitle1"
-                            className={classes.iconLabel}
-                          >
-                            {readingSpeedLabels(club.readingSpeed)}
-                          </Typography>
-                        </div>
-                      )}
-                      {club.vibe && (
-                        <div className={classes.iconWithLabel}>
-                          {groupVibeIcons(club.vibe, 'icon')}
-                          <Typography
-                            variant="subtitle1"
-                            className={classes.iconLabel}
-                          >
-                            {groupVibeLabels(club.vibe)}
-                          </Typography>
-                        </div>
+              <LazyLoad
+                unmountIfInvisible={true}
+                offset={placeholderCardHeight * lazyloadOffset}
+                placeholder={
+                  <Grid item key={club._id} xs={12} sm={6}>
+                    <PlaceholderCard height={placeholderCardHeight} />
+                  </Grid>
+                }
+              >
+                <Grid item key={club._id} xs={12} sm={6}>
+                  <Card className={classes.card}>
+                    <div className={classes.clubImageContainer}>
+                      {currentlyReading && (
+                        <>
+                          <img
+                            src={currentlyReading.coverImageURL}
+                            alt={currentlyReading.title}
+                            className={classes.clubImage}
+                          />
+                          <div className={classes.clubImageShade} />
+                          <div className={classes.imageTextContainer}>
+                            <Typography
+                              variant="h5"
+                              className={classes.imageTitleText}
+                            >
+                              <Truncate lines={2} trimWhitespace={true}>
+                                {currentlyReading.title}
+                              </Truncate>
+                            </Typography>
+                            <Typography className={classes.imageText}>
+                              {`${currentlyReading.author}${
+                                year ? `, ${year}` : ''
+                              }`}
+                            </Typography>
+                            <Typography className={classes.imageText}>
+                              <Truncate lines={1} trimWhitespace={true}>
+                                {currentlyReading.genres.join(', ')}
+                              </Truncate>
+                            </Typography>
+                          </div>
+                        </>
                       )}
                     </div>
-                    <Typography>{club.bio}</Typography>
-                  </CardContent>
-                  <CardActions className={classes.cardActions}>
-                    <Button
-                      className={classes.button}
-                      color="primary"
-                      variant="contained"
-                      component={AdapterLink}
-                      to={`/clubs/${club._id}`}
-                    >
-                      <Typography variant="button">VIEW CLUB</Typography>
-                    </Button>
-                    {/* <Button
-                        variant="contained"
+                    <CardContent className={classes.cardContent}>
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="h2"
+                        className={classes.clubTitle}
+                      >
+                        <Truncate lines={2} trimWhitespace={true}>
+                          {club.name}
+                        </Truncate>
+                      </Typography>
+                      <Typography color="textSecondary">
+                        <Truncate lines={3} trimWhitespace={true}>
+                          {club.bio}
+                        </Truncate>
+                      </Typography>
+                      <div className={classes.clubAttributesContainer}>
+                        <div className={classes.clubAttributesSubcontainer}>
+                          {/* Member Count */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.topCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <GenericGroupMemberAvatar />
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {`${club.memberCount} (Max ${club.maxMembers})`}
+                              </Typography>
+                            </div>
+                          </div>
+                          {/* Club Vibe */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.bottomCell
+                            )}
+                          >
+                            {groupVibeAvatar && groupVibeLabel && (
+                              <div className={classes.attributeElement}>
+                                {groupVibeAvatar}
+                                <Typography
+                                  variant="body2"
+                                  className={classes.attributeLabel}
+                                >
+                                  {groupVibeLabel}
+                                </Typography>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className={classes.clubAttributesSubcontainer}>
+                          {/* Start Date */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.topCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <StartAvatar />
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {startMsg}
+                              </Typography>
+                            </div>
+                          </div>
+                          {/* Progress */}
+                          <div className={classes.clubAttributesProgress}>
+                            <MuiThemeProvider
+                              theme={progress >= 1 ? successTheme : theme}
+                            >
+                              <Typography variant="caption" color="primary">
+                                {`${Math.round(progress * 100)}% complete`}
+                              </Typography>
+                            </MuiThemeProvider>
+                          </div>
+                          {/* End Date */}
+                          <div
+                            className={clsx(
+                              classes.clubAttributesCell,
+                              classes.bottomCell
+                            )}
+                          >
+                            <div className={classes.attributeElement}>
+                              <EndAvatar />
+                              <Typography
+                                variant="body2"
+                                className={classes.attributeLabel}
+                              >
+                                {endMsg}
+                              </Typography>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardActions className={classes.cardActions}>
+                      <div className={classes.creationInfoContainer}>
+                        <Typography variant="caption" color="textSecondary">
+                          {`Created on ${format(
+                            new Date(club.createdAt),
+                            'PP'
+                          )}`}
+                        </Typography>
+                        {club && club.ownerName && club.ownerName.length > 0 && (
+                          <Typography variant="caption" color="textSecondary">
+                            {/* Truncate doesn't work as advertised, so we set an exact width here. */}
+                            <Truncate
+                              lines={1}
+                              trimWhitespace={true}
+                              width={196}
+                            >
+                              {`by ${club.ownerName}`}
+                            </Truncate>
+                          </Typography>
+                        )}
+                      </div>
+                      <Button
                         className={classes.button}
                         color="primary"
-                        onClick={() =>
-                          !props.user
-                            ? setLoginModalShown(true)
-                            : setJoinClubLoadingId(club._id)
-                        }
-                        disabled={club.memberCount >= club.maxMembers}
+                        variant="contained"
+                        component={AdapterLink}
+                        to={`/clubs/${club._id}`}
                       >
-                        JOIN
-                      </Button> */}
-                    {joinClubLoadingId === club._id && (
-                      <CircularProgress className={classes.progress} />
-                    )}
-                  </CardActions>
-                </Card>
-              </Grid>
+                        <Typography variant="button">VIEW CLUB</Typography>
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              </LazyLoad>
             );
           })}
         </Grid>
