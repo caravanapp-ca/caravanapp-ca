@@ -97,9 +97,9 @@ function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href={
             user
-              ? 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D' +
-                user._id +
-                '%26utm_source%3Dfb%2F&amp;src=sdkpreparse'
+              ? `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dfb%2F&amp;src=sdkpreparse`
               : 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dfb%2F&amp;src=sdkpreparse'
           }
           target={'_blank'}
@@ -110,9 +110,9 @@ function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href={
             user
-              ? 'https://twitter.com/intent/tweet/?text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D' +
-                user._id +
-                '%26utm_source%3Dtw'
+              ? `https://twitter.com/intent/tweet/?text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dtw`
               : 'https://twitter.com/intent/tweet/?text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dtw'
           }
           target={'_blank'}
@@ -123,9 +123,9 @@ function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href={
             user
-              ? 'mailto:?subject=Come%20join%20me%20on%20this%20cool%20new%20buddy%20reading%20site!&body=Check%20out%20this%20cool%20new%20site%20for%20online%20book%20clubs%21%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D' +
-                user._id +
-                '%26utm_source%3Dem'
+              ? `mailto:?subject=Come%20join%20me%20on%20this%20cool%20new%20buddy%20reading%20site!&body=Check%20out%20this%20cool%20new%20site%20for%20online%20book%20clubs%21%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dem`
               : 'mailto:?subject=Come%20join%20me%20on%20this%20cool%20new%20buddy%20reading%20site!&body=Check%20out%20this%20cool%20new%20site%20for%20online%20book%20clubs%21%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dem'
           }
           target={'_blank'}

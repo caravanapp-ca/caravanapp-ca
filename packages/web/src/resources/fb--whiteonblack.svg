@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400px" height="400px" viewBox="0 0 400 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>fb--whiteonblack</title>
+    <desc>Created with Sketch.</desc>
+    <g id="fb--whiteonblack" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" fill="rgba(0, 0, 0, 0.6)" cx="200" cy="200" r="200"></circle>
+        <path d="M254.479452,175.059752 L218.493151,175.059752 L218.493151,150.722779 C218.493151,140.462749 223.519829,130.461943 239.638397,130.461943 L256,130.461943 L256,98.5339664 C256,98.5339664 241.151089,96 226.955,96 C197.316479,96 177.945205,113.960754 177.945205,146.476611 L177.945205,175.059752 L145,175.059752 L145,212.562455 L177.945205,212.562455 L177.945205,303.222706 C184.551226,304.259098 211.88713,304.259098 218.493151,303.222706 L218.493151,212.562455 L248.726712,212.562455 L254.479452,175.059752 Z" id="Fill-4" fill="#FFFFFE"></path>
+    </g>
+</svg>

@@ -53,6 +53,7 @@ interface ClubHeroProps {
   currBook: ShelfEntry;
   user: User | null;
   clubId: string;
+  onCopyReferralLink: () => void;
 }
 
 export default function ClubHero(props: ClubHeroProps) {
@@ -63,7 +64,7 @@ export default function ClubHero(props: ClubHeroProps) {
     genres,
     coverImageURL,
   } = props.currBook;
-  const { clubId, user } = props;
+  const { clubId, user, onCopyReferralLink } = props;
   const classes = useStyles();
 
   // This adjusts for casting of Date objects to string when sent from web-api
@@ -102,7 +103,13 @@ export default function ClubHero(props: ClubHeroProps) {
               {genres.join(', ')}
             </Typography>
           )}
-          <ClubShareButtons clubId={clubId} user={user} />
+          <ClubShareButtons
+            clubId={clubId}
+            bookTitle={title}
+            bookAuthor={author ? author : ''}
+            user={user}
+            onCopyReferralLink={onCopyReferralLink}
+          />
         </div>
       </div>
     </div>
