@@ -30,6 +30,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
 import { ClubDoc, UserDoc } from '../../typings';
 import { getUser } from '../services/user';
+import { shelfEntryWithHttpsBookUrl } from '../services/club';
 
 const router = express.Router();
 
@@ -713,20 +714,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    const shelf = body.shelf.map(item => {
-      if (
-        item &&
-        item.coverImageURL &&
-        knownHttpsRedirects.find(url => item.coverImageURL.startsWith(url))
-      ) {
-        const newItem: CreateClubBody['shelf'][0] = {
-          ...item,
-          coverImageURL: item.coverImageURL.replace('http:', 'https:'),
-        };
-        return newItem;
-      }
-      return item;
-    });
+    const shelf = body.shelf.map(shelfEntryWithHttpsBookUrl);
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
@@ -945,6 +933,7 @@ router.put(
       wantToRead,
     } = req.body;
     let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
+    const shelfEntry = shelfEntryWithHttpsBookUrl(newBook);
     let resultPrev, resultNew;
     if (currBookAction !== 'current') {
       if (prevBookId) {
@@ -988,7 +977,7 @@ router.put(
       if (!newEntry) {
         newCondition = {
           _id: clubId,
-          'shelf._id': newBook._id,
+          'shelf._id': shelfEntry._id,
         };
         newUpdate = {
           $set: {
@@ -1003,10 +992,10 @@ router.put(
         newUpdate = {
           $addToSet: {
             shelf: {
-              ...newBook,
+              ...shelfEntry,
               readingState: newReadingState,
-              publishedDate: newBook.publishedDate
-                ? new Date(newBook.publishedDate)
+              publishedDate: shelfEntry.publishedDate
+                ? new Date(shelfEntry.publishedDate)
                 : undefined,
               createdAt: new Date(),
               updatedAt: new Date(),
