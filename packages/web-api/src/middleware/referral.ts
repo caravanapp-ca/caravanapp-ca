@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { generateUuid } from '../common/uuid';
-import { handleFirstVisit } from '../services/referral';
+import generateUuid from 'uuid/v4';
 import { ReferralSource } from '@caravan/buddy-reading-types';
-import { getCookie } from '../../../web/src/common/cookies';
+import { handleFirstVisit } from '../services/referral';
 
 interface ReferralParams {
   ref?: string;

@@ -1,7 +1,7 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
+import generateUuid from 'uuid';
 import { ReferralSource } from '@caravan/buddy-reading-types';
-import { generateUuid } from '../common/uuid';
 import { handleFirstVisit, ALLOWED_UTM_SOURCES } from '../services/referral';
 
 const router = express.Router();
