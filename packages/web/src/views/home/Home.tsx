@@ -27,6 +27,7 @@ import { washedTheme } from '../../theme';
 import { getAllClubs, getUserClubsWithMembers } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import logo from '../../resources/logo.svg';
+import textLogo from '../../resources/text-logo.svg';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
@@ -51,6 +52,7 @@ import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
 import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
 import Splash from './Splash';
+import ShareIconButton from '../../components/ShareIconButton';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -93,6 +95,8 @@ const useStyles = makeStyles(theme => ({
   createClubIconCircle: {
     backgroundColor: washedTheme.palette.primary.main,
     marginRight: 16,
+    //For some reason the "create club" icon button had marginLeft = -12
+    marginLeft: 0,
   },
   filterGrid: {
     marginTop: '16px',
@@ -240,6 +244,7 @@ export default function Home(props: HomeProps) {
   const [search, setSearch] = React.useState<string>('');
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
     if (!showWelcomeMessage) {
@@ -536,15 +541,26 @@ export default function Home(props: HomeProps) {
   };
 
   const centerComponent = (
-    <img
-      src={logo}
-      alt="Caravan logo"
-      style={{ height: 20, objectFit: 'contain' }}
-    />
+    <>
+      {screenSmallerThanSm ? (
+        <img
+          src={logo}
+          alt="Caravan logo"
+          style={{ height: 40, objectFit: 'contain' }}
+        />
+      ) : (
+        <img
+          src={textLogo}
+          alt="Caravan logo"
+          style={{ height: 20, objectFit: 'contain' }}
+        />
+      )}
+    </>
   );
 
   const rightComponent = (
     <>
+      <ShareIconButton user={user} />
       <Tooltip title="Create club" aria-label="Create club">
         {user ? (
           <IconButton

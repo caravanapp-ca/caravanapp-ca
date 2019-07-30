@@ -398,8 +398,7 @@ export default function UserView(props: UserViewProps) {
       ...snackbarProps,
       isOpen: true,
       variant: 'info',
-      message:
-        'Copied referral link to clipboard - spread that baby like WILDFIRE!',
+      message: 'Copied referral link to clipboard!',
     });
   }
 
