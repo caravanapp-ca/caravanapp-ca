@@ -1,6 +1,6 @@
 import React, { useEffect, SyntheticEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { eachDayOfInterval, addDays } from 'date-fns/esm';
+import { addDays, eachDayOfInterval } from 'date-fns';
 import {
   ShelfEntry,
   User,

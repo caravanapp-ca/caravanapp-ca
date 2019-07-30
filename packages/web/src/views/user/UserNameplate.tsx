@@ -1,5 +1,10 @@
 import React from 'react';
-import { User, PaletteObject } from '@caravan/buddy-reading-types';
+import {
+  User,
+  PaletteObject,
+  Referral,
+  ReferralTiers,
+} from '@caravan/buddy-reading-types';
 import {
   Typography,
   Button,
@@ -17,11 +22,13 @@ import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
-import getReferralLink from '../../functions/getReferralLink';
+import { getReferralLink, getCurrReferralTier } from '../../functions/referral';
 import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
 
 interface UserNameplateProps {
   user: User;
+  referrals: Referral | null;
+  refTiers: ReferralTiers | null;
   userIsMe: boolean;
   isEditing: boolean;
   onEdit: (
@@ -66,6 +73,8 @@ export default function UserNameplate(props: UserNameplateProps) {
   const theme = useTheme();
   const {
     user,
+    referrals,
+    refTiers,
     userIsMe,
     isEditing,
     onEdit,
@@ -98,6 +107,18 @@ export default function UserNameplate(props: UserNameplateProps) {
     ? `MESSAGE ${user.discordUsername}`
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
+
+  let referralStatusStr;
+  if (referrals && refTiers) {
+    const refTier = getCurrReferralTier(referrals.referralCount, refTiers);
+    if (refTier) {
+      referralStatusStr = `Referral tier ${refTier.tierNumber}: ${
+        referrals.referralCount
+      } referrals.`;
+    } else {
+      referralStatusStr = 'Referral tier 0: 0 referrals.';
+    }
+  }
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
@@ -209,6 +230,9 @@ export default function UserNameplate(props: UserNameplateProps) {
           </Typography>
           {badgeToDisplay && <UserBadgeIcon badge={badgeToDisplay} />}
         </div>
+        {referralStatusStr && (
+          <Typography variant="body1">{referralStatusStr}</Typography>
+        )}
         <Typography
           variant="body1"
           color="textPrimary"

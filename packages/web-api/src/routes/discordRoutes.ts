@@ -65,11 +65,8 @@ router.post(
     }
     const { messageContent } = req.body;
     const { userToInviteDiscordId } = req.params;
-
     const client = ReadingDiscordBot.getInstance();
-
     const member = await client.fetchUser(userToInviteDiscordId);
-
     const result = await member.send(messageContent);
     console.log(`Sent discord bot message ${result.toString()}`);
     res.status(200).send(`Sent: ${result.toString()}`);

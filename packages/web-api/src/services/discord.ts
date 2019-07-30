@@ -1,9 +1,13 @@
 import axios from 'axios';
 import btoa from 'btoa';
-import Discord from 'discord.js';
+import Discord, { Role, TextChannel } from 'discord.js';
 import fetch from 'node-fetch';
-import { User } from '@caravan/buddy-reading-types';
 import { getUser } from './user';
+import { UserDoc } from '../../typings';
+import { discordGenChatChId } from '../common/globalConstantsAPI';
+import { Badge, ReferralTier } from '@caravan/buddy-reading-types';
+import { getBadge } from './badge';
+import { getReferralTier } from './referral';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
 const DiscordPermissions = ['identify', 'guilds.join', 'gdm.join'].join('%20');
@@ -132,6 +136,31 @@ export const giveDiscordRole = async (userId: string, role: string) => {
   }
   console.log(`Giving user ${userId} Discord role ${role}`);
   guildMember.addRole(role);
+};
+
+export const sendNewTierDiscordMsg = async (
+  user: string | UserDoc,
+  newTier: number | ReferralTier
+) => {
+  let userObj = user;
+  if (typeof userObj === 'string') {
+    userObj = await getUser(userObj);
+  }
+  let newTierObj = newTier;
+  if (typeof newTierObj === 'number') {
+    newTierObj = await getReferralTier(newTierObj);
+  }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const genChannel = guild.channels.get(discordGenChatChId) as TextChannel;
+  if (!genChannel) {
+    throw new Error(
+      `Did not find general-chat at channel id ${discordGenChatChId}`
+    );
+  }
+  const msgToSend = `<@${userObj.discordId}> just reached referral tier ${newTierObj.tierNumber} (${newTierObj.referralCount} referrals). Congratulations! :tada:`;
+  console.log('Sending Discord message to #general-chat', msgToSend);
+  genChannel.send(msgToSend);
 };
 
 // class ReadingDiscordClient {

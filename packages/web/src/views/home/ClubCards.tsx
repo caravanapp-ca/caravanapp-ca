@@ -16,10 +16,9 @@ import {
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
 import AdapterLink from '../../components/AdapterLink';
-import format from 'date-fns/esm/format';
+import { isAfter, addDays, differenceInHours, format } from 'date-fns';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
-import { isAfter, addDays, differenceInHours } from 'date-fns/esm';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import theme, { washedTheme, successTheme } from '../../theme';

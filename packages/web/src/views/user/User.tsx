@@ -10,6 +10,8 @@ import {
   UserQA,
   ClubTransformed,
   UserBadge,
+  Referral,
+  ReferralTiers,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -44,6 +46,7 @@ import { getAllProfileQuestions } from '../../services/profile';
 import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme } from '../../theme';
+import { getUserReferrals, getReferralTiers } from '../../services/referral';
 
 interface MinMax {
   min: number;
@@ -141,6 +144,8 @@ export default function UserView(props: UserViewProps) {
   const [tabValue, setTabValue] = React.useState(0);
   const [scrolled, setScrolled] = React.useState(0);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
+  const [referrals, setReferrals] = React.useState<Referral | null>(null);
+  const [refTiers, setRefTiers] = React.useState<ReferralTiers | null>(null);
   const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
     []
   );
@@ -187,15 +192,31 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
+  const getReferrals = async (user: User) => {
+    const userRes = await getUserReferrals(user._id);
+    if (userRes.status === 200) {
+      setReferrals(userRes.data);
+    } else {
+      setReferrals(null);
+    }
+    const refRes = await getReferralTiers();
+    if (refRes.status === 200) {
+      setRefTiers(refRes.data);
+    } else {
+      setRefTiers(null);
+    }
+  };
+
   useEffect(() => {
     getUser(userId).then(user => {
       if (user) {
+        getReferrals(user);
         const isUserMe = myUserId === user._id;
-        setUserIsMe(isUserMe);
         if (isUserMe) {
           getGenres();
           getQuestions(user);
         }
+        setUserIsMe(isUserMe);
         // Setting max page size here so we get all the user's clubs
         getAllClubs(userId, undefined, 50).then(res => {
           if (!res.data) {
@@ -546,6 +567,8 @@ export default function UserView(props: UserViewProps) {
         <div style={{ marginLeft: theme.spacing(2) }}>
           <UserNameplate
             user={user}
+            referrals={referrals}
+            refTiers={refTiers}
             userIsMe={userIsMe}
             isEditing={isEditing}
             onEdit={onEdit}

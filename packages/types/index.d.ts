@@ -138,8 +138,9 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export interface Badge {
+    key: string;
     name: string;
-    description: string;
+    description?: string;
   }
 
   export interface Badges extends DocumentFields {
@@ -288,8 +289,7 @@ declare module '@caravan/buddy-reading-types' {
     | 'login'
     | 'onboarded'
     | 'joinClub'
-    | 'createClub'
-    | 'successfulReferral';
+    | 'createClub';
 
   export type ReferralSource = 'personal' | 'facebook' | 'twitter';
 

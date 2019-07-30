@@ -9,7 +9,7 @@ import ReferralModel from '../models/referral';
 import ReferralTierModel from '../models/referralTier';
 import { ReferralDoc } from '../../typings';
 import { giveUserBadge } from './badge';
-import { giveDiscordRole } from './discord';
+import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
 
 export async function handleFirstVisit(
   referredTempUid: string,
@@ -111,6 +111,7 @@ export async function createReferralActionByDoc(
           if (newTier.discordRole) {
             giveDiscordRole(referrerDoc.userId, newTier.discordRole);
           }
+          sendNewTierDiscordMsg(referrerDoc.userId, newTier);
         }
       }
       break;
@@ -123,4 +124,17 @@ export async function createReferralActionByDoc(
 
 export function getReferralDoc(userId: string) {
   return ReferralModel.findOne({ userId });
+}
+
+export const getAllReferralTiersDoc = () => {
+  return ReferralTierModel.find({});
+}
+
+export const getReferralTier = async (tierNum: number) => {
+  const referralTierDoc = await getAllReferralTiersDoc();
+  const referralTier = referralTierDoc[0].tiers.find(t => t.tierNumber === tierNum);
+  if(!referralTier){
+    throw new Error(`Did not find referral tier ${tierNum} in db.`);
+  }
+  return referralTier;
 }

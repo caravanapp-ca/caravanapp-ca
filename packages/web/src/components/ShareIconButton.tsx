@@ -19,7 +19,7 @@ import { washedTheme } from '../theme';
 import { logout } from '../services/user';
 import DiscordLoginModal from './DiscordLoginModal';
 import CustomSnackbar, { CustomSnackbarProps } from './CustomSnackbar';
-import getReferralLink from '../functions/getReferralLink';
+import { getReferralLink } from '../functions/referral';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {

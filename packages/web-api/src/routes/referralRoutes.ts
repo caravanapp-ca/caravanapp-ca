@@ -4,8 +4,24 @@ import { FilterAutoMongoKeys, Referral } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ReferralModel from '../models/referral';
 import { generateUuid } from '../common/uuid';
+import { getReferralDoc, getAllReferralTiersDoc } from '../services/referral';
 
 const router = express.Router();
+
+router.get('/tiers', async (req, res, next) => {
+  const referralTierDoc = await getAllReferralTiersDoc();
+});
+
+router.get('/:userId', async (req, res, next) => {
+  const { userId } = req.params;
+  const referralDoc = await getReferralDoc(userId);
+  if (!referralDoc) {
+    return res
+      .status(404)
+      .send(`Could not find referral doc for user ${userId}`);
+  }
+  return res.status(200).send(referralDoc);
+});
 
 router.post(
   '/handleReferralClick/:referrerId',
