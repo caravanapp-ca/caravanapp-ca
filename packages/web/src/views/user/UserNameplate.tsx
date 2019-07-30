@@ -15,6 +15,7 @@ import {
   TextField,
   Fab,
   Theme,
+  useMediaQuery,
 } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import copyToClipboard from 'copy-to-clipboard';
@@ -102,6 +103,8 @@ export default function UserNameplate(props: UserNameplateProps) {
     },
   };
 
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
+
   const msgBtnLabel: string = user.discordUsername
     ? `MESSAGE ${user.discordUsername}`
     : 'MESSAGE';
@@ -180,21 +183,6 @@ export default function UserNameplate(props: UserNameplateProps) {
             margin="normal"
             variant="outlined"
           />
-          <Button
-            variant="outlined"
-            onClick={() =>
-              copyToClipboard(getReferralLink(user._id, 'home')) &&
-              onCopyReferralLink()
-            }
-            style={{
-              width: '20%',
-              justifyContent: 'flex-start',
-              marginBottom: theme.spacing(2),
-              fontWeight: 600,
-            }}
-          >
-            <Typography variant="button">Copy Referral Link</Typography>
-          </Button>
           <Typography color="textSecondary">Palette</Typography>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {paletteColours.map(colourObj => (
