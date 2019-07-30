@@ -94,7 +94,7 @@ export async function createReferralActionByDoc(
       referralDoc.referredAndNotJoined = false;
       // Check if referrer has entered a new referral tier.
       if (referrerDoc.referralCount > 0) {
-        const referralTierDoc = await ReferralTierModel.find();
+        const referralTierDoc = await ReferralTierModel.find({});
         if (referralTierDoc.length === 0) {
           console.error('Did not find any referral tiers in database!');
           return;

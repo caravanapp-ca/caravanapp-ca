@@ -29,4 +29,8 @@ const referralTiersSchema = new Schema(referralTiersDefinition, {
   timestamps: true,
 });
 
-export default model<ReferralTierDoc>('ReferralTier', referralTiersSchema);
+export default model<ReferralTierDoc>(
+  'ReferralTier',
+  referralTiersSchema,
+  'referralTiers'
+);

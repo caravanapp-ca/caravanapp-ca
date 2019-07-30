@@ -123,6 +123,7 @@ export const giveDiscordRole = async (userId: string, role: string) => {
     }
   } catch (err) {
     console.error(`Failed to get user ${userId}`);
+    return;
   }
   if (!user) {
     console.error(
@@ -133,7 +134,7 @@ export const giveDiscordRole = async (userId: string, role: string) => {
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
   const guildMember = guild.members.find(m => m.id === user.discordId);
-  if(!guildMember){
+  if (!guildMember) {
     console.error(`Did not find user ${userId} in the Discord guild`);
     return;
   }
