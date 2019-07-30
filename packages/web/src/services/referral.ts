@@ -11,16 +11,15 @@ interface ReferralParams {
   utm_medium?: string;
 }
 
-const validUtmSources: { [key in ReferralSource]: boolean } = {
-  facebook: true,
-  personal: true,
-  twitter: true,
-};
-
-export async function handleReferral(referrerId: string) {
+export async function handleReferral(
+  referrerId: string,
+  utmSource: string | undefined | null
+) {
   const res = await axios.post(
     `${referralRoute}/handleReferralClick/${referrerId}`,
-    {}
+    {
+      utmSource,
+    }
   );
   if (res.status === 200) {
     setCookie('refClickComplete', 'true', 3);

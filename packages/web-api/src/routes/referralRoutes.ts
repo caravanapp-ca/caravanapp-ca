@@ -1,9 +1,8 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { FilterAutoMongoKeys, Referral } from '@caravan/buddy-reading-types';
-import { Omit } from 'utility-types';
-import ReferralModel from '../models/referral';
+import { ReferralSource } from '@caravan/buddy-reading-types';
 import { generateUuid } from '../common/uuid';
+import { handleFirstVisit, ALLOWED_UTM_SOURCES } from '../services/referral';
 
 const router = express.Router();
 
@@ -17,26 +16,18 @@ router.post(
       return res.status(422).json({ errors: errorArr });
     }
     const { referrerId } = req.params;
+    // Ugly way of forcing to null, consider cleaning up
+    let utmSource: ReferralSource = req.body.utmSource
+      ? req.body.utmSource
+      : null;
+    utmSource =
+      utmSource == null || ALLOWED_UTM_SOURCES[utmSource] === true
+        ? utmSource
+        : null;
+
     const referredTempUid = generateUuid();
-    const newReferral: Omit<
-      FilterAutoMongoKeys<Referral>,
-      'referredUsers' | 'referralCount' | 'source'
-    > = {
-      userId: referredTempUid,
-      referredById: referrerId,
-      actions: [
-        {
-          action: 'click',
-          timestamp: new Date(),
-        },
-      ],
-      referredAndNotJoined: true,
-    };
     try {
-      const newReferralDoc = await new ReferralModel(newReferral).save();
-      console.log(
-        `[Referral] UserId: ${newReferralDoc.userId}, Referrer: ${newReferralDoc.referredById}, Action: click`
-      );
+      await handleFirstVisit(referredTempUid, referrerId, utmSource);
       req.session.referredTempUid = referredTempUid;
       return res.status(200).send();
     } catch (err) {

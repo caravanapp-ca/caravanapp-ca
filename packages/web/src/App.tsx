@@ -107,13 +107,13 @@ export function App(props: AppProps) {
       clearStorageAuthState();
     }
     if (queries.ref && !getCookie('refClickComplete') && !getCookie('userId')) {
-      let referrerId: string;
-      if (Array.isArray(queries.ref)) {
-        referrerId = queries.ref[0];
-      } else {
-        referrerId = queries.ref;
-      }
-      handleReferral(referrerId);
+      const referrerId = Array.isArray(queries.ref)
+        ? queries.ref[0]
+        : queries.ref;
+      const utmSource = Array.isArray(queries.utm_source)
+        ? queries.utm_source[0]
+        : queries.utm_source;
+      handleReferral(referrerId, utmSource);
     }
   }, []);
 

@@ -11,6 +11,12 @@ import { ReferralDoc } from '../../typings';
 import { giveUserBadge } from './badge';
 import { giveDiscordRole } from './discord';
 
+export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
+  facebook: true,
+  personal: true,
+  twitter: true,
+};
+
 export async function handleFirstVisit(
   referredTempUid: string,
   referredById: string,
@@ -31,7 +37,11 @@ export async function handleFirstVisit(
     source: utm_source,
     referredAndNotJoined: true,
   };
-  await new ReferralModel(newReferral).save();
+  const referralDoc = await new ReferralModel(newReferral).save();
+  console.log(
+    `[Referral] UserId: ${referralDoc.userId}, Referrer: ${referralDoc.referredById}, Action: click`
+  );
+  return referralDoc;
 }
 
 export async function createReferralAction(
