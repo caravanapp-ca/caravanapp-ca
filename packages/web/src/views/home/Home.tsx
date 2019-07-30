@@ -53,6 +53,9 @@ import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
 import Splash from './Splash';
 import ShareIconButton from '../../components/ShareIconButton';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -246,6 +249,15 @@ export default function Home(props: HomeProps) {
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'success',
+    }
+  );
+
   useEffect(() => {
     if (!showWelcomeMessage) {
       localStorage.setItem(KEY_HIDE_WELCOME_CLUBS, 'yes');
@@ -367,6 +379,25 @@ export default function Home(props: HomeProps) {
     };
     getGenres();
   }, []);
+
+  function onSnackbarClose() {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
+  }
+
+  function copyToClipboard(refLink: string) {
+    const el = document.createElement('textarea');
+    el.value = refLink;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'info',
+      message: 'Copied referral link to clipboard!',
+    });
+  }
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -560,7 +591,7 @@ export default function Home(props: HomeProps) {
 
   const rightComponent = (
     <>
-      <ShareIconButton user={user} />
+      <ShareIconButton user={user} copyToClipboard={copyToClipboard} />
       <Tooltip title="Create club" aria-label="Create club">
         {user ? (
           <IconButton
@@ -889,6 +920,7 @@ export default function Home(props: HomeProps) {
         onCloseLoginDialog={onCloseLoginModal}
         open={loginModalShown}
       />
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }
