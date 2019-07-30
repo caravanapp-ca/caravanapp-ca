@@ -20,8 +20,6 @@ import {
   disconnect as disconnectFromDb,
 } from './db/config';
 import { ReadingDiscordBot } from './services/discord';
-import { handleReferral } from './middleware/referral';
-import { getCookie } from '../../web/src/common/cookies';
 
 (async () => {
   const app = express();
@@ -31,9 +29,6 @@ import { getCookie } from '../../web/src/common/cookies';
   const port = process.env.PORT || 3001;
   const env = process.env.NODE_ENV || 'development';
   console.log(`Running in ${env} environment`);
-
-  // logs in
-  const discordClient = ReadingDiscordBot.getInstance();
 
   app.use(helmet());
   app.enable('trust proxy');

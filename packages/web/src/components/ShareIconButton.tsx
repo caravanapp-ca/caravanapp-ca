@@ -48,6 +48,7 @@ const useStyles = makeStyles(theme => ({
 
 interface ShareIconButtonProps extends RouteComponentProps<{}> {
   user: User | null;
+  copyToClipboard: (refLink: string) => void;
 }
 
 function ShareIconButton(props: ShareIconButtonProps) {
@@ -55,16 +56,7 @@ function ShareIconButton(props: ShareIconButtonProps) {
 
   const shareMenuAnchorRef = React.useRef<HTMLDivElement>(null);
 
-  const { user } = props;
-
-  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
-    {
-      autoHideDuration: 6000,
-      isOpen: false,
-      handleClose: onSnackbarClose,
-      variant: 'success',
-    }
-  );
+  const { user, copyToClipboard } = props;
 
   const [shareMenuIsOpen, setShareMenuIsOpen] = React.useState(false);
 
@@ -78,37 +70,28 @@ function ShareIconButton(props: ShareIconButtonProps) {
     setShareMenuIsOpen(false);
   }
 
-  function onSnackbarClose() {
-    setSnackbarProps({ ...snackbarProps, isOpen: false });
-  }
-
-  function copyToClipboard(refLink: string) {
-    const el = document.createElement('textarea');
-    el.value = refLink;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    setSnackbarProps({
-      ...snackbarProps,
-      isOpen: true,
-      variant: 'info',
-      message: 'Copied referral link to clipboard!',
-    });
+  function callCopyToClipboardMethod() {
+    copyToClipboard(getReferralLink(user ? user._id : undefined, 'profile'));
     setShareMenuIsOpen(false);
   }
 
   return (
     <>
-      <div
-        onClick={() => setShareMenuIsOpen(true)}
-        className={classes.buttonContainer}
-        ref={shareMenuAnchorRef}
-      >
-        <IconButton color="primary" className={classes.button} disabled={false}>
-          <ShareIcon />
-        </IconButton>
-      </div>
+      <Tooltip title="Share Caravan" aria-label="Share Caravan">
+        <div
+          onClick={() => setShareMenuIsOpen(true)}
+          className={classes.buttonContainer}
+          ref={shareMenuAnchorRef}
+        >
+          <IconButton
+            color="primary"
+            className={classes.button}
+            disabled={false}
+          >
+            <ShareIcon />
+          </IconButton>
+        </div>
+      </Tooltip>
       <Menu
         open={shareMenuIsOpen}
         anchorEl={shareMenuAnchorRef.current}
@@ -125,26 +108,28 @@ function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2F&amp;src=sdkpreparse"
           target={'_blank'}
+          onClick={() => setShareMenuIsOpen(false)}
         >
           <MenuItem>Facebook</MenuItem>
         </Link>
         <Link
-          href="https://twitter.com/intent/tweet/?text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2clubs"
+          href="https://twitter.com/intent/tweet/?text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs"
           target={'_blank'}
+          onClick={() => setShareMenuIsOpen(false)}
         >
           <MenuItem>Twitter</MenuItem>
         </Link>
-        <MenuItem
-          onClick={() =>
-            copyToClipboard(
-              getReferralLink(user ? user._id : undefined, 'profile')
-            )
-          }
+        <Link
+          href="mailto:?subject=Come%20join%20me%20on%20this%20cool%20new%20buddy%20reading%20site%20Caravan:%20https%3A%2F%2Fcaravanapp.ca%2Fclubs&body=%20Check%20out%20this%20cool%20new%20site%20for%20online%20book%20clubs%21%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs"
+          target={'_blank'}
+          onClick={() => setShareMenuIsOpen(false)}
         >
-          Copy Link
-        </MenuItem>
+          <MenuItem>Email</MenuItem>
+        </Link>
+        <Link>
+          <MenuItem onClick={callCopyToClipboardMethod}>Copy Link</MenuItem>
+        </Link>
       </Menu>
-      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }
