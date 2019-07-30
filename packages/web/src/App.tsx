@@ -32,6 +32,8 @@ import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
 import About from './views/about/About';
+import getUtmSourceValue from './functions/getUtmSourceValue';
+import { cpus } from 'os';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -107,13 +109,16 @@ export function App(props: AppProps) {
       clearStorageAuthState();
     }
     if (queries.ref && !getCookie('refClickComplete') && !getCookie('userId')) {
-      let referrerId: string;
-      if (Array.isArray(queries.ref)) {
-        referrerId = queries.ref[0];
-      } else {
-        referrerId = queries.ref;
+      const referrerId = Array.isArray(queries.ref)
+        ? queries.ref[0]
+        : queries.ref;
+      let utmSource = Array.isArray(queries.utm_source)
+        ? queries.utm_source[0]
+        : queries.utm_source;
+      if (utmSource) {
+        utmSource = getUtmSourceValue(utmSource);
       }
-      handleReferral(referrerId);
+      handleReferral(referrerId, utmSource);
     }
   }, []);
 

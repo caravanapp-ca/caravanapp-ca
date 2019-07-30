@@ -1,18 +1,15 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { FilterAutoMongoKeys, Referral } from '@caravan/buddy-reading-types';
-import { Omit } from 'utility-types';
-import ReferralModel from '../models/referral';
-import { generateUuid } from '../common/uuid';
 import { getReferralDoc, getAllReferralTiersDoc } from '../services/referral';
+import generateUuid from 'uuid/v4';
+import { ReferralSource } from '@caravan/buddy-reading-types';
+import { handleFirstVisit, ALLOWED_UTM_SOURCES } from '../services/referral';
 
 const router = express.Router();
 
-router.get('/tiers', async (req, res, next) => {
-  const referralTierDoc = await getAllReferralTiersDoc();
-});
+router.get('/tiers', async () => {});
 
-router.get('/:userId', async (req, res, next) => {
+router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
   const referralDoc = await getReferralDoc(userId);
   if (!referralDoc) {
@@ -33,26 +30,18 @@ router.post(
       return res.status(422).json({ errors: errorArr });
     }
     const { referrerId } = req.params;
+    // Ugly way of forcing to null, consider cleaning up
+    let utmSource: ReferralSource = req.body.utmSource
+      ? req.body.utmSource
+      : null;
+    utmSource =
+      utmSource == null || ALLOWED_UTM_SOURCES[utmSource] === true
+        ? utmSource
+        : null;
+
     const referredTempUid = generateUuid();
-    const newReferral: Omit<
-      FilterAutoMongoKeys<Referral>,
-      'referredUsers' | 'referralCount' | 'source'
-    > = {
-      userId: referredTempUid,
-      referredById: referrerId,
-      actions: [
-        {
-          action: 'click',
-          timestamp: new Date(),
-        },
-      ],
-      referredAndNotJoined: true,
-    };
     try {
-      const newReferralDoc = await new ReferralModel(newReferral).save();
-      console.log(
-        `[Referral] UserId: ${newReferralDoc.userId}, Referrer: ${newReferralDoc.referredById}, Action: click`
-      );
+      await handleFirstVisit(referredTempUid, referrerId, utmSource);
       req.session.referredTempUid = referredTempUid;
       return res.status(200).send();
     } catch (err) {
