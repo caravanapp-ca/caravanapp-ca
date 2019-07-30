@@ -1,10 +1,24 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
+import { getReferralDoc, getAllReferralTiersDoc } from '../services/referral';
 import generateUuid from 'uuid/v4';
 import { ReferralSource } from '@caravan/buddy-reading-types';
 import { handleFirstVisit, ALLOWED_UTM_SOURCES } from '../services/referral';
 
 const router = express.Router();
+
+router.get('/tiers', async () => {});
+
+router.get('/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const referralDoc = await getReferralDoc(userId);
+  if (!referralDoc) {
+    return res
+      .status(404)
+      .send(`Could not find referral doc for user ${userId}`);
+  }
+  return res.status(200).send(referralDoc);
+});
 
 router.post(
   '/handleReferralClick/:referrerId',
