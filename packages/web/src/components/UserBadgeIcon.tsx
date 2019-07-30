@@ -20,7 +20,7 @@ interface UserBadgeIconProps {
 export default function UserBadgeIcon(props: UserBadgeIconProps) {
   const classes = useStyles();
   const { badge, size } = props;
-  const { key, name, description } = badge;
+  const { key, name } = badge;
   return (
     <Tooltip title={name}>
       <img
