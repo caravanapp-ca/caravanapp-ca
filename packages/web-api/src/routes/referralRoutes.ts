@@ -1,6 +1,6 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import generateUuid from 'uuid';
+import generateUuid from 'uuid/v4';
 import { ReferralSource } from '@caravan/buddy-reading-types';
 import { handleFirstVisit, ALLOWED_UTM_SOURCES } from '../services/referral';
 
