@@ -30,6 +30,6 @@ export async function getUserReferrals(referrerId: string) {
 }
 
 export async function getReferralTiers() {
-  const res = await axios.get<ReferralTiers>(`${referralRoute}/tiers`);
+  const res = await axios.get<ReferralTiers[]>(`${referralRoute}/tiers`);
   return res;
 }

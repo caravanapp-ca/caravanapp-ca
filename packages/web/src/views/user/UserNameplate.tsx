@@ -29,7 +29,6 @@ import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
 interface UserNameplateProps {
   user: User;
   referrals: Referral | null;
-  refTiers: ReferralTiers | null;
   userIsMe: boolean;
   isEditing: boolean;
   onEdit: (
@@ -75,7 +74,6 @@ export default function UserNameplate(props: UserNameplateProps) {
   const {
     user,
     referrals,
-    refTiers,
     userIsMe,
     isEditing,
     onEdit,
@@ -110,16 +108,12 @@ export default function UserNameplate(props: UserNameplateProps) {
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
   let referralStatusStr;
-  if (referrals && refTiers) {
-    const refTier = getCurrReferralTier(referrals.referralCount, refTiers);
-    if (refTier) {
-      referralStatusStr = `Referral tier ${refTier.tierNumber}: ${
-        referrals.referralCount
-      } referrals.`;
-    } else {
-      referralStatusStr = 'Referral tier 0: 0 referrals.';
-    }
+  if (referrals) {
+    referralStatusStr = `${referrals.referralCount}`;
+  } else {
+    referralStatusStr = '0';
   }
+  referralStatusStr += ' referrals';
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
@@ -232,13 +226,10 @@ export default function UserNameplate(props: UserNameplateProps) {
           </Typography>
           {badgeToDisplay && <UserBadgeIcon badge={badgeToDisplay} />}
         </div>
-        {referralStatusStr && (
-          <Typography variant="body1">{referralStatusStr}</Typography>
-        )}
         <Typography
           variant="body1"
           color="textPrimary"
-          style={{ marginTop: theme.spacing(1) }}
+          style={{ marginTop: badgeToDisplay ? 0 : theme.spacing(1) }}
         >
           {user.bio}
         </Typography>
@@ -255,6 +246,15 @@ export default function UserNameplate(props: UserNameplateProps) {
             {user.website}
           </Link>
         </Typography>
+        {referralStatusStr && (
+          <Typography
+            variant="body2"
+            style={{ fontWeight: 600 }}
+            color="textPrimary"
+          >
+            {referralStatusStr}
+          </Typography>
+        )}
         {user && !userIsMe && (
           <Button
             variant="outlined"
