@@ -298,8 +298,6 @@ declare module '@caravan/buddy-reading-types' {
     | 'goodreads'
     | 'email';
 
-  export type ReferralLocation = 'profile' | 'club';
-
   export type GroupVibe =
     | 'chill'
     | 'power'

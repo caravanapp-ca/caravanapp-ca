@@ -387,13 +387,7 @@ export default function UserView(props: UserViewProps) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
-  function copyToClipboard(refLink: string) {
-    const el = document.createElement('textarea');
-    el.value = refLink;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
+  function onCopyReferralLink() {
     setSnackbarProps({
       ...snackbarProps,
       isOpen: true,
@@ -551,7 +545,7 @@ export default function UserView(props: UserViewProps) {
             onEdit={onEdit}
             valid={[nameValidated(), bioValidated(), websiteValidated()]}
             userDarkTheme={userDarkTheme}
-            copyToClipboard={copyToClipboard}
+            onCopyReferralLink={onCopyReferralLink}
           />
         </div>
       </div>
