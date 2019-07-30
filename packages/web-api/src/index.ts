@@ -26,6 +26,9 @@ import { ReadingDiscordBot } from './services/discord';
 
   await connectToDb();
 
+  // logs in
+  ReadingDiscordBot.getInstance();
+
   const port = process.env.PORT || 3001;
   const env = process.env.NODE_ENV || 'development';
   console.log(`Running in ${env} environment`);
