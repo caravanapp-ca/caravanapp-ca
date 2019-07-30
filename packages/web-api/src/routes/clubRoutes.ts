@@ -939,7 +939,7 @@ router.put(
       if (prevBookId) {
         switch (currBookAction as CurrBookAction) {
           case 'delete':
-            resultPrev = await ClubModel.update(
+            resultPrev = await ClubModel.updateOne(
               { _id: clubId },
               { $pull: { shelf: { _id: prevBookId } } }
             );
