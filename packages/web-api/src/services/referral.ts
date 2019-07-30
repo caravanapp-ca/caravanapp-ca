@@ -15,6 +15,8 @@ export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   facebook: true,
   personal: true,
   twitter: true,
+  email: true,
+  goodreads: true,
 };
 
 export async function handleFirstVisit(

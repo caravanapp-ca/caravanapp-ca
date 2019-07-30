@@ -111,7 +111,7 @@ function ShareIconButton(props: ShareIconButtonProps) {
               ? 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D' +
                 user._id +
                 '%26utm_source%3Dfb%2F&amp;src=sdkpreparse'
-              : 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F&amp;src=sdkpreparse'
+              : 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dfb%2F&amp;src=sdkpreparse'
           }
           target={'_blank'}
           onClick={() => setShareMenuIsOpen(false)}
