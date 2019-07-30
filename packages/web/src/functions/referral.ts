@@ -1,6 +1,4 @@
 import {
-  Referral,
-  ReferralLocation,
   ReferralSource,
   ReferralTiers,
   ReferralTier,
@@ -8,7 +6,7 @@ import {
 
 export const getReferralLink = (
   userId: string | undefined,
-  location: ReferralLocation,
+  location: 'home' | 'club',
   source?: ReferralSource
 ) => {
   if (userId) {
@@ -22,7 +20,7 @@ export const getReferralLink = (
       }
     }
   }
-  return 'localhost:3000/clubs';
+  return `https://${window.location.host}`;
 };
 
 export const getCurrReferralTier = (
