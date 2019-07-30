@@ -291,7 +291,12 @@ declare module '@caravan/buddy-reading-types' {
     | 'createClub'
     | 'successfulReferral';
 
-  export type ReferralSource = 'personal' | 'facebook' | 'twitter';
+  export type ReferralSource =
+    | 'personal'
+    | 'facebook'
+    | 'twitter'
+    | 'goodreads'
+    | 'email';
 
   export type ReferralLocation = 'profile' | 'club';
 

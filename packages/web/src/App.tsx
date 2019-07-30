@@ -32,6 +32,8 @@ import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
 import About from './views/about/About';
+import getUtmSourceValue from './functions/getUtmSourceValue';
+import { cpus } from 'os';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -110,9 +112,12 @@ export function App(props: AppProps) {
       const referrerId = Array.isArray(queries.ref)
         ? queries.ref[0]
         : queries.ref;
-      const utmSource = Array.isArray(queries.utm_source)
+      let utmSource = Array.isArray(queries.utm_source)
         ? queries.utm_source[0]
         : queries.utm_source;
+      if (utmSource) {
+        utmSource = getUtmSourceValue(utmSource);
+      }
       handleReferral(referrerId, utmSource);
     }
   }, []);
