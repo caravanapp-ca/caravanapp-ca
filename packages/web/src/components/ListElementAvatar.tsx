@@ -3,6 +3,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import AdapterLink from './AdapterLink';
+import { UserBadge } from '@caravan/buddy-reading-types';
+import UserBadgeIcon from './UserBadgeIcon';
+import classes from '*.module.css';
+import { Typography, makeStyles, Theme, createStyles } from '@material-ui/core';
 
 export interface ListElementAvatarProps {
   avatarElement?: any;
@@ -12,7 +16,26 @@ export interface ListElementAvatarProps {
   secondaryText?: string;
   button?: boolean;
   link?: string;
+  badge?: UserBadge;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    contentContainer: {
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+    textContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+    },
+  })
+);
 
 export default function ListElementAvatar(props: ListElementAvatarProps) {
   const {
@@ -23,7 +46,9 @@ export default function ListElementAvatar(props: ListElementAvatarProps) {
     secondaryText,
     button,
     link,
+    badge,
   } = props;
+  const classes = useStyles();
 
   return (
     <ListItem
@@ -36,10 +61,23 @@ export default function ListElementAvatar(props: ListElementAvatarProps) {
       <ListItemAvatar>
         {avatarElement ? avatarElement : undefined}
       </ListItemAvatar>
-      <ListItemText
+      <div className={classes.contentContainer}>
+        <div className={classes.textContainer}>
+          {primaryText && (
+            <Typography variant="body1">{primaryText}</Typography>
+          )}
+          {secondaryText && (
+            <Typography variant="body2" color="textSecondary">
+              {secondaryText}
+            </Typography>
+          )}
+        </div>
+        {badge && <UserBadgeIcon badge={badge} size={24} />}
+      </div>
+      {/* <ListItemText
         primary={primaryText ? primaryText : undefined}
         secondary={secondaryText ? secondaryText : undefined}
-      />
+      /> */}
       {secondaryElement}
     </ListItem>
   );

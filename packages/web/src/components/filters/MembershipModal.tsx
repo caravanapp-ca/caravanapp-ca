@@ -71,10 +71,7 @@ export default function MembershipModal(props: MembershipModalProps) {
                   color="primary"
                   style={{ marginRight: theme.spacing(2) }}
                 />
-                <ListItemText
-                  primary={label}
-                  secondary={membershipLabels(membership, 'description')}
-                />
+                <ListItemText primary={label} />
               </ListItem>
             );
           })}
