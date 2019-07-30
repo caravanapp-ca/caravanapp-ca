@@ -24,6 +24,7 @@ import JoinClubs from './JoinClubs';
 import { getAllProfileQuestions } from '../../services/profile';
 import { updateUserProfile } from '../../services/user';
 import HeaderTitle from '../../components/HeaderTitle';
+import { KEY_REFERRER_USER_ID } from '../../common/localStorage';
 
 interface OnboardingRouteParams {
   id: string;

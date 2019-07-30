@@ -13,7 +13,6 @@ import { darkTheme, whiteTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import splash from '../../resources/splash.svg';
 import { User } from '@caravan/buddy-reading-types';
-import ReactResizeDetector from 'react-resize-detector';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -13,12 +13,15 @@ import bookRoutes from './routes/bookRoutes';
 import profileRoutes from './routes/profileRoutes';
 import testRoutes from './routes/testRoutes';
 import discordRoutes from './routes/discordRoutes';
+import referralRoutes from './routes/referralRoutes';
 
 import {
   connect as connectToDb,
   disconnect as disconnectFromDb,
 } from './db/config';
 import { ReadingDiscordBot } from './services/discord';
+import { handleReferral } from './middleware/referral';
+import { getCookie } from '../../web/src/common/cookies';
 
 (async () => {
   const app = express();
@@ -64,6 +67,7 @@ import { ReadingDiscordBot } from './services/discord';
   app.use('/api/books', bookRoutes);
   app.use('/api/profile', profileRoutes);
   app.use('/api/discord', discordRoutes);
+  app.use('/api/referrals', referralRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

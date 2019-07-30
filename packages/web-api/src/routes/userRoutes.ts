@@ -9,6 +9,8 @@ import {
   UserQA,
   Services,
   ActiveFilter,
+  Referral,
+  ReferralAction,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -21,10 +23,9 @@ import {
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc } from '../../typings';
+import { createReferralAction } from '../services/referral';
 
 const router = express.Router();
-
-// TODO write the get all clubs method
 
 // Get me, includes more sensitive stuff
 router.get('/@me', async (req, res, next) => {
@@ -322,6 +323,7 @@ router.put(
       questions: userQA,
       shelf: userShelf,
       palette: user.palette,
+      badges: user.badges,
     };
 
     const writeableObj: any = newUserButWithPossibleNullValues;
@@ -347,6 +349,7 @@ router.put(
         // Perhaps send email or whatever.
         userDoc.onboardingVersion = 1;
         userDoc = await userDoc.save();
+        createReferralAction(userId, 'onboarded');
       }
       res.status(200).send(userDoc);
     } catch (err) {

@@ -9,9 +9,17 @@ import {
   ProfileQuestions,
   MongoTimestamps,
   ProfileQuestion,
+  Badges,
+  Referral,
+  ReferralTiers,
 } from '@caravan/buddy-reading-types';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
+
+declare module '*.svg' {
+  const content: string;
+  export default content;
+}
 
 export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
   _id: MongooseTypes.ObjectId;
@@ -19,6 +27,14 @@ export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
 }
 
 export interface GenreDoc extends Document, Omit<Genres, '_id'> {
+  _id: MongooseTypes.ObjectId;
+}
+
+export interface BadgeDoc extends Document, Omit<Badges, '_id'> {
+  _id: MongooseTypes.ObjectId;
+}
+
+export interface ReferralTierDoc extends Document, Omit<ReferralTiers, '_id'> {
   _id: MongooseTypes.ObjectId;
 }
 
@@ -50,5 +66,12 @@ export interface ShelfEntryDoc
 }
 
 export interface UserDoc extends Document, Omit<User, '_id'> {
+  _id: MongooseTypes.ObjectId;
+}
+
+export interface ReferralDoc
+  extends Document,
+    MongoTimestamps,
+    Omit<Referral, '_id'> {
   _id: MongooseTypes.ObjectId;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, PaletteObject } from '@caravan/buddy-reading-types';
+import { User, PaletteObject, UserBadge } from '@caravan/buddy-reading-types';
 import {
   Typography,
   Button,
@@ -16,6 +16,9 @@ import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
+import UserBadgeIcon from '../../components/UserBadgeIcon';
+import { referralTiers } from '../../common/globalConstants';
+import getReferralLink from '../../functions/getReferralLink';
 
 interface UserNameplateProps {
   user: User;
@@ -27,6 +30,7 @@ interface UserNameplateProps {
   ) => void;
   valid: [boolean, string][];
   userDarkTheme?: Theme;
+  copyToClipboard: (refLink: string) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,13 +49,37 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
+    nameAndBadge: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    referralLinkField: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   })
 );
+
+const getBadgeToDisplay = (badges: UserBadge[]) => {
+  for (let i = 0; i < referralTiers.length; i++) {
+    return badges.find(b => b.key === `ref${referralTiers[i]}`);
+  }
+  return;
+};
 
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { user, userIsMe, isEditing, onEdit, valid, userDarkTheme } = props;
+  const {
+    user,
+    userIsMe,
+    isEditing,
+    onEdit,
+    valid,
+    userDarkTheme,
+    copyToClipboard,
+  } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
     bio: boolean;
@@ -78,8 +106,9 @@ export default function UserNameplate(props: UserNameplateProps) {
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
-  // TODO: Add userIsMe to if statement after testing
-  if (isEditing && onEdit) {
+  const badgeToDisplay = getBadgeToDisplay(user.badges);
+
+  if (userIsMe && isEditing && onEdit) {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
         <div className={classes.editContainer}>
@@ -142,6 +171,20 @@ export default function UserNameplate(props: UserNameplateProps) {
             margin="normal"
             variant="outlined"
           />
+          <Button
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(getReferralLink(user._id, 'profile'))
+            }
+            style={{
+              width: '20%',
+              justifyContent: 'flex-start',
+              marginBottom: theme.spacing(2),
+              fontWeight: 600,
+            }}
+          >
+            <Typography variant="button">Copy Referral Link</Typography>
+          </Button>
           <Typography color="textSecondary">Palette</Typography>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {paletteColours.map(colourObj => (
@@ -163,13 +206,16 @@ export default function UserNameplate(props: UserNameplateProps) {
   } else {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <Typography
-          variant="h4"
-          color="textPrimary"
-          style={{ fontWeight: 600 }}
-        >
-          {user.name}
-        </Typography>
+        <div className={classes.nameAndBadge}>
+          <Typography
+            variant="h4"
+            color="textPrimary"
+            style={{ fontWeight: 600 }}
+          >
+            {user.name}
+          </Typography>
+          {badgeToDisplay && <UserBadgeIcon badge={badgeToDisplay} />}
+        </div>
         <Typography
           variant="body1"
           color="textPrimary"
@@ -234,6 +280,17 @@ export default function UserNameplate(props: UserNameplateProps) {
                 />
               )}
             <Typography variant="button">{msgBtnLabelCaps}</Typography>
+          </Button>
+        )}
+        {user && userIsMe && (
+          <Button
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(getReferralLink(user._id, 'profile'))
+            }
+            style={{ marginTop: theme.spacing(1) }}
+          >
+            <Typography variant="button">Copy Referral Link</Typography>
           </Button>
         )}
       </MuiThemeProvider>

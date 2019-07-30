@@ -25,11 +25,7 @@ export default function GenericGroupMemberAvatar(
   const { style, iconStyle } = props;
   return (
     <Avatar classes={{ colorDefault: classes.colorDefault }} style={style}>
-      <GenericGroupMemberIcon
-        color="primary"
-        fontSize="large"
-        style={iconStyle}
-      />
+      <GenericGroupMemberIcon color="primary" style={iconStyle} />
     </Avatar>
   );
 }

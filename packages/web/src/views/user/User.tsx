@@ -9,6 +9,7 @@ import {
   ProfileQuestion,
   UserQA,
   ClubTransformed,
+  UserBadge,
 } from '@caravan/buddy-reading-types';
 import {
   makeStyles,
@@ -386,6 +387,21 @@ export default function UserView(props: UserViewProps) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
+  function copyToClipboard(refLink: string) {
+    const el = document.createElement('textarea');
+    el.value = refLink;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'info',
+      message: 'Copied referral link to clipboard!',
+    });
+  }
+
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
@@ -526,7 +542,7 @@ export default function UserView(props: UserViewProps) {
             : undefined,
         }}
       >
-        <UserAvatar user={user} size={screenSmallerThanSm ? 112 : 144} />
+        <UserAvatar user={user} size={screenSmallerThanSm ? 96 : 144} />
         <div style={{ marginLeft: theme.spacing(2) }}>
           <UserNameplate
             user={user}
@@ -535,6 +551,7 @@ export default function UserView(props: UserViewProps) {
             onEdit={onEdit}
             valid={[nameValidated(), bioValidated(), websiteValidated()]}
             userDarkTheme={userDarkTheme}
+            copyToClipboard={copyToClipboard}
           />
         </div>
       </div>

@@ -6,6 +6,7 @@ import {
   UserQA,
   UserShelfEntry,
   BookSource,
+  UserBadge,
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings';
 import { Omit } from 'utility-types';
@@ -77,7 +78,17 @@ const paletteSchema = new Schema({
   textColor: { type: String, required: true },
 });
 
-const definition: SameKeysAs<
+const userBadgeDefinition: FilterAutoMongoKeys<SameKeysAs<UserBadge>> = {
+  key: { type: String, required: true },
+  name: { type: String, required: true },
+  description: { type: String },
+};
+
+const userBadgeSchema = new Schema(userBadgeDefinition, {
+  timestamps: true,
+});
+
+const userDefinition: SameKeysAs<
   Omit<FilterAutoMongoKeys<User>, 'discordUsername'>
 > = {
   bio: { type: String },
@@ -105,9 +116,10 @@ const definition: SameKeysAs<
   },
   onboardingVersion: { type: Number, required: true, default: 0 },
   palette: { type: paletteSchema, default: null },
+  badges: { type: [userBadgeSchema], required: true, default: [] },
 };
 
-const userSchema = new Schema<UserDoc>(definition, {
+const userSchema = new Schema<UserDoc>(userDefinition, {
   timestamps: true,
 });
 

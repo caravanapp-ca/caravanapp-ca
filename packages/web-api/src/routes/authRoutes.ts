@@ -13,12 +13,17 @@ import SessionModel from '../models/session';
 import UserModel from '../models/user';
 import { generateSlugIds } from '../common/url';
 import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
+import {
+  createReferralAction,
+  getReferralDoc,
+  createReferralActionByDoc,
+} from '../services/referral';
 
 const router = express.Router();
 
 export function destroySession(req: Request, res: Response) {
   req.session = null;
-  res.cookie('userId', '');
+  res.clearCookie('userId');
 }
 
 router.get('/discord/login', (req, res) => {
@@ -118,6 +123,19 @@ router.get('/discord/callback', async (req, res) => {
       throw new Error(
         `User creation failed. UserDoc: ${userDoc}, Discord: ${discordUserData.id}`
       );
+    }
+
+    const { referredTempUid } = req.session;
+    if (referredTempUid) {
+      // The person was referred.
+      const currentReferredDoc = await getReferralDoc(referredTempUid);
+      if (currentReferredDoc) {
+        currentReferredDoc.userId = userDoc.id;
+      }
+      createReferralActionByDoc(currentReferredDoc, 'login');
+
+      req.session.referredTempUid = undefined;
+      res.clearCookie('refClickComplete');
     }
   }
 

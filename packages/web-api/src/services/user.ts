@@ -1,7 +1,9 @@
 import UserModel from '../models/user';
+import BadgeModel from '../models/badge';
 import { ReadingDiscordBot } from './discord';
 import { UserDoc } from '../../typings';
 import { checkObjectIdIsValid } from '../common/mongoose';
+import { UserBadge } from '@caravan/buddy-reading-types';
 
 export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   if (!userDoc) {
@@ -19,6 +21,37 @@ export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   }
 };
 
+export const mutateUserBadges = async (userDoc: UserDoc) => {
+  const { badges } = userDoc;
+  if (badges.length === 0) {
+    console.log('Attempted to mutate user badges with an empty badge array.');
+    return;
+  }
+  const badgeDocs = await BadgeModel.find();
+  if (badgeDocs.length === 0) {
+    console.error('Found no badges in database!');
+    return;
+  }
+  const allBadges = badgeDocs[0];
+  const newBadges = badges.map(ub => {
+    if (!allBadges.badges[ub.key]) {
+      console.error(
+        `User ${userDoc.name || userDoc.discordUsername} (${
+          userDoc._id
+        }) has an invalid badge: ${ub.key}`
+      );
+      return;
+    }
+    return {
+      // @ts-ignore
+      ...ub.toObject(),
+      name: allBadges.badges[ub.key].name,
+      description: allBadges.badges[ub.key].description,
+    };
+  });
+  userDoc.badges = newBadges;
+};
+
 export const getMe = async (id: string) => {
   const user = await UserModel.findById(id);
   mutateUserDiscordContent(user);
@@ -34,6 +67,9 @@ export const getUser = async (urlSlugOrId: string) => {
     user = await UserModel.findById(urlSlugOrId);
   }
   mutateUserDiscordContent(user);
+  if (user.badges.length > 0) {
+    await mutateUserBadges(user);
+  }
   return user;
 };
 
