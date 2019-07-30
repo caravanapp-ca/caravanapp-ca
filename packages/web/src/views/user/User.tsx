@@ -145,7 +145,6 @@ export default function UserView(props: UserViewProps) {
   const [scrolled, setScrolled] = React.useState(0);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [referrals, setReferrals] = React.useState<Referral | null>(null);
-  const [refTiers, setRefTiers] = React.useState<ReferralTiers | null>(null);
   const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
     []
   );
@@ -193,18 +192,13 @@ export default function UserView(props: UserViewProps) {
   };
 
   const getReferrals = async (user: User) => {
-    const userRes = await getUserReferrals(user._id);
-    if (userRes.status === 200) {
-      setReferrals(userRes.data);
-    } else {
-      setReferrals(null);
-    }
-    const refRes = await getReferralTiers();
-    if (refRes.status === 200) {
-      setRefTiers(refRes.data);
-    } else {
-      setRefTiers(null);
-    }
+    getUserReferrals(user._id).then(userRes => {
+      if (userRes.status === 200) {
+        setReferrals(userRes.data);
+      } else {
+        setReferrals(null);
+      }
+    });
   };
 
   useEffect(() => {
@@ -562,7 +556,6 @@ export default function UserView(props: UserViewProps) {
           <UserNameplate
             user={user}
             referrals={referrals}
-            refTiers={refTiers}
             userIsMe={userIsMe}
             isEditing={isEditing}
             onEdit={onEdit}
