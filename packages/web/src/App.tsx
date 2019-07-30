@@ -24,16 +24,14 @@ import {
   clearStorageAuthState,
   KEY_DISCORD_OAUTH_STATE,
   KEY_USER,
-  KEY_REFERRER_USER_ID,
 } from './common/localStorage';
-import { deleteCookie, getCookie, setCookie } from './common/cookies';
+import { deleteCookie, getCookie } from './common/cookies';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
 import About from './views/about/About';
 import getUtmSourceValue from './functions/getUtmSourceValue';
-import { cpus } from 'os';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;

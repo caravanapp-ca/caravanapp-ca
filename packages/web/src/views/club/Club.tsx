@@ -541,7 +541,9 @@ export default function ClubComponent(props: ClubProps) {
             centerComponent={centerComponent}
             rightComponent={rightComponent(memberStatus)}
           />
-          {currBook && <ClubHero currBook={currBook} />}
+          {currBook && (
+            <ClubHero currBook={currBook} clubId={club._id} user={user} />
+          )}
           <Paper className={classes.root}>
             <Tabs
               value={tabValue}
