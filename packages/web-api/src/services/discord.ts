@@ -3,6 +3,7 @@ import btoa from 'btoa';
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
 import { User } from '@caravan/buddy-reading-types';
+import { getUser } from './user';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
 const DiscordPermissions = ['identify', 'guilds.join', 'gdm.join'].join('%20');
@@ -115,19 +116,10 @@ const ReadingDiscordBot = (() => {
 })();
 
 export const giveDiscordRole = async (userId: string, role: string) => {
-  let user: User;
-  try {
-    const userRes = await axios.get<User | null>(`api/user/${userId}`);
-    if (userRes.status === 200) {
-      user = userRes.data;
-    }
-  } catch (err) {
-    console.error(`Failed to get user ${userId}`);
-    return;
-  }
+  const user = await getUser(userId);
   if (!user) {
     console.error(
-      `Attempted to give a user that does not exist a Discord role! UID: ${userId}`
+      `Attempted to give user ${userId} a Discord role, but could not find them in db.`
     );
     return;
   }
@@ -138,6 +130,7 @@ export const giveDiscordRole = async (userId: string, role: string) => {
     console.error(`Did not find user ${userId} in the Discord guild`);
     return;
   }
+  console.log(`Giving user ${userId} Discord role ${role}`);
   guildMember.addRole(role);
 };
 

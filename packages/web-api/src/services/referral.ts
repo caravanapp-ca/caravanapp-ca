@@ -3,10 +3,8 @@ import {
   ReferralAction,
   FilterAutoMongoKeys,
   ReferralSource,
-  SameKeysAs,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
-import UserModel from '../models/user';
 import ReferralModel from '../models/referral';
 import ReferralTierModel from '../models/referralTier';
 import { ReferralDoc } from '../../typings';

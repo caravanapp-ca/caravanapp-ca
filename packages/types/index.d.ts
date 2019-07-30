@@ -41,7 +41,7 @@ declare module '@caravan/buddy-reading-types' {
     shelf: ShelfEntry[];
     schedules: ClubReadingSchedule[];
     bio?: string;
-    members: GuildMember[];
+    members: User[];
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
@@ -130,10 +130,11 @@ declare module '@caravan/buddy-reading-types' {
     badges: UserBadge[];
   }
 
-  export interface UserBadge extends MongoTimestamps {
+  export interface UserBadge {
     key: string;
     name?: string;
     description?: string;
+    awardedOn?: Date;
   }
 
   export interface Badge {
@@ -345,7 +346,7 @@ declare module '@caravan/buddy-reading-types' {
       shelf: ShelfEntry[];
       schedules: ClubReadingSchedule[];
       bio: string;
-      members: any[];
+      members: User[];
       maxMembers: number;
       vibe: GroupVibe;
       readingSpeed: ReadingSpeed;

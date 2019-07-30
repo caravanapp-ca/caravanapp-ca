@@ -82,11 +82,10 @@ const userBadgeDefinition: FilterAutoMongoKeys<SameKeysAs<UserBadge>> = {
   key: { type: String, required: true },
   name: { type: String, required: true },
   description: { type: String },
+  awardedOn: { type: Date },
 };
 
-const userBadgeSchema = new Schema(userBadgeDefinition, {
-  timestamps: true,
-});
+const userBadgeSchema = new Schema(userBadgeDefinition);
 
 const userDefinition: SameKeysAs<
   Omit<FilterAutoMongoKeys<User>, 'discordUsername'>

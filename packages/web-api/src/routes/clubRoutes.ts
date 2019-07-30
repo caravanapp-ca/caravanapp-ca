@@ -29,7 +29,7 @@ import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { ReadingDiscordBot } from '../services/discord';
 import { ClubDoc, UserDoc } from '../../typings';
-import { getUser } from '../services/user';
+import { getUser, mutateUserBadges } from '../services/user';
 import { createReferralAction } from '../services/referral';
 
 const router = express.Router();
@@ -76,12 +76,14 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     discordId: { $in: guildMemberDiscordIds },
     isBot: { $eq: false },
   });
+  // This retrieves badge details.
+  await mutateUserBadges(users);
   const guildMembers = guildMembersArr
     .map(mem => {
       const user = users.find(u => u.discordId === mem.id);
       if (user) {
         const userObj: User = user.toObject();
-        const result = {
+        const result: User = {
           ...userObj,
           name: userObj.name ? userObj.name : mem.user.username,
           discordUsername: mem.user.username,

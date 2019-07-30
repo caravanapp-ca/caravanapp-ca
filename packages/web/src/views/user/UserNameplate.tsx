@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, PaletteObject, UserBadge } from '@caravan/buddy-reading-types';
+import { User, PaletteObject } from '@caravan/buddy-reading-types';
 import {
   Typography,
   Button,
@@ -17,8 +17,8 @@ import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
-import { referralTiers } from '../../common/globalConstants';
 import getReferralLink from '../../functions/getReferralLink';
+import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
 
 interface UserNameplateProps {
   user: User;
@@ -60,13 +60,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-const getBadgeToDisplay = (badges: UserBadge[]) => {
-  for (let i = 0; i < referralTiers.length; i++) {
-    return badges.find(b => b.key === `ref${referralTiers[i]}`);
-  }
-  return;
-};
 
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
@@ -240,12 +233,8 @@ export default function UserNameplate(props: UserNameplateProps) {
           <Button
             variant="outlined"
             color="primary"
-            onClick={() =>
-              window.open(
-                `https://discordapp.com/channels/592761082523680798/592810415193587724`,
-                '_blank'
-              )
-            }
+            href="https://discordapp.com/channels/592761082523680798/592810415193587724"
+            target="_blank"
             style={{ marginTop: theme.spacing(1) }}
           >
             {!userDarkTheme && (
