@@ -13,7 +13,6 @@ import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
 
 export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   facebook: true,
-  personal: true,
   twitter: true,
   email: true,
   goodreads: true,
@@ -140,13 +139,15 @@ export function getReferralDoc(userId: string) {
 
 export const getAllReferralTiersDoc = () => {
   return ReferralTierModel.find({});
-}
+};
 
 export const getReferralTier = async (tierNum: number) => {
   const referralTierDoc = await getAllReferralTiersDoc();
-  const referralTier = referralTierDoc[0].tiers.find(t => t.tierNumber === tierNum);
-  if(!referralTier){
+  const referralTier = referralTierDoc[0].tiers.find(
+    t => t.tierNumber === tierNum
+  );
+  if (!referralTier) {
     throw new Error(`Did not find referral tier ${tierNum} in db.`);
   }
   return referralTier;
-}
+};
