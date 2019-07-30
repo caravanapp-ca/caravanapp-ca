@@ -49,6 +49,15 @@ import { ReadingDiscordBot } from './services/discord';
         }
       }
     });
+    app.use(function(req, res, next) {
+      const host = req.header('host');
+      if (host.match(/^www\..*/i)) {
+        const nonWwwHost = host.replace('www.', '');
+        res.redirect(301, `https://${nonWwwHost}${req.originalUrl}`);
+      } else {
+        next();
+      }
+    });
   }
   app.use(cookieParser());
   app.use(
