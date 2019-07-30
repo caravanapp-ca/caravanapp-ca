@@ -15,15 +15,14 @@ export const getReferralLink = (
     if (location) {
       // TODO add more cases - should we parse URL?
       switch (location) {
-        case 'profile':
-          console.log('localhost:3000/clubs?ref=' + userId);
-          return 'localhost:3000/clubs?ref=' + userId;
+        case 'home':
+          return `https://${window.location.host}/clubs?ref=${userId}`;
         default:
           break;
       }
     }
   }
-  return window.location.href;
+  return 'localhost:3000/clubs';
 };
 
 export const getCurrReferralTier = (
