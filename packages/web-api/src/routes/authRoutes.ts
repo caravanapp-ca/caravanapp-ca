@@ -181,6 +181,7 @@ router.get('/discord/callback', async (req, res) => {
         userDoc.id
       );
       const sessionModel = new SessionModel(modelInstance);
+      sessionModel.save();
       console.log(
         `Created a new session for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
       );
@@ -197,6 +198,9 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
+    await guild.addMember(discordUserData.id, {
+      accessToken,
+    });
     console.log(
       `Added user {id: ${userDoc.id}, discordId: ${userDoc.discordId}} to guild ${guild.id}.`
     );
