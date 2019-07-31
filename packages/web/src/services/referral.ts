@@ -26,7 +26,9 @@ export async function handleReferral(
 }
 
 export async function getReferralCount(referrerId: string) {
-  const res = await axios.get<number>(`${referralRoute}/count/${referrerId}`);
+  const res = await axios.get<{ referralCount: number }>(
+    `${referralRoute}/count/${referrerId}`
+  );
   return res;
 }
 

@@ -29,7 +29,7 @@ router.get('/count/:userId', async (req, res) => {
   const { userId } = req.params;
   const referralDoc = await getReferralDoc(userId);
   const referralCount = referralDoc ? referralDoc.referralCount : 0;
-  return res.status(200).send(referralCount);
+  return res.status(200).send({ referralCount });
 });
 
 router.post(
