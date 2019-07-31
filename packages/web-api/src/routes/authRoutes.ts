@@ -127,12 +127,12 @@ router.get('/discord/callback', async (req, res) => {
     const { referredTempUid } = req.session;
     if (referredTempUid) {
       // The person was referred.
-      const currentReferredDoc = await getReferralDoc(referredTempUid);
-      if (currentReferredDoc) {
-        currentReferredDoc.userId = userDoc.id;
-      }
-      createReferralActionByDoc(currentReferredDoc, 'login');
-
+      getReferralDoc(referredTempUid).then(currentReferredDoc => {
+        if (currentReferredDoc) {
+          currentReferredDoc.userId = userDoc.id;
+        }
+        createReferralActionByDoc(currentReferredDoc, 'login');
+      });
       req.session.referredTempUid = undefined;
       res.clearCookie('refClickComplete');
     }

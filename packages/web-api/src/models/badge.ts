@@ -18,8 +18,6 @@ const badgesDefinition: SameKeysAs<FilterAutoMongoKeys<Badges>> = {
   badges: { type: { key: badgeDefinition }, required: true },
 };
 
-const badgesSchema = new Schema(badgesDefinition, {
-  timestamps: true,
-});
+const badgesSchema = new Schema(badgesDefinition);
 
 export default model<BadgeDoc>('Badge', badgesSchema);
