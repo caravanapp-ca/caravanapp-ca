@@ -83,12 +83,14 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
         <Link
           href={
             user
-              ? `https://twitter.com/intent/tweet/?text=Check%20out%20my%20club%20on%20Caravan!%20We%27re%20currently%20reading%20${encodeURIComponent(
+              ? `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dtw&text=Check%20out%20my%20club%20on%20Caravan!%20We%27re%20currently%20reading%20${encodeURIComponent(
                   bookTitle
                 )}%20${authorURIString}&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Fref%3D${
                   user._id
                 }%26utm_source%3Dtw`
-              : `https://twitter.com/intent/tweet/?text=Check%20out%20this%20club%20on%20Caravan!%20They%27re%20currently%20reading%20${encodeURIComponent(
+              : `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Futm_source%3Dtw&text=Check%20out%20this%20club%20on%20Caravan!%20They%27re%20currently%20reading%20${encodeURIComponent(
                   bookTitle
                 )}%20${authorURIString}&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Futm_source%3Dtw`
           }
