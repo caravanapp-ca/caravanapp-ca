@@ -5,10 +5,8 @@ import {
   Referral,
   UserReferredAction,
   ReferredUser,
-  ReferralSource,
 } from '@caravan/buddy-reading-types';
 import { ReferralDoc } from '../../typings';
-import { ALLOWED_UTM_SOURCES } from '../services/referral';
 
 const userReferredActionSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<UserReferredAction>

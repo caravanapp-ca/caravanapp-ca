@@ -9,8 +9,8 @@ import { ReferralTierDoc } from '../../typings';
 
 const referralTierDefinition: SameKeysAs<FilterAutoMongoKeys<ReferralTier>> = {
   tierNumber: { type: Number, required: true },
-  referralCount: { type: Number },
   title: { type: String, required: true },
+  referralCount: { type: Number },
   badgeKey: { type: String },
   discordRole: { type: String },
 };

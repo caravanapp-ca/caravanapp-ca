@@ -4,7 +4,7 @@ import { getReferralDoc, getAllReferralTiersDoc } from '../services/referral';
 import generateUuid from 'uuid/v4';
 import { ReferralSource } from '@caravan/buddy-reading-types';
 import { handleFirstVisit, ALLOWED_UTM_SOURCES } from '../services/referral';
-import { ReferralTierDoc } from '../../typings';
+import { ReferralTierDoc, ReferralDoc } from '../../typings';
 
 const router = express.Router();
 
@@ -13,14 +13,21 @@ router.get('/tiers', async (req, res, next) => {
   try {
     referralTiersDoc = await getAllReferralTiersDoc();
   } catch (err) {
-    return res.status(400).send('Failed to get referral tiers.');
+    return res.status(500).send('Failed to get referral tiers.');
   }
   return res.status(200).send(referralTiersDoc);
 });
 
 router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
-  const referralDoc = await getReferralDoc(userId);
+  let referralDoc: ReferralDoc;
+  try {
+    referralDoc = await getReferralDoc(userId);
+  } catch (err) {
+    return res
+      .status(400)
+      .send(`Failed to get referral doc for user ${userId}`);
+  }
   if (!referralDoc) {
     return res
       .status(404)
@@ -47,7 +54,6 @@ router.post(
       utmSource == null || ALLOWED_UTM_SOURCES[utmSource] === true
         ? utmSource
         : null;
-
     const referredTempUid = generateUuid();
     try {
       await handleFirstVisit(referredTempUid, referrerId, utmSource);

@@ -13,13 +13,9 @@ const badgeDefinition: SameKeysAs<FilterAutoMongoKeys<Badge>> = {
   description: { type: String },
 };
 
-const badgeSchema = new Schema(badgeDefinition, {
-  _id: false,
-});
-
 const badgesDefinition: SameKeysAs<FilterAutoMongoKeys<Badges>> = {
   badgeKeys: { type: [String], required: true },
-  badges: { type: { key: badgeSchema }, required: true },
+  badges: { type: { key: badgeDefinition }, required: true },
 };
 
 const badgesSchema = new Schema(badgesDefinition, {
