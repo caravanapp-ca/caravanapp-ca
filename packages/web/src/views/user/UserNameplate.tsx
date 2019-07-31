@@ -1,24 +1,29 @@
 import React from 'react';
 import { User, PaletteObject } from '@caravan/buddy-reading-types';
 import {
-  Typography,
   Button,
+  createStyles,
+  Fab,
   Link,
   makeStyles,
-  createStyles,
-  useTheme,
   TextField,
-  Fab,
   Theme,
+  Typography,
+  useTheme,
 } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import copyToClipboard from 'copy-to-clipboard';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
 import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
+import UserBadgeIcon from '../../components/UserBadgeIcon';
+import { getReferralLink } from '../../functions/referral';
+import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
 
 interface UserNameplateProps {
   user: User;
+  referralCount: number | null;
   userIsMe: boolean;
   isEditing: boolean;
   onEdit: (
@@ -27,6 +32,7 @@ interface UserNameplateProps {
   ) => void;
   valid: [boolean, string][];
   userDarkTheme?: Theme;
+  onCopyReferralLink: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,13 +51,31 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
+    nameAndBadge: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    referralLinkField: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   })
 );
 
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { user, userIsMe, isEditing, onEdit, valid, userDarkTheme } = props;
+  const {
+    user,
+    referralCount,
+    userIsMe,
+    isEditing,
+    onEdit,
+    valid,
+    userDarkTheme,
+    onCopyReferralLink,
+  } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
     bio: boolean;
@@ -78,8 +102,11 @@ export default function UserNameplate(props: UserNameplateProps) {
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
-  // TODO: Add userIsMe to if statement after testing
-  if (isEditing && onEdit) {
+  const referralStatus = referralCount ? `${referralCount} referrals` : ' ';
+
+  const badgeToDisplay = getBadgeToDisplay(user.badges);
+
+  if (userIsMe && isEditing && onEdit) {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
         <div className={classes.editContainer}>
@@ -163,17 +190,20 @@ export default function UserNameplate(props: UserNameplateProps) {
   } else {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <Typography
-          variant="h4"
-          color="textPrimary"
-          style={{ fontWeight: 600 }}
-        >
-          {user.name}
-        </Typography>
+        <div className={classes.nameAndBadge}>
+          <Typography
+            variant="h4"
+            color="textPrimary"
+            style={{ fontWeight: 600 }}
+          >
+            {user.name}
+          </Typography>
+          {badgeToDisplay && <UserBadgeIcon badge={badgeToDisplay} />}
+        </div>
         <Typography
           variant="body1"
           color="textPrimary"
-          style={{ marginTop: theme.spacing(1) }}
+          style={{ marginTop: badgeToDisplay ? 0 : theme.spacing(1) }}
         >
           {user.bio}
         </Typography>
@@ -190,16 +220,21 @@ export default function UserNameplate(props: UserNameplateProps) {
             {user.website}
           </Link>
         </Typography>
+        {referralStatus && (
+          <Typography
+            variant="body2"
+            style={{ fontWeight: 600 }}
+            color="textPrimary"
+          >
+            {referralStatus}
+          </Typography>
+        )}
         {user && !userIsMe && (
           <Button
             variant="outlined"
             color="primary"
-            onClick={() =>
-              window.open(
-                `https://discordapp.com/channels/592761082523680798/592810415193587724`,
-                '_blank'
-              )
-            }
+            href="https://discordapp.com/channels/592761082523680798/592810415193587724"
+            target="_blank"
             style={{ marginTop: theme.spacing(1) }}
           >
             {!userDarkTheme && (
@@ -234,6 +269,18 @@ export default function UserNameplate(props: UserNameplateProps) {
                 />
               )}
             <Typography variant="button">{msgBtnLabelCaps}</Typography>
+          </Button>
+        )}
+        {user && userIsMe && (
+          <Button
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(getReferralLink(user._id, 'home')) &&
+              onCopyReferralLink()
+            }
+            style={{ marginTop: theme.spacing(1) }}
+          >
+            <Typography variant="button">Copy Referral Link</Typography>
           </Button>
         )}
       </MuiThemeProvider>

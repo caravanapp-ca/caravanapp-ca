@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400px" height="400px" viewBox="0 0 400 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>copy--whiteonblack</title>
+    <desc>Created with Sketch.</desc>
+    <g id="copy--whiteonblack" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" fill="rgba(0,0,0,0.6)" cx="200" cy="200" r="200"></circle>
+        <g id="copy" transform="translate(106.000000, 97.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <path d="M75.3477479,167.394613 C55.1717632,167.394613 38.75,151.034135 38.75,130.933446 L38.75,43 L23.6810812,43 C10.6177777,43 0,53.5765816 0,66.5911336 L0,182.407295 C0,195.421847 10.6177777,206 23.6810812,206 L131.318919,206 C144.382222,206 155,195.421847 155,182.407295 L155,167.394613 L75.3477479,167.394613 Z" id="Path"></path>
+            <path d="M189,23.5283001 C189,10.5320436 178.382429,0 165.282213,0 L74.719367,0 C61.6175714,0 51,10.5320436 51,23.5283001 L51,130.4717 C51,143.467956 61.6175714,154 74.719367,154 L165.282213,154 C178.382429,154 189,143.467956 189,130.4717 L189,23.5283001 Z" id="Path"></path>
+        </g>
+    </g>
+</svg>

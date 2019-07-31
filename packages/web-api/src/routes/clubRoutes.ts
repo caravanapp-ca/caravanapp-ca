@@ -1,5 +1,3 @@
-import express from 'express';
-import Fuse from 'fuse.js';
 import {
   ChannelCreationOverwrites,
   ChannelData,
@@ -10,7 +8,10 @@ import {
   GuildMember,
   PermissionResolvable,
 } from 'discord.js';
+import express from 'express';
 import { check, validationResult } from 'express-validator';
+import Fuse from 'fuse.js';
+import { Omit } from 'utility-types';
 import {
   Club,
   FilterAutoMongoKeys,
@@ -23,14 +24,15 @@ import {
   GroupVibe,
   ActiveFilter,
 } from '@caravan/buddy-reading-types';
-import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
-import { ReadingDiscordBot } from '../services/discord';
-import { ClubDoc, UserDoc } from '../../typings';
-import { getUser } from '../services/user';
 import { shelfEntryWithHttpsBookUrl } from '../services/club';
+import { ReadingDiscordBot } from '../services/discord';
+import { getUser, mutateUserBadges } from '../services/user';
+import { createReferralAction } from '../services/referral';
+import { ClubDoc, UserDoc } from '../../typings';
+import { getBadges } from '../services/badge';
 
 const router = express.Router();
 
@@ -76,12 +78,15 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     discordId: { $in: guildMemberDiscordIds },
     isBot: { $eq: false },
   });
+  // This retrieves badge details.
+  const badgeDoc = await getBadges();
+  mutateUserBadges(users, badgeDoc);
   const guildMembers = guildMembersArr
     .map(mem => {
       const user = users.find(u => u.discordId === mem.id);
       if (user) {
         const userObj: User = user.toObject();
-        const result = {
+        const result: User = {
           ...userObj,
           name: userObj.name ? userObj.name : mem.user.username,
           discordUsername: mem.user.username,
@@ -735,6 +740,8 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
 
+    createReferralAction(userId, 'createClub');
+
     const result: Services.CreateClubResult = {
       //@ts-ignore
       club: newClub,
@@ -1067,7 +1074,7 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    const userId = req.user._id;
+    const userId = req.user.id;
     const userDiscordId = req.user.discordId;
     const { clubId } = req.params;
     const { isMember } = req.body;
@@ -1077,7 +1084,7 @@ router.put(
     } catch (err) {
       return res.status(400).send(`Could not find club ${clubId}`);
     }
-    const isOwner = club.ownerId === userId.toHexString();
+    const isOwner = club.ownerId === userId;
     const discordClient = ReadingDiscordBot.getInstance();
     const guild = discordClient.guilds.first();
     const channel: GuildChannel = guild.channels.get(club.channelId);
@@ -1118,6 +1125,7 @@ router.put(
             MANAGE_MESSAGES: isOwner,
           }
         );
+        createReferralAction(userId, 'joinClub');
       }
     } else {
       if (isOwner) {

@@ -1,6 +1,6 @@
 import React, { useEffect, SyntheticEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { eachDayOfInterval, addDays } from 'date-fns/esm';
+import { addDays, eachDayOfInterval } from 'date-fns';
 import {
   ShelfEntry,
   User,
@@ -122,8 +122,6 @@ const showJoinClub = (
   club.members &&
   club.maxMembers > club.members.length;
 const showOpenChat = (memberStatus: LoadableMemberStatus) =>
-  memberStatus === 'owner' || memberStatus === 'member';
-const showInviteFriends = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'owner' || memberStatus === 'member';
 const showUpdateBook = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'owner';
@@ -498,20 +496,14 @@ export default function ClubComponent(props: ClubProps) {
     }
   };
 
-  const copyToClipboard = (str: string) => {
-    const el = document.createElement('textarea');
-    el.value = str;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
+  function onCopyReferralLink() {
     setSnackbarProps({
       ...snackbarProps,
       isOpen: true,
       variant: 'info',
-      message: 'Copied link to clipboard!',
+      message: 'Copied referral link to clipboard!',
     });
-  };
+  }
 
   async function addOrRemoveMeFromClub(action: 'add' | 'remove') {
     const addMember = action === 'add';
@@ -537,7 +529,14 @@ export default function ClubComponent(props: ClubProps) {
             centerComponent={centerComponent}
             rightComponent={rightComponent(memberStatus)}
           />
-          {currBook && <ClubHero currBook={currBook} />}
+          {currBook && (
+            <ClubHero
+              currBook={currBook}
+              clubId={club._id}
+              user={user}
+              onCopyReferralLink={onCopyReferralLink}
+            />
+          )}
           <Paper className={classes.root}>
             <Tabs
               value={tabValue}
@@ -585,7 +584,7 @@ export default function ClubComponent(props: ClubProps) {
                     color="secondary"
                     className={classes.button}
                     onClick={() =>
-                      props.user
+                      user
                         ? addOrRemoveMeFromClub('add')
                         : setLoginDialogVisible(true)
                     }
@@ -627,21 +626,6 @@ export default function ClubComponent(props: ClubProps) {
                       style={{ textAlign: 'center' }}
                     >
                       OPEN CHAT IN APP
-                    </Typography>
-                  </Button>
-                )}
-                {showInviteFriends(memberStatus) && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={() => copyToClipboard(window.location.href)}
-                  >
-                    <Typography
-                      variant="button"
-                      style={{ textAlign: 'center' }}
-                    >
-                      INVITE TO CLUB
                     </Typography>
                   </Button>
                 )}
@@ -704,7 +688,7 @@ export default function ClubComponent(props: ClubProps) {
                 color="secondary"
                 className={classes.fab}
                 onClick={() =>
-                  props.user
+                  user
                     ? addOrRemoveMeFromClub('add')
                     : setLoginDialogVisible(true)
                 }

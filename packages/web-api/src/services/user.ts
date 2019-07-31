@@ -1,7 +1,8 @@
 import UserModel from '../models/user';
 import { ReadingDiscordBot } from './discord';
-import { UserDoc } from '../../typings';
+import { UserDoc, BadgeDoc } from '../../typings';
 import { checkObjectIdIsValid } from '../common/mongoose';
+import { getBadges } from './badge';
 
 export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   if (!userDoc) {
@@ -16,6 +17,40 @@ export const mutateUserDiscordContent = (userDoc: UserDoc) => {
     userDoc.discordUsername = user.username;
     userDoc.photoUrl =
       userDoc.photoUrl || user.avatarURL || user.defaultAvatarURL;
+  }
+};
+
+const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
+  const mutantBadges = ud.badges.map(userBadge => {
+    if (!allBadges.badges[userBadge.key]) {
+      console.error(
+        `User ${ud.name || ud.discordUsername} (${
+          ud._id
+        }) has an invalid badge: ${userBadge.key}`
+      );
+      return;
+    }
+    return {
+      // TODO: TS doesn't believe .toObject() exists on userBadge.
+      //@ts-ignore
+      ...userBadge.toObject(),
+      name: allBadges.badges[userBadge.key].name,
+      description: allBadges.badges[userBadge.key].description,
+    };
+  });
+  ud.badges = mutantBadges;
+};
+
+export const mutateUserBadges = (
+  userDocs: UserDoc[] | UserDoc,
+  badgeDoc: BadgeDoc
+) => {
+  if (Array.isArray(userDocs)) {
+    userDocs.forEach(ud => {
+      mutateSingleUsersBadges(ud, badgeDoc);
+    });
+  } else {
+    mutateSingleUsersBadges(userDocs, badgeDoc);
   }
 };
 
@@ -34,6 +69,10 @@ export const getUser = async (urlSlugOrId: string) => {
     user = await UserModel.findById(urlSlugOrId);
   }
   mutateUserDiscordContent(user);
+  const badgeDoc = await getBadges();
+  if (user.badges.length > 0) {
+    mutateUserBadges(user, badgeDoc);
+  }
   return user;
 };
 

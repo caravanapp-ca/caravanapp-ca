@@ -1,7 +1,12 @@
 import axios from 'axios';
 import btoa from 'btoa';
-import Discord from 'discord.js';
+import Discord, { TextChannel } from 'discord.js';
 import fetch from 'node-fetch';
+import { getUser } from './user';
+import { UserDoc } from '../../typings';
+import { discordGenChatChId } from '../common/globalConstantsAPI';
+import { ReferralTier } from '@caravan/buddy-reading-types';
+import { getReferralTier } from './referral';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
 const DiscordPermissions = ['identify', 'guilds.join', 'gdm.join'].join('%20');
@@ -35,8 +40,6 @@ const GetDiscordTokenCallbackUri = (code: string, host: string) => {
 };
 const GetDiscordTokenRefreshCallbackUri = (refreshToken: string) =>
   `${DiscordApiUrl}/oauth2/token?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissions}`;
-
-const PrimaryGuild = process.env.DISCORD_GUILD;
 
 interface DiscordUserResponseData {
   id: string;
@@ -112,6 +115,56 @@ const ReadingDiscordBot = (() => {
     },
   };
 })();
+
+export const giveDiscordRole = async (userId: string, role: string) => {
+  const user = await getUser(userId);
+  if (!user) {
+    console.error(
+      `Attempted to give user ${userId} a Discord role, but could not find them in db.`
+    );
+    return;
+  }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const guildMember = guild.members.get(user.discordId);
+  if (!guildMember) {
+    console.error(`Did not find user ${userId} in the Discord guild`);
+    return;
+  }
+  console.log(`Giving user ${userId} Discord role ${role}`);
+  return guildMember.addRole(role);
+};
+
+export const sendNewTierDiscordMsg = async (
+  user: string | UserDoc,
+  newTier: number | ReferralTier
+) => {
+  let userObj = user;
+  if (typeof userObj === 'string') {
+    userObj = await getUser(userObj);
+    if (!userObj) {
+      throw new Error(`Did not find user ${user} in db.`);
+    }
+  }
+  let referralTier = newTier;
+  if (typeof referralTier === 'number') {
+    referralTier = await getReferralTier(referralTier);
+    if (!referralTier) {
+      throw new Error(`Did not find referral tier ${newTier} in db.`);
+    }
+  }
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const genChatId = discordGenChatChId();
+  const genChannel = guild.channels.get(genChatId) as TextChannel;
+  if (!genChannel) {
+    console.log('Did not find #general-chat at channel id ${genChatId}');
+    throw new Error(`Did not find #general-chat at channel id ${genChatId}`);
+  }
+  const msgToSend = `<@${userObj.discordId}> just reached referral tier ${referralTier.tierNumber} (${referralTier.referralCount} referrals). Congratulations! :tada:`;
+  console.log('Sending Discord message to #general-chat', msgToSend);
+  return genChannel.send(msgToSend);
+};
 
 // class ReadingDiscordClient {
 //   private readonly accessToken: string;

@@ -53,8 +53,6 @@ const useStyles = makeStyles(theme => ({
 export default function ListElementBook(props: ListElementBookProps) {
   const classes = useStyles();
 
-  const theme = useTheme();
-
   const {
     clubId,
     club,

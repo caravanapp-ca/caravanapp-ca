@@ -19,7 +19,7 @@ import {
 } from '../../components/reading-speed-avatars-icons-labels';
 import ListElementAvatar from '../../components/ListElementAvatar';
 import GenreChip from '../../components/GenreChip';
-import logo from '../../resources/logo.svg';
+import textLogo from '../../resources/text-logo.svg';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -107,7 +107,7 @@ export default function ReadingPreferences(props: ReadingPreferencesProps) {
         <Typography variant="h5">Welcome to</Typography>
         <div style={{ display: 'flex' }}>
           <img
-            src={logo}
+            src={textLogo}
             alt="Caravan logo"
             style={{ height: 50, objectFit: 'contain' }}
           />
