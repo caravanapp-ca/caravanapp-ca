@@ -119,8 +119,10 @@ async function getUserMap(guild: Guild, clubDocs: ClubDoc[]) {
   clubDocs.forEach(c => {
     if (!foundUsers.has(c.ownerId)) {
       const ownerMember = guild.members.get(c.ownerDiscordId);
-      foundUsers.set(c.ownerId, { userDoc: null, member: ownerMember });
-      foundUserIds.push(c.ownerId);
+      if (ownerMember) {
+        foundUsers.set(c.ownerId, { userDoc: null, member: ownerMember });
+        foundUserIds.push(c.ownerId);
+      }
     }
   });
   const userDocs = await UserModel.find({ _id: { $in: foundUserIds } });
@@ -251,9 +253,14 @@ router.get('/', async (req, res, next) => {
             ? clubDoc.updatedAt.toISOString()
             : clubDoc.updatedAt,
       };
+      const ownerName = userDoc
+        ? userDoc.name
+        : member
+        ? member.user.username
+        : 'caravan-admin';
       const obj: Services.GetClubs['clubs'][0] = {
         ...club,
-        ownerName: userDoc.name || member.user.username,
+        ownerName,
         guildId: guild.id,
         memberCount,
       };
