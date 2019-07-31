@@ -12,25 +12,20 @@ interface UserAvatarProps {
 export default function UserAvatar(props: UserAvatarProps) {
   const { user, size, style } = props;
 
-  let avatarClass;
-  if (size) {
-    avatarClass = makeStyles(() =>
-      createStyles({
-        root: {
-          height: size,
-          width: size,
-        },
-      })
-    );
-  }
+  const avatarClass = size
+    ? makeStyles(() =>
+        createStyles({
+          root: {
+            height: size,
+            width: size,
+          },
+        })
+      )()
+    : undefined;
 
-  const discordPhotoSize = size === 144 ? 256 : 128;
+  const photoUrl = user.photoUrl
+    ? shrinkDiscordPhotoSize(user.photoUrl, size)
+    : undefined;
 
-  return (
-    <Avatar
-      src={shrinkDiscordPhotoSize(user.photoUrl, discordPhotoSize)}
-      classes={avatarClass ? avatarClass() : undefined}
-      style={style}
-    />
-  );
+  return <Avatar src={photoUrl} classes={avatarClass} style={style} />;
 }
