@@ -11,28 +11,17 @@ export const getReferralLink = (
   source?: ReferralSource
 ) => {
   if (location) {
-    // TODO add more cases - should we parse URL?
+    // TODO: add more cases - should we parse URL?
+    const refQuery = userId ? `?ref=${userId}` : '';
     switch (location) {
       case 'home':
-        if (userId) {
-          return `https://${window.location.host}/clubs?ref=${userId}`;
-        } else {
-          return `https://${window.location.host}/clubs`;
-        }
-
+        return `https://${window.location.host}/clubs${refQuery}`;
       case 'club':
-        if (clubId && userId) {
-          return `https://${
-            window.location.host
-          }/clubs/${clubId}?ref=${userId}`;
-        } else if (clubId) {
-          return `https://${window.location.host}/clubs/${clubId}`;
-        } else if (userId) {
-          return `https://${window.location.host}/clubs?ref=${userId}`;
+        if (clubId) {
+          return `https://${window.location.host}/clubs/${clubId}${refQuery}`;
         } else {
-          return `https://${window.location.host}/clubs`;
+          return `https://${window.location.host}/clubs${refQuery}`;
         }
-
       default:
         return `https://${window.location.host}`;
     }

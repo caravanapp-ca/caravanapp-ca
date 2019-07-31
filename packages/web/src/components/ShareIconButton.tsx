@@ -1,15 +1,12 @@
 import { makeStyles, Menu, MenuItem, Link } from '@material-ui/core';
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ShareIcon from '@material-ui/icons/Share';
 import copyToClipboard from 'copy-to-clipboard';
 import { User } from '@caravan/buddy-reading-types';
 import { washedTheme } from '../theme';
-import { logout } from '../services/user';
-import DiscordLoginModal from './DiscordLoginModal';
-import CustomSnackbar, { CustomSnackbarProps } from './CustomSnackbar';
 import { getReferralLink } from '../functions/referral';
 
 const useStyles = makeStyles(theme => ({
@@ -39,13 +36,10 @@ interface ShareIconButtonProps extends RouteComponentProps<{}> {
   onCopyReferralLink: () => void;
 }
 
-function ShareIconButton(props: ShareIconButtonProps) {
+export default function ShareIconButton(props: ShareIconButtonProps) {
   const classes = useStyles();
-
   const shareMenuAnchorRef = React.useRef<HTMLDivElement>(null);
-
   const { user, onCopyReferralLink } = props;
-
   const [shareMenuIsOpen, setShareMenuIsOpen] = React.useState(false);
 
   function handleShareMenuClose(event: React.MouseEvent<EventTarget>) {
@@ -140,5 +134,3 @@ function ShareIconButton(props: ShareIconButtonProps) {
     </>
   );
 }
-
-export default withRouter(ShareIconButton);

@@ -3,7 +3,7 @@ import { UserBadge } from '@caravan/buddy-reading-types';
 
 export const getBadgeToDisplay = (badges: UserBadge[] | undefined) => {
   if (!badges || badges.length === 0) {
-    return;
+    return undefined;
   }
   for (let i = 0; i < referralBadgeKeys.length; i++) {
     const badge = badges.find(b => b.key === referralBadgeKeys[i]);
@@ -11,5 +11,5 @@ export const getBadgeToDisplay = (badges: UserBadge[] | undefined) => {
       return badge;
     }
   }
-  return;
+  return undefined;
 };
