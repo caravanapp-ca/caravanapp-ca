@@ -9,25 +9,19 @@ import { ReferralTierDoc } from '../../typings';
 
 const referralTierDefinition: SameKeysAs<FilterAutoMongoKeys<ReferralTier>> = {
   tierNumber: { type: Number, required: true },
-  referralCount: { type: Number },
+  referralCount: { type: Number, required: true },
   title: { type: String, required: true },
   badgeKey: { type: String },
   discordRole: { type: String },
 };
 
-const referralTierSchema = new Schema(referralTierDefinition, {
-  _id: false,
-});
-
 const referralTiersDefinition: SameKeysAs<
   FilterAutoMongoKeys<ReferralTiers>
 > = {
-  tiers: { type: [referralTierSchema], required: true },
+  tiers: { type: [referralTierDefinition], required: true },
 };
 
-const referralTiersSchema = new Schema(referralTiersDefinition, {
-  timestamps: true,
-});
+const referralTiersSchema = new Schema(referralTiersDefinition);
 
 export default model<ReferralTierDoc>(
   'ReferralTier',
