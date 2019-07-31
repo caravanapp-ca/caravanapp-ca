@@ -1,9 +1,8 @@
 import UserModel from '../models/user';
-import BadgeModel from '../models/badge';
 import { ReadingDiscordBot } from './discord';
 import { UserDoc, BadgeDoc } from '../../typings';
 import { checkObjectIdIsValid } from '../common/mongoose';
-import { UserBadge } from '@caravan/buddy-reading-types';
+import { getBadges } from './badge';
 
 export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   if (!userDoc) {
@@ -42,18 +41,16 @@ const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
   ud.badges = mutantBadges;
 };
 
-export const mutateUserBadges = async (userDocs: UserDoc[] | UserDoc) => {
-  const badgeDocs = await BadgeModel.findOne();
-  if (!badgeDocs) {
-    console.error('Found no badges in database!');
-    return;
-  }
+export const mutateUserBadges = (
+  userDocs: UserDoc[] | UserDoc,
+  badgeDoc: BadgeDoc
+) => {
   if (Array.isArray(userDocs)) {
     userDocs.forEach(ud => {
-      mutateSingleUsersBadges(ud, badgeDocs);
+      mutateSingleUsersBadges(ud, badgeDoc);
     });
   } else {
-    mutateSingleUsersBadges(userDocs, badgeDocs);
+    mutateSingleUsersBadges(userDocs, badgeDoc);
   }
 };
 
@@ -72,8 +69,9 @@ export const getUser = async (urlSlugOrId: string) => {
     user = await UserModel.findById(urlSlugOrId);
   }
   mutateUserDiscordContent(user);
+  const badgeDoc = await getBadges();
   if (user.badges.length > 0) {
-    await mutateUserBadges(user);
+    mutateUserBadges(user, badgeDoc);
   }
   return user;
 };

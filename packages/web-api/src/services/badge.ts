@@ -1,21 +1,9 @@
-import UserModel from '../models/user';
-import BadgeModel from '../models/badge';
 import { UserBadge } from '@caravan/buddy-reading-types';
-import { BadgeDoc } from '../../typings';
+import UserModel from '../models/user';
+import { BadgeDocInstance } from '../badges/BadgeInstance';
 
-export const getBadges = async () => {
-  let badges: BadgeDoc;
-  try {
-    badges = await BadgeModel.findOne();
-  } catch (err) {
-    console.error(`Error retrieving badges ${err}`);
-    throw new Error(`Error retrieving badges ${err}`);
-  }
-  if (!badges) {
-    console.error('Did not find any badges in database!');
-    throw new Error('Did not find any badges in database!');
-  }
-  return badges;
+export const getBadges = () => {
+  return BadgeDocInstance.getInstance();
 };
 
 export const giveUserBadge = async (userId: string, badgeKey: string) => {

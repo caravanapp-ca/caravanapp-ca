@@ -8,9 +8,6 @@ import {
   FilterAutoMongoKeys,
   UserQA,
   Services,
-  ActiveFilter,
-  Referral,
-  ReferralAction,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -48,13 +45,13 @@ router.get('/@me', async (req, res, next) => {
 });
 
 // Get all users route
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   const { after, pageSize, onboardVersion, activeFilter } = req.query;
-  const { userId } = req.session;
-  let user: UserDoc | undefined;
-  if (userId) {
-    user = await getUser(userId);
-  }
+  // const { userId } = req.session;
+  // let user: UserDoc | undefined;
+  // if (userId) {
+  //   user = await getUser(userId);
+  // }
   // Only get users who have finished onboarding
   const query: any = {};
   if (after) {

@@ -4,7 +4,6 @@ import { check, validationResult } from 'express-validator';
 import SessionModel from '../models/session';
 import { ReadingDiscordBot } from '../services/discord';
 import { hasScope } from '../common/discordbot';
-import user from '../models/user';
 
 const router = express.Router();
 
