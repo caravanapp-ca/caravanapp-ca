@@ -189,13 +189,12 @@ export default function UserView(props: UserViewProps) {
   };
 
   const getReferrals = async (user: User) => {
-    getReferralCount(user._id).then(userRes => {
-      if (userRes.status === 200) {
-        setReferralCount(userRes.data);
-      } else {
-        setReferralCount(null);
-      }
-    });
+    const userRes = await getReferralCount(user._id);
+    if (userRes.status === 200) {
+      setReferralCount(userRes.data);
+    } else {
+      setReferralCount(null);
+    }
   };
 
   useEffect(() => {
