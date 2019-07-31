@@ -48,15 +48,12 @@ export const mutateUserBadges = async (userDocs: UserDoc[] | UserDoc) => {
     console.error('Found no badges in database!');
     return;
   }
-  const allBadges = badgeDocs;
   if (Array.isArray(userDocs)) {
     userDocs.forEach(ud => {
-      if (ud.badges.length > 0) {
-        mutateSingleUsersBadges(ud, allBadges);
-      }
+      mutateSingleUsersBadges(ud, badgeDocs);
     });
   } else {
-    mutateSingleUsersBadges(userDocs, allBadges);
+    mutateSingleUsersBadges(userDocs, badgeDocs);
   }
 };
 
