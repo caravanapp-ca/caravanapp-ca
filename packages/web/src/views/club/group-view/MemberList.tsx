@@ -38,7 +38,6 @@ export default function MemberList(props: MemberListProps) {
     >
       {members.map(m => {
         const badge = getBadgeToDisplay(m.badges);
-        console.log('placeholder');
         return (
           <Grid item xs={12} sm={6}>
             <ListElementAvatar
