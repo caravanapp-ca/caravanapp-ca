@@ -20,13 +20,14 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       position: 'relative',
       width: '100%',
+      paddingTop: theme.spacing(8),
+      paddingBottom: theme.spacing(16),
       backgroundColor: theme.palette.primary.light,
       color: darkTheme.palette.text.primary,
     },
     rootContainer: {
       display: 'flex',
       flex: 1,
-      marginTop: theme.spacing(8),
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'center',
@@ -82,8 +83,6 @@ export default function Splash(props: SplashProps) {
   const theme = useTheme();
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const headerHeight = screenSmallerThanSm ? 56 : 64;
-
   let logInButtonMsg = 'LOG IN WITH DISCORD';
   let aboutButtonMsg = 'ABOUT US';
   if (screenSmallerThanSm) {
@@ -92,12 +91,7 @@ export default function Splash(props: SplashProps) {
   }
 
   return (
-    <div
-      className={classes.root}
-      style={{
-        height: window.innerHeight - headerHeight,
-      }}
-    >
+    <div className={classes.root}>
       <Container maxWidth="md" className={classes.rootContainer}>
         <MuiThemeProvider theme={darkTheme}>
           <div className={classes.textContainer}>

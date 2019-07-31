@@ -10,7 +10,7 @@ import {
 import { clearStorageAuthState } from '../common/localStorage';
 import { clearCookieAuthState } from '../common/cookies';
 
-export const userRoute = '/api/user';
+const userRoute = '/api/user';
 
 export async function getMe() {
   const res = await axios.get<User | null>(`${userRoute}/@me`);

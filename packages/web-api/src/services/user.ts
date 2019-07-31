@@ -1,9 +1,8 @@
 import UserModel from '../models/user';
-import BadgeModel from '../models/badge';
 import { ReadingDiscordBot } from './discord';
 import { UserDoc, BadgeDoc } from '../../typings';
 import { checkObjectIdIsValid } from '../common/mongoose';
-import { UserBadge } from '@caravan/buddy-reading-types';
+import { getBadges } from './badge';
 
 export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   if (!userDoc) {
@@ -32,7 +31,8 @@ const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
       return;
     }
     return {
-      // @ts-ignore
+      // TODO: TS doesn't believe .toObject() exists on userBadge.
+      //@ts-ignore
       ...userBadge.toObject(),
       name: allBadges.badges[userBadge.key].name,
       description: allBadges.badges[userBadge.key].description,
@@ -41,21 +41,16 @@ const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
   ud.badges = mutantBadges;
 };
 
-export const mutateUserBadges = async (userDocs: UserDoc[] | UserDoc) => {
-  const badgeDocs = await BadgeModel.find();
-  if (badgeDocs.length === 0) {
-    console.error('Found no badges in database!');
-    return;
-  }
-  const allBadges = badgeDocs[0];
+export const mutateUserBadges = (
+  userDocs: UserDoc[] | UserDoc,
+  badgeDoc: BadgeDoc
+) => {
   if (Array.isArray(userDocs)) {
     userDocs.forEach(ud => {
-      if (ud.badges.length > 0) {
-        mutateSingleUsersBadges(ud, allBadges);
-      }
+      mutateSingleUsersBadges(ud, badgeDoc);
     });
   } else {
-    mutateSingleUsersBadges(userDocs, allBadges);
+    mutateSingleUsersBadges(userDocs, badgeDoc);
   }
 };
 
@@ -74,8 +69,9 @@ export const getUser = async (urlSlugOrId: string) => {
     user = await UserModel.findById(urlSlugOrId);
   }
   mutateUserDiscordContent(user);
+  const badgeDoc = await getBadges();
   if (user.badges.length > 0) {
-    await mutateUserBadges(user);
+    mutateUserBadges(user, badgeDoc);
   }
   return user;
 };

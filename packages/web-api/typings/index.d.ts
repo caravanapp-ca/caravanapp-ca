@@ -16,11 +16,6 @@ import {
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
 
-declare module '*.svg' {
-  const content: string;
-  export default content;
-}
-
 export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
   _id: MongooseTypes.ObjectId;
   shelf: ShelfEntryDoc[];

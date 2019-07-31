@@ -1,27 +1,29 @@
 import React from 'react';
 import { User, PaletteObject } from '@caravan/buddy-reading-types';
 import {
-  Typography,
   Button,
+  createStyles,
+  Fab,
   Link,
   makeStyles,
-  createStyles,
-  useTheme,
   TextField,
-  Fab,
   Theme,
+  Typography,
+  useTheme,
 } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import copyToClipboard from 'copy-to-clipboard';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
 import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import { paletteColours } from '../../theme';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
-import getReferralLink from '../../functions/getReferralLink';
+import { getReferralLink } from '../../functions/referral';
 import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
 
 interface UserNameplateProps {
   user: User;
+  referralCount: number | null;
   userIsMe: boolean;
   isEditing: boolean;
   onEdit: (
@@ -30,7 +32,7 @@ interface UserNameplateProps {
   ) => void;
   valid: [boolean, string][];
   userDarkTheme?: Theme;
-  copyToClipboard: (refLink: string) => void;
+  onCopyReferralLink: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -66,12 +68,13 @@ export default function UserNameplate(props: UserNameplateProps) {
   const theme = useTheme();
   const {
     user,
+    referralCount,
     userIsMe,
     isEditing,
     onEdit,
     valid,
     userDarkTheme,
-    copyToClipboard,
+    onCopyReferralLink,
   } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
@@ -98,6 +101,8 @@ export default function UserNameplate(props: UserNameplateProps) {
     ? `MESSAGE ${user.discordUsername}`
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
+
+  const referralStatus = referralCount ? `${referralCount} referrals` : ' ';
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
@@ -164,20 +169,6 @@ export default function UserNameplate(props: UserNameplateProps) {
             margin="normal"
             variant="outlined"
           />
-          <Button
-            variant="outlined"
-            onClick={() =>
-              copyToClipboard(getReferralLink(user._id, 'profile'))
-            }
-            style={{
-              width: '20%',
-              justifyContent: 'flex-start',
-              marginBottom: theme.spacing(2),
-              fontWeight: 600,
-            }}
-          >
-            <Typography variant="button">Copy Referral Link</Typography>
-          </Button>
           <Typography color="textSecondary">Palette</Typography>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {paletteColours.map(colourObj => (
@@ -212,7 +203,7 @@ export default function UserNameplate(props: UserNameplateProps) {
         <Typography
           variant="body1"
           color="textPrimary"
-          style={{ marginTop: theme.spacing(1) }}
+          style={{ marginTop: badgeToDisplay ? 0 : theme.spacing(1) }}
         >
           {user.bio}
         </Typography>
@@ -229,6 +220,15 @@ export default function UserNameplate(props: UserNameplateProps) {
             {user.website}
           </Link>
         </Typography>
+        {referralStatus && (
+          <Typography
+            variant="body2"
+            style={{ fontWeight: 600 }}
+            color="textPrimary"
+          >
+            {referralStatus}
+          </Typography>
+        )}
         {user && !userIsMe && (
           <Button
             variant="outlined"
@@ -275,7 +275,8 @@ export default function UserNameplate(props: UserNameplateProps) {
           <Button
             variant="outlined"
             onClick={() =>
-              copyToClipboard(getReferralLink(user._id, 'profile'))
+              copyToClipboard(getReferralLink(user._id, 'home')) &&
+              onCopyReferralLink()
             }
             style={{ marginTop: theme.spacing(1) }}
           >

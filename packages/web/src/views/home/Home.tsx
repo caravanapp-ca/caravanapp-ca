@@ -384,13 +384,7 @@ export default function Home(props: HomeProps) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
-  function copyToClipboard(refLink: string) {
-    const el = document.createElement('textarea');
-    el.value = refLink;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
+  function onCopyReferralLink() {
     setSnackbarProps({
       ...snackbarProps,
       isOpen: true,
@@ -591,7 +585,7 @@ export default function Home(props: HomeProps) {
 
   const rightComponent = (
     <>
-      <ShareIconButton user={user} copyToClipboard={copyToClipboard} />
+      <ShareIconButton user={user} onCopyReferralLink={onCopyReferralLink} />
       <Tooltip title="Create club" aria-label="Create club">
         {user ? (
           <IconButton

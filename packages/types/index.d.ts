@@ -132,14 +132,15 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface UserBadge {
     key: string;
-    name?: string;
+    name: string;
+    awardedOn: Date;
     description?: string;
-    awardedOn?: Date;
   }
 
   export interface Badge {
+    key: string;
     name: string;
-    description: string;
+    description?: string;
   }
 
   export interface Badges extends DocumentFields {
@@ -219,6 +220,7 @@ declare module '@caravan/buddy-reading-types' {
     referralCount: number;
     referredById?: string;
     source: ReferralSource;
+    referralDestination: ReferralDestination;
     referredAndNotJoined: boolean;
   }
 
@@ -288,12 +290,11 @@ declare module '@caravan/buddy-reading-types' {
     | 'login'
     | 'onboarded'
     | 'joinClub'
-    | 'createClub'
-    | 'successfulReferral';
+    | 'createClub';
 
-  export type ReferralSource = 'personal' | 'facebook' | 'twitter';
+  export type ReferralSource = 'fb' | 'tw' | 'gr' | 'em';
 
-  export type ReferralLocation = 'profile' | 'club';
+  export type ReferralDestination = 'home' | 'club';
 
   export type GroupVibe =
     | 'chill'

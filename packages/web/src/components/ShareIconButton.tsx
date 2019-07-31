@@ -1,25 +1,12 @@
-import {
-  makeStyles,
-  Menu,
-  MenuItem,
-  Button,
-  Typography,
-  Link,
-} from '@material-ui/core';
+import { makeStyles, Menu, MenuItem, Link } from '@material-ui/core';
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ShareIcon from '@material-ui/icons/Share';
+import copyToClipboard from 'copy-to-clipboard';
 import { User } from '@caravan/buddy-reading-types';
-import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
 import { washedTheme } from '../theme';
-import { logout } from '../services/user';
-import DiscordLoginModal from './DiscordLoginModal';
-import CustomSnackbar, { CustomSnackbarProps } from './CustomSnackbar';
-import getReferralLink from '../functions/getReferralLink';
+import { getReferralLink } from '../functions/referral';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {
@@ -29,9 +16,6 @@ const useStyles = makeStyles(theme => ({
   headerArrowDown: {
     height: 20,
     width: 20,
-  },
-  profileIconCircle: {
-    backgroundColor: washedTheme.palette.primary.main,
   },
   buttonContainer: {
     display: 'flex',
@@ -46,18 +30,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ShareIconButtonProps extends RouteComponentProps<{}> {
+interface ShareIconButtonProps {
   user: User | null;
-  copyToClipboard: (refLink: string) => void;
+  onCopyReferralLink: () => void;
 }
 
-function ShareIconButton(props: ShareIconButtonProps) {
+export default function ShareIconButton(props: ShareIconButtonProps) {
   const classes = useStyles();
-
   const shareMenuAnchorRef = React.useRef<HTMLDivElement>(null);
-
-  const { user, copyToClipboard } = props;
-
+  const { user, onCopyReferralLink } = props;
   const [shareMenuIsOpen, setShareMenuIsOpen] = React.useState(false);
 
   function handleShareMenuClose(event: React.MouseEvent<EventTarget>) {
@@ -71,7 +52,8 @@ function ShareIconButton(props: ShareIconButtonProps) {
   }
 
   function callCopyToClipboardMethod() {
-    copyToClipboard(getReferralLink(user ? user._id : undefined, 'profile'));
+    copyToClipboard(getReferralLink(user ? user._id : undefined, 'home'));
+    onCopyReferralLink();
     setShareMenuIsOpen(false);
   }
 
@@ -106,21 +88,41 @@ function ShareIconButton(props: ShareIconButtonProps) {
         onClose={handleShareMenuClose}
       >
         <Link
-          href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2F&amp;src=sdkpreparse"
+          href={
+            user
+              ? `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dfb%2F&amp;src=sdkpreparse`
+              : 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dfb%2F&amp;src=sdkpreparse'
+          }
           target={'_blank'}
           onClick={() => setShareMenuIsOpen(false)}
         >
           <MenuItem>Facebook</MenuItem>
         </Link>
         <Link
-          href="https://twitter.com/intent/tweet/?text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs"
+          href={
+            user
+              ? `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dtw&text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dtw`
+              : `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dtw&text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dtw`
+          }
           target={'_blank'}
           onClick={() => setShareMenuIsOpen(false)}
         >
           <MenuItem>Twitter</MenuItem>
         </Link>
         <Link
-          href="mailto:?subject=Come%20join%20me%20on%20this%20cool%20new%20buddy%20reading%20site%20Caravan:%20https%3A%2F%2Fcaravanapp.ca%2Fclubs&body=%20Check%20out%20this%20cool%20new%20site%20for%20online%20book%20clubs%21%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs"
+          href={
+            user
+              ? `mailto:?subject=Come%20join%20me%20on%20this%20cool%20new%20buddy%20reading%20site!&body=Check%20out%20this%20cool%20new%20site%20for%20online%20book%20clubs%21%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dem`
+              : 'mailto:?subject=Come%20join%20me%20on%20this%20cool%20new%20buddy%20reading%20site!&body=Check%20out%20this%20cool%20new%20site%20for%20online%20book%20clubs%21%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dem'
+          }
           target={'_blank'}
           onClick={() => setShareMenuIsOpen(false)}
         >
@@ -133,5 +135,3 @@ function ShareIconButton(props: ShareIconButtonProps) {
     </>
   );
 }
-
-export default withRouter(ShareIconButton);

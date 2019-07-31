@@ -5,8 +5,10 @@ import {
   Referral,
   UserReferredAction,
   ReferredUser,
+  ReferralDestination,
 } from '@caravan/buddy-reading-types';
 import { ReferralDoc } from '../../typings';
+import { ALLOWED_REFERRAL_DESTINATIONS } from '../services/referral';
 
 const userReferredActionSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<UserReferredAction>
@@ -43,7 +45,12 @@ const referralDefinition: SameKeysAs<FilterAutoMongoKeys<Referral>> = {
   referralCount: { type: Number, required: true, default: 0 },
   referredById: { type: String, index: true },
   referredAndNotJoined: { type: Boolean, default: false },
-  source: { type: String, default: 'personal' },
+  source: { type: String },
+  referralDestination: {
+    type: String,
+    required: true,
+    default: 'home',
+  },
 };
 
 const referralSchema = new Schema<ReferralDoc>(referralDefinition, {

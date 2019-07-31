@@ -1,10 +1,10 @@
 import React from 'react';
+import { User } from '@caravan/buddy-reading-types';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Avatar, IconButton, Grid } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
-import { User } from '@caravan/buddy-reading-types';
 import { getBadgeToDisplay } from '../../../functions/getBadgeToDisplay';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));

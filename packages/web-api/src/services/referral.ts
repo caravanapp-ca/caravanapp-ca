@@ -3,17 +3,33 @@ import {
   ReferralAction,
   FilterAutoMongoKeys,
   ReferralSource,
+  ReferralDestination,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ReferralModel from '../models/referral';
 import ReferralTierModel from '../models/referralTier';
 import { ReferralDoc } from '../../typings';
 import { giveUserBadge } from './badge';
-import { giveDiscordRole } from './discord';
+import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
+
+export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
+  fb: true,
+  tw: true,
+  em: true,
+  gr: true,
+};
+
+export const ALLOWED_REFERRAL_DESTINATIONS: {
+  [key in ReferralDestination]: boolean
+} = {
+  home: true,
+  club: true,
+};
 
 export async function handleFirstVisit(
   referredTempUid: string,
   referredById: string,
+  referralDestination: ReferralDestination,
   utm_source?: ReferralSource
 ) {
   const newReferral: Omit<
@@ -29,9 +45,14 @@ export async function handleFirstVisit(
       },
     ],
     source: utm_source,
+    referralDestination: referralDestination,
     referredAndNotJoined: true,
   };
-  await new ReferralModel(newReferral).save();
+  const referralDoc = await new ReferralModel(newReferral).save();
+  console.log(
+    `[Referral] UserId: ${referralDoc.userId}, Referrer: ${referralDoc.referredById}, Action: click`
+  );
+  return referralDoc;
 }
 
 export async function createReferralAction(
@@ -77,7 +98,7 @@ export async function createReferralActionByDoc(
       if (!referrerDoc) {
         const referrerObj: Omit<
           FilterAutoMongoKeys<Referral>,
-          'referredById' | 'source'
+          'referredById' | 'source' | 'referralDestination'
         > = {
           userId: referralDoc.referredById,
           actions: [],
@@ -111,6 +132,7 @@ export async function createReferralActionByDoc(
           if (newTier.discordRole) {
             giveDiscordRole(referrerDoc.userId, newTier.discordRole);
           }
+          sendNewTierDiscordMsg(referrerDoc.userId, newTier);
         }
       }
       break;
@@ -124,3 +146,19 @@ export async function createReferralActionByDoc(
 export function getReferralDoc(userId: string) {
   return ReferralModel.findOne({ userId });
 }
+
+export const getReferralTiersDoc = () => {
+  // TODO: Consider adding in-memory storage to reduce DB calls.
+  return ReferralTierModel.findOne({});
+};
+
+export const getReferralTier = async (tierNum: number) => {
+  const referralTierDoc = await getReferralTiersDoc();
+  const referralTier = referralTierDoc.tiers.find(
+    t => t.tierNumber === tierNum
+  );
+  if (!referralTier) {
+    throw new Error(`Did not find referral tier ${tierNum} in db.`);
+  }
+  return referralTier;
+};

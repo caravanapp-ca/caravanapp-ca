@@ -1,25 +1,24 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  User,
-  ReadingState,
-  UserShelfEntry,
-  EditableUserField,
-  Services,
-  ProfileQuestion,
-  UserQA,
   ClubTransformed,
-  UserBadge,
+  EditableUserField,
+  ProfileQuestion,
+  ReadingState,
+  Services,
+  User,
+  UserQA,
+  UserShelfEntry,
 } from '@caravan/buddy-reading-types';
 import {
-  makeStyles,
+  Container,
   createStyles,
-  Theme,
+  makeStyles,
+  Tab,
   Tabs,
+  Theme,
   useMediaQuery,
   useTheme,
-  Tab,
-  Container,
 } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -41,6 +40,7 @@ import UserClubs from './UserClubs';
 import { getClubsByIdNoMembers, getAllClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
+import { getReferralCount } from '../../services/referral';
 import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme } from '../../theme';
@@ -141,6 +141,7 @@ export default function UserView(props: UserViewProps) {
   const [tabValue, setTabValue] = React.useState(0);
   const [scrolled, setScrolled] = React.useState(0);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
+  const [referralCount, setReferralCount] = React.useState<number | null>(null);
   const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
     []
   );
@@ -187,15 +188,25 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
+  const getReferrals = async (user: User) => {
+    const userRes = await getReferralCount(user._id);
+    if (userRes.status === 200) {
+      setReferralCount(userRes.data);
+    } else {
+      setReferralCount(null);
+    }
+  };
+
   useEffect(() => {
     getUser(userId).then(user => {
       if (user) {
+        getReferrals(user);
         const isUserMe = myUserId === user._id;
-        setUserIsMe(isUserMe);
         if (isUserMe) {
           getGenres();
           getQuestions(user);
         }
+        setUserIsMe(isUserMe);
         // Setting max page size here so we get all the user's clubs
         getAllClubs(userId, undefined, 50).then(res => {
           if (!res.data) {
@@ -387,13 +398,7 @@ export default function UserView(props: UserViewProps) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
-  function copyToClipboard(refLink: string) {
-    const el = document.createElement('textarea');
-    el.value = refLink;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
+  function onCopyReferralLink() {
     setSnackbarProps({
       ...snackbarProps,
       isOpen: true,
@@ -546,12 +551,13 @@ export default function UserView(props: UserViewProps) {
         <div style={{ marginLeft: theme.spacing(2) }}>
           <UserNameplate
             user={user}
+            referralCount={referralCount}
             userIsMe={userIsMe}
             isEditing={isEditing}
             onEdit={onEdit}
             valid={[nameValidated(), bioValidated(), websiteValidated()]}
             userDarkTheme={userDarkTheme}
-            copyToClipboard={copyToClipboard}
+            onCopyReferralLink={onCopyReferralLink}
           />
         </div>
       </div>
@@ -575,7 +581,10 @@ export default function UserView(props: UserViewProps) {
           <Tab label="Clubs" />
         </Tabs>
       </MuiThemeProvider>
-      <Container maxWidth={'md'}>
+      <Container
+        maxWidth={'md'}
+        style={{ padding: tabValue === 2 ? 0 : undefined }}
+      >
         <>
           {tabValue === 0 && (
             <UserBio

@@ -1,13 +1,29 @@
-import UserModel from '../models/user';
 import { UserBadge } from '@caravan/buddy-reading-types';
+import { Omit } from 'utility-types';
+import UserModel from '../models/user';
+import { BadgeDocInstance } from '../badges/BadgeInstance';
+
+export const getBadges = () => {
+  return BadgeDocInstance.getInstance();
+};
+
+export const getBadge = async (badgeKey: string) => {
+  const badgeDoc = await getBadges();
+  if (!badgeDoc.badges[badgeKey]) {
+    console.error('Badge ${badgeKey} not found.');
+    throw new Error(`Badge ${badgeKey} not found.`);
+  }
+  const badge = badgeDoc.badges[badgeKey];
+  return badge;
+};
 
 export const giveUserBadge = async (userId: string, badgeKey: string) => {
   console.log(`Giving user ${userId} badge ${badgeKey}`);
-  const newUserBadge: UserBadge = {
+  const newUserBadge: Omit<UserBadge, 'name' | 'description'> = {
     key: badgeKey,
     awardedOn: new Date(),
   };
-  const newUser = await UserModel.findByIdAndUpdate(
+  return UserModel.findByIdAndUpdate(
     userId,
     {
       $addToSet: {
