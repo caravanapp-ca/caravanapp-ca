@@ -13,15 +13,12 @@ export const getReferralLink = (
   if (location) {
     // TODO: add more cases - should we parse URL?
     const refQuery = userId ? `?ref=${userId}` : '';
+    const clubIdQuery = clubId ? `/${clubId}` : '';
     switch (location) {
       case 'home':
         return `https://${window.location.host}/clubs${refQuery}`;
       case 'club':
-        if (clubId) {
-          return `https://${window.location.host}/clubs/${clubId}${refQuery}`;
-        } else {
-          return `https://${window.location.host}/clubs${refQuery}`;
-        }
+        return `https://${window.location.host}/clubs${clubIdQuery}${refQuery}`;
       default:
         return `https://${window.location.host}`;
     }
