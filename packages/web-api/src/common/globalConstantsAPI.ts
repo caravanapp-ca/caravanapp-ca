@@ -1,4 +1,5 @@
 // This function returns the channel ID for #general-chat
+// TODO: This breaks if we have multiple Discord servers.
 export const discordGenChatChId = () => {
   if (process.env.NODE_ENV === 'production') {
     // We're in prod
