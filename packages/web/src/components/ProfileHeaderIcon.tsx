@@ -1,5 +1,6 @@
-import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
@@ -24,11 +25,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface HeaderRightProps {
+interface HeaderRightProps extends RouteComponentProps<{}> {
   user: User | null;
 }
 
-export default function ProfileHeaderIcon(props: HeaderRightProps) {
+function ProfileHeaderIcon(props: HeaderRightProps) {
   const classes = useStyles();
 
   const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
@@ -126,3 +127,5 @@ export default function ProfileHeaderIcon(props: HeaderRightProps) {
     </>
   );
 }
+
+export default withRouter(ProfileHeaderIcon);
