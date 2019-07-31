@@ -126,13 +126,13 @@ export const giveDiscordRole = async (userId: string, role: string) => {
   }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
-  const guildMember = guild.members.find(m => m.id === user.discordId);
+  const guildMember = guild.members.get(user.discordId);
   if (!guildMember) {
     console.error(`Did not find user ${userId} in the Discord guild`);
     return;
   }
   console.log(`Giving user ${userId} Discord role ${role}`);
-  guildMember.addRole(role);
+  return guildMember.addRole(role);
 };
 
 export const sendNewTierDiscordMsg = async (
@@ -146,10 +146,10 @@ export const sendNewTierDiscordMsg = async (
       throw new Error(`Did not find user ${user} in db.`);
     }
   }
-  let newTierObj = newTier;
-  if (typeof newTierObj === 'number') {
-    newTierObj = await getReferralTier(newTierObj);
-    if (!newTierObj) {
+  let referralTier = newTier;
+  if (typeof referralTier === 'number') {
+    referralTier = await getReferralTier(referralTier);
+    if (!referralTier) {
       throw new Error(`Did not find referral tier ${newTier} in db.`);
     }
   }
@@ -158,11 +158,12 @@ export const sendNewTierDiscordMsg = async (
   const genChatId = discordGenChatChId();
   const genChannel = guild.channels.get(genChatId) as TextChannel;
   if (!genChannel) {
+    console.log('Did not find #general-chat at channel id ${genChatId}');
     throw new Error(`Did not find #general-chat at channel id ${genChatId}`);
   }
-  const msgToSend = `<@${userObj.discordId}> just reached referral tier ${newTierObj.tierNumber} (${newTierObj.referralCount} referrals). Congratulations! :tada:`;
+  const msgToSend = `<@${userObj.discordId}> just reached referral tier ${referralTier.tierNumber} (${referralTier.referralCount} referrals). Congratulations! :tada:`;
   console.log('Sending Discord message to #general-chat', msgToSend);
-  genChannel.send(msgToSend);
+  return genChannel.send(msgToSend);
 };
 
 // class ReadingDiscordClient {
