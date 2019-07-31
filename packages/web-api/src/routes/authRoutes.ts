@@ -197,6 +197,9 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
+    await guild.addMember(discordUserData.id, {
+      accessToken,
+    });
     console.log(
       `Added user {id: ${userDoc.id}, discordId: ${userDoc.discordId}} to guild ${guild.id}.`
     );
