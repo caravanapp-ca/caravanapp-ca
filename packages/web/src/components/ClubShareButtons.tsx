@@ -1,6 +1,5 @@
 import { makeStyles, Menu, MenuItem, Link } from '@material-ui/core';
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import copyToClipboard from 'copy-to-clipboard';
@@ -27,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ClubShareButtonsProps extends RouteComponentProps<{}> {
+interface ClubShareButtonsProps {
   user: User | null;
   clubId: string;
   bookTitle: string;
@@ -35,7 +34,7 @@ interface ClubShareButtonsProps extends RouteComponentProps<{}> {
   onCopyReferralLink: () => void;
 }
 
-function ClubShareButtons(props: ClubShareButtonsProps) {
+export default function ClubShareButtons(props: ClubShareButtonsProps) {
   const classes = useStyles();
 
   const { user, clubId, bookTitle, bookAuthor, onCopyReferralLink } = props;
@@ -145,5 +144,3 @@ function ClubShareButtons(props: ClubShareButtonsProps) {
     </div>
   );
 }
-
-export default withRouter(ClubShareButtons);
