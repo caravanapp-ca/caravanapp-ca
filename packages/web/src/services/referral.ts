@@ -1,16 +1,22 @@
 import axios from 'axios';
 import { setCookie } from '../common/cookies';
+import {
+  ReferralSource,
+  ReferralDestination,
+} from '@caravan/buddy-reading-types';
 
 const referralRoute = '/api/referrals';
 
 export async function handleReferral(
   referrerId: string,
-  utmSource: string | undefined | null
+  utmSource: string | undefined | null,
+  referralDestination: ReferralDestination
 ) {
   const res = await axios.post(
     `${referralRoute}/handleReferralClick/${referrerId}`,
     {
       utmSource,
+      referralDestination,
     }
   );
   if (res.status === 200) {

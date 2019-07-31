@@ -1,11 +1,15 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import generateUuid from 'uuid/v4';
-import { ReferralSource } from '@caravan/buddy-reading-types';
+import {
+  ReferralSource,
+  ReferralDestination,
+} from '@caravan/buddy-reading-types';
 import {
   ALLOWED_UTM_SOURCES,
   getReferralDoc,
   handleFirstVisit,
+  ALLOWED_REFERRAL_DESTINATIONS,
 } from '../services/referral';
 
 const router = express.Router();
@@ -39,6 +43,15 @@ router.post(
     }
     const { referrerId } = req.params;
     // Ugly way of forcing to null, consider cleaning up
+    let referralDestination: ReferralDestination = req.body.referralDestination
+      ? req.body.referralDestination
+      : null;
+    referralDestination =
+      referralDestination == null ||
+      ALLOWED_REFERRAL_DESTINATIONS[referralDestination] === true
+        ? referralDestination
+        : null;
+    // Ugly way of forcing to null, consider cleaning up
     let utmSource: ReferralSource = req.body.utmSource
       ? req.body.utmSource
       : null;
@@ -48,7 +61,12 @@ router.post(
         : null;
     const referredTempUid = generateUuid();
     try {
-      await handleFirstVisit(referredTempUid, referrerId, utmSource);
+      await handleFirstVisit(
+        referredTempUid,
+        referrerId,
+        referralDestination,
+        utmSource
+      );
       req.session.referredTempUid = referredTempUid;
       return res.status(200).send();
     } catch (err) {

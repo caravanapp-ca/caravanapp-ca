@@ -3,6 +3,7 @@ import {
   ReferralAction,
   FilterAutoMongoKeys,
   ReferralSource,
+  ReferralDestination,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import ReferralModel from '../models/referral';
@@ -18,9 +19,17 @@ export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   gr: true,
 };
 
+export const ALLOWED_REFERRAL_DESTINATIONS: {
+  [key in ReferralDestination]: boolean
+} = {
+  home: true,
+  club: true,
+};
+
 export async function handleFirstVisit(
   referredTempUid: string,
   referredById: string,
+  referralDestination: ReferralDestination,
   utm_source?: ReferralSource
 ) {
   const newReferral: Omit<
@@ -36,6 +45,7 @@ export async function handleFirstVisit(
       },
     ],
     source: utm_source,
+    referralDestination: referralDestination,
     referredAndNotJoined: true,
   };
   const referralDoc = await new ReferralModel(newReferral).save();
@@ -88,7 +98,7 @@ export async function createReferralActionByDoc(
       if (!referrerDoc) {
         const referrerObj: Omit<
           FilterAutoMongoKeys<Referral>,
-          'referredById' | 'source'
+          'referredById' | 'source' | 'referralDestination'
         > = {
           userId: referralDoc.referredById,
           actions: [],

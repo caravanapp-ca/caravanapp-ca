@@ -220,6 +220,7 @@ declare module '@caravan/buddy-reading-types' {
     referralCount: number;
     referredById?: string;
     source: ReferralSource;
+    referralDestination: ReferralDestination;
     referredAndNotJoined: boolean;
   }
 
@@ -292,6 +293,8 @@ declare module '@caravan/buddy-reading-types' {
     | 'createClub';
 
   export type ReferralSource = 'fb' | 'tw' | 'gr' | 'em';
+
+  export type ReferralDestination = 'home' | 'club';
 
   export type GroupVibe =
     | 'chill'

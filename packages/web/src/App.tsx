@@ -11,7 +11,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { User } from '@caravan/buddy-reading-types';
+import { User, ReferralDestination } from '@caravan/buddy-reading-types';
 import Footer from './components/Footer';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
@@ -107,6 +107,12 @@ export function App(props: AppProps) {
       clearStorageAuthState();
     }
     if (queries.ref && !getCookie('refClickComplete') && !getCookie('userId')) {
+      const regex = RegExp('/clubs/\\w+');
+      const referralDestination: ReferralDestination = regex.test(
+        window.location.pathname
+      )
+        ? 'club'
+        : 'home';
       const referrerId = Array.isArray(queries.ref)
         ? queries.ref[0]
         : queries.ref;
@@ -116,7 +122,7 @@ export function App(props: AppProps) {
       if (utmSource) {
         utmSource = getUtmSourceValue(utmSource);
       }
-      handleReferral(referrerId, utmSource);
+      handleReferral(referrerId, utmSource, referralDestination);
     }
   }, []);
 
