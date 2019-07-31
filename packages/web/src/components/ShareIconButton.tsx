@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ShareIconButtonProps extends RouteComponentProps<{}> {
+interface ShareIconButtonProps {
   user: User | null;
   onCopyReferralLink: () => void;
 }
