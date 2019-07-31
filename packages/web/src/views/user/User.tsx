@@ -1,27 +1,24 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  User,
-  ReadingState,
-  UserShelfEntry,
-  EditableUserField,
-  Services,
-  ProfileQuestion,
-  UserQA,
   ClubTransformed,
-  UserBadge,
-  Referral,
-  ReferralTiers,
+  EditableUserField,
+  ProfileQuestion,
+  ReadingState,
+  Services,
+  User,
+  UserQA,
+  UserShelfEntry,
 } from '@caravan/buddy-reading-types';
 import {
-  makeStyles,
+  Container,
   createStyles,
-  Theme,
+  makeStyles,
+  Tab,
   Tabs,
+  Theme,
   useMediaQuery,
   useTheme,
-  Tab,
-  Container,
 } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -43,10 +40,10 @@ import UserClubs from './UserClubs';
 import { getClubsByIdNoMembers, getAllClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
+import { getReferralCount } from '../../services/referral';
 import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme } from '../../theme';
-import { getReferralCount } from '../../services/referral';
 
 interface MinMax {
   min: number;

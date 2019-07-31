@@ -1,6 +1,5 @@
 import { makeStyles, Menu, MenuItem, Link } from '@material-ui/core';
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ShareIcon from '@material-ui/icons/Share';
