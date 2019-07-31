@@ -197,7 +197,6 @@ export default function ClubCards(props: ClubCardsProps) {
             }
             let startMsg = 'Start: Not set';
             let endMsg = 'End: Not set';
-            let progressPercentage = 0;
             let progress = 0;
             if (schedule && schedule.startDate) {
               const { startDate, duration } = schedule;
@@ -233,7 +232,6 @@ export default function ClubCards(props: ClubCardsProps) {
                     'd'
                   )}`;
                 }
-                progressPercentage = 3;
               }
             }
             let groupVibeAvatar: JSX.Element | undefined;

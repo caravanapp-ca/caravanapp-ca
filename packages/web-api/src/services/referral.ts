@@ -12,10 +12,10 @@ import { giveUserBadge } from './badge';
 import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
 
 export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
-  facebook: true,
-  twitter: true,
-  email: true,
-  goodreads: true,
+  fb: true,
+  tw: true,
+  em: true,
+  gr: true,
 };
 
 export async function handleFirstVisit(

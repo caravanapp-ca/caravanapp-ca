@@ -4,13 +4,13 @@ export default function getUtmSourceValue(urlValue: string) {
   const filteredUrlValue = urlValue.replace(/[^0-9a-z]/gi, '');
   switch (filteredUrlValue) {
     case 'fb':
-      return 'facebook';
+      return filteredUrlValue;
     case 'tw':
-      return 'twitter';
+      return filteredUrlValue;
     case 'gr':
-      return 'goodreads';
+      return filteredUrlValue;
     case 'em':
-      return 'email';
+      return filteredUrlValue;
     default:
       throw new Error(`Unknown utm_source: ${filteredUrlValue}`);
   }
