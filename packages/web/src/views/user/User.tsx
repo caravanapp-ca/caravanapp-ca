@@ -46,7 +46,7 @@ import { getAllProfileQuestions } from '../../services/profile';
 import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme } from '../../theme';
-import { getUserReferrals, getReferralTiers } from '../../services/referral';
+import { getReferralCount } from '../../services/referral';
 
 interface MinMax {
   min: number;
@@ -144,7 +144,7 @@ export default function UserView(props: UserViewProps) {
   const [tabValue, setTabValue] = React.useState(0);
   const [scrolled, setScrolled] = React.useState(0);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
-  const [referrals, setReferrals] = React.useState<Referral | null>(null);
+  const [referralCount, setReferralCount] = React.useState<number | null>(null);
   const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
     []
   );
@@ -192,11 +192,11 @@ export default function UserView(props: UserViewProps) {
   };
 
   const getReferrals = async (user: User) => {
-    getUserReferrals(user._id).then(userRes => {
+    getReferralCount(user._id).then(userRes => {
       if (userRes.status === 200) {
-        setReferrals(userRes.data);
+        setReferralCount(userRes.data);
       } else {
-        setReferrals(null);
+        setReferralCount(null);
       }
     });
   };
@@ -555,7 +555,7 @@ export default function UserView(props: UserViewProps) {
         <div style={{ marginLeft: theme.spacing(2) }}>
           <UserNameplate
             user={user}
-            referrals={referrals}
+            referralCount={referralCount}
             userIsMe={userIsMe}
             isEditing={isEditing}
             onEdit={onEdit}

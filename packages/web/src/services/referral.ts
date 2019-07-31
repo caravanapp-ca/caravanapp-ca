@@ -1,9 +1,4 @@
 import axios from 'axios';
-import {
-  Referral,
-  ReferralSource,
-  ReferralTiers,
-} from '@caravan/buddy-reading-types';
 import { setCookie } from '../common/cookies';
 
 const referralRoute = '/api/referrals';
@@ -24,12 +19,13 @@ export async function handleReferral(
   return res;
 }
 
-export async function getUserReferrals(referrerId: string) {
-  const res = await axios.get<Referral>(`${referralRoute}/${referrerId}`);
+export async function getReferralCount(referrerId: string) {
+  const res = await axios.get<number>(`${referralRoute}/count/${referrerId}`);
   return res;
 }
 
-export async function getReferralTiers() {
-  const res = await axios.get<ReferralTiers[]>(`${referralRoute}/tiers`);
-  return res;
-}
+// Currently unused, potentially useful if we show tiers on the front-end
+// export async function getReferralTiers() {
+//   const res = await axios.get<ReferralTiers>(`${referralRoute}/tiers`);
+//   return res;
+// }

@@ -1,32 +1,31 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { getReferralDoc, getAllReferralTiersDoc } from '../services/referral';
 import generateUuid from 'uuid/v4';
 import { ReferralSource } from '@caravan/buddy-reading-types';
-import { handleFirstVisit, ALLOWED_UTM_SOURCES } from '../services/referral';
-import { ReferralTierDoc } from '../../typings';
+import {
+  ALLOWED_UTM_SOURCES,
+  getReferralDoc,
+  handleFirstVisit,
+} from '../services/referral';
 
 const router = express.Router();
 
-router.get('/tiers', async (req, res, next) => {
-  let referralTiersDoc: ReferralTierDoc[];
-  try {
-    referralTiersDoc = await getAllReferralTiersDoc();
-  } catch (err) {
-    return res.status(400).send('Failed to get referral tiers.');
-  }
-  return res.status(200).send(referralTiersDoc);
-});
+// Currently unused, potentially useful if we show tiers on the front-end
+// router.get('/tiers', async (req, res, next) => {
+//   let referralTiersDoc: ReferralTierDoc;
+//   try {
+//     referralTiersDoc = await getReferralTiersDoc();
+//   } catch (err) {
+//     return res.status(400).send('Failed to get referral tiers.');
+//   }
+//   return res.status(200).send(referralTiersDoc);
+// });
 
-router.get('/:userId', async (req, res) => {
+router.get('/count/:userId', async (req, res) => {
   const { userId } = req.params;
   const referralDoc = await getReferralDoc(userId);
-  if (!referralDoc) {
-    return res
-      .status(404)
-      .send(`Could not find referral doc for user ${userId}`);
-  }
-  return res.status(200).send(referralDoc);
+  const referralCount = referralDoc ? referralDoc.referralCount : 0;
+  return res.status(200).send(referralCount);
 });
 
 router.post(

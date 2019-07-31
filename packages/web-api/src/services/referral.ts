@@ -137,13 +137,14 @@ export function getReferralDoc(userId: string) {
   return ReferralModel.findOne({ userId });
 }
 
-export const getAllReferralTiersDoc = () => {
-  return ReferralTierModel.find({});
+export const getReferralTiersDoc = () => {
+  // TODO: Consider adding in-memory storage to reduce DB calls.
+  return ReferralTierModel.findOne({});
 };
 
 export const getReferralTier = async (tierNum: number) => {
-  const referralTierDoc = await getAllReferralTiersDoc();
-  const referralTier = referralTierDoc[0].tiers.find(
+  const referralTierDoc = await getReferralTiersDoc();
+  const referralTier = referralTierDoc.tiers.find(
     t => t.tierNumber === tierNum
   );
   if (!referralTier) {

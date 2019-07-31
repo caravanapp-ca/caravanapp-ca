@@ -1,21 +1,15 @@
 import React from 'react';
+import { User, PaletteObject } from '@caravan/buddy-reading-types';
 import {
-  User,
-  PaletteObject,
-  Referral,
-  ReferralTiers,
-} from '@caravan/buddy-reading-types';
-import {
-  Typography,
   Button,
+  createStyles,
+  Fab,
   Link,
   makeStyles,
-  createStyles,
-  useTheme,
   TextField,
-  Fab,
   Theme,
-  useMediaQuery,
+  Typography,
+  useTheme,
 } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import copyToClipboard from 'copy-to-clipboard';
@@ -24,12 +18,12 @@ import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
 import { paletteColours } from '../../theme';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
-import { getReferralLink, getCurrReferralTier } from '../../functions/referral';
+import { getReferralLink } from '../../functions/referral';
 import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
 
 interface UserNameplateProps {
   user: User;
-  referrals: Referral | null;
+  referralCount: number | null;
   userIsMe: boolean;
   isEditing: boolean;
   onEdit: (
@@ -74,7 +68,7 @@ export default function UserNameplate(props: UserNameplateProps) {
   const theme = useTheme();
   const {
     user,
-    referrals,
+    referralCount,
     userIsMe,
     isEditing,
     onEdit,
@@ -103,20 +97,12 @@ export default function UserNameplate(props: UserNameplateProps) {
     },
   };
 
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
-
   const msgBtnLabel: string = user.discordUsername
     ? `MESSAGE ${user.discordUsername}`
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
-  let referralStatusStr;
-  if (referrals) {
-    referralStatusStr = `${referrals.referralCount}`;
-  } else {
-    referralStatusStr = '0';
-  }
-  referralStatusStr += ' referrals';
+  const referralStatus = referralCount ? `${referralCount} referrals` : ' ';
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
@@ -234,13 +220,13 @@ export default function UserNameplate(props: UserNameplateProps) {
             {user.website}
           </Link>
         </Typography>
-        {referralStatusStr && (
+        {referralStatus && (
           <Typography
             variant="body2"
             style={{ fontWeight: 600 }}
             color="textPrimary"
           >
-            {referralStatusStr}
+            {referralStatus}
           </Typography>
         )}
         {user && !userIsMe && (
