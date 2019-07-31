@@ -124,14 +124,14 @@ async function getUserMap(guild: Guild, clubDocs: ClubDoc[]) {
   return foundUsers;
 }
 
-const sanitizeClubShelf = (shelf: FilterAutoMongoKeys<ShelfEntry>[]) => {
+const sanitizeClubShelf = (shelf: ShelfEntry[]) => {
   const newShelf = shelf.map(item => {
     if (
       item &&
       item.coverImageURL &&
       knownHttpsRedirects.find(url => item.coverImageURL.startsWith(url))
     ) {
-      const newItem: FilterAutoMongoKeys<ShelfEntry> = {
+      const newItem: ShelfEntry = {
         ...item,
         coverImageURL: item.coverImageURL.replace('http:', 'https:'),
       };
