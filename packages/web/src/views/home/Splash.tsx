@@ -79,8 +79,9 @@ interface SplashProps {
 
 export default function Splash(props: SplashProps) {
   const { user, onLoginClick, onDismissClick, onSeeClubsClick } = props;
-  const theme = useTheme();
   const classes = useStyles();
+  const theme = useTheme();
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   let logInButtonMsg = 'LOG IN WITH DISCORD';
   let aboutButtonMsg = 'ABOUT US';
