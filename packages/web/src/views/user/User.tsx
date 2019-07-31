@@ -582,7 +582,10 @@ export default function UserView(props: UserViewProps) {
           <Tab label="Clubs" />
         </Tabs>
       </MuiThemeProvider>
-      <Container maxWidth={'md'}>
+      <Container
+        maxWidth={'md'}
+        style={{ padding: tabValue === 2 ? 0 : undefined }}
+      >
         <>
           {tabValue === 0 && (
             <UserBio
