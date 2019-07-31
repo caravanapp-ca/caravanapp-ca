@@ -38,7 +38,7 @@ import { ReadingDiscordBot } from './services/discord';
     app.use(function(req, res, next) {
       const isHttps = req.secure;
       let host = req.header('host');
-      const isWww = host.match(/^www\..*/i);
+      const isWww = !!host.match(/^www\..*/i);
       let shouldRedirect = !isHttps;
       if (isWww) {
         host = host.replace('www.', '');
