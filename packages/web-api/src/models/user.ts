@@ -81,8 +81,8 @@ const paletteSchema = new Schema({
 const userBadgeDefinition: FilterAutoMongoKeys<SameKeysAs<UserBadge>> = {
   key: { type: String, required: true },
   name: { type: String, required: true },
+  awardedOn: { type: Date, required: true },
   description: { type: String },
-  awardedOn: { type: Date },
 };
 
 const userBadgeSchema = new Schema(userBadgeDefinition);
