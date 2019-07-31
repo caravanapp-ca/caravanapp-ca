@@ -142,17 +142,23 @@ export const sendNewTierDiscordMsg = async (
   let userObj = user;
   if (typeof userObj === 'string') {
     userObj = await getUser(userObj);
+    if (!userObj) {
+      throw new Error(`Did not find user ${user} in db.`);
+    }
   }
   let newTierObj = newTier;
   if (typeof newTierObj === 'number') {
     newTierObj = await getReferralTier(newTierObj);
+    if (!newTierObj) {
+      throw new Error(`Did not find referral tier ${newTier} in db.`);
+    }
   }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
   const genChatId = discordGenChatChId();
   const genChannel = guild.channels.get(genChatId) as TextChannel;
   if (!genChannel) {
-    throw new Error(`Did not find general-chat at channel id ${genChatId}`);
+    throw new Error(`Did not find #general-chat at channel id ${genChatId}`);
   }
   const msgToSend = `<@${userObj.discordId}> just reached referral tier ${newTierObj.tierNumber} (${newTierObj.referralCount} referrals). Congratulations! :tada:`;
   console.log('Sending Discord message to #general-chat', msgToSend);

@@ -103,20 +103,12 @@ export default function UserNameplate(props: UserNameplateProps) {
     },
   };
 
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
-
   const msgBtnLabel: string = user.discordUsername
     ? `MESSAGE ${user.discordUsername}`
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
-  let referralStatusStr;
-  if (referrals) {
-    referralStatusStr = `${referrals.referralCount}`;
-  } else {
-    referralStatusStr = '0';
-  }
-  referralStatusStr += ' referrals';
+  const referralStatusStr = `${referrals ? referrals.referralCount : 0} referral${referrals && referrals.referralCount === 1 ? '' : 's'}`;
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
