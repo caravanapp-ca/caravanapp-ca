@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       width: '100%',
       paddingTop: theme.spacing(8),
+      paddingBottom: theme.spacing(16),
       backgroundColor: theme.palette.primary.light,
       color: darkTheme.palette.text.primary,
     },
@@ -78,14 +79,9 @@ interface SplashProps {
 
 export default function Splash(props: SplashProps) {
   const { user, onLoginClick, onDismissClick, onSeeClubsClick } = props;
+  const classes = useStyles();
   const theme = useTheme();
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
-  const headerHeight = screenSmallerThanSm ? 56 : 64;
-  // Leaving this as a state var since it is dependent on a media query.
-  const [splashHeight] = React.useState<number>(
-    window.innerHeight - headerHeight
-  );
-  const classes = useStyles();
 
   let logInButtonMsg = 'LOG IN WITH DISCORD';
   let aboutButtonMsg = 'ABOUT US';
@@ -95,7 +91,7 @@ export default function Splash(props: SplashProps) {
   }
 
   return (
-    <div className={classes.root} style={{ height: splashHeight }}>
+    <div className={classes.root}>
       <Container maxWidth="md" className={classes.rootContainer}>
         <MuiThemeProvider theme={darkTheme}>
           <div className={classes.textContainer}>
