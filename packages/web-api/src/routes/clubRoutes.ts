@@ -1,5 +1,3 @@
-import express from 'express';
-import Fuse from 'fuse.js';
 import {
   ChannelCreationOverwrites,
   ChannelData,
@@ -10,7 +8,10 @@ import {
   GuildMember,
   PermissionResolvable,
 } from 'discord.js';
+import express from 'express';
 import { check, validationResult } from 'express-validator';
+import Fuse from 'fuse.js';
+import { Omit } from 'utility-types';
 import {
   Club,
   FilterAutoMongoKeys,
@@ -23,14 +24,14 @@ import {
   GroupVibe,
   ActiveFilter,
 } from '@caravan/buddy-reading-types';
-import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
+import { shelfEntryWithHttpsBookUrl } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
-import { ClubDoc, UserDoc } from '../../typings';
 import { getUser, mutateUserBadges } from '../services/user';
 import { createReferralAction } from '../services/referral';
+import { ClubDoc, UserDoc } from '../../typings';
 
 const router = express.Router();
 
@@ -716,20 +717,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    const shelf = body.shelf.map(item => {
-      if (
-        item &&
-        item.coverImageURL &&
-        knownHttpsRedirects.find(url => item.coverImageURL.startsWith(url))
-      ) {
-        const newItem: CreateClubBody['shelf'][0] = {
-          ...item,
-          coverImageURL: item.coverImageURL.replace('http:', 'https:'),
-        };
-        return newItem;
-      }
-      return item;
-    });
+    const shelf = body.shelf.map(shelfEntryWithHttpsBookUrl);
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
@@ -950,12 +938,13 @@ router.put(
       wantToRead,
     } = req.body;
     let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
+    const shelfEntry = shelfEntryWithHttpsBookUrl(newBook);
     let resultPrev, resultNew;
     if (currBookAction !== 'current') {
       if (prevBookId) {
         switch (currBookAction as CurrBookAction) {
           case 'delete':
-            resultPrev = await ClubModel.update(
+            resultPrev = await ClubModel.updateOne(
               { _id: clubId },
               { $pull: { shelf: { _id: prevBookId } } }
             );
@@ -993,7 +982,7 @@ router.put(
       if (!newEntry) {
         newCondition = {
           _id: clubId,
-          'shelf._id': newBook._id,
+          'shelf._id': shelfEntry._id,
         };
         newUpdate = {
           $set: {
@@ -1008,10 +997,10 @@ router.put(
         newUpdate = {
           $addToSet: {
             shelf: {
-              ...newBook,
+              ...shelfEntry,
               readingState: newReadingState,
-              publishedDate: newBook.publishedDate
-                ? new Date(newBook.publishedDate)
+              publishedDate: shelfEntry.publishedDate
+                ? new Date(shelfEntry.publishedDate)
                 : undefined,
               createdAt: new Date(),
               updatedAt: new Date(),

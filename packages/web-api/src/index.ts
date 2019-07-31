@@ -38,15 +38,24 @@ import { ReadingDiscordBot } from './services/discord';
   if (process.env.NODE_ENV === 'production') {
     app.use(function(req, res, next) {
       const isHttps = req.secure;
-      if (isHttps) {
+      let host = req.header('host');
+      const isWww = !!host.match(/^www\..*/i);
+      let shouldRedirect = !isHttps;
+      if (isWww) {
+        host = host.replace('www.', '');
+        shouldRedirect = true;
+      }
+      if (!shouldRedirect) {
         next();
       } else {
         if (req.method === 'GET') {
-          res.redirect(301, `https://${req.headers.host}${req.originalUrl}`);
+          res.redirect(301, `https://${host}${req.originalUrl}`);
         } else {
           res
             .status(403)
-            .send('Please use HTTPS when submitting data to this server.');
+            .send(
+              'Please use HTTPS and the naked domain (non-www) when submitting data to this server.'
+            );
         }
       }
     });
