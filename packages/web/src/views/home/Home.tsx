@@ -571,7 +571,7 @@ export default function Home(props: HomeProps) {
         <img
           src={logo}
           alt="Caravan logo"
-          style={{ height: 40, objectFit: 'contain' }}
+          style={{ height: 48, objectFit: 'contain' }}
         />
       ) : (
         <img
