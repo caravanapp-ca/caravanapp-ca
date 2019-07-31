@@ -103,10 +103,12 @@ export default function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href={
             user
-              ? `https://twitter.com/intent/tweet/?text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+              ? `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Dtw&text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
                   user._id
                 }%26utm_source%3Dtw`
-              : 'https://twitter.com/intent/tweet/?text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dtw'
+              : `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dtw&text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&amp;url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dtw`
           }
           target={'_blank'}
           onClick={() => setShareMenuIsOpen(false)}
