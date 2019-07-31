@@ -1,25 +1,13 @@
 import React from 'react';
 import { User } from '@caravan/buddy-reading-types';
 import { Avatar, makeStyles, Theme, createStyles } from '@material-ui/core';
+import { shrinkDiscordPhotoSize } from '../../common/discord';
 
 interface UserAvatarProps {
   user: User;
   size?: number;
   style?: Object;
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    userProfileImageLarge: {
-      width: 144,
-      height: 144,
-    },
-    userProfileImageSmall: {
-      width: 112,
-      height: 112,
-    },
-  })
-);
 
 export default function UserAvatar(props: UserAvatarProps) {
   const { user, size, style } = props;
@@ -36,9 +24,11 @@ export default function UserAvatar(props: UserAvatarProps) {
     );
   }
 
+  const discordPhotoSize = size === 144 ? 256 : 128;
+
   return (
     <Avatar
-      src={user.photoUrl}
+      src={shrinkDiscordPhotoSize(user.photoUrl, discordPhotoSize)}
       classes={avatarClass ? avatarClass() : undefined}
       style={style}
     />

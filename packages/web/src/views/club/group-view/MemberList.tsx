@@ -6,6 +6,7 @@ import StarIcon from '@material-ui/icons/Star';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
 import { getBadgeToDisplay } from '../../../functions/getBadgeToDisplay';
+import { shrinkDiscordPhotoSize } from '../../../common/discord';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
@@ -38,7 +39,6 @@ export default function MemberList(props: MemberListProps) {
     >
       {members.map(m => {
         const badge = getBadgeToDisplay(m.badges);
-        console.log('placeholder');
         return (
           <Grid item xs={12} sm={6}>
             <ListElementAvatar
@@ -47,7 +47,10 @@ export default function MemberList(props: MemberListProps) {
               key={m._id}
               avatarElement={
                 m.photoUrl ? (
-                  <Avatar alt={m.name || m.discordUsername} src={m.photoUrl} />
+                  <Avatar
+                    alt={m.name || m.discordUsername}
+                    src={shrinkDiscordPhotoSize(m.photoUrl, 64)}
+                  />
                 ) : (
                   undefined
                 )
