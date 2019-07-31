@@ -253,11 +253,12 @@ router.get('/', async (req, res, next) => {
             ? clubDoc.updatedAt.toISOString()
             : clubDoc.updatedAt,
       };
-      const ownerName = userDoc
-        ? userDoc.name
-        : member
-        ? member.user.username
-        : 'caravan-admin';
+      const ownerName =
+        userDoc && userDoc.name
+          ? userDoc.name
+          : member && member.user && member.user.username
+          ? member.user.username
+          : 'caravan-admin';
       const obj: Services.GetClubs['clubs'][0] = {
         ...club,
         ownerName,
