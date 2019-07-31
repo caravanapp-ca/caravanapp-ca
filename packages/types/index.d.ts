@@ -132,7 +132,7 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface UserBadge {
     key: string;
-    name?: string;
+    name: string;
     description?: string;
     awardedOn?: Date;
   }
