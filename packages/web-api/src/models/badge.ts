@@ -10,7 +10,7 @@ import { BadgeDoc } from '../../typings';
 const badgeDefinition: SameKeysAs<FilterAutoMongoKeys<Badge>> = {
   key: { type: String, required: true },
   name: { type: String, required: true },
-  description: { type: String },
+  description: { type: String, required: true },
 };
 
 const badgesDefinition: SameKeysAs<FilterAutoMongoKeys<Badges>> = {
