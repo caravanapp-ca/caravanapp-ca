@@ -32,7 +32,8 @@ const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
       return;
     }
     return {
-      // @ts-ignore
+      // TODO: TS doesn't believe .toObject() exists on userBadge.
+      //@ts-ignore
       ...userBadge.toObject(),
       name: allBadges.badges[userBadge.key].name,
       description: allBadges.badges[userBadge.key].description,
@@ -42,12 +43,12 @@ const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
 };
 
 export const mutateUserBadges = async (userDocs: UserDoc[] | UserDoc) => {
-  const badgeDocs = await BadgeModel.find();
-  if (badgeDocs.length === 0) {
+  const badgeDocs = await BadgeModel.findOne();
+  if (!badgeDocs) {
     console.error('Found no badges in database!');
     return;
   }
-  const allBadges = badgeDocs[0];
+  const allBadges = badgeDocs;
   if (Array.isArray(userDocs)) {
     userDocs.forEach(ud => {
       if (ud.badges.length > 0) {

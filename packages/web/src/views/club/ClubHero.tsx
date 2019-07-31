@@ -106,7 +106,7 @@ export default function ClubHero(props: ClubHeroProps) {
           <ClubShareButtons
             clubId={clubId}
             bookTitle={title}
-            bookAuthor={author ? author : ''}
+            bookAuthor={author || ''}
             user={user}
             onCopyReferralLink={onCopyReferralLink}
           />

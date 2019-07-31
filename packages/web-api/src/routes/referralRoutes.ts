@@ -46,7 +46,6 @@ router.post(
       utmSource == null || ALLOWED_UTM_SOURCES[utmSource] === true
         ? utmSource
         : null;
-
     const referredTempUid = generateUuid();
     try {
       await handleFirstVisit(referredTempUid, referrerId, utmSource);

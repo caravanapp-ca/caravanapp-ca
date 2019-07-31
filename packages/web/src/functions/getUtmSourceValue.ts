@@ -12,6 +12,6 @@ export default function getUtmSourceValue(urlValue: string) {
     case 'em':
       return 'email';
     default:
-      return undefined;
+      throw new Error(`Unknown utm_source: ${filteredUrlValue}`);
   }
 }

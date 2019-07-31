@@ -14,7 +14,6 @@ import UserModel from '../models/user';
 import { generateSlugIds } from '../common/url';
 import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
 import {
-  createReferralAction,
   getReferralDoc,
   createReferralActionByDoc,
 } from '../services/referral';
@@ -128,12 +127,12 @@ router.get('/discord/callback', async (req, res) => {
     const { referredTempUid } = req.session;
     if (referredTempUid) {
       // The person was referred.
-      const currentReferredDoc = await getReferralDoc(referredTempUid);
-      if (currentReferredDoc) {
-        currentReferredDoc.userId = userDoc.id;
-      }
-      createReferralActionByDoc(currentReferredDoc, 'login');
-
+      getReferralDoc(referredTempUid).then(currentReferredDoc => {
+        if (currentReferredDoc) {
+          currentReferredDoc.userId = userDoc.id;
+        }
+        createReferralActionByDoc(currentReferredDoc, 'login');
+      });
       req.session.referredTempUid = undefined;
       res.clearCookie('refClickComplete');
     }
@@ -182,7 +181,6 @@ router.get('/discord/callback', async (req, res) => {
         userDoc.id
       );
       const sessionModel = new SessionModel(modelInstance);
-      const sessionSaveResult = sessionModel.save();
       console.log(
         `Created a new session for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
       );
@@ -199,9 +197,6 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
-    const result = await guild.addMember(discordUserData.id, {
-      accessToken,
-    });
     console.log(
       `Added user {id: ${userDoc.id}, discordId: ${userDoc.discordId}} to guild ${guild.id}.`
     );
