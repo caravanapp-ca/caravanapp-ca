@@ -28,6 +28,7 @@ export interface ListElementBookProps {
   onClick?: any;
   selected?: boolean;
   draggable?: boolean;
+  isDragging?: boolean;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -72,6 +73,7 @@ export default function ListElementBook(props: ListElementBookProps) {
     tertiary,
     selected,
     draggable,
+    isDragging,
   } = props;
 
   let shortenedTitle = primaryText;
@@ -137,9 +139,11 @@ export default function ListElementBook(props: ListElementBookProps) {
               )}
               {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
             </div>
-            {secondary && (
-              <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
-            )}
+            <div>
+              {secondary && !isDragging && (
+                <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
+              )}
+            </div>
           </ListItem>
         )}
       </Draggable>

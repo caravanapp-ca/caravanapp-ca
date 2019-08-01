@@ -60,6 +60,7 @@ interface BookSearchProps {
   primary?: 'radio';
   secondary?: 'delete';
   initialSelectedBooks?: FilterAutoMongoKeys<ShelfEntry>[];
+  inheritSearchedBooks?: FilterAutoMongoKeys<ShelfEntry>[];
 }
 
 const searchRef = React.createRef();
@@ -73,6 +74,7 @@ export default function BookSearch(props: BookSearchProps) {
     primary,
     secondary,
     initialSelectedBooks,
+    inheritSearchedBooks,
   } = props;
 
   const maxSelected = props.maxSelected || 1000;
@@ -99,6 +101,12 @@ export default function BookSearch(props: BookSearchProps) {
       setSearchResults(null);
     }
   }, [bookSearchQuery]);
+
+  useEffect(() => {
+    if (inheritSearchedBooks) {
+      setSelectedBooks(inheritSearchedBooks);
+    }
+  }, [inheritSearchedBooks]);
 
   async function bookSearch(query: string) {
     if (query) {
@@ -227,6 +235,7 @@ export default function BookSearch(props: BookSearchProps) {
                 }
                 secondary="add"
                 tertiary="buy"
+                droppable={false}
                 onAdd={onAddBook}
                 footerElement={
                   <Typography
@@ -260,6 +269,8 @@ export default function BookSearch(props: BookSearchProps) {
             onRadioPress={onChangeBookToRead}
             radioValue={radioValue ? radioValue : undefined}
             onDelete={onDeleteSelectedBook}
+            droppable
+            disableDrop={true}
           />
         </div>
       )}

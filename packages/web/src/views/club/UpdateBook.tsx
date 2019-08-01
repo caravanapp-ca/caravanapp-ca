@@ -7,7 +7,7 @@ import {
   FilterAutoMongoKeys,
   ReadingState,
 } from '@caravan/buddy-reading-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { IconButton, Typography, Button, Container } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
 import Header from '../../components/Header';
@@ -16,7 +16,13 @@ import BookSearch from '../books/BookSearch';
 import { getClub, updateShelf } from '../../services/club';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import HeaderTitle from '../../components/HeaderTitle';
-import { DragDropContext } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  DropResult,
+  ResponderProvided,
+  Droppable,
+  DragStart,
+} from 'react-beautiful-dnd';
 import { notifyOfClubShelfUpdate } from '../../services/book';
 
 interface UpdateBookRouteParams {
@@ -61,12 +67,30 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const isValidCurrentShelf = (
+  shelfContent: FilterAutoMongoKeys<ShelfEntry>[]
+): { valid: boolean; errMessage: string } => {
+  if (shelfContent.length !== 1) {
+    return {
+      valid: false,
+      errMessage: 'The "Currently Reading" shelf must contain 1 book',
+    };
+  }
+
+  return { valid: true, errMessage: '' };
+};
+
 export default function UpdateBook(props: UpdateBookProps) {
   const classes = useStyles();
+  const theme = useTheme();
   const clubId = props.match.params.id;
   const user = props.user;
 
   const [madeSavableMods, setMadeSavableMods] = React.useState<boolean>(false);
+  const [validCurrentShelf, setValidCurrentShelf] = React.useState<{
+    valid: boolean;
+    errMessage: string;
+  }>({ valid: true, errMessage: '' });
   const [, setClub] = React.useState<Services.GetClubById | null>(null);
   const [, setLoadedClub] = React.useState<boolean>(false);
   const [sortedShelf, setSortedShelf] = React.useState<
@@ -76,7 +100,10 @@ export default function UpdateBook(props: UpdateBookProps) {
     notStarted: [],
     read: [],
   });
-  const [, setSearchedBooks] = React.useState<
+  const [draggingElementId, setDraggingElementId] = React.useState<
+    string | undefined
+  >(undefined);
+  const [searchedBooks, setSearchedBooks] = React.useState<
     FilterAutoMongoKeys<ShelfEntry>[]
   >([]);
 
@@ -107,6 +134,9 @@ export default function UpdateBook(props: UpdateBookProps) {
   async function onSaveSelection() {
     if (!sortedShelf) {
       return;
+    }
+    if (searchedBooks.length > 0) {
+      sortedShelf.notStarted = sortedShelf.notStarted.concat(searchedBooks);
     }
     const res = await updateShelf(clubId, sortedShelf);
     if (res.status === 200) {
@@ -142,7 +172,60 @@ export default function UpdateBook(props: UpdateBookProps) {
 
   const rightComponent = <ProfileHeaderIcon user={user} />;
 
-  const onDragEnd = () => {};
+  const deleteHandler = (elementId: string, index: number, listId: string) => {
+    const deleteId = listId as ReadingState;
+    const newSortedShelf = { ...sortedShelf };
+    newSortedShelf[deleteId].splice(index, 1);
+    setSortedShelf(newSortedShelf);
+
+    //const newShelf = [...sortedShelf[deleteId]];
+    // newShelf.splice(index, 1);
+    //setSortedShelf({...sortedShelf, sortedShelf[deleteId]: newShelf});
+  };
+
+  const onDragStart = (initial: DragStart, provided: ResponderProvided) => {
+    setDraggingElementId(initial.draggableId);
+  };
+
+  const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index == destination.index
+    ) {
+      return;
+    }
+
+    const newSortedShelf = { ...sortedShelf };
+    let sourceDroppableId: ReadingState;
+    let movedBook: any;
+
+    if (source.droppableId === 'selected-books') {
+      const newSearchedBooks = [...searchedBooks];
+      movedBook = newSearchedBooks[source.index];
+      newSearchedBooks.splice(source.index, 1);
+      setSearchedBooks(newSearchedBooks);
+    } else {
+      sourceDroppableId = source.droppableId as ReadingState;
+      movedBook = newSortedShelf[sourceDroppableId][source.index];
+      newSortedShelf[sourceDroppableId].splice(source.index, 1);
+    }
+
+    const destDroppableId = destination.droppableId as ReadingState;
+    newSortedShelf[destDroppableId].splice(destination.index, 0, movedBook);
+
+    setSortedShelf(newSortedShelf);
+    setDraggingElementId(undefined);
+
+    const validCurrentShelf = isValidCurrentShelf(newSortedShelf.current);
+    setValidCurrentShelf(validCurrentShelf);
+    setMadeSavableMods(true);
+  };
 
   return (
     <div>
@@ -152,17 +235,21 @@ export default function UpdateBook(props: UpdateBookProps) {
         rightComponent={rightComponent}
       />
       <Container className={classes.container} maxWidth={'md'}>
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
           {sortedShelf.current && (
             <div className={classes.sectionContainer}>
               <Typography variant="h6" gutterBottom>
                 Currently Reading
               </Typography>
               <BookList
-                id="currently-reading"
+                id="current"
                 data={sortedShelf.current}
+                secondary="delete"
                 tertiary="buy"
+                onDelete={deleteHandler}
                 droppable
+                draggingElementId={draggingElementId}
+                error={validCurrentShelf}
               />
             </div>
           )}
@@ -172,10 +259,13 @@ export default function UpdateBook(props: UpdateBookProps) {
                 To be Read
               </Typography>
               <BookList
-                id="not-started"
+                id="notStarted"
                 data={sortedShelf.notStarted}
+                secondary="delete"
                 tertiary="buy"
+                onDelete={deleteHandler}
                 droppable
+                draggingElementId={draggingElementId}
               />
             </div>
           )}
@@ -185,10 +275,13 @@ export default function UpdateBook(props: UpdateBookProps) {
                 Previously Read
               </Typography>
               <BookList
-                id="previously-read"
+                id="read"
                 data={sortedShelf.read}
+                secondary="delete"
                 tertiary="buy"
+                onDelete={deleteHandler}
                 droppable
+                draggingElementId={draggingElementId}
               />
             </div>
           )}
@@ -200,7 +293,18 @@ export default function UpdateBook(props: UpdateBookProps) {
               onSubmitBooks={onSubmitSelectedBooks}
               maxSelected={9}
               secondary="delete"
+              inheritSearchedBooks={searchedBooks}
             />
+            {searchedBooks.length > 0 && (
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                style={{ marginTop: theme.spacing(1) }}
+              >
+                Books left in the "Search" list will automatically be added to
+                your club's To be Read on save.
+              </Typography>
+            )}
           </div>
           <div className={classes.saveButtonContainer}>
             <Button
@@ -208,7 +312,9 @@ export default function UpdateBook(props: UpdateBookProps) {
               color="secondary"
               className={classes.button}
               onClick={onSaveSelection}
-              disabled={!sortedShelf || !madeSavableMods}
+              disabled={
+                !sortedShelf || !madeSavableMods || !validCurrentShelf.valid
+              }
             >
               SAVE
             </Button>
