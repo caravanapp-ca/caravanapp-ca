@@ -211,7 +211,7 @@ export default function UserView(props: UserViewProps) {
   const getReferrals = async (user: User) => {
     const userRes = await getReferralCount(user._id);
     if (userRes.status === 200) {
-      setReferralCount(userRes.data);
+      setReferralCount(userRes.data.referralCount);
     } else {
       setReferralCount(null);
     }

@@ -98,7 +98,8 @@ export default function UserNameplate(props: UserNameplateProps) {
     : 'MESSAGE';
   const msgBtnLabelCaps = msgBtnLabel.toUpperCase();
 
-  const referralStatus = referralCount ? `${referralCount} referrals` : ' ';
+  const referralStatus =
+    referralCount != null ? `${referralCount} referrals` : ' ';
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
