@@ -203,7 +203,7 @@ export default function CreateClub(props: CreateClubProps) {
     });
     const clubObj: Services.CreateClubProps = {
       name: selectedGroupName,
-      shelf: initShelf,
+      newShelf: initShelf,
       bio: selectedGroupBio,
       maxMembers: selectedGroupSize,
       vibe: selectedGroupVibe,

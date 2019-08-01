@@ -222,11 +222,11 @@ export default function ClubComponent(props: ClubProps) {
         const club = await getClub(clubId);
         setClub(club);
         if (club) {
-          if (club.shelf.current.length > 0) {
-            setCurrBook(club.shelf.current[0]);
+          if (club.newShelf.current.length > 0) {
+            setCurrBook(club.newShelf.current[0]);
           }
-          if (club.shelf.current[0]) {
-            const schedule = getCurrentSchedule(club, club.shelf.current[0]);
+          if (club.newShelf.current[0]) {
+            const schedule = getCurrentSchedule(club, club.newShelf.current[0]);
             setSchedule(schedule);
           } else {
             setSchedule(null);
@@ -562,7 +562,7 @@ export default function ClubComponent(props: ClubProps) {
                   genres={genres || undefined}
                   isEditing={isEditing}
                   onGenreClick={onGenreClick}
-                  shelf={club.shelf}
+                  shelf={club.newShelf}
                   selectedGenres={club.genres}
                 />
               )}

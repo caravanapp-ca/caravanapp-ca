@@ -23,7 +23,7 @@ import {
   ReadingSpeed,
   GroupVibe,
   ActiveFilter,
-  NewClubShelf,
+  ClubShelfType,
 } from '@caravan/buddy-reading-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
@@ -137,20 +137,22 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   return foundUsers;
 }
 
-//If you see this delete this!!!!!!!!!!! (Single use script for converted clubs to new format)
+/*
+If you see sortShelf and router.put('/convertClubShelves'), delete these functions!!! (Single use scripts for converting club shelves to a new format).
+*/
 
-const sortShelf = (oldShelf: ShelfEntryDoc[]): NewClubShelf => {
-  const newShelf: NewClubShelf = { current: [], notStarted: [], read: [] };
+const sortShelf = (oldShelf: ShelfEntryDoc[]): ClubShelfType => {
+  const newShelf: ClubShelfType = { current: [], notStarted: [], read: [] };
   oldShelf.forEach(b => {
     switch (b.readingState) {
       case 'notStarted':
-        newShelf.notStarted.push(b);
+        newShelf.notStarted.push(b.toObject());
         break;
       case 'read':
-        newShelf.read.push(b);
+        newShelf.read.push(b.toObject());
         break;
       case 'current':
-        newShelf.current.push(b);
+        newShelf.current.push(b.toObject());
         break;
       default:
         console.error(`Book ${b._id} has an invalid readingState`);
@@ -160,12 +162,20 @@ const sortShelf = (oldShelf: ShelfEntryDoc[]): NewClubShelf => {
 };
 
 router.put('/convertClubShelves', async (req, res, next) => {
-  const allClubs = ClubModel.find().then(allClubs => {
-    allClubs.forEach(c => {
-      c.newShelf = sortShelf(c.shelf);
-      c.save();
+  try {
+    ClubModel.find().then(async allClubs => {
+      const promises = allClubs.map(async c => {
+        c.newShelf = sortShelf(c.shelf);
+        c.save();
+        return c;
+      });
+      const results = await Promise.all(promises);
+      return res.status(200).send(results);
     });
-  });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(`Error converting all club shelves: ${err}`);
+  }
 });
 
 const sanitizeClubShelf = (shelf: ShelfEntry[]) => {
@@ -779,7 +789,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    let newShelf = body.shelf;
+    let newShelf = body.newShelf;
     for (var key in newShelf) {
       const keyTyped = key as ReadingState;
       if (newShelf[keyTyped].length > 0) {
@@ -793,7 +803,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       maxMembers: body.maxMembers,
       readingSpeed: body.readingSpeed,
       genres: body.genres,
-      shelf: newShelf,
+      newShelf: newShelf,
       schedules: body.schedules,
       ownerId: userId,
       ownerDiscordId: req.user.discordId,

@@ -12,6 +12,7 @@ import {
   Badges,
   Referral,
   ReferralTiers,
+  ClubShelfType,
 } from '@caravan/buddy-reading-types';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
@@ -54,9 +55,7 @@ export interface SessionDoc extends Document, FilterAutoMongoKeys<Session> {
   _id: MongooseTypes.ObjectId;
 }
 
-export interface ShelfEntryDoc
-  extends Document,
-    FilterAutoMongoKeys<ShelfEntry> {
+export interface ShelfEntryDoc extends Document, Omit<ShelfEntry, '_id'> {
   _id: MongooseTypes.ObjectId;
 }
 

@@ -191,7 +191,7 @@ export default function ClubCards(props: ClubCardsProps) {
         <Grid container spacing={4}>
           {clubsTransformed.map(c => {
             const { club, schedule } = c;
-            const currentlyReading = club.shelf.current[0];
+            const currentlyReading = club.newShelf.current[0];
             let year;
             if (currentlyReading && currentlyReading.publishedDate) {
               year = format(new Date(currentlyReading.publishedDate), 'yyyy');

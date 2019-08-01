@@ -275,7 +275,7 @@ export default function UserView(props: UserViewProps) {
     };
     clubs.forEach(c => {
       userShelf.current.push({
-        ...c.shelf.current[0],
+        ...c.newShelf.current[0],
         clubId: c._id,
         club: c,
       });

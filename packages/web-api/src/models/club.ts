@@ -54,7 +54,7 @@ const clubShelfDefinition: SameKeysAs<FilterAutoMongoKeys<ClubShelfType>> = {
   read: { type: [shelfSchema], required: true },
 };
 
-const clubShelfSchema = new Schema(clubShelfDefinition);
+const clubShelfSchema = new Schema(clubShelfDefinition, { _id: false });
 
 const scheduleDiscussionDefinition: SameKeysAs<
   FilterAutoMongoKeys<Discussion>

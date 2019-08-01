@@ -122,9 +122,9 @@ const transformClub = async (
     club,
     schedule: null,
   };
-  if (club.shelf.current.length > 0) {
+  if (club.newShelf.current.length > 0) {
     let schedule = club.schedules.find(
-      sched => sched.shelfEntryId === club.shelf.current[0]._id
+      sched => sched.shelfEntryId === club.newShelf.current[0]._id
     );
     if (schedule) {
       schedule = scheduleStrToDates(schedule);

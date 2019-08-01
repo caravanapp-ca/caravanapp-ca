@@ -35,17 +35,11 @@ declare module '@caravan/buddy-reading-types' {
     discussions: Discussion[];
   }
 
-  export interface NewClubShelf {
-    current: ShelfEntryDoc[];
-    notStarted: ShelfEntryDoc[];
-    read: ShelfEntryDoc[];
-  }
-
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
     ownerDiscordId?: string;
-    shelf: ShelfEntry[];
+    shelf?: ShelfEntry[];
     newShelf: ClubShelfType;
     schedules: ClubReadingSchedule[];
     bio?: string;
@@ -342,7 +336,8 @@ declare module '@caravan/buddy-reading-types' {
         ownerId: string;
         ownerName: string;
         guildId: string;
-        shelf: ClubShelfType;
+        shelf?: ShelfEntry[];
+        newShelf: ClubShelfType;
         schedules: ClubReadingSchedule[];
         bio?: string;
         maxMembers: number;
@@ -362,7 +357,8 @@ declare module '@caravan/buddy-reading-types' {
       name: string;
       ownerId: string;
       ownerDiscordId: string;
-      shelf: ClubShelfType;
+      shelf?: ShelfEntry[];
+      newShelf: ClubShelfType;
       schedules: ClubReadingSchedule[];
       bio: string;
       members: User[];
@@ -379,7 +375,7 @@ declare module '@caravan/buddy-reading-types' {
     }
     export interface CreateClubProps {
       name: string;
-      shelf?: UninitClubShelfType;
+      newShelf?: UninitClubShelfType;
       bio: string;
       maxMembers: number;
       vibe: string;

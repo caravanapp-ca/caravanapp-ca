@@ -138,7 +138,7 @@ export async function updateShelf(
 export async function createClub(props: Services.CreateClubProps) {
   const body = {
     name: props.name,
-    shelf: props.shelf,
+    newShelf: props.newShelf,
     bio: props.bio,
     maxMembers: props.maxMembers,
     vibe: props.vibe,

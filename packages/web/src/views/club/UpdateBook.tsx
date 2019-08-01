@@ -113,7 +113,7 @@ export default function UpdateBook(props: UpdateBookProps) {
         const club = await getClub(clubId);
         setClub(club);
         if (club) {
-          setSortedShelf(club.shelf);
+          setSortedShelf(club.newShelf);
           setLoadedClub(true);
         }
       } catch (err) {
