@@ -1,15 +1,18 @@
 import React from 'react';
+import { User } from '@caravan/buddy-reading-types';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Avatar, IconButton, Grid } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
+import { getBadgeToDisplay } from '../../../functions/getBadgeToDisplay';
+import { shrinkDiscordPhotoSize } from '../../../common/discord';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface MemberListProps {
   ownerId: string;
-  members: any[];
+  members: User[];
   maxMembers: number;
 }
 
@@ -34,32 +37,39 @@ export default function MemberList(props: MemberListProps) {
       justify="flex-start"
       alignItems="flex-start"
     >
-      {members.map(m => (
-        <Grid item xs={12} sm={6}>
-          <ListElementAvatar
-            button={m.urlSlug ? true : undefined}
-            link={m.urlSlug ? `/user/${m.urlSlug}` : undefined}
-            key={m._id}
-            avatarElement={
-              m.photoUrl ? (
-                <Avatar alt={m.name || m.discordUsername} src={m.photoUrl} />
-              ) : (
-                undefined
-              )
-            }
-            primaryText={m.name || m.discordUsername}
-            secondaryElement={
-              props.ownerId === m._id ? (
-                <IconButton edge="end" aria-label="Star" disabled={true}>
-                  <StarIcon />
-                </IconButton>
-              ) : (
-                undefined
-              )
-            }
-          />
-        </Grid>
-      ))}
+      {members.map(m => {
+        const badge = getBadgeToDisplay(m.badges);
+        return (
+          <Grid item xs={12} sm={6}>
+            <ListElementAvatar
+              button={m.urlSlug ? true : undefined}
+              link={m.urlSlug ? `/user/${m.urlSlug}` : undefined}
+              key={m._id}
+              avatarElement={
+                m.photoUrl ? (
+                  <Avatar
+                    alt={m.name || m.discordUsername}
+                    src={shrinkDiscordPhotoSize(m.photoUrl, 64)}
+                  />
+                ) : (
+                  undefined
+                )
+              }
+              primaryText={m.name || m.discordUsername}
+              badge={badge}
+              secondaryElement={
+                props.ownerId === m._id ? (
+                  <IconButton edge="end" aria-label="Star" disabled={true}>
+                    <StarIcon />
+                  </IconButton>
+                ) : (
+                  undefined
+                )
+              }
+            />
+          </Grid>
+        );
+      })}
       {emptySlots.length > 0 && emptySlots}
     </Grid>
   );

@@ -16,10 +16,9 @@ import {
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
 import AdapterLink from '../../components/AdapterLink';
-import format from 'date-fns/esm/format';
+import { isAfter, addDays, differenceInHours, format } from 'date-fns';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
-import { isAfter, addDays, differenceInHours } from 'date-fns/esm';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import theme, { washedTheme, successTheme } from '../../theme';
@@ -198,7 +197,6 @@ export default function ClubCards(props: ClubCardsProps) {
             }
             let startMsg = 'Start: Not set';
             let endMsg = 'End: Not set';
-            let progressPercentage = 0;
             let progress = 0;
             if (schedule && schedule.startDate) {
               const { startDate, duration } = schedule;
@@ -234,7 +232,6 @@ export default function ClubCards(props: ClubCardsProps) {
                     'd'
                   )}`;
                 }
-                progressPercentage = 3;
               }
             }
             let groupVibeAvatar: JSX.Element | undefined;

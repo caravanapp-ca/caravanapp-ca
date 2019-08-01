@@ -41,7 +41,7 @@ declare module '@caravan/buddy-reading-types' {
     shelf: ShelfEntry[];
     schedules: ClubReadingSchedule[];
     bio?: string;
-    members: GuildMember[];
+    members: User[];
     maxMembers: number;
     vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
@@ -127,6 +127,27 @@ declare module '@caravan/buddy-reading-types' {
     shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
     onboardingVersion: number;
     palette: PaletteObject | null;
+    badges: UserBadge[];
+  }
+
+  export interface UserBadge {
+    key: string;
+    name: string;
+    awardedOn: Date;
+    description?: string;
+  }
+
+  export interface Badge {
+    key: string;
+    name: string;
+    description?: string;
+  }
+
+  export interface Badges extends DocumentFields {
+    badgeKeys: string[];
+    badges: {
+      [key: string]: Badge;
+    };
   }
 
   export interface UserWithInvitableClubs {
@@ -168,6 +189,44 @@ declare module '@caravan/buddy-reading-types' {
     required: boolean;
     min: number;
     max: number;
+  }
+
+  export interface UserReferredAction {
+    action: ReferralAction;
+    timestamp: Date | string;
+  }
+
+  export interface ReferralTier {
+    tierNumber: number;
+    referralCount?: number;
+    title: string;
+    badgeKey?: string;
+    discordRole?: string;
+  }
+
+  export interface ReferralTiers {
+    tiers: ReferralTier[];
+  }
+
+  export interface ReferredUser {
+    referredUserId: string;
+    timestamp: Date | string;
+  }
+
+  export interface Referral extends DocumentFields, MongoTimestamps {
+    userId: string;
+    referredUsers: ReferredUser[];
+    actions: UserReferredAction[];
+    referralCount: number;
+    referredById?: string;
+    source: ReferralSource;
+    referralDestination: ReferralDestination;
+    referredAndNotJoined: boolean;
+  }
+
+  export interface Referrals {
+    _id: string;
+    referrals: Referral[];
   }
 
   export interface FilterChip {
@@ -226,6 +285,17 @@ declare module '@caravan/buddy-reading-types' {
 
   export type FilterChipType = 'genres' | 'speed' | 'capacity' | 'membership';
 
+  export type ReferralAction =
+    | 'click'
+    | 'login'
+    | 'onboarded'
+    | 'joinClub'
+    | 'createClub';
+
+  export type ReferralSource = 'fb' | 'tw' | 'gr' | 'em';
+
+  export type ReferralDestination = 'home' | 'club';
+
   export type GroupVibe =
     | 'chill'
     | 'power'
@@ -277,7 +347,7 @@ declare module '@caravan/buddy-reading-types' {
       shelf: ShelfEntry[];
       schedules: ClubReadingSchedule[];
       bio: string;
-      members: any[];
+      members: User[];
       maxMembers: number;
       vibe: GroupVibe;
       readingSpeed: ReadingSpeed;
@@ -301,6 +371,8 @@ declare module '@caravan/buddy-reading-types' {
     export interface GetProfileQuestions
       extends Omit<ProfileQuestions, '_id'> {}
 
+    export interface GetReferrals extends Omit<Referrals, '_id'> {}
+
     export interface GetUsers {
       users: {
         _id: string;
@@ -323,6 +395,7 @@ declare module '@caravan/buddy-reading-types' {
         shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
         onboardingVersion: number;
         palette: PaletteObject | null;
+        badges: UserBadge[];
         createdAt: string;
         updatedAt: string;
       }[];

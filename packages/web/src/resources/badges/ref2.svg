@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="105px" height="105px" viewBox="0 0 105 105" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>5REF-BADGE</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0 0 91 0 91 52.7959691 45.5 94 0 52.7959691"></polygon>
+        <filter x="-6.6%" y="-6.4%" width="113.2%" height="112.8%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 0.654901961   0 0 0 0 0.149019608  0 0 0 0.688019012 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="5REF-BADGE" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(7.000000, 5.000000)">
+            <g id="Rectangle">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#FFA726" fill-rule="evenodd" xlink:href="#path-1"></use>
+            </g>
+            <polygon id="Rectangle" fill-opacity="0.6" fill="#FB8C00" points="91 0 91 52.7959691 45 94 45 36.537987"></polygon>
+            <path d="M19,15 L72,15 C73.1045695,15 74,15.8954305 74,17 L74,46.6802299 C74,47.2502717 73.7567547,47.7932261 73.331371,48.1726947 L46.831371,71.8123347 C46.0727761,72.4890482 44.9272239,72.4890482 44.168629,71.8123347 L17.668629,48.1726947 C17.2432453,47.7932261 17,47.2502717 17,46.6802299 L17,17 C17,15.8954305 17.8954305,15 19,15 Z" id="Rectangle" fill="#F57C00"></path>
+            <path d="M45.064,35.87 C48.3960167,35.87 50.860992,36.5499932 52.459,37.91 C54.057008,39.2700068 54.856,41.083322 54.856,43.35 C54.856,44.8233407 54.4763371,46.1776605 53.717,47.413 C52.9576629,48.6483395 51.8016744,49.6343296 50.249,50.371 C48.6963256,51.1076703 46.7753448,51.476 44.486,51.476 C42.8086583,51.476 41.1483415,51.272002 39.505,50.864 C37.8616585,50.455998 36.4506726,49.8780037 35.272,49.13 L37.686,44.064 C38.6380048,44.6986698 39.6863276,45.1859983 40.831,45.526 C41.9756724,45.8660017 43.1259942,46.036 44.282,46.036 C45.4380058,46.036 46.3616632,45.8150022 47.053,45.373 C47.7443368,44.9309978 48.09,44.3133373 48.09,43.52 C48.09,42.7266627 47.7500034,42.126002 47.07,41.718 C46.3899966,41.309998 45.1886753,41.106 43.466,41.106 L37.006,41.106 L38.196,27.2 L53.36,27.2 L53.36,32.402 L43.772,32.402 L43.466,35.87 L45.064,35.87 Z" id="5" fill="#FFFFFF" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>

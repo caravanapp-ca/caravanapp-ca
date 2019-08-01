@@ -13,6 +13,7 @@ import bookRoutes from './routes/bookRoutes';
 import profileRoutes from './routes/profileRoutes';
 import testRoutes from './routes/testRoutes';
 import discordRoutes from './routes/discordRoutes';
+import referralRoutes from './routes/referralRoutes';
 
 import {
   connect as connectToDb,
@@ -25,27 +26,36 @@ import { ReadingDiscordBot } from './services/discord';
 
   await connectToDb();
 
+  // logs in
+  ReadingDiscordBot.getInstance();
+
   const port = process.env.PORT || 3001;
   const env = process.env.NODE_ENV || 'development';
   console.log(`Running in ${env} environment`);
-
-  // logs in
-  const discordClient = ReadingDiscordBot.getInstance();
 
   app.use(helmet());
   app.enable('trust proxy');
   if (process.env.NODE_ENV === 'production') {
     app.use(function(req, res, next) {
       const isHttps = req.secure;
-      if (isHttps) {
+      let host = req.header('host');
+      const isWww = !!host.match(/^www\..*/i);
+      let shouldRedirect = !isHttps;
+      if (isWww) {
+        host = host.replace('www.', '');
+        shouldRedirect = true;
+      }
+      if (!shouldRedirect) {
         next();
       } else {
         if (req.method === 'GET') {
-          res.redirect(301, `https://${req.headers.host}${req.originalUrl}`);
+          res.redirect(301, `https://${host}${req.originalUrl}`);
         } else {
           res
             .status(403)
-            .send('Please use HTTPS when submitting data to this server.');
+            .send(
+              'Please use HTTPS and the naked domain (non-www) when submitting data to this server.'
+            );
         }
       }
     });
@@ -64,6 +74,7 @@ import { ReadingDiscordBot } from './services/discord';
   app.use('/api/books', bookRoutes);
   app.use('/api/profile', profileRoutes);
   app.use('/api/discord', discordRoutes);
+  app.use('/api/referrals', referralRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

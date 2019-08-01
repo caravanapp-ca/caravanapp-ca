@@ -8,7 +8,6 @@ import {
   FilterAutoMongoKeys,
   UserQA,
   Services,
-  ActiveFilter,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -21,10 +20,9 @@ import {
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc } from '../../typings';
+import { createReferralAction } from '../services/referral';
 
 const router = express.Router();
-
-// TODO write the get all clubs method
 
 // Get me, includes more sensitive stuff
 router.get('/@me', async (req, res, next) => {
@@ -47,13 +45,13 @@ router.get('/@me', async (req, res, next) => {
 });
 
 // Get all users route
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   const { after, pageSize, onboardVersion, activeFilter } = req.query;
-  const { userId } = req.session;
-  let user: UserDoc | undefined;
-  if (userId) {
-    user = await getUser(userId);
-  }
+  // const { userId } = req.session;
+  // let user: UserDoc | undefined;
+  // if (userId) {
+  //   user = await getUser(userId);
+  // }
   // Only get users who have finished onboarding
   const query: any = {};
   if (after) {
@@ -322,6 +320,7 @@ router.put(
       questions: userQA,
       shelf: userShelf,
       palette: user.palette,
+      badges: user.badges,
     };
 
     const writeableObj: any = newUserButWithPossibleNullValues;
@@ -347,6 +346,7 @@ router.put(
         // Perhaps send email or whatever.
         userDoc.onboardingVersion = 1;
         userDoc = await userDoc.save();
+        createReferralAction(userId, 'onboarded');
       }
       res.status(200).send(userDoc);
     } catch (err) {
