@@ -42,12 +42,7 @@ export default function PaletteButton(props: PaletteButtonProps) {
       }}
       onClick={() => onClick(palette)}
     >
-      {bgImage && (
-        <img
-          src={require(`../resources/custom-bgs/${bgImage}.svg`)}
-          className={classes.img}
-        />
-      )}
+      {bgImage && <img src={bgImage} className={classes.img} />}
     </div>
   );
 }
