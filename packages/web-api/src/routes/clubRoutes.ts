@@ -29,7 +29,7 @@ import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
 import { shelfEntryWithHttpsBookUrl } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
-import { getUser, mutateUserBadges } from '../services/user';
+import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
 import { ClubDoc, UserDoc } from '../../typings';
 import { getBadges } from '../services/badge';
@@ -110,7 +110,15 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   return guildMembers;
 }
 
-async function getUserMap(guild: Guild, clubDocs: ClubDoc[]) {
+/**
+ * This returns a Map of UserDoc and GuildMember for each clubDoc.
+ * The GuildMember may be null or undefined if the user has left
+ * the guild. Currently, users are not deleted so UserDoc cannot be
+ * undefined, but consider checking for it anyways.
+ * @param guild the guild
+ * @param clubDocs all club docs
+ */
+async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   const foundUsers = new Map<
     string,
     { userDoc: UserDoc; member: GuildMember }
@@ -119,16 +127,12 @@ async function getUserMap(guild: Guild, clubDocs: ClubDoc[]) {
   clubDocs.forEach(c => {
     if (!foundUsers.has(c.ownerId)) {
       const ownerMember = guild.members.get(c.ownerDiscordId);
-      if (ownerMember) {
-        foundUsers.set(c.ownerId, { userDoc: null, member: ownerMember });
-        foundUserIds.push(c.ownerId);
-      }
+      foundUsers.set(c.ownerId, { userDoc: null, member: ownerMember });
+      foundUserIds.push(c.ownerId);
     }
   });
   const userDocs = await UserModel.find({ _id: { $in: foundUserIds } });
-  userDocs.forEach(
-    doc => (foundUsers.get(doc._id.toHexString()).userDoc = doc)
-  );
+  userDocs.forEach(doc => (foundUsers.get(doc.id).userDoc = doc));
   return foundUsers;
 }
 
@@ -200,14 +204,16 @@ router.get('/', async (req, res, next) => {
   }
 
   // Create a map of users found in the guild and attach the user doc
-  const foundUsers = await getUserMap(guild, clubDocs);
+  const foundUsers = await getClubOwnerMap(guild, clubDocs);
 
   let filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubDocs
     .map(clubDoc => {
       const discordChannel: GuildChannel | null = guild.channels.get(
         clubDoc.channelId
       );
-      const { userDoc, member } = foundUsers.get(clubDoc.ownerId);
+      const foundUser = foundUsers.get(clubDoc.ownerId);
+      const ownerName =
+        getUsername(foundUser.userDoc, foundUser.member) || 'caravan-admin';
       // If there's no Discord channel for this club, filter it out
       if (!discordChannel) {
         return null;
@@ -253,12 +259,6 @@ router.get('/', async (req, res, next) => {
             ? clubDoc.updatedAt.toISOString()
             : clubDoc.updatedAt,
       };
-      const ownerName =
-        userDoc && userDoc.name
-          ? userDoc.name
-          : member && member.user && member.user.username
-          ? member.user.username
-          : 'caravan-admin';
       const obj: Services.GetClubs['clubs'][0] = {
         ...club,
         ownerName,
@@ -625,7 +625,7 @@ router.post(
     const guild = client.guilds.first();
 
     // Create a map of users found in the guild and attach the user doc
-    const foundUsers = await getUserMap(guild, clubs);
+    const foundUsers = await getClubOwnerMap(guild, clubs);
 
     const filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
       .map(clubDoc => {
@@ -635,7 +635,9 @@ router.post(
         if (!discordChannel) {
           return null;
         }
-        const { userDoc, member } = foundUsers.get(clubDoc.ownerId);
+        const foundUser = foundUsers.get(clubDoc.ownerId);
+        const ownerName =
+          getUsername(foundUser.userDoc, foundUser.member) || 'caravan-admin';
         const memberCount = getCountableMembersInChannel(
           discordChannel,
           clubDoc
@@ -656,7 +658,7 @@ router.post(
         };
         const obj: Services.GetClubs['clubs'][0] = {
           ...club,
-          ownerName: userDoc.name || member.user.username,
+          ownerName,
           guildId: guild.id,
           memberCount,
         };
