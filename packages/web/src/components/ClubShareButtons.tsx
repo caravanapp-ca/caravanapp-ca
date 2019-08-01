@@ -51,7 +51,7 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
   }
 
   const authorURIString = bookAuthor
-    ? encodeURIComponent(`by ${bookAuthor}!`)
+    ? encodeURIComponent(`by ${bookAuthor}.`)
     : '';
 
   return (
@@ -85,12 +85,12 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
             user
               ? `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Fref%3D${
                   user._id
-                }%26utm_source%3Dtw&text=Check%20out%20my%20club%20on%20Caravan!%20We%27re%20currently%20reading%20${encodeURIComponent(
+                }%26utm_source%3Dtw&text=Check%20out%20this%20online%20book%20club%20on%20Caravan,%20currently%20reading%20${encodeURIComponent(
                   `"${bookTitle}"`
                 )}%20${authorURIString}&url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Fref%3D${
                   user._id
                 }%26utm_source%3Dtw`
-              : `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Futm_source%3Dtw&text=Check%20out%20this%20club%20on%20Caravan!%20They%27re%20currently%20reading%20${encodeURIComponent(
+              : `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Futm_source%3Dtw&text=Check%20out%20this%20online%20book%20club%20on%20Caravan,%20currently%20reading%20${encodeURIComponent(
                   `"${bookTitle}"`
                 )}%20${authorURIString}&url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Futm_source%3Dtw`
           }
@@ -111,15 +111,15 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
             user
               ? `mailto:?subject=Read%20${encodeURIComponent(
                   `"${bookTitle}"`
-                )}with%20me%20on%20this%20cool%20new%20site%20for%20online%20book%20clubs!&body=Check%20out%20my%20club%20on%20Caravan%21%20We%27re%20currently%20reading%20${encodeURIComponent(
+                )}%20with%20me%20on%20this%20cool%20new%20site%20for%20online%20book%20clubs!&body=Check%20out%20this%20online%20book%20club%20on%20Caravan,%20currently%20reading%20${encodeURIComponent(
                   `"${bookTitle}"`
                 )}%20${authorURIString}%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Fref%3D${
                   user._id
                 }%26utm_source%3Dem`
               : `mailto:?subject=Read%20${encodeURIComponent(
                   `"${bookTitle}"`
-                )}with%20me%20on%20this%20cool%20new%20site%20for%20online%20book%20clubs!&body=Check%20out%20this%20club%20on%20Caravan%21%20They%27re%20currently%20reading%20${encodeURIComponent(
-                  bookTitle
+                )}%20with%20me%20on%20this%20cool%20new%20site%20for%20online%20book%20clubs!&body=Check%20out%20this%20online%20book%20club%20on%20Caravan,%20currently%20reading%20${encodeURIComponent(
+                  `"${bookTitle}"`
                 )}%20${authorURIString}%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Futm_source%3Dem`
           }
           target={'_blank'}
