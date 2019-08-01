@@ -1007,7 +1007,7 @@ router.put('/:id/updateShelf', isAuthenticated, async (req, res, next) => {
     updatedClub = await ClubModel.findByIdAndUpdate(
       clubId,
       {
-        shelf: newShelf,
+        newShelf,
       },
       { new: true }
     );
