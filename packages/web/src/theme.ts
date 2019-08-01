@@ -168,7 +168,8 @@ export const palettes: PaletteObject[] = [
     set: 'nature',
     key: '#039BE5',
     textColor: 'primary',
-    bgImage: 'nat-gla',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-gla.svg',
   },
   // Nature - Sunset
   {
@@ -176,7 +177,8 @@ export const palettes: PaletteObject[] = [
     set: 'nature',
     key: '#183E68',
     textColor: 'white',
-    bgImage: 'nat-sun',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-sun.svg',
   },
   // Nature - Desert
   {
@@ -184,7 +186,8 @@ export const palettes: PaletteObject[] = [
     set: 'nature',
     key: '#FFCA28',
     textColor: 'primary',
-    bgImage: 'nat-des',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-des.svg',
   },
   // Nature - Volcano
   {
@@ -192,7 +195,8 @@ export const palettes: PaletteObject[] = [
     set: 'nature',
     key: '#283593',
     textColor: 'white',
-    bgImage: 'nat-vol',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-vol.svg',
   },
   // Nature - Waterfall
   {
@@ -200,7 +204,8 @@ export const palettes: PaletteObject[] = [
     set: 'nature',
     key: '#43A047',
     textColor: 'primary',
-    bgImage: 'nat-wat',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-wat.svg',
   },
   // Nature - All of Us
   {
@@ -208,7 +213,8 @@ export const palettes: PaletteObject[] = [
     set: 'nature',
     key: '#3C3E67',
     textColor: 'white',
-    bgImage: 'nat-all',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-all.svg',
   },
   // Nature - Planet Earth
   {
@@ -216,7 +222,8 @@ export const palettes: PaletteObject[] = [
     set: 'nature',
     key: '#3C3E67',
     textColor: 'white',
-    bgImage: 'nat-pla',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-pla.svg',
   },
   // Nature - OUTTA
   {
@@ -224,7 +231,8 @@ export const palettes: PaletteObject[] = [
     set: 'nature',
     key: '#3C3E67',
     textColor: 'white',
-    bgImage: 'nat-out',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-out.svg',
   },
   // QUOTE BACKGROUNDS
   // Quote - Read Love Repeat
@@ -233,7 +241,8 @@ export const palettes: PaletteObject[] = [
     set: 'quote',
     key: '#4DB6AC',
     textColor: 'white',
-    bgImage: 'quo-rea',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-rea.svg',
   },
   // Quote - Lose & Find
   {
@@ -241,7 +250,8 @@ export const palettes: PaletteObject[] = [
     set: 'quote',
     key: '#F1D4C3',
     textColor: 'primary',
-    bgImage: 'quo-los',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-los.svg',
   },
   // Quote - Hot Coffee
   {
@@ -249,7 +259,8 @@ export const palettes: PaletteObject[] = [
     set: 'quote',
     key: '#7C98A2',
     textColor: 'white',
-    bgImage: 'quo-hot',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-hot.svg',
   },
   // Quote - Treasure
   {
@@ -257,7 +268,8 @@ export const palettes: PaletteObject[] = [
     set: 'quote',
     key: '#705838',
     textColor: 'white',
-    bgImage: 'quo-tre',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-tre.svg',
   },
   // Quote - Perspective
   {
@@ -265,7 +277,8 @@ export const palettes: PaletteObject[] = [
     set: 'quote',
     key: '#EDE0D6',
     textColor: 'primary',
-    bgImage: 'quo-per',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-per.svg',
   },
   // Quote - TOG
   {
@@ -273,7 +286,8 @@ export const palettes: PaletteObject[] = [
     set: 'quote',
     key: '#B14AFF',
     textColor: 'white',
-    bgImage: 'quo-tog',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-tog.svg',
   },
   // Quote - Maybe
   {
@@ -281,7 +295,8 @@ export const palettes: PaletteObject[] = [
     set: 'quote',
     key: '#F1D3DF',
     textColor: 'primary',
-    bgImage: 'quo-may',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-may.svg',
   },
   // Quote - Somewhere
   {
@@ -289,7 +304,8 @@ export const palettes: PaletteObject[] = [
     set: 'quote',
     key: '#F2EECD',
     textColor: 'primary',
-    bgImage: 'quo-som',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-som.svg',
   },
 ];
 

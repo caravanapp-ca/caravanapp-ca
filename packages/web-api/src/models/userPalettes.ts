@@ -16,4 +16,8 @@ const userPalettesSchema = new Schema(userPalettesDefinition, {
   timestamps: true,
 });
 
-export default model<UserPalettesDoc>('UserPalettes', userPalettesSchema);
+export default model<UserPalettesDoc>(
+  'UserPalettes',
+  userPalettesSchema,
+  'userPalettes'
+);

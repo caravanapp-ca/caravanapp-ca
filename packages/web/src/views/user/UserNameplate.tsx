@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import copyToClipboard from 'copy-to-clipboard';
 import {
   Button,
@@ -56,11 +57,19 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
-    formContainer: {
+    nameplateShade: {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'flex-start',
+      padding: 8,
+      borderRadius: 4,
+    },
+    containerImgWhiteText: {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    containerImgPrimaryText: {
+      backgroundColor: 'rgba(255, 255, 255, 0.6)',
     },
   })
 );
@@ -110,10 +119,21 @@ export default function UserNameplate(props: UserNameplateProps) {
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
+  const nameplateShadeClass = clsx(classes.nameplateShade, {
+    [classes.containerImgWhiteText]:
+      user.palette &&
+      user.palette.bgImage != null &&
+      user.palette.textColor === 'white',
+    [classes.containerImgPrimaryText]:
+      user.palette &&
+      user.palette.bgImage != null &&
+      user.palette.textColor === 'primary',
+  });
+
   if (userIsMe && isEditing && onEdit) {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <div className={classes.formContainer}>
+        <div className={nameplateShadeClass}>
           <TextField
             id="display-name"
             label="Display Name"
@@ -192,7 +212,7 @@ export default function UserNameplate(props: UserNameplateProps) {
   } else {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <div className={classes.formContainer}>
+        <div className={nameplateShadeClass}>
           <div className={classes.nameAndBadge}>
             <Typography
               variant="h4"
