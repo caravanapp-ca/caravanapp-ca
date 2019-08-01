@@ -118,48 +118,83 @@ export const whiteTheme = responsiveFontSizes(
 );
 
 export const paletteColours: PaletteObject[] = [
+  // COLOUR BACKGROUNDS
   // White
-  { key: '#FFFFFF', textColor: 'primary' },
+  { set: 'colour', key: '#FFFFFF', textColor: 'primary' },
   // Caravan Blurple
-  { key: '#5c6bc0', textColor: 'white' },
+  { set: 'colour', key: '#5c6bc0', textColor: 'white' },
   // Red
-  { key: '#f44336', textColor: 'white' },
+  { set: 'colour', key: '#f44336', textColor: 'white' },
   // Pink
-  { key: '#e91e63', textColor: 'white' },
+  { set: 'colour', key: '#e91e63', textColor: 'white' },
   // Purple
-  { key: '#9c27b0', textColor: 'white' },
+  { set: 'colour', key: '#9c27b0', textColor: 'white' },
   // Deep Purple
-  { key: '#673ab7', textColor: 'white' },
+  { set: 'colour', key: '#673ab7', textColor: 'white' },
   // Indigo
-  { key: '#3f51b5', textColor: 'white' },
+  { set: 'colour', key: '#3f51b5', textColor: 'white' },
   // Blue
-  { key: '#2196f3', textColor: 'white' },
+  { set: 'colour', key: '#2196f3', textColor: 'white' },
   // Light Blue
-  { key: '#03a9f4', textColor: 'primary' },
+  { set: 'colour', key: '#03a9f4', textColor: 'primary' },
   // Cyan
-  { key: '#00bcd4', textColor: 'primary' },
+  { set: 'colour', key: '#00bcd4', textColor: 'primary' },
   // Teal
-  { key: '#009688', textColor: 'white' },
+  { set: 'colour', key: '#009688', textColor: 'white' },
   // Green
-  { key: '#4caf50', textColor: 'primary' },
+  { set: 'colour', key: '#4caf50', textColor: 'primary' },
   // Light Green
-  { key: '#8bc34a', textColor: 'primary' },
+  { set: 'colour', key: '#8bc34a', textColor: 'primary' },
   // Lime
-  { key: '#cddc39', textColor: 'primary' },
+  { set: 'colour', key: '#cddc39', textColor: 'primary' },
   // Yellow
-  { key: '#ffeb3b', textColor: 'primary' },
+  { set: 'colour', key: '#ffeb3b', textColor: 'primary' },
   // Amber
-  { key: '#ffc107', textColor: 'primary' },
+  { set: 'colour', key: '#ffc107', textColor: 'primary' },
   // Orange
-  { key: '#ff9800', textColor: 'primary' },
+  { set: 'colour', key: '#ff9800', textColor: 'primary' },
   // Deep Orange
-  { key: '#ff5722', textColor: 'white' },
+  { set: 'colour', key: '#ff5722', textColor: 'white' },
   // Brown
-  { key: '#795548', textColor: 'white' },
+  { set: 'colour', key: '#795548', textColor: 'white' },
   // Grey
-  { key: '#9e9e9e', textColor: 'primary' },
+  { set: 'colour', key: '#9e9e9e', textColor: 'primary' },
   // Blue Grey
-  { key: '#607d8b', textColor: 'white' },
+  { set: 'colour', key: '#607d8b', textColor: 'white' },
+  // IMAGE BACKGROUNDS
+  // Nature - Glaciers
+  { set: 'nature', key: '#039BE5', textColor: 'primary', bgImage: 'nat-gla' },
+  // Nature - Sunset
+  { set: 'nature', key: '#183E68', textColor: 'white', bgImage: 'nat-sun' },
+  // Nature - Desert
+  { set: 'nature', key: '#FFCA28', textColor: 'primary', bgImage: 'nat-des' },
+  // Nature - Volcano
+  { set: 'nature', key: '#283593', textColor: 'white', bgImage: 'nat-vol' },
+  // Nature - Waterfall
+  { set: 'nature', key: '#43A047', textColor: 'primary', bgImage: 'nat-wat' },
+  // Nature - All of Us
+  { set: 'nature', key: '#3C3E67', textColor: 'white', bgImage: 'nat-all' },
+  // Nature - Planet Earth
+  { set: 'nature', key: '#3C3E67', textColor: 'white', bgImage: 'nat-pla' },
+  // Nature - OUTTA
+  { set: 'nature', key: '#3C3E67', textColor: 'white', bgImage: 'nat-out' },
+  // QUOTE BACKGROUNDS
+  // Quote - Read Love Repeat
+  { set: 'quote', key: '#4DB6AC', textColor: 'white', bgImage: 'quo-rea' },
+  // Quote - Lose & Find
+  { set: 'quote', key: '#F1D4C3', textColor: 'primary', bgImage: 'quo-los' },
+  // Quote - Hot Coffee
+  { set: 'quote', key: '#7C98A2', textColor: 'white', bgImage: 'quo-hot' },
+  // Quote - Treasure
+  { set: 'quote', key: '#705838', textColor: 'white', bgImage: 'quo-tre' },
+  // Quote - Perspective
+  { set: 'quote', key: '#EDE0D6', textColor: 'primary', bgImage: 'quo-per' },
+  // Quote - TOG
+  { set: 'quote', key: '#B14AFF', textColor: 'white', bgImage: 'quo-tog' },
+  // Quote - Maybe
+  { set: 'quote', key: '#F1D3DF', textColor: 'primary', bgImage: 'quo-may' },
+  // Quote - Somewhere
+  { set: 'quote', key: '#F2EECD', textColor: 'primary', bgImage: 'quo-som' },
 ];
 
 export const makeUserTheme = (palette: PaletteObject | null) => {
