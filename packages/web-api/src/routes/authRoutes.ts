@@ -13,12 +13,16 @@ import SessionModel from '../models/session';
 import UserModel from '../models/user';
 import { generateSlugIds } from '../common/url';
 import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
+import {
+  getReferralDoc,
+  createReferralActionByDoc,
+} from '../services/referral';
 
 const router = express.Router();
 
 export function destroySession(req: Request, res: Response) {
   req.session = null;
-  res.cookie('userId', '');
+  res.clearCookie('userId');
 }
 
 router.get('/discord/login', (req, res) => {
@@ -119,6 +123,19 @@ router.get('/discord/callback', async (req, res) => {
         `User creation failed. UserDoc: ${userDoc}, Discord: ${discordUserData.id}`
       );
     }
+
+    const { referredTempUid } = req.session;
+    if (referredTempUid) {
+      // The person was referred.
+      getReferralDoc(referredTempUid).then(currentReferredDoc => {
+        if (currentReferredDoc) {
+          currentReferredDoc.userId = userDoc.id;
+        }
+        createReferralActionByDoc(currentReferredDoc, 'login');
+      });
+      req.session.referredTempUid = undefined;
+      res.clearCookie('refClickComplete');
+    }
   }
 
   try {
@@ -164,7 +181,7 @@ router.get('/discord/callback', async (req, res) => {
         userDoc.id
       );
       const sessionModel = new SessionModel(modelInstance);
-      const sessionSaveResult = sessionModel.save();
+      sessionModel.save();
       console.log(
         `Created a new session for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
       );
@@ -181,7 +198,7 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
-    const result = await guild.addMember(discordUserData.id, {
+    await guild.addMember(discordUserData.id, {
       accessToken,
     });
     console.log(

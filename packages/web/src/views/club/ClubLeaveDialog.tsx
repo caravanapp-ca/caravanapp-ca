@@ -61,7 +61,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function ClubLeaveDialog(props: LoginModalProps) {
   const classes = useStyles();
-  const theme = useTheme();
 
   const { onCancel, onConfirm, open } = props;
 

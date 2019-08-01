@@ -1,7 +1,8 @@
 import React from 'react';
-import { ShelfEntry } from '@caravan/buddy-reading-types';
+import { ShelfEntry, User } from '@caravan/buddy-reading-types';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import ClubShareButtons from '../../components/ClubShareButtons';
 
 const useStyles = makeStyles(theme => ({
   bgImageContainer: {
@@ -50,6 +51,9 @@ const useStyles = makeStyles(theme => ({
 
 interface ClubHeroProps {
   currBook: ShelfEntry;
+  user: User | null;
+  clubId: string;
+  onCopyReferralLink: () => void;
 }
 
 export default function ClubHero(props: ClubHeroProps) {
@@ -60,6 +64,7 @@ export default function ClubHero(props: ClubHeroProps) {
     genres,
     coverImageURL,
   } = props.currBook;
+  const { clubId, user, onCopyReferralLink } = props;
   const classes = useStyles();
 
   // This adjusts for casting of Date objects to string when sent from web-api
@@ -98,6 +103,13 @@ export default function ClubHero(props: ClubHeroProps) {
               {genres.join(', ')}
             </Typography>
           )}
+          <ClubShareButtons
+            clubId={clubId}
+            bookTitle={title}
+            bookAuthor={author || ''}
+            user={user}
+            onCopyReferralLink={onCopyReferralLink}
+          />
         </div>
       </div>
     </div>

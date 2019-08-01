@@ -11,7 +11,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { User } from '@caravan/buddy-reading-types';
+import { User, ReferralDestination } from '@caravan/buddy-reading-types';
 import Footer from './components/Footer';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';
@@ -29,7 +29,9 @@ import { deleteCookie, getCookie } from './common/cookies';
 import { GAListener } from './common/GAListener';
 import theme from './theme';
 import { getUser } from './services/user';
+import { handleReferral } from './services/referral';
 import About from './views/about/About';
+import getUtmSourceValue from './functions/getUtmSourceValue';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -103,6 +105,24 @@ export function App(props: AppProps) {
     }
     if (!getCookie('userId')) {
       clearStorageAuthState();
+    }
+    if (queries.ref && !getCookie('refClickComplete') && !getCookie('userId')) {
+      const regex = RegExp('/clubs/\\w+');
+      const referralDestination: ReferralDestination = regex.test(
+        window.location.pathname
+      )
+        ? 'club'
+        : 'home';
+      const referrerId = Array.isArray(queries.ref)
+        ? queries.ref[0]
+        : queries.ref;
+      let utmSource = Array.isArray(queries.utm_source)
+        ? queries.utm_source[0]
+        : queries.utm_source;
+      if (utmSource) {
+        utmSource = getUtmSourceValue(utmSource);
+      }
+      handleReferral(referrerId, utmSource, referralDestination);
     }
   }, []);
 

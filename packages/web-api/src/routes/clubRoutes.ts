@@ -1,5 +1,3 @@
-import express from 'express';
-import Fuse from 'fuse.js';
 import {
   ChannelCreationOverwrites,
   ChannelData,
@@ -10,7 +8,10 @@ import {
   GuildMember,
   PermissionResolvable,
 } from 'discord.js';
+import express from 'express';
 import { check, validationResult } from 'express-validator';
+import Fuse from 'fuse.js';
+import { Omit } from 'utility-types';
 import {
   Club,
   FilterAutoMongoKeys,
@@ -23,13 +24,15 @@ import {
   GroupVibe,
   ActiveFilter,
 } from '@caravan/buddy-reading-types';
-import { Omit } from 'utility-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
+import { shelfEntryWithHttpsBookUrl } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
+import { getUser, mutateUserBadges, getUsername } from '../services/user';
+import { createReferralAction } from '../services/referral';
 import { ClubDoc, UserDoc } from '../../typings';
-import { getUser } from '../services/user';
+import { getBadges } from '../services/badge';
 
 const router = express.Router();
 
@@ -75,12 +78,15 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     discordId: { $in: guildMemberDiscordIds },
     isBot: { $eq: false },
   });
+  // This retrieves badge details.
+  const badgeDoc = await getBadges();
+  mutateUserBadges(users, badgeDoc);
   const guildMembers = guildMembersArr
     .map(mem => {
       const user = users.find(u => u.discordId === mem.id);
       if (user) {
         const userObj: User = user.toObject();
-        const result = {
+        const result: User = {
           ...userObj,
           name: userObj.name ? userObj.name : mem.user.username,
           discordUsername: mem.user.username,
@@ -104,7 +110,15 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   return guildMembers;
 }
 
-async function getUserMap(guild: Guild, clubDocs: ClubDoc[]) {
+/**
+ * This returns a Map of UserDoc and GuildMember for each clubDoc.
+ * The GuildMember may be null or undefined if the user has left
+ * the guild. Currently, users are not deleted so UserDoc cannot be
+ * undefined, but consider checking for it anyways.
+ * @param guild the guild
+ * @param clubDocs all club docs
+ */
+async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   const foundUsers = new Map<
     string,
     { userDoc: UserDoc; member: GuildMember }
@@ -118,9 +132,7 @@ async function getUserMap(guild: Guild, clubDocs: ClubDoc[]) {
     }
   });
   const userDocs = await UserModel.find({ _id: { $in: foundUserIds } });
-  userDocs.forEach(
-    doc => (foundUsers.get(doc._id.toHexString()).userDoc = doc)
-  );
+  userDocs.forEach(doc => (foundUsers.get(doc.id).userDoc = doc));
   return foundUsers;
 }
 
@@ -210,14 +222,16 @@ router.get('/', async (req, res, next) => {
   }
 
   // Create a map of users found in the guild and attach the user doc
-  const foundUsers = await getUserMap(guild, clubDocs);
+  const foundUsers = await getClubOwnerMap(guild, clubDocs);
 
   let filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubDocs
     .map(clubDoc => {
       const discordChannel: GuildChannel | null = guild.channels.get(
         clubDoc.channelId
       );
-      const { userDoc, member } = foundUsers.get(clubDoc.ownerId);
+      const foundUser = foundUsers.get(clubDoc.ownerId);
+      const ownerName =
+        getUsername(foundUser.userDoc, foundUser.member) || 'caravan-admin';
       // If there's no Discord channel for this club, filter it out
       if (!discordChannel) {
         return null;
@@ -265,7 +279,7 @@ router.get('/', async (req, res, next) => {
       };
       const obj: Services.GetClubs['clubs'][0] = {
         ...club,
-        ownerName: userDoc.name || member.user.username,
+        ownerName,
         guildId: guild.id,
         memberCount,
       };
@@ -629,7 +643,7 @@ router.post(
     const guild = client.guilds.first();
 
     // Create a map of users found in the guild and attach the user doc
-    const foundUsers = await getUserMap(guild, clubs);
+    const foundUsers = await getClubOwnerMap(guild, clubs);
 
     const filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
       .map(clubDoc => {
@@ -639,7 +653,9 @@ router.post(
         if (!discordChannel) {
           return null;
         }
-        const { userDoc, member } = foundUsers.get(clubDoc.ownerId);
+        const foundUser = foundUsers.get(clubDoc.ownerId);
+        const ownerName =
+          getUsername(foundUser.userDoc, foundUser.member) || 'caravan-admin';
         const memberCount = getCountableMembersInChannel(
           discordChannel,
           clubDoc
@@ -660,7 +676,7 @@ router.post(
         };
         const obj: Services.GetClubs['clubs'][0] = {
           ...club,
-          ownerName: userDoc.name || member.user.username,
+          ownerName,
           guildId: guild.id,
           memberCount,
         };
@@ -735,10 +751,10 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     for (var key in newShelf) {
       const keyTyped = key as ReadingState;
       if (newShelf[keyTyped].length > 0) {
-        newShelf[keyTyped] = sanitizeClubShelf(newShelf[keyTyped]);
+        newShelf[keyTyped].map(shelfEntryWithHttpsBookUrl);
       }
     }
-
+    
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
       bio: body.bio,
@@ -757,6 +773,8 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
+
+    createReferralAction(userId, 'createClub');
 
     const result: Services.CreateClubResult = {
       //@ts-ignore
@@ -985,12 +1003,13 @@ router.put(
       wantToRead,
     } = req.body;
     let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
+    const shelfEntry = shelfEntryWithHttpsBookUrl(newBook);
     let resultPrev, resultNew;
     if (currBookAction !== 'current') {
       if (prevBookId) {
         switch (currBookAction as CurrBookAction) {
           case 'delete':
-            resultPrev = await ClubModel.update(
+            resultPrev = await ClubModel.updateOne(
               { _id: clubId },
               { $pull: { shelf: { _id: prevBookId } } }
             );
@@ -1028,7 +1047,7 @@ router.put(
       if (!newEntry) {
         newCondition = {
           _id: clubId,
-          'shelf._id': newBook._id,
+          'shelf._id': shelfEntry._id,
         };
         newUpdate = {
           $set: {
@@ -1043,10 +1062,10 @@ router.put(
         newUpdate = {
           $addToSet: {
             shelf: {
-              ...newBook,
+              ...shelfEntry,
               readingState: newReadingState,
-              publishedDate: newBook.publishedDate
-                ? new Date(newBook.publishedDate)
+              publishedDate: shelfEntry.publishedDate
+                ? new Date(shelfEntry.publishedDate)
                 : undefined,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -1118,7 +1137,7 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    const userId = req.user._id;
+    const userId = req.user.id;
     const userDiscordId = req.user.discordId;
     const { clubId } = req.params;
     const { isMember } = req.body;
@@ -1128,7 +1147,7 @@ router.put(
     } catch (err) {
       return res.status(400).send(`Could not find club ${clubId}`);
     }
-    const isOwner = club.ownerId === userId.toHexString();
+    const isOwner = club.ownerId === userId;
     const discordClient = ReadingDiscordBot.getInstance();
     const guild = discordClient.guilds.first();
     const channel: GuildChannel = guild.channels.get(club.channelId);
@@ -1169,6 +1188,7 @@ router.put(
             MANAGE_MESSAGES: isOwner,
           }
         );
+        createReferralAction(userId, 'joinClub');
       }
     } else {
       if (isOwner) {

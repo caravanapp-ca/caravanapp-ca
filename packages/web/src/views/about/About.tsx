@@ -11,7 +11,7 @@ import {
 import { ArrowBackIos } from '@material-ui/icons';
 import { User } from '@caravan/buddy-reading-types';
 import Header from '../../components/Header';
-import logo from '../../resources/logo.svg';
+import textLogo from '../../resources/text-logo.svg';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -84,7 +84,7 @@ export default function About(props: AboutProps) {
 
   const centerComponent = (
     <img
-      src={logo}
+      src={textLogo}
       alt="Caravan logo"
       style={{ height: 20, objectFit: 'contain' }}
     />
