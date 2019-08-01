@@ -105,24 +105,6 @@ export async function deleteClub(clubId: string) {
   return res;
 }
 
-// export async function updateCurrentlyReadBook(
-//   clubId: string,
-//   newBook: FilterAutoMongoKeys<ShelfEntry> | ShelfEntry,
-//   newEntry: boolean,
-//   prevBookId: string | null,
-//   currBookAction: CurrBookAction,
-//   wantToRead: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
-// ) {
-//   const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
-//     newBook,
-//     newEntry,
-//     prevBookId,
-//     currBookAction,
-//     wantToRead,
-//   });
-//   return res;
-// }
-
 export async function updateShelf(
   clubId: string,
   newShelf: {

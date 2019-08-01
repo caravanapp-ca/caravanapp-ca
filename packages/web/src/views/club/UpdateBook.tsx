@@ -20,7 +20,6 @@ import {
   DragDropContext,
   DropResult,
   ResponderProvided,
-  Droppable,
   DragStart,
 } from 'react-beautiful-dnd';
 import { notifyOfClubShelfUpdate } from '../../services/book';
@@ -177,10 +176,6 @@ export default function UpdateBook(props: UpdateBookProps) {
     const newSortedShelf = { ...sortedShelf };
     newSortedShelf[deleteId].splice(index, 1);
     setSortedShelf(newSortedShelf);
-
-    //const newShelf = [...sortedShelf[deleteId]];
-    // newShelf.splice(index, 1);
-    //setSortedShelf({...sortedShelf, sortedShelf[deleteId]: newShelf});
   };
 
   const onDragStart = (initial: DragStart, provided: ResponderProvided) => {
