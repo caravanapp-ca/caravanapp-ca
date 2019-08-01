@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import clsx from 'clsx';
 import {
   ClubTransformed,
   EditableUserField,
@@ -9,6 +10,8 @@ import {
   User,
   UserQA,
   UserShelfEntry,
+  UserPalettes,
+  PaletteObject,
 } from '@caravan/buddy-reading-types';
 import {
   Container,
@@ -43,8 +46,10 @@ import { getAllProfileQuestions } from '../../services/profile';
 import { getReferralCount } from '../../services/referral';
 import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
-import { makeUserTheme, makeUserDarkTheme } from '../../theme';
-import clsx from 'clsx';
+import { makeUserTheme, makeUserDarkTheme, palettes } from '../../theme';
+import { globalPaletteSets } from '../../common/globalConstants';
+import { getUserPalettes } from '../../services/userPalettes';
+import { getSelectablePalettes } from '../../functions/userPalettes';
 
 interface MinMax {
   min: number;
@@ -83,6 +88,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyItems: 'center',
     },
     nameplateContainer: {
+      backgroundColor: '#FFFFFF',
       display: 'flex',
       position: 'relative',
       flexDirection: 'row',
@@ -113,7 +119,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     nameplateShade: {
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
       padding: 8,
       borderRadius: 4,
     },
@@ -162,6 +170,12 @@ export default function UserView(props: UserViewProps) {
   const [scrolled, setScrolled] = React.useState(0);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [referralCount, setReferralCount] = React.useState<number | null>(null);
+  const [userPalettes, setUserPalettes] = React.useState<UserPalettes | null>(
+    null
+  );
+  const [selectablePalettes, setSelectablePalettes] = React.useState<
+    PaletteObject[]
+  >([]);
   const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
     []
   );
@@ -217,6 +231,15 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
+  const getUserPalettesFn = async (userId: string) => {
+    const userPalettesRes = await getUserPalettes(userId);
+    if (userPalettesRes.status === 200) {
+      setUserPalettes(userPalettesRes.data.userPalettes);
+    } else {
+      setUserPalettes(null);
+    }
+  };
+
   useEffect(() => {
     getUser(userId).then(user => {
       if (user) {
@@ -225,6 +248,7 @@ export default function UserView(props: UserViewProps) {
         if (isUserMe) {
           getGenres();
           getQuestions(user);
+          getUserPalettesFn(user._id);
         }
         setUserIsMe(isUserMe);
         // Setting max page size here so we get all the user's clubs
@@ -244,6 +268,15 @@ export default function UserView(props: UserViewProps) {
       setUser(user);
     });
   }, [userId, myUserId]);
+
+  useEffect(() => {
+    const selPal = getSelectablePalettes(
+      palettes,
+      userPalettes,
+      globalPaletteSets
+    );
+    setSelectablePalettes(selPal);
+  }, [userPalettes]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 
@@ -357,7 +390,7 @@ export default function UserView(props: UserViewProps) {
         typeof newValue.textColor === 'string'
       ) {
         if (newValue.key === '#FFFFFF') {
-          const userCopy: User = { ...user, [field]: null };
+          const userCopy: User = { ...user, palette: null };
           setUser(userCopy);
         } else {
           writeChange = true;
@@ -605,6 +638,7 @@ export default function UserView(props: UserViewProps) {
               valid={[nameValidated(), bioValidated(), websiteValidated()]}
               userDarkTheme={userDarkTheme}
               onCopyReferralLink={onCopyReferralLink}
+              selectablePalettes={selectablePalettes}
             />
           </div>
         </div>

@@ -242,6 +242,24 @@ declare module '@caravan/buddy-reading-types' {
     membership: FilterChip[];
   }
 
+  export type PaletteSet = 'colour' | 'nature' | 'quote';
+
+  export interface PaletteObject {
+    // id refers to the unique identifier
+    id: string;
+    // key refers to the primary colour
+    key: string;
+    textColor: 'primary' | 'white';
+    bgImage?: string;
+    set?: PaletteSet;
+  }
+
+  export interface UserPalettes extends DocumentFields, MongoTimestamps {
+    userId: string;
+    hasSets?: PaletteSet[];
+    hasIndividuals?: string[];
+  }
+
   export type EditableUserField =
     | 'bio'
     | 'goodreadsUrl'
@@ -302,13 +320,6 @@ declare module '@caravan/buddy-reading-types' {
     | 'learning'
     | 'first-timers'
     | 'nerdy';
-
-  export interface PaletteObject {
-    key: string;
-    textColor: 'primary' | 'white';
-    bgImage?: string;
-    collection?: 'colour' | 'nature' | 'quote';
-  }
 
   // Don't use this... I did what I do had to do - Matt C.
   export interface ClubWUninitSchedules

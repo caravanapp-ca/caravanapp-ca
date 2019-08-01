@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, PaletteObject } from '@caravan/buddy-reading-types';
+import copyToClipboard from 'copy-to-clipboard';
 import {
   Button,
   createStyles,
@@ -11,11 +11,10 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import copyToClipboard from 'copy-to-clipboard';
+import { User, PaletteObject } from '@caravan/buddy-reading-types';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
 import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
-import { paletteColours } from '../../theme';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
 import { getReferralLink } from '../../functions/referral';
 import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
@@ -33,6 +32,7 @@ interface UserNameplateProps {
   valid: [boolean, string][];
   userDarkTheme?: Theme;
   onCopyReferralLink: () => void;
+  selectablePalettes?: PaletteObject[];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -56,6 +56,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
+    formContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+    },
   })
 );
 
@@ -71,6 +77,7 @@ export default function UserNameplate(props: UserNameplateProps) {
     valid,
     userDarkTheme,
     onCopyReferralLink,
+    selectablePalettes,
   } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
@@ -103,21 +110,10 @@ export default function UserNameplate(props: UserNameplateProps) {
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
-  const containerClass = clsx(classes.nameplateContainer, {
-    [classes.containerImgWhiteText]:
-      user.palette &&
-      user.palette.bgImage != null &&
-      user.palette.textColor === 'white',
-    [classes.containerImgPrimaryText]:
-      user.palette &&
-      user.palette.bgImage != null &&
-      user.palette.textColor === 'primary',
-  });
-
   if (userIsMe && isEditing && onEdit) {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <div className={containerClass}>
+        <div className={classes.formContainer}>
           <TextField
             id="display-name"
             label="Display Name"
@@ -177,22 +173,26 @@ export default function UserNameplate(props: UserNameplateProps) {
             margin="normal"
             variant="outlined"
           />
-          <Typography color="textSecondary">Palette</Typography>
-          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-            {paletteColours.map(colourObj => (
-              <PaletteButton
-                palette={colourObj}
-                onClick={palette => onEdit('palette', palette)}
-              />
-            ))}
-          </div>
+          {selectablePalettes && selectablePalettes.length > 0 && (
+            <>
+              <Typography color="textSecondary">Palette</Typography>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {selectablePalettes.map(paletteObj => (
+                  <PaletteButton
+                    palette={paletteObj}
+                    onClick={palette => onEdit('palette', palette)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </MuiThemeProvider>
     );
   } else {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <div className={containerClass}>
+        <div className={classes.formContainer}>
           <div className={classes.nameAndBadge}>
             <Typography
               variant="h4"
