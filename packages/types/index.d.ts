@@ -1,6 +1,7 @@
 import { GuildMember } from 'discord.js';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
+import { ShelfEntryDoc } from '../web-api/typings';
 
 declare module '@caravan/buddy-reading-types' {
   export type FilterAutoMongoKeys<Base> = Omit<
@@ -34,11 +35,18 @@ declare module '@caravan/buddy-reading-types' {
     discussions: Discussion[];
   }
 
+  export interface NewClubShelf{
+    current: ShelfEntryDoc[];
+    notStarted: ShelfEntryDoc[];
+    read: ShelfEntryDoc[];
+  }
+
   export interface Club extends DocumentFields, MongoTimestamps {
     name: string;
     ownerId: string;
     ownerDiscordId?: string;
     shelf: ShelfEntry[];
+    newShelf: NewClubShelf;
     schedules: ClubReadingSchedule[];
     bio?: string;
     members: User[];

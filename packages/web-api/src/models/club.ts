@@ -8,6 +8,7 @@ import {
   SelectedGenre,
   ClubReadingSchedule,
   Discussion,
+  NewClubShelf,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
@@ -48,6 +49,14 @@ const shelfSchema = new Schema(shelfSchemaDefinition, {
   timestamps: true,
 });
 
+const newShelfDefinition: SameKeysAs<FilterAutoMongoKeys<NewClubShelf>> = {
+  current: [shelfSchemaDefinition],
+  notStarted: [shelfSchemaDefinition],
+  read: [shelfSchemaDefinition],
+};
+
+const newShelfSchema = new Schema(newShelfDefinition, { timestamps: true });
+
 const scheduleDiscussionDefinition: SameKeysAs<
   FilterAutoMongoKeys<Discussion>
 > = {
@@ -77,7 +86,8 @@ const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   vibe: { type: String },
   readingSpeed: { type: String },
   genres: { type: [genresSchema], required: true },
-  shelf: { type: [shelfSchema], required: true },
+  shelf: { type: [shelfSchema] },
+  newShelf: { type: newShelfSchema, required: true },
   schedules: { type: [scheduleSchema], required: true },
   ownerId: { type: String, required: true },
   ownerDiscordId: { type: String },

@@ -23,6 +23,7 @@ import {
   ReadingSpeed,
   GroupVibe,
   ActiveFilter,
+  NewClubShelf,
 } from '@caravan/buddy-reading-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
@@ -31,7 +32,7 @@ import { shelfEntryWithHttpsBookUrl } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
-import { ClubDoc, UserDoc } from '../../typings';
+import { ClubDoc, UserDoc, ShelfEntryDoc } from '../../typings';
 import { getBadges } from '../services/badge';
 
 const router = express.Router();
@@ -135,6 +136,37 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   userDocs.forEach(doc => (foundUsers.get(doc.id).userDoc = doc));
   return foundUsers;
 }
+
+//If you see this delete this!!!!!!!!!!! (Single use script for converted clubs to new format)
+
+const sortShelf = (oldShelf: ShelfEntryDoc[]) : NewClubShelf => {
+  const newShelf: NewClubShelf = {current: [], notStarted: [], read: []};
+  oldShelf.forEach(b => {
+    switch (b.readingState){
+      case 'notStarted':
+        newShelf.notStarted.push(b);
+        break;
+      case 'read':
+          newShelf.read.push(b);
+          break;
+      case 'current':
+        newShelf.current.push(b);
+        break;
+      default:
+        console.error(`Book ${b._id} has an invalid readingState`)
+    }
+  })
+  return newShelf
+}
+
+router.put('/convertClubShelves', async(req, res, next) => {
+  const allClubs = ClubModel.find().then(allClubs => {
+    allClubs.forEach(c => {
+      c.newShelf = sortShelf(c.shelf);
+      c.save();
+    })
+  });
+})
 
 router.get('/', async (req, res, next) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
