@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import theme from '../../theme';
 import { membershipLabels } from '../membership-labels';
+import { Description } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   dialogStyle: {
@@ -71,7 +72,10 @@ export default function MembershipModal(props: MembershipModalProps) {
                   color="primary"
                   style={{ marginRight: theme.spacing(2) }}
                 />
-                <ListItemText primary={label} />
+                <ListItemText
+                  primary={label}
+                  secondary={membershipLabels(membership, 'description')}
+                />
               </ListItem>
             );
           })}
