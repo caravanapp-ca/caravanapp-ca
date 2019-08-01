@@ -307,7 +307,7 @@ declare module '@caravan/buddy-reading-types' {
     key: string;
     textColor: 'primary' | 'white';
     bgImage?: string;
-    set?: 'colour' | 'nature' | 'quote';
+    collection?: 'colour' | 'nature' | 'quote';
   }
 
   // Don't use this... I did what I do had to do - Matt C.

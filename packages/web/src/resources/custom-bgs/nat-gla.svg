@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="289px" viewBox="0 0 1440 289" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Banner / Nature / Glaciers</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <radialGradient cx="100%" cy="0%" fx="100%" fy="0%" r="44.0694029%" gradientTransform="translate(1.000000,0.000000),scale(0.200694,1.000000),rotate(152.532883),translate(-1.000000,-0.000000)" id="radialGradient-1">
+            <stop stop-color="#FAEE91" offset="0%"></stop>
+            <stop stop-color="#BBDEFB" stop-opacity="0.873661495" offset="100%"></stop>
+        </radialGradient>
+        <path d="M40.3806417,178.983932 C-15.7016182,183.766522 -13.065255,170.453877 48.2897312,139.045998 C109.644717,107.63812 203.168131,61.2894535 328.859972,-1.13686838e-13 C411.193306,66.8151516 452.359972,100.222727 452.359972,100.222727 L550.859972,15.8230511 L644.63494,45.2089101 L774.617427,23.2742138 C829.112457,95.2467736 856.359972,131.233054 856.359972,131.233054 C955.678957,110.559503 1005.33845,100.222727 1005.33845,100.222727 C1121.04783,43.9562766 1178.90253,15.8230511 1178.90253,15.8230511 L1277.11237,75.7149506 L1373.73852,60.9750686 L1568,214.763982 L1535.07985,308.540724 L69.3599722,308.540724 L40.3806417,178.983932 Z" id="path-2"></path>
+        <filter x="-0.5%" y="-2.4%" width="101.0%" height="104.9%" filterUnits="objectBoundingBox" id="filter-4">
+            <feGaussianBlur stdDeviation="5" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
+            <feOffset dx="0" dy="5" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0.686040049   0 0 0 0 0.86947996   0 0 0 0 0.958786232  0 0 0 0.364619755 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Banner-/-Nature-/-Glaciers" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="url(#radialGradient-1)" x="0" y="0" width="1440" height="289"></rect>
+        <g id="Path-8" transform="translate(-68.359972, 21.266946)">
+            <mask id="mask-3" fill="white">
+                <use xlink:href="#path-2"></use>
+            </mask>
+            <g id="Mask">
+                <use fill="#039BE5" fill-rule="evenodd" xlink:href="#path-2"></use>
+                <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-2"></use>
+            </g>
+            <polygon id="Path-5" fill="#61CBFF" mask="url(#mask-3)" points="564.669977 -11.5687242 534.990132 49.8923119 531.957747 75.1381515 491.613805 130.063433 463.380103 150.233054 467.500063 117.374082 441.687095 88.2545279 491.613805 47.8651879 534.990132 9.88118567"></polygon>
+            <polygon fill="#61CBFF" mask="url(#mask-3)" points="329.578418 -2.26694648 305.711434 50.6276467 271.12098 72.8190228 229.359972 73.7330535 211.359972 105.733054 159.241937 123.233054 25.9911348 135.606348 262.964775 9.66221706"></polygon>
+            <polygon id="Path-9" fill="#61CBFF" mask="url(#mask-3)" points="780.116872 10.3229805 769.003264 38.2024412 717.224995 54.9175832 679.109727 89.6579036 640.844638 105.733054 658.565079 68.7177474 640.844638 38.2024412"></polygon>
+            <polygon id="Path-10" fill="#61CBFF" mask="url(#mask-3)" points="1187.75168 -14.3229782 1164.11261 66.7919846 1094.62913 115.491253 1044.27904 125.893455 994.451458 150.630552 930.930125 130.277979 897.010011 130.277979 856.359972 131.233054"></polygon>
+            <polygon id="Path-11" fill="#61CBFF" mask="url(#mask-3)" points="1388.6765 29.0001501 1356.73303 99.2330535 1321.46341 107.353021 1246.40475 136.699309 1285.27296 98.5896471 1268.13689 50.6179914"></polygon>
+        </g>
+        <path d="M-10.9246091,256.590077 L168.071429,243.717168 C234.690476,228.069913 310.333333,228.069913 395,243.717168 C522,267.188051 504.25,243.717168 603.5,243.717168 C702.75,243.717168 667.196424,250.835186 802,243.717168 C936.803576,236.59915 981.567117,221.385541 1048,220.246286 C1114.43288,219.107031 1110.73211,237.505195 1164.23611,237.505195 C1217.74012,237.505195 1201.7175,214.034312 1263.85875,237.505195 C1305.28625,253.15245 1346.932,259.514077 1388.79601,256.590077 L1476.71846,243.717168 L1476.71846,412.246286 L1079.61955,407.438128 L-12,394.220569 L-10.9246091,256.590077 Z" id="Path-2" fill="#01579B"></path>
+        <circle id="Oval" fill="#F4ECB4" cx="1452" cy="-12" r="74"></circle>
+    </g>
+</svg>

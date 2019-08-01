@@ -44,6 +44,7 @@ import { getReferralCount } from '../../services/referral';
 import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme } from '../../theme';
+import clsx from 'clsx';
 
 interface MinMax {
   min: number;
@@ -82,12 +83,10 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyItems: 'center',
     },
     nameplateContainer: {
-      backgroundColor: '#FFFFFF',
       display: 'flex',
-      padding: theme.spacing(2),
+      position: 'relative',
       flexDirection: 'row',
       alignItems: 'center',
-      position: 'relative',
       zIndex: 2,
     },
     tabRoot: {
@@ -102,6 +101,27 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    bgImage: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      zIndex: -1,
+    },
+    nameplateShade: {
+      display: 'flex',
+      flexDirection: 'column',
+      padding: 8,
+      borderRadius: 4,
+    },
+    containerImgWhiteText: {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    containerImgPrimaryText: {
+      backgroundColor: 'rgba(255, 255, 255, 0.6)',
     },
   })
 );
@@ -529,6 +549,17 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
+  const nameplateShadeClass = clsx(classes.nameplateShade, {
+    [classes.containerImgWhiteText]:
+      user.palette &&
+      user.palette.bgImage != null &&
+      user.palette.textColor === 'white',
+    [classes.containerImgPrimaryText]:
+      user.palette &&
+      user.palette.bgImage != null &&
+      user.palette.textColor === 'primary',
+  });
+
   return (
     <MuiThemeProvider theme={userTheme}>
       <Header
@@ -545,20 +576,37 @@ export default function UserView(props: UserViewProps) {
           backgroundColor: userTheme
             ? userTheme.palette.primary.main
             : undefined,
+          padding: screenSmallerThanSm ? theme.spacing(1) : theme.spacing(2),
         }}
       >
-        <UserAvatar user={user} size={screenSmallerThanSm ? 96 : 144} />
-        <div style={{ marginLeft: theme.spacing(2) }}>
-          <UserNameplate
-            user={user}
-            referralCount={referralCount}
-            userIsMe={userIsMe}
-            isEditing={isEditing}
-            onEdit={onEdit}
-            valid={[nameValidated(), bioValidated(), websiteValidated()]}
-            userDarkTheme={userDarkTheme}
-            onCopyReferralLink={onCopyReferralLink}
-          />
+        <div className={nameplateShadeClass}>
+          {user.palette && user.palette.bgImage && (
+            <img
+              src={require(`../../resources/custom-bgs/${
+                user.palette.bgImage
+              }.svg`)}
+              className={classes.bgImage}
+            />
+          )}
+          <UserAvatar user={user} size={screenSmallerThanSm ? 96 : 144} />
+          <div
+            style={{
+              marginLeft: screenSmallerThanSm
+                ? theme.spacing(1)
+                : theme.spacing(2),
+            }}
+          >
+            <UserNameplate
+              user={user}
+              referralCount={referralCount}
+              userIsMe={userIsMe}
+              isEditing={isEditing}
+              onEdit={onEdit}
+              valid={[nameValidated(), bioValidated(), websiteValidated()]}
+              userDarkTheme={userDarkTheme}
+              onCopyReferralLink={onCopyReferralLink}
+            />
+          </div>
         </div>
       </div>
       <MuiThemeProvider theme={userDarkTheme}>
