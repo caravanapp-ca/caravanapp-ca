@@ -35,7 +35,7 @@ declare module '@caravan/buddy-reading-types' {
     discussions: Discussion[];
   }
 
-  export interface NewClubShelf{
+  export interface NewClubShelf {
     current: ShelfEntryDoc[];
     notStarted: ShelfEntryDoc[];
     read: ShelfEntryDoc[];
@@ -46,7 +46,7 @@ declare module '@caravan/buddy-reading-types' {
     ownerId: string;
     ownerDiscordId?: string;
     shelf: ShelfEntry[];
-    newShelf: NewClubShelf;
+    newShelf: ClubShelfType;
     schedules: ClubReadingSchedule[];
     bio?: string;
     members: User[];
@@ -62,7 +62,6 @@ declare module '@caravan/buddy-reading-types' {
   // This format of the Club has the current book, schedule, and owner extracted for quicker access.
   export interface ClubTransformed {
     club: Services.GetClubs['clubs'][0];
-    currentlyReading: ShelfEntry | null;
     schedule: ClubReadingSchedule | null;
   }
 
@@ -102,13 +101,24 @@ declare module '@caravan/buddy-reading-types' {
     amazonLink?: string;
   }
 
-  export interface UserShelfEntry extends Omit<ShelfEntry, 'readingState'> {
-    readingState: ReadingState;
+  export interface UserShelfEntry extends ShelfEntry {
     clubId?: string;
     club?: Services.GetClubs['clubs'][0];
   }
 
-  export type UserShelfType = { [K in ReadingState]: UserShelfEntry[] };
+  export type UserShelfType = {
+    [K in UserShelfReadingState]: UserShelfEntry[]
+  };
+
+  interface UserShelf extends UserShelfType {
+    current?: UserShelfEntry[];
+  }
+
+  export type ClubShelfType = { [K in ReadingState]: ShelfEntry[] };
+
+  export type UninitClubShelfType = {
+    [K in ReadingState]: FilterAutoMongoKeys<ShelfEntry>[]
+  };
 
   export interface SelectedGenre {
     key: string;
@@ -132,7 +142,7 @@ declare module '@caravan/buddy-reading-types' {
     urlSlug: string;
     selectedGenres: SelectedGenre[];
     questions: UserQA[];
-    shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
+    shelf: UserShelf;
     onboardingVersion: number;
     palette: PaletteObject | null;
     badges: UserBadge[];
@@ -332,7 +342,7 @@ declare module '@caravan/buddy-reading-types' {
         ownerId: string;
         ownerName: string;
         guildId: string;
-        shelf: ShelfEntry[];
+        shelf: ClubShelfType;
         schedules: ClubReadingSchedule[];
         bio?: string;
         maxMembers: number;
@@ -352,7 +362,7 @@ declare module '@caravan/buddy-reading-types' {
       name: string;
       ownerId: string;
       ownerDiscordId: string;
-      shelf: ShelfEntry[];
+      shelf: ClubShelfType;
       schedules: ClubReadingSchedule[];
       bio: string;
       members: User[];
@@ -365,6 +375,17 @@ declare module '@caravan/buddy-reading-types' {
       channelId: string;
       createdAt: string;
       updatedAt: string;
+      unlisted: boolean;
+    }
+    export interface CreateClubProps {
+      name: string;
+      shelf?: UninitClubShelfType;
+      bio: string;
+      maxMembers: number;
+      vibe: string;
+      genres: SelectedGenre[];
+      readingSpeed: string;
+      channelSource: ChannelSource;
       unlisted: boolean;
     }
     export interface CreateClubResult {
@@ -400,7 +421,7 @@ declare module '@caravan/buddy-reading-types' {
         urlSlug: string;
         selectedGenres: SelectedGenre[];
         questions: UserQA[];
-        shelf: { [key in UserShelfReadingState]: UserShelfEntry[] };
+        shelf: UserShelf;
         onboardingVersion: number;
         palette: PaletteObject | null;
         badges: UserBadge[];

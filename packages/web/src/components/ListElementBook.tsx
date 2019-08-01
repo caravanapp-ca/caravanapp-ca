@@ -1,4 +1,5 @@
 import React from 'react';
+import { Draggable } from 'react-beautiful-dnd';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   ListItem,
@@ -13,6 +14,8 @@ import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
 import Truncate from 'react-truncate';
 
 export interface ListElementBookProps {
+  id: string;
+  index: number;
   clubId?: string;
   club?: Services.GetClubs['clubs'][0];
   coverImage?: any;
@@ -24,6 +27,8 @@ export interface ListElementBookProps {
   tertiaryLink?: string;
   onClick?: any;
   selected?: boolean;
+  draggable?: boolean;
+  isDragging?: boolean;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -54,6 +59,8 @@ export default function ListElementBook(props: ListElementBookProps) {
   const classes = useStyles();
 
   const {
+    id,
+    index,
     clubId,
     club,
     coverImage,
@@ -63,6 +70,8 @@ export default function ListElementBook(props: ListElementBookProps) {
     secondary,
     tertiary,
     selected,
+    draggable,
+    isDragging,
   } = props;
 
   let shortenedTitle = primaryText;
@@ -70,59 +79,128 @@ export default function ListElementBook(props: ListElementBookProps) {
     shortenedTitle = shortenedTitle.substring(0, 96) + '...';
   }
 
-  return (
-    <ListItem
-      // @ts-ignore
-      button={clubId ? true : false}
-    >
-      {primary && <ListItemIcon>{primary}</ListItemIcon>}
-      <img
-        src={coverImage || require('../resources/generic-book-cover.jpg')}
-        alt={primaryText}
-        className={classes.coverImage}
-      />
-      <div className={classes.textContainer}>
-        {club && (
-          <>
-            <Link href={clubId ? `/clubs/${clubId}` : undefined}>
-              <div className={classes.clubNameContainer}>
-                <GroupIcon color="primary" />
-                <Typography variant="body1" color="primary">
-                  {club.name}
-                </Typography>
-              </div>
-            </Link>
-            <Typography
-              variant="body1"
-              color="textPrimary"
-              style={{ fontWeight: 600 }}
-            >
-              <Truncate lines={1} trimWhitespace={true}>
-                {primaryText}
-              </Truncate>
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              <Truncate lines={1} trimWhitespace={true}>
+  // If you're making changes to the render here you will need to replicate them in both the draggable and regular cases.
+  // TODO: Make this cleaner.
+  if (draggable) {
+    return (
+      <Draggable draggableId={id} index={index}>
+        {(provided, snapshot) => (
+          <ListItem
+            // @ts-ignore
+            button={clubId ? true : false}
+            innerRef={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            {primary && <ListItemIcon>{primary}</ListItemIcon>}
+            <img
+              src={coverImage || require('../resources/generic-book-cover.jpg')}
+              alt={primaryText}
+              className={classes.coverImage}
+            />
+            <div className={classes.textContainer}>
+              {club && (
+                <>
+                  <Link href={clubId ? `/clubs/${clubId}` : undefined}>
+                    <div className={classes.clubNameContainer}>
+                      <GroupIcon color="primary" />
+                      <Typography variant="body1" color="primary">
+                        {club.name}
+                      </Typography>
+                    </div>
+                  </Link>
+                  <Typography
+                    variant="body1"
+                    color="textPrimary"
+                    style={{ fontWeight: 600 }}
+                  >
+                    <Truncate lines={1} trimWhitespace={true}>
+                      {primaryText}
+                    </Truncate>
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <Truncate lines={1} trimWhitespace={true}>
+                      {secondaryText}
+                    </Truncate>
+                  </Typography>
+                </>
+              )}
+              {!club && (
+                <div>
+                  <Typography variant="body1" style={{ fontWeight: 600 }}>
+                    {shortenedTitle}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {secondaryText}
+                  </Typography>
+                </div>
+              )}
+              {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
+            </div>
+            <div>
+              {secondary && !isDragging && (
+                <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
+              )}
+            </div>
+          </ListItem>
+        )}
+      </Draggable>
+    );
+  } else {
+    return (
+      <ListItem
+        // @ts-ignore
+        button={clubId ? true : false}
+      >
+        {primary && <ListItemIcon>{primary}</ListItemIcon>}
+        <img
+          src={coverImage || require('../resources/generic-book-cover.jpg')}
+          alt={primaryText}
+          className={classes.coverImage}
+        />
+        <div className={classes.textContainer}>
+          {club && (
+            <>
+              <Link href={clubId ? `/clubs/${clubId}` : undefined}>
+                <div className={classes.clubNameContainer}>
+                  <GroupIcon color="primary" />
+                  <Typography variant="body1" color="primary">
+                    {club.name}
+                  </Typography>
+                </div>
+              </Link>
+              <Typography
+                variant="body1"
+                color="textPrimary"
+                style={{ fontWeight: 600 }}
+              >
+                <Truncate lines={1} trimWhitespace={true}>
+                  {primaryText}
+                </Truncate>
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <Truncate lines={1} trimWhitespace={true}>
+                  {secondaryText}
+                </Truncate>
+              </Typography>
+            </>
+          )}
+          {!club && (
+            <div>
+              <Typography variant="body1" style={{ fontWeight: 600 }}>
+                {shortenedTitle}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
                 {secondaryText}
-              </Truncate>
-            </Typography>
-          </>
+              </Typography>
+            </div>
+          )}
+          {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
+        </div>
+        {secondary && (
+          <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
         )}
-        {!club && (
-          <div>
-            <Typography variant="body1" style={{ fontWeight: 600 }}>
-              {shortenedTitle}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              {secondaryText}
-            </Typography>
-          </div>
-        )}
-        {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
-      </div>
-      {secondary && (
-        <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
-      )}
-    </ListItem>
-  );
+      </ListItem>
+    );
+  }
 }

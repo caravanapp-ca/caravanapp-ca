@@ -8,16 +8,6 @@ import {
 } from '@caravan/buddy-reading-types';
 import { scheduleStrToDates } from '../../../functions/scheduleStrToDates';
 
-export function getCurrentBook(club: Club): ShelfEntry | null {
-  if (club && club.shelf) {
-    const book = club.shelf.find(book => book.readingState === 'current');
-    if (book) {
-      return book;
-    }
-  }
-  return null;
-}
-
 export function getCurrentSchedule(
   club: Club,
   currBook: ShelfEntry
@@ -30,16 +20,6 @@ export function getCurrentSchedule(
     }
   }
   return null;
-}
-
-export function getWantToRead(club: Club): ShelfEntry[] {
-  if (club && club.shelf) {
-    const wantToRead = club.shelf.filter(
-      book => book.readingState === 'notStarted'
-    );
-    return wantToRead;
-  }
-  return [];
 }
 
 export function getShelfFromGoogleBooks(

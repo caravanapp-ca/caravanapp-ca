@@ -60,6 +60,7 @@ interface BookSearchProps {
   primary?: 'radio';
   secondary?: 'delete';
   initialSelectedBooks?: FilterAutoMongoKeys<ShelfEntry>[];
+  inheritSearchedBooks?: FilterAutoMongoKeys<ShelfEntry>[];
 }
 
 const searchRef = React.createRef();
@@ -73,6 +74,7 @@ export default function BookSearch(props: BookSearchProps) {
     primary,
     secondary,
     initialSelectedBooks,
+    inheritSearchedBooks,
   } = props;
 
   const maxSelected = props.maxSelected || 1000;
@@ -99,6 +101,12 @@ export default function BookSearch(props: BookSearchProps) {
       setSearchResults(null);
     }
   }, [bookSearchQuery]);
+
+  useEffect(() => {
+    if (inheritSearchedBooks) {
+      setSelectedBooks(inheritSearchedBooks);
+    }
+  }, [inheritSearchedBooks]);
 
   async function bookSearch(query: string) {
     if (query) {
@@ -221,11 +229,13 @@ export default function BookSearch(props: BookSearchProps) {
           >
             <Container className={classes.searchResultsContainer}>
               <BookList
+                id="search-results"
                 data={
                   getShelfFromGoogleBooks(searchResults.items) as ShelfEntry[]
                 }
                 secondary="add"
                 tertiary="buy"
+                droppable={false}
                 onAdd={onAddBook}
                 footerElement={
                   <Typography
@@ -251,6 +261,7 @@ export default function BookSearch(props: BookSearchProps) {
       {selectedBooks.length > 0 && (
         <div className={classes.bookListContainer}>
           <BookList
+            id="selected-books"
             data={selectedBooks}
             primary={primary ? primary : undefined}
             secondary={secondary ? secondary : undefined}
@@ -258,6 +269,8 @@ export default function BookSearch(props: BookSearchProps) {
             onRadioPress={onChangeBookToRead}
             radioValue={radioValue ? radioValue : undefined}
             onDelete={onDeleteSelectedBook}
+            droppable
+            disableDrop={true}
           />
         </div>
       )}

@@ -8,6 +8,7 @@ import {
   Services,
   FilterAutoMongoKeys,
   SelectedGenre,
+  UninitClubShelfType,
 } from '@caravan/buddy-reading-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -164,6 +165,24 @@ export default function CreateClub(props: CreateClubProps) {
     if (!bookToRead) {
       return;
     }
+    let initShelf: UninitClubShelfType = {
+      current: [],
+      notStarted: [],
+      read: [],
+    };
+    selectedBooks.forEach(b => {
+      if (b.sourceId !== bookToRead.sourceId) {
+        initShelf.notStarted.push({
+          ...b,
+          readingState: 'notStarted',
+        });
+      } else {
+        initShelf.current.push({
+          ...b,
+          readingState: 'current',
+        });
+      }
+    });
     const selectedBooksWReadingState = selectedBooks.map(book => {
       if (
         book.sourceId !== bookToRead.sourceId &&
@@ -182,9 +201,9 @@ export default function CreateClub(props: CreateClubProps) {
       }
       return book;
     });
-    const clubObj: any = {
+    const clubObj: Services.CreateClubProps = {
       name: selectedGroupName,
-      shelf: selectedBooksWReadingState,
+      shelf: initShelf,
       bio: selectedGroupBio,
       maxMembers: selectedGroupSize,
       vibe: selectedGroupVibe,

@@ -1,12 +1,10 @@
 import axios from 'axios';
 import {
   Services,
-  ChannelSource,
   ShelfEntry,
   FilterAutoMongoKeys,
-  CurrBookAction,
+  ReadingState,
   ActiveFilter,
-  SelectedGenre,
   ClubWUninitSchedules,
   UserWithInvitableClubs,
   User,
@@ -15,18 +13,6 @@ import { getRandomInviteMessage } from '../functions/getRandomInviteMessage';
 
 const clubRoute = '/api/club';
 const discordRoute = '/api/discord';
-
-interface CreateClubProps {
-  name: string;
-  shelf?: any;
-  bio: string;
-  maxMembers: string;
-  vibe: string;
-  genres: SelectedGenre[];
-  readingSpeed: string;
-  channelSource: ChannelSource;
-  unlisted: boolean;
-}
 
 export async function getAllClubs(
   userId?: string,
@@ -119,25 +105,37 @@ export async function deleteClub(clubId: string) {
   return res;
 }
 
-export async function updateCurrentlyReadBook(
+// export async function updateCurrentlyReadBook(
+//   clubId: string,
+//   newBook: FilterAutoMongoKeys<ShelfEntry> | ShelfEntry,
+//   newEntry: boolean,
+//   prevBookId: string | null,
+//   currBookAction: CurrBookAction,
+//   wantToRead: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
+// ) {
+//   const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
+//     newBook,
+//     newEntry,
+//     prevBookId,
+//     currBookAction,
+//     wantToRead,
+//   });
+//   return res;
+// }
+
+export async function updateShelf(
   clubId: string,
-  newBook: FilterAutoMongoKeys<ShelfEntry> | ShelfEntry,
-  newEntry: boolean,
-  prevBookId: string | null,
-  currBookAction: CurrBookAction,
-  wantToRead: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
+  newShelf: {
+    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
+  }
 ) {
-  const res = await axios.put(`${clubRoute}/${clubId}/updateBook`, {
-    newBook,
-    newEntry,
-    prevBookId,
-    currBookAction,
-    wantToRead,
+  const res = await axios.put(`${clubRoute}/${clubId}/updateShelf`, {
+    newShelf,
   });
   return res;
 }
 
-export async function createClub(props: CreateClubProps) {
+export async function createClub(props: Services.CreateClubProps) {
   const body = {
     name: props.name,
     shelf: props.shelf,

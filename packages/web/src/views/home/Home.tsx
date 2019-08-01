@@ -120,16 +120,11 @@ const transformClub = async (
 ): Promise<ClubTransformed> => {
   let returnObj: ClubTransformed = {
     club,
-    currentlyReading: null,
     schedule: null,
   };
-  const currentlyReading = club.shelf.find(
-    book => book.readingState === 'current'
-  );
-  if (currentlyReading) {
-    returnObj = { ...returnObj, currentlyReading };
+  if (club.shelf.current.length > 0) {
     let schedule = club.schedules.find(
-      sched => sched.shelfEntryId === currentlyReading._id
+      sched => sched.shelfEntryId === club.shelf.current[0]._id
     );
     if (schedule) {
       schedule = scheduleStrToDates(schedule);
