@@ -3,6 +3,7 @@ import { ReadingDiscordBot } from './discord';
 import { UserDoc, BadgeDoc } from '../../typings';
 import { checkObjectIdIsValid } from '../common/mongoose';
 import { getBadges } from './badge';
+import { GuildMember } from 'discord.js';
 
 export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   if (!userDoc) {
@@ -74,6 +75,16 @@ export const getUser = async (urlSlugOrId: string) => {
     mutateUserBadges(user, badgeDoc);
   }
   return user;
+};
+
+export const getUsername = (userDoc?: UserDoc, member?: GuildMember) => {
+  const username: string =
+    userDoc && userDoc.name
+      ? userDoc.name
+      : member && member.user && member.user.username
+      ? member.user.username
+      : undefined;
+  return username;
 };
 
 export const getUserByDiscordId = async (discordId: string) => {
