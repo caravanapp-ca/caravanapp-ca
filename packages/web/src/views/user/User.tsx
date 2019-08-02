@@ -567,6 +567,21 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
+  let nameplateBgImagePosition;
+  if(user.palette && user.palette.bgImage && user.palette.mobileAlignment && screenSmallerThanSm){
+    switch(user.palette.mobileAlignment){
+      case 'left':
+        nameplateBgImagePosition = 'center left';
+        break;
+      case 'right':
+        nameplateBgImagePosition = 'center right';
+        break;
+      // Don't need to do anything on case 'center' since object-position defaults to center anyways.
+      default:
+        break;
+    }
+  }
+
   return (
     <MuiThemeProvider theme={userTheme}>
       <Header
@@ -587,7 +602,7 @@ export default function UserView(props: UserViewProps) {
         }}
       >
         {user.palette && user.palette.bgImage && (
-          <img src={user.palette.bgImage} className={classes.bgImage} />
+          <img src={user.palette.bgImage} className={classes.bgImage} style={nameplateBgImagePosition ? { objectPosition: nameplateBgImagePosition } : undefined} />
         )}
         <UserAvatar user={user} size={screenSmallerThanSm ? 96 : 144} />
         <div

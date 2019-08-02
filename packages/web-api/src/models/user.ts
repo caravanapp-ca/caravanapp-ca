@@ -80,6 +80,7 @@ const paletteDefinition: FilterAutoMongoKeys<SameKeysAs<PaletteObject>> = {
   textColor: { type: String, required: true },
   bgImage: { type: String },
   set: { type: String },
+  mobileAlignment: { type: String },
 };
 
 const paletteSchema = new Schema(paletteDefinition, {

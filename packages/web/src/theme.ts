@@ -170,6 +170,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-gla.svg',
+    mobileAlignment: 'right',
   },
   // Nature - Sunset
   {
@@ -215,6 +216,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-all.svg',
+    mobileAlignment: 'left',
   },
   // Nature - Planet Earth
   {
@@ -224,6 +226,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-pla.svg',
+    mobileAlignment: 'left',    
   },
   // Nature - OUTTA
   {
@@ -233,6 +236,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-out.svg',
+    mobileAlignment: 'left',    
   },
   // QUOTE BACKGROUNDS
   // Quote - Read Love Repeat
@@ -243,6 +247,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-rea.svg',
+    mobileAlignment: 'left',
   },
   // Quote - Lose & Find
   {
@@ -252,6 +257,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-los.svg',
+    mobileAlignment: 'left',    
   },
   // Quote - Hot Coffee
   {
@@ -261,6 +267,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-hot.svg',
+    mobileAlignment: 'left',    
   },
   // Quote - Treasure
   {
@@ -270,6 +277,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-tre.svg',
+    mobileAlignment: 'left',
   },
   // Quote - Perspective
   {
@@ -279,6 +287,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-per.svg',
+    mobileAlignment: 'left',    
   },
   // Quote - TOG
   {
@@ -288,6 +297,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-tog.svg',
+    mobileAlignment: 'left',    
   },
   // Quote - Maybe
   {
@@ -297,6 +307,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-may.svg',
+    mobileAlignment: 'left',    
   },
   // Quote - Somewhere
   {
@@ -306,6 +317,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-som.svg',
+    mobileAlignment: 'left',        
   },
 ];
 
