@@ -82,7 +82,10 @@ const paletteDefinition: FilterAutoMongoKeys<SameKeysAs<PaletteObject>> = {
   set: { type: String },
 };
 
-const paletteSchema = new Schema(paletteDefinition);
+const paletteSchema = new Schema(paletteDefinition, {
+  _id: false,
+  timestamps: true,
+});
 
 const userBadgeDefinition: FilterAutoMongoKeys<SameKeysAs<UserBadge>> = {
   key: { type: String, required: true },
