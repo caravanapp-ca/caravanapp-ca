@@ -9,6 +9,8 @@ import {
   User,
   UserQA,
   UserShelfEntry,
+  UserPalettes,
+  PaletteObject,
 } from '@caravan/buddy-reading-types';
 import {
   Container,
@@ -43,7 +45,10 @@ import { getAllProfileQuestions } from '../../services/profile';
 import { getReferralCount } from '../../services/referral';
 import { transformClubs } from '../home/Home';
 import validURL from '../../functions/validURL';
-import { makeUserTheme, makeUserDarkTheme } from '../../theme';
+import { makeUserTheme, makeUserDarkTheme, palettes } from '../../theme';
+import { globalPaletteSets } from '../../common/globalConstants';
+import { getUserPalettes } from '../../services/userPalettes';
+import { getSelectablePalettes } from '../../functions/userPalettes';
 
 interface MinMax {
   min: number;
@@ -84,10 +89,9 @@ const useStyles = makeStyles((theme: Theme) =>
     nameplateContainer: {
       backgroundColor: '#FFFFFF',
       display: 'flex',
-      padding: theme.spacing(2),
+      position: 'relative',
       flexDirection: 'row',
       alignItems: 'center',
-      position: 'relative',
       zIndex: 2,
     },
     tabRoot: {
@@ -102,6 +106,15 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    bgImage: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      zIndex: -1,
     },
   })
 );
@@ -142,6 +155,12 @@ export default function UserView(props: UserViewProps) {
   const [scrolled, setScrolled] = React.useState(0);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [referralCount, setReferralCount] = React.useState<number | null>(null);
+  const [userPalettes, setUserPalettes] = React.useState<UserPalettes | null>(
+    null
+  );
+  const [selectablePalettes, setSelectablePalettes] = React.useState<
+    PaletteObject[]
+  >([]);
   const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
     []
   );
@@ -197,6 +216,15 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
+  const getUserPalettesFn = async (userId: string) => {
+    const userPalettesRes = await getUserPalettes(userId);
+    if (userPalettesRes.status === 200) {
+      setUserPalettes(userPalettesRes.data.userPalettes);
+    } else {
+      setUserPalettes(null);
+    }
+  };
+
   useEffect(() => {
     getUser(userId).then(user => {
       if (user) {
@@ -205,6 +233,7 @@ export default function UserView(props: UserViewProps) {
         if (isUserMe) {
           getGenres();
           getQuestions(user);
+          getUserPalettesFn(user._id);
         }
         setUserIsMe(isUserMe);
         // Setting max page size here so we get all the user's clubs
@@ -224,6 +253,15 @@ export default function UserView(props: UserViewProps) {
       setUser(user);
     });
   }, [userId, myUserId]);
+
+  useEffect(() => {
+    const selPal = getSelectablePalettes(
+      palettes,
+      userPalettes,
+      globalPaletteSets
+    );
+    setSelectablePalettes(selPal);
+  }, [userPalettes]);
 
   useEffect(() => window.addEventListener('scroll', listenToScroll), []);
 
@@ -337,7 +375,7 @@ export default function UserView(props: UserViewProps) {
         typeof newValue.textColor === 'string'
       ) {
         if (newValue.key === '#FFFFFF') {
-          const userCopy: User = { ...user, [field]: null };
+          const userCopy: User = { ...user, palette: null };
           setUser(userCopy);
         } else {
           writeChange = true;
@@ -529,6 +567,21 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
+  let nameplateBgImagePosition;
+  if(user.palette && user.palette.bgImage && user.palette.mobileAlignment && screenSmallerThanSm){
+    switch(user.palette.mobileAlignment){
+      case 'left':
+        nameplateBgImagePosition = 'center left';
+        break;
+      case 'right':
+        nameplateBgImagePosition = 'center right';
+        break;
+      // Don't need to do anything on case 'center' since object-position defaults to center anyways.
+      default:
+        break;
+    }
+  }
+
   return (
     <MuiThemeProvider theme={userTheme}>
       <Header
@@ -545,10 +598,20 @@ export default function UserView(props: UserViewProps) {
           backgroundColor: userTheme
             ? userTheme.palette.primary.main
             : undefined,
+          padding: screenSmallerThanSm ? theme.spacing(1) : theme.spacing(2),
         }}
       >
+        {user.palette && user.palette.bgImage && (
+          <img src={user.palette.bgImage} className={classes.bgImage} style={nameplateBgImagePosition ? { objectPosition: nameplateBgImagePosition } : undefined} />
+        )}
         <UserAvatar user={user} size={screenSmallerThanSm ? 96 : 144} />
-        <div style={{ marginLeft: theme.spacing(2) }}>
+        <div
+          style={{
+            marginLeft: screenSmallerThanSm
+              ? theme.spacing(1)
+              : theme.spacing(2),
+          }}
+        >
           <UserNameplate
             user={user}
             referralCount={referralCount}
@@ -558,6 +621,7 @@ export default function UserView(props: UserViewProps) {
             valid={[nameValidated(), bioValidated(), websiteValidated()]}
             userDarkTheme={userDarkTheme}
             onCopyReferralLink={onCopyReferralLink}
+            selectablePalettes={selectablePalettes}
           />
         </div>
       </div>
