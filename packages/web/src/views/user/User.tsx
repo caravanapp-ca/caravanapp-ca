@@ -568,8 +568,13 @@ export default function UserView(props: UserViewProps) {
   };
 
   let nameplateBgImagePosition;
-  if(user.palette && user.palette.bgImage && user.palette.mobileAlignment && screenSmallerThanSm){
-    switch(user.palette.mobileAlignment){
+  if (
+    user.palette &&
+    user.palette.bgImage &&
+    user.palette.mobileAlignment &&
+    screenSmallerThanSm
+  ) {
+    switch (user.palette.mobileAlignment) {
       case 'left':
         nameplateBgImagePosition = 'center left';
         break;
@@ -602,7 +607,16 @@ export default function UserView(props: UserViewProps) {
         }}
       >
         {user.palette && user.palette.bgImage && (
-          <img src={user.palette.bgImage} className={classes.bgImage} style={nameplateBgImagePosition ? { objectPosition: nameplateBgImagePosition } : undefined} />
+          <img
+            src={user.palette.bgImage}
+            alt="background"
+            className={classes.bgImage}
+            style={
+              nameplateBgImagePosition
+                ? { objectPosition: nameplateBgImagePosition }
+                : undefined
+            }
+          />
         )}
         <UserAvatar user={user} size={screenSmallerThanSm ? 96 : 144} />
         <div

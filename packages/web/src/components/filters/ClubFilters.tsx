@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Button, Typography, useTheme } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { ArrowDropDown } from '@material-ui/icons';
 import { textSecondaryTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -56,7 +56,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
       {/* TODO: Map a variable number of genre buttons here in the future. */}
       <Button
         classes={{ root: classes.filterButton, text: classes.filterButtonText }}
-        onClick={() => onClickGenreFilter()}
+        onClick={onClickGenreFilter}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
           <ArrowDropDown color="primary" className={classes.dropDownIcon} />
@@ -72,7 +72,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
       </Button>
       <Button
         classes={{ root: classes.filterButton, text: classes.filterButtonText }}
-        onClick={() => onClickSpeedFilter()}
+        onClick={onClickSpeedFilter}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
           <ArrowDropDown color="primary" className={classes.dropDownIcon} />
@@ -88,7 +88,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
       </Button>
       <Button
         classes={{ root: classes.filterButton, text: classes.filterButtonText }}
-        onClick={() => onClickCapacityFilter()}
+        onClick={onClickCapacityFilter}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
           <ArrowDropDown color="primary" className={classes.dropDownIcon} />
@@ -104,7 +104,7 @@ export default function ClubFilters(props: ClubFiltersProps) {
       </Button>
       <Button
         classes={{ root: classes.filterButton, text: classes.filterButtonText }}
-        onClick={() => onClickMembershipFilter()}
+        onClick={onClickMembershipFilter}
       >
         <MuiThemeProvider theme={textSecondaryTheme}>
           <ArrowDropDown color="primary" className={classes.dropDownIcon} />

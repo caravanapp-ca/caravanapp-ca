@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  makeStyles,
-  useTheme,
-  MuiThemeProvider,
-} from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -64,8 +60,8 @@ export default function ClubLeaveDialog(props: LoginModalProps) {
 
   const { onCancel, onConfirm, open } = props;
 
-  const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('sm');
+  const fullWidth = true;
+  const maxWidth: DialogProps['maxWidth'] = 'sm';
 
   return (
     <Dialog

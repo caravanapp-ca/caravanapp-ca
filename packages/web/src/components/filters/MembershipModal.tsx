@@ -13,7 +13,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import theme from '../../theme';
 import { membershipLabels } from '../membership-labels';
-import { Description } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   dialogStyle: {

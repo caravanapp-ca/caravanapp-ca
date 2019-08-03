@@ -154,8 +154,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
   >(schedule ? new Array(schedule.discussions.length).fill(false) : []);
 
   // Placed this here because I was getting the error:
-  // React Hook "usePickerState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?
-  const { pickerProps, wrapperProps, inputProps } = usePickerState(
+  // React Hooks must be called in the exact same order in every component render.
+  const { pickerProps } = usePickerState(
     {
       value: props.schedule ? props.schedule.startDate : null,
       onChange: date => handleScheduleChange('startDate', date),
@@ -245,7 +245,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
 
   const renderDay = (
     day: MaterialUiPickersDate,
-    selectedDate: MaterialUiPickersDate,
+    _selectedDate: MaterialUiPickersDate,
     dayInCurrentMonth: boolean
   ) => {
     // Shouldn't happen under any normal circumstances.
