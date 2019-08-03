@@ -218,7 +218,6 @@ router.put(
       res.status(500).send('No genres found, oops!');
       return;
     }
-
     const notStartedLimit = 500;
     const userShelf = user.shelf;
     if (
@@ -258,7 +257,6 @@ router.put(
         //@ts-ignore
         (b._id = b._id ? new mongoose.Types.ObjectId(b._id) : undefined)
     );
-
     let userGenres: {
       key: string;
       name: string;
@@ -278,7 +276,6 @@ router.put(
           throw new Error(`Unknown genre: ${g.key}, ${g.name}`);
         })
         .sort((a, b) => a.name.localeCompare(b.name));
-
       userQA = user.questions.map(q => {
         const validQuestion = questionDoc.questions.find(f => f.id === q.id);
         if (validQuestion) {
@@ -297,7 +294,6 @@ router.put(
       res.status(400).send(err);
       return;
     }
-
     const newUserButWithPossibleNullValues: Omit<
       FilterAutoMongoKeys<User>,
       | 'isBot'
@@ -322,7 +318,6 @@ router.put(
       palette: user.palette,
       badges: user.badges,
     };
-
     const writeableObj: any = newUserButWithPossibleNullValues;
     Object.keys(writeableObj).forEach(key => {
       switch (key) {
@@ -332,7 +327,6 @@ router.put(
           writeableObj[key] == null && delete writeableObj[key];
       }
     });
-
     try {
       let userDoc = await UserModel.findByIdAndUpdate(userId, writeableObj, {
         new: true,
