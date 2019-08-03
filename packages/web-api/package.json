@@ -1,6 +1,6 @@
 {
   "name": "@caravan/buddy-reading-web-api",
-  "version": "0.0.1-alpha.0",
+  "version": "1.0.0",
   "description": "Web API for Caravan's buddy reading website",
   "main": "dist/index.js",
   "scripts": {
@@ -43,7 +43,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@caravan/buddy-reading-types": "0.0.1-alpha.0",
+    "@caravan/buddy-reading-types": "1.0.0",
     "@types/btoa": "^1.2.3",
     "@types/cookie-parser": "^1.4.1",
     "@types/cookie-session": "^2.0.37",

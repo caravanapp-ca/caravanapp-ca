@@ -1,6 +1,6 @@
 {
   "name": "@caravan/buddy-reading-types",
-  "version": "0.0.1-alpha.0",
+  "version": "1.0.0",
   "description": "Shared type definitions for Caravan's buddy reading website",
   "main": "index.d.ts",
   "publishConfig": {
