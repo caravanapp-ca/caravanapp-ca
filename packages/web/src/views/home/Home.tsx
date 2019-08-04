@@ -48,7 +48,7 @@ import {
 } from '@material-ui/core';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
-import { scheduleStrToDates } from '../../functions/scheduleStrToDates';
+import { transformClub } from '../club/functions/ClubFunctions';
 import shuffleArr from '../../functions/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
 import Splash from './Splash';
@@ -115,38 +115,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const transformClub = async (
-  club: Services.GetClubs['clubs'][0]
-): Promise<ClubTransformed> => {
-  let returnObj: ClubTransformed = {
-    club,
-    currentlyReading: null,
-    schedule: null,
-  };
-  const currentlyReading = club.shelf.find(
-    book => book.readingState === 'current'
-  );
-  if (currentlyReading) {
-    returnObj = { ...returnObj, currentlyReading };
-    let schedule = club.schedules.find(
-      sched => sched.shelfEntryId === currentlyReading._id
-    );
-    if (schedule) {
-      schedule = scheduleStrToDates(schedule);
-      returnObj = { ...returnObj, schedule };
-    }
-  }
-  return returnObj;
+const defaultActiveFilter: ActiveFilter = {
+  genres: [],
+  speed: [],
+  capacity: [],
+  membership: [],
 };
-
-export async function transformClubs(
-  clubs: Services.GetClubs['clubs']
-): Promise<ClubTransformed[]> {
-  const clubsTransformed: ClubTransformed[] = await Promise.all(
-    clubs.map(club => transformClub(club))
-  );
-  return clubsTransformed;
-}
 
 function transformUserToInvitableClub(
   allUsers: User[],
@@ -183,7 +157,6 @@ export default function Home(props: HomeProps) {
   const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
     Service<ClubTransformed[]>
   >({ status: 'loading' });
-  const [currentUsersClubs] = React.useState<Services.GetClubs['clubs']>([]);
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
@@ -212,26 +185,10 @@ export default function Home(props: HomeProps) {
   const [showMembershipFilter, setShowMembershipFilter] = React.useState(false);
   const [stagingClubsFilter, setStagingClubsFilter] = React.useState<
     ActiveFilter
-  >({
-    genres: [],
-    speed: [],
-    capacity: [],
-    membership: [],
-  });
+  >(defaultActiveFilter);
   const [activeClubsFilter, setActiveClubsFilter] = React.useState<
     ActiveFilter
-  >({
-    genres: [],
-    speed: [],
-    capacity: [],
-    membership: [],
-  });
-  const [activeUsersFilter] = React.useState<ActiveFilter>({
-    genres: [],
-    speed: [],
-    capacity: [],
-    membership: [],
-  });
+  >(defaultActiveFilter);
   const [afterUsersQuery, setAfterUsersQuery] = React.useState<
     string | undefined
   >(undefined);
@@ -264,40 +221,26 @@ export default function Home(props: HomeProps) {
     }
   }, [showWelcomeMessage]);
 
-  const getAllClubsFn = async (
-    activeClubsFilter: ActiveFilter,
-    pageSize: number,
-    search: string,
-    afterClubsQuery?: string
-  ) => {
-    setLoadingMoreClubs(true);
-    const userId = user && clubMembershipFiltersApplied ? user._id : undefined;
-    const res = await getAllClubs(
-      userId,
-      afterClubsQuery,
-      pageSize,
-      activeClubsFilter,
-      search
-    );
-    if (res.data) {
-      return await transformClubs(res.data.clubs);
-    }
-  };
-
   useEffect(() => {
     if (!userLoaded) {
       return;
     }
     // Implementing request canceling
     let didCancel = false;
+    const pageSize = 24;
+    setLoadingMoreClubs(true);
+    const userId = user && clubMembershipFiltersApplied ? user._id : undefined;
     (async () => {
-      const pageSize = 24;
-      const clubs = await getAllClubsFn(
-        activeClubsFilter,
+      const res = await getAllClubs(
+        userId,
+        afterClubsQuery,
         pageSize,
-        search,
-        afterClubsQuery
+        activeClubsFilter,
+        search
       );
+      const clubs = res.data
+        ? res.data.clubs.map(c => transformClub(c))
+        : undefined;
       // Ignore if we started fetching something else
       if (clubs && !didCancel) {
         setShowLoadMoreClubs(clubs.length === pageSize);
@@ -312,61 +255,66 @@ export default function Home(props: HomeProps) {
     return () => {
       didCancel = true;
     };
-  }, [activeClubsFilter, afterClubsQuery, search, userLoaded]);
-
-  const getUsersWithInvitableClubs = async () => {
-    const pageSize = 12;
-    const res = await getAllUsers(afterUsersQuery, 1, pageSize);
-    if (res.status === 200) {
-      let currUserClubsWithMembers: ClubWithMemberIds[] = [];
-      if (user) {
-        const currUserClubsRes = await getUserClubsWithMembers(
-          user._id,
-          undefined,
-          pageSize,
-          {
-            genres: [],
-            speed: [],
-            capacity: [
-              { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-            ],
-            membership: [
-              { key: 'myClubs', name: 'My clubs', type: 'membership' },
-            ],
-          }
-        );
-        if (currUserClubsRes.status === 200) {
-          currUserClubsWithMembers = currUserClubsRes.data.map(c => {
-            const memberIds: string[] = c.members.map(m => m._id);
-            return { club: c, memberIds };
-          });
-        }
-      }
-      const allUsers = res.data.users;
-      const allUsersShuffled = allUsers.map(user => shuffleUser(user));
-      const allUsersWithInvitableClubs = transformUserToInvitableClub(
-        allUsersShuffled,
-        currUserClubsWithMembers
-      );
-      setShowLoadMoreUsers(allUsersWithInvitableClubs.length === pageSize);
-      setUsersResult(s => ({
-        status: 'loaded',
-        payload:
-          s.status === 'loaded'
-            ? [...s.payload, ...allUsersWithInvitableClubs]
-            : allUsersWithInvitableClubs,
-      }));
-      setLoadingMoreUsers(false);
-    }
-  };
+  }, [
+    user,
+    userLoaded,
+    activeClubsFilter,
+    clubMembershipFiltersApplied,
+    afterClubsQuery,
+    search,
+  ]);
 
   useEffect(() => {
     if (!userLoaded) {
       return;
     }
-    getUsersWithInvitableClubs();
+    const pageSize = 12;
+    (async () => {
+      const res = await getAllUsers(afterUsersQuery, 1, pageSize);
+      if (res.status === 200) {
+        let currUserClubsWithMembers: ClubWithMemberIds[] = [];
+        if (user) {
+          const currUserClubsRes = await getUserClubsWithMembers(
+            user._id,
+            undefined,
+            pageSize,
+            {
+              genres: [],
+              speed: [],
+              capacity: [
+                { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
+              ],
+              membership: [
+                { key: 'myClubs', name: 'My clubs', type: 'membership' },
+              ],
+            }
+          );
+          if (currUserClubsRes.status === 200) {
+            currUserClubsWithMembers = currUserClubsRes.data.map(c => {
+              const memberIds = c.members.map(m => m._id);
+              return { club: c, memberIds };
+            });
+          }
+        }
+        const allUsers = res.data.users;
+        const allUsersShuffled = allUsers.map(user => shuffleUser(user));
+        const allUsersWithInvitableClubs = transformUserToInvitableClub(
+          allUsersShuffled,
+          currUserClubsWithMembers
+        );
+        setShowLoadMoreUsers(allUsersWithInvitableClubs.length === pageSize);
+        setUsersResult(s => ({
+          status: 'loaded',
+          payload:
+            s.status === 'loaded'
+              ? [...s.payload, ...allUsersWithInvitableClubs]
+              : allUsersWithInvitableClubs,
+        }));
+        setLoadingMoreUsers(false);
+      }
+    })();
     setLoadingMoreUsers(true);
-  }, [activeUsersFilter, afterUsersQuery, userLoaded]);
+  }, [user, userLoaded, afterUsersQuery]);
 
   // Get genres on mount
   useEffect(() => {
@@ -861,7 +809,7 @@ export default function Home(props: HomeProps) {
                 <UserCards
                   usersWithInvitableClubs={usersResult.payload}
                   currUser={user}
-                  userClubs={currentUsersClubs}
+                  userClubs={[]}
                 />
               )}
             {usersResult.status === 'loaded' &&

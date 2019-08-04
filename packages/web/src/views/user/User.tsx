@@ -43,7 +43,7 @@ import { getClubsByIdNoMembers, getAllClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
 import { getReferralCount } from '../../services/referral';
-import { transformClubs } from '../home/Home';
+import { transformClub } from '../club/functions/ClubFunctions';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme, palettes } from '../../theme';
 import { globalPaletteSets } from '../../common/globalConstants';
@@ -258,7 +258,8 @@ export default function UserView(props: UserViewProps) {
       }
       allClubs = res.data.clubs;
       fetchUserShelf();
-      transformClubs(allClubs).then(setUserClubsTransformed);
+      const transformedClubs = allClubs.map(c => transformClub(c));
+      setUserClubsTransformed(transformedClubs);
     });
   }, [userId]);
 
