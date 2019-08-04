@@ -114,6 +114,12 @@ export default function ButtonAppBar(props: HeaderProps) {
   } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
+  const ThemeProvider: React.FunctionComponent<{}> = ({ children }) =>
+    userDarkTheme ? (
+      <MuiThemeProvider theme={userDarkTheme}>{children}</MuiThemeProvider>
+    ) : (
+      <>{children}</>
+    );
   return (
     <ElevationScroll {...props}>
       <AppBar className={classes.appBar} position="sticky">
@@ -124,7 +130,7 @@ export default function ButtonAppBar(props: HeaderProps) {
               : undefined
           }
         >
-          <MuiThemeProvider theme={userDarkTheme}>
+          <ThemeProvider>
             <div className={classes.toolBarContainer}>
               {(!screenSmallerThanSm || leftComponent) && (
                 <div
@@ -156,7 +162,7 @@ export default function ButtonAppBar(props: HeaderProps) {
                 {rightComponent}
               </div>
             </div>
-          </MuiThemeProvider>
+          </ThemeProvider>
         </Toolbar>
         {showBorder !== false && (
           <div
