@@ -254,7 +254,7 @@ declare module '@caravan/buddy-reading-types' {
     set?: PaletteSet;
     // Use this attribute to set which portion of the bgImage displays on mobile
     // Will default to center if not provided.
-    mobileAlignment?: 'left' | 'center' | 'right'
+    mobileAlignment?: 'left' | 'center' | 'right';
   }
 
   export interface UserPalettes extends DocumentFields, MongoTimestamps {
