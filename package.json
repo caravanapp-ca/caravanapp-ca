@@ -3,8 +3,9 @@
   "private": true,
   "scripts": {
     "build": "lerna run build",
-    "test": "lerna run test --parallel",
     "lint": "lerna run lint",
+    "test": "lerna run test",
+    "test:ci": "lerna run test:ci",
     "start": "cd ./packages/web-api && npm start",
     "create-env": "printenv > ./packages/web-api/.env",
     "deploy:production": "yarn build && yarn deploy-only:production",
