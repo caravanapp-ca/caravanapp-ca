@@ -809,7 +809,6 @@ export default function Home(props: HomeProps) {
                 <UserCards
                   usersWithInvitableClubs={usersResult.payload}
                   currUser={user}
-                  userClubs={[]}
                 />
               )}
             {usersResult.status === 'loaded' &&
