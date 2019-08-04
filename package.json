@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "lerna run build",
-    "test": "lerna run test",
+    "test": "lerna run test --parallel",
     "lint": "lerna run lint",
     "start": "cd ./packages/web-api && npm start",
     "create-env": "printenv > ./packages/web-api/.env",

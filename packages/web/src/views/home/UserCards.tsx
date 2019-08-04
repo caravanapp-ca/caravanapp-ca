@@ -111,7 +111,6 @@ const useStyles = makeStyles(theme => ({
 interface UserCardProps {
   usersWithInvitableClubs: UserWithInvitableClubs[];
   currUser: User | null;
-  userClubs: Services.GetClubs['clubs'];
 }
 
 // Make this approximately the height of a standard UserCard
@@ -140,7 +139,7 @@ export default function UserCards(props: UserCardProps) {
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
-          {usersWithInvitableClubs.map((u, index) => {
+          {usersWithInvitableClubs.map(u => {
             const {
               _id,
               name,

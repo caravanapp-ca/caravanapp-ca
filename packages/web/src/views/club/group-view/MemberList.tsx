@@ -1,14 +1,11 @@
 import React from 'react';
 import { User } from '@caravan/buddy-reading-types';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Avatar, IconButton, Grid } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
 import { getBadgeToDisplay } from '../../../functions/getBadgeToDisplay';
 import { shrinkDiscordPhotoSize } from '../../../common/discord';
-
-const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface MemberListProps {
   ownerId: string;
@@ -17,7 +14,6 @@ interface MemberListProps {
 }
 
 export default function MemberList(props: MemberListProps) {
-  const classes = useStyles();
   const { maxMembers, members } = props;
   const freeSlots = Math.max(maxMembers - members.length, 0);
 

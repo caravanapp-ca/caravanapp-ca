@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { setCookie } from '../common/cookies';
-import {
-  ReferralSource,
-  ReferralDestination,
-} from '@caravan/buddy-reading-types';
+import { ReferralDestination } from '@caravan/buddy-reading-types';
 
 const referralRoute = '/api/referrals';
 
