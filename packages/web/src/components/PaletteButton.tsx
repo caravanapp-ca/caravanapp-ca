@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Theme, createStyles, Fab } from '@material-ui/core';
+import { Theme, createStyles } from '@material-ui/core';
 import { PaletteObject } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,10 +27,10 @@ interface PaletteButtonProps {
 }
 
 export default function PaletteButton(props: PaletteButtonProps) {
-  const { size, palette, onClick } = props;
   const classes = useStyles();
+  const { size, palette, onClick } = props;
   const sizeCalc = size || 36;
-  const bgImage = palette.bgImage;
+  const { bgImage } = palette;
   const bgColour = palette.key;
   return (
     <div
@@ -42,7 +42,13 @@ export default function PaletteButton(props: PaletteButtonProps) {
       }}
       onClick={() => onClick(palette)}
     >
-      {bgImage && <img src={bgImage} className={classes.img} />}
+      {bgImage && (
+        <img
+          src={bgImage}
+          alt={`${bgColour} palette`}
+          className={classes.img}
+        />
+      )}
     </div>
   );
 }

@@ -43,12 +43,14 @@ export default function GroupSizeSelector(props: GroupSizeSelectorProps) {
   const classes = useStyles();
   const theme = useTheme();
   const { onChangeSize, selectedSize, showContactMessage, sizes } = props;
-  const inputLabel = React.useRef<HTMLLabelElement>(null);
+  const labelRef = React.useRef<HTMLLabelElement>(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
 
   useEffect(() => {
-    setLabelWidth(inputLabel.current!.offsetWidth);
-  }, [inputLabel.current]);
+    if (labelRef.current) {
+      setLabelWidth(labelRef.current.offsetWidth);
+    }
+  }, []);
 
   return (
     <>
@@ -63,7 +65,7 @@ export default function GroupSizeSelector(props: GroupSizeSelectorProps) {
         </Typography>
       )}
       <FormControl variant="outlined" className={classes.formControl}>
-        <InputLabel ref={inputLabel} htmlFor="group-size-select">
+        <InputLabel ref={labelRef} htmlFor="group-size-select">
           Max club members
         </InputLabel>
         <Select

@@ -58,17 +58,17 @@ interface FooterProps {
 
 export default function Footer(props: FooterProps) {
   const classes = useStyles();
-  const { docHeight } = props;
+  // const { docHeight } = props;
   const footerHeightRef = createRef<HTMLElement>();
-  const [docHeightLTWinHeight, setDocHeightLTWinHeight] = React.useState<
-    boolean
-  >(
-    docHeight +
-      (footerHeightRef && footerHeightRef.current
-        ? footerHeightRef.current.offsetHeight
-        : 0) <
-      window.innerHeight
-  );
+  // const [docHeightLTWinHeight, setDocHeightLTWinHeight] = React.useState<
+  //   boolean
+  // >(
+  //   docHeight +
+  //     (footerHeightRef && footerHeightRef.current
+  //       ? footerHeightRef.current.offsetHeight
+  //       : 0) <
+  //     window.innerHeight
+  // );
 
   // TODO: Commenting these for performance
   // useEffect(() => {
@@ -82,15 +82,15 @@ export default function Footer(props: FooterProps) {
   //   updateFooterState();
   // }, [docHeight]);
 
-  const updateFooterState = () => {
-    setDocHeightLTWinHeight(
-      docHeight +
-        (footerHeightRef && footerHeightRef.current
-          ? footerHeightRef.current.offsetHeight
-          : 0) <
-        window.innerHeight
-    );
-  };
+  // const updateFooterState = () => {
+  //   setDocHeightLTWinHeight(
+  //     docHeight +
+  //       (footerHeightRef && footerHeightRef.current
+  //         ? footerHeightRef.current.offsetHeight
+  //         : 0) <
+  //       window.innerHeight
+  //   );
+  // };
 
   return (
     // TODO: Fix sticky footer on everything
