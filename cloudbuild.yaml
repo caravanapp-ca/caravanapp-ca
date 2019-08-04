@@ -1,0 +1,12 @@
+# This cloud build is NOT to be used for deployments.
+# It is only meant to be used for building with Cloud Build.
+steps:
+  - name: gcr.io/cloud-builders/yarn
+    args: ['install']
+  - name: gcr.io/cloud-builders/yarn
+    args: ['test']
+  - name: gcr.io/cloud-builders/yarn
+    args: ['lint']
+  - name: gcr.io/cloud-builders/yarn
+    args: ['build']
+timeout: '1600s'
