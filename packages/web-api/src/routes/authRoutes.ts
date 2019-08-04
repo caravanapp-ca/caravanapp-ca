@@ -62,9 +62,9 @@ function convertTokenResponseToModel(
 // );
 
 router.get('/discord/callback', async (req, res) => {
-  const { code, error, error_description, state } = req.query;
+  const { code, error, error_description: errorDescription, state } = req.query;
   if (error) {
-    res.redirect(`/?error=${error}&error_description=${error_description}`);
+    res.redirect(`/?error=${error}&error_description=${errorDescription}`);
     return;
   }
   let successfulAuthentication = true;
