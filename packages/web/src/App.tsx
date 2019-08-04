@@ -72,20 +72,17 @@ export function App(props: AppProps) {
     const getUserAsync = async () => {
       const userId = getCookie('userId');
       if (userId) {
-        getUser(userId).then(async user => {
-          if (user) {
-            await setUser(user);
-            setLoadedUser(true);
-            localStorage.setItem(KEY_USER, JSON.stringify(user));
-          } else {
-            await setUser(null);
-            setLoadedUser(true);
-            localStorage.removeItem(KEY_USER);
-            console.info('Are you having fun messing with cookies? :)');
-          }
-        });
+        const user = await getUser(userId);
+        setUser(user);
+        setLoadedUser(true);
+        if (user) {
+          localStorage.setItem(KEY_USER, JSON.stringify(user));
+        } else {
+          localStorage.removeItem(KEY_USER);
+          console.info('Are you having fun messing with cookies? :)');
+        }
       } else {
-        await setUser(null);
+        setUser(null);
         setLoadedUser(true);
         localStorage.removeItem(KEY_USER);
       }

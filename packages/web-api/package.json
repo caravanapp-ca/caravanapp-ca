@@ -1,6 +1,6 @@
 {
   "name": "@caravan/buddy-reading-web-api",
-  "version": "0.0.1-alpha.0",
+  "version": "1.0.0",
   "description": "Web API for Caravan's buddy reading website",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "dev:watch": "cross-env NODE_ENV=development nodemon --inspect src/index.ts",
-    "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
+    "lint": "tsc --noEmit && eslint \"src/**/*.{js,ts}\" --quiet --fix",
     "test": "jest"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/web-api",
@@ -43,7 +43,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@caravan/buddy-reading-types": "0.0.1-alpha.0",
+    "@caravan/buddy-reading-types": "1.0.0",
     "@types/btoa": "^1.2.3",
     "@types/cookie-parser": "^1.4.1",
     "@types/cookie-session": "^2.0.37",
@@ -51,7 +51,7 @@
     "@types/express": "^4.17.0",
     "@types/helmet": "^0.0.43",
     "@types/jest": "^24.0.16",
-    "@types/mongoose": "^5.5.11",
+    "@types/mongoose": "5.5.7",
     "@types/node": "^12.0.5",
     "@types/node-fetch": "^2.5.0",
     "@types/uuid": "^3.4.5",

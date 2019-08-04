@@ -4,11 +4,11 @@
   "private": true,
   "proxy": "http://localhost:3001",
   "dependencies": {
-    "@caravan/buddy-reading-types": "0.0.1-alpha.0",
+    "@caravan/buddy-reading-types": "1.0.0",
     "@date-io/date-fns": "^1.3.8",
     "@material-ui/core": "^4.3.0",
     "@material-ui/icons": "^4.2.1",
-    "@material-ui/pickers": "^3.2.1",
+    "@material-ui/pickers": "^3.2.2",
     "@types/jest": "^22.2.3",
     "@types/node": "^12.0.6",
     "@types/react": "^16.8.24",

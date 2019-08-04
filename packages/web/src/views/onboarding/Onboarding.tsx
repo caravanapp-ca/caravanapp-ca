@@ -180,22 +180,15 @@ export default function Onboarding(props: OnboardingProps) {
   }, [submitState]);
 
   useEffect(() => {
-    const getUnansweredProfileQuestions = async () => {
-      if (profileQuestions) {
-        // Get all the ids of the questions they've answered and add them to an array
-        const answeredIds: string[] = [];
-        for (let i = 0; i < answers.length; i++) {
-          answeredIds.push(answers[i].id);
-        }
-        // Make the unanswered questions not include the ids of the questions they've already answered
-        const updatedQuestions = profileQuestions.questions.filter(
-          q => !answeredIds.includes(q.id)
-        );
-        setUnansweredProfileQuestions(updatedQuestions);
-      }
-    };
-    getUnansweredProfileQuestions();
-  }, [answers]);
+    if (profileQuestions && Array.isArray(profileQuestions.questions)) {
+      const answeredIds = answers.map(a => a.id);
+      // Make the unanswered questions not include the ids of the questions they've already answered
+      const updatedQuestions = profileQuestions.questions.filter(
+        q => !answeredIds.includes(q.id)
+      );
+      setUnansweredProfileQuestions(updatedQuestions);
+    }
+  }, [profileQuestions, answers]);
 
   function onGenreSelected(
     genreKey: string,

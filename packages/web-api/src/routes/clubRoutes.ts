@@ -705,10 +705,11 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       if (user === req.user.discordId) {
         allowed.push('MANAGE_MESSAGES');
       }
-      return {
+      const overwrites: ChannelCreationOverwrites = {
         id: user,
         allow: allowed,
-      } as ChannelCreationOverwrites;
+      };
+      return overwrites;
     });
 
     // Make all channels unlisted (might have to handle Genre channels differently in the future)

@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-  makeStyles,
-  createStyles,
-  Typography,
-  useTheme,
-} from '@material-ui/core';
+import { makeStyles, createStyles, Typography } from '@material-ui/core';
 import Switch from '@material-ui/core/Switch';
 
-const useStyles = makeStyles(theme =>
+const useStyles = makeStyles(() =>
   createStyles({
     switchLabel: {
       fontStyle: 'italic',
@@ -22,7 +17,6 @@ interface ClubPrivacySliderProps {
 
 export default function ClubPrivacySlider(props: ClubPrivacySliderProps) {
   const classes = useStyles();
-  const theme = useTheme();
   const { unlisted, onChange } = props;
 
   let labelText = unlisted

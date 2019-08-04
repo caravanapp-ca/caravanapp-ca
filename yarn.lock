@@ -1802,10 +1802,10 @@
   dependencies:
     "@babel/runtime" "^7.2.0"
 
-"@material-ui/pickers@3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@material-ui/pickers/-/pickers-3.2.1.tgz#50a2a74be07db587d039b6da3c279086ae839eb1"
-  integrity sha512-9dl7JLSIZQQx7j4UKU7Hnkxjok6gyz3KQMjza54dJgfJ8ZrMca2opGveerzVtAfqSef/aGzA8WrEw/ql/5r7RQ==
+"@material-ui/pickers@3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@material-ui/pickers/-/pickers-3.2.2.tgz#9b7a67f5a8f21f8183853ebc1848e5d8dd680d4c"
+  integrity sha512-on/J1yyKeJ4CkLnItpf/jPDKMZVWvHDklkh5FS7wkZ0s1OPoqTsPubLWfA7eND6xREnVRyLFzVTlE3VlWYdQWw==
   dependencies:
     "@babel/runtime" "^7.2.0"
     "@types/styled-jsx" "^2.2.8"
@@ -2215,10 +2215,10 @@
     "@types/bson" "*"
     "@types/node" "*"
 
-"@types/mongoose@^5.5.11":
-  version "5.5.11"
-  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.5.11.tgz#8562bb84b4f3f41aebec27f263607bfe2183729e"
-  integrity sha512-Z1W2V3zrB+SeDGI6G1G5XR3JJkkMl4ni7a2Kmq10abdY0wapbaTtUT2/31N+UTPEzhB0KPXUgtQExeKxrc+hxQ==
+"@types/mongoose@5.5.7":
+  version "5.5.7"
+  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.5.7.tgz#fb39d79f81527eb19b15095fb8c23bc649a3354d"
+  integrity sha512-bQTgH19lwY56T4YE6YTeobTtJ4EVTqP8ST5lFxjecPHC+/ebpHU8W01by4KEGSg5AeWFWVCePUi44wHuFzbxDQ==
   dependencies:
     "@types/mongodb" "*"
     "@types/node" "*"

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
   ClubTransformed,
@@ -43,7 +43,7 @@ import { getClubsByIdNoMembers, getAllClubs } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
 import { getReferralCount } from '../../services/referral';
-import { transformClubs } from '../home/Home';
+import { transformClub } from '../club/functions/ClubFunctions';
 import validURL from '../../functions/validURL';
 import { makeUserTheme, makeUserDarkTheme, palettes } from '../../theme';
 import { globalPaletteSets } from '../../common/globalConstants';
@@ -167,10 +167,9 @@ export default function UserView(props: UserViewProps) {
   const [questionsModified, setQuestionsModified] = React.useState<boolean>(
     false
   );
-  const [
-    questions,
-    setQuestions,
-  ] = React.useState<Services.GetProfileQuestions | null>(null);
+  const [profileQuestions, setProfileQuestions] = React.useState<
+    ProfileQuestion[] | null
+  >(null);
   const [initQuestions, setInitQuestions] = React.useState<{
     initAnsweredQs: UserQAwMinMax[];
     initUnansweredQs: ProfileQuestion[];
@@ -195,19 +194,18 @@ export default function UserView(props: UserViewProps) {
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const getQuestions = async (user: User) => {
-    const res = await getAllProfileQuestions();
-    if (res.status === 200) {
-      const questions = res.data;
-      setQuestions(questions);
-      const initQuestions = sortQuestions(user, questions);
+  const fetchQuestions = useCallback(async (userQA: UserQA[]) => {
+    const { status, data } = await getAllProfileQuestions();
+    if (status === 200) {
+      setProfileQuestions(data.questions);
+      const initQuestions = sortQuestions(userQA, data.questions);
       setInitQuestions(initQuestions);
     } else {
       // TODO: error handling
     }
-  };
+  }, []);
 
-  const getReferrals = async (user: User) => {
+  const fetchReferrals = async (user: User) => {
     const userRes = await getReferralCount(user._id);
     if (userRes.status === 200) {
       setReferralCount(userRes.data.referralCount);
@@ -216,7 +214,7 @@ export default function UserView(props: UserViewProps) {
     }
   };
 
-  const getUserPalettesFn = async (userId: string) => {
+  const fetchUserPalettes = async (userId: string) => {
     const userPalettesRes = await getUserPalettes(userId);
     if (userPalettesRes.status === 200) {
       setUserPalettes(userPalettesRes.data.userPalettes);
@@ -226,33 +224,56 @@ export default function UserView(props: UserViewProps) {
   };
 
   useEffect(() => {
-    getUser(userId).then(user => {
-      if (user) {
-        getReferrals(user);
-        const isUserMe = myUserId === user._id;
-        if (isUserMe) {
-          getGenres();
-          getQuestions(user);
-          getUserPalettesFn(user._id);
-        }
-        setUserIsMe(isUserMe);
-        // Setting max page size here so we get all the user's clubs
-        getAllClubs(userId, undefined, 50).then(res => {
-          if (!res.data) {
-            // TODO: Error checking
-          }
-          const { clubs } = res.data;
-          getUserShelf(user, clubs).then(shelf => {
-            setUserShelf(shelf);
-          });
-          (async () => {
-            setUserClubsTransformed(await transformClubs(clubs));
-          })();
-        });
+    getAllGenres().then(res => {
+      if (res.status === 200) {
+        setGenres(res.data);
+      } else {
+        // TODO: error handling
       }
-      setUser(user);
     });
-  }, [userId, myUserId]);
+    window.addEventListener('scroll', listenToScroll);
+    return () => {
+      window.removeEventListener('scroll', listenToScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    let fetchedUser: User | null = null;
+    let allClubs: Services.GetClubs['clubs'] | null = null;
+    const fetchUserShelf = () => {
+      if (fetchedUser && allClubs) {
+        getUserShelf(fetchedUser, allClubs).then(setUserShelf);
+      }
+    };
+    getUser(userId).then(user => {
+      fetchedUser = user;
+      setUser(user);
+      fetchUserShelf();
+    });
+    // Setting max page size here so we get all the user's clubs
+    getAllClubs(userId, undefined, 50).then(res => {
+      if (res.status < 200 || res.status >= 300 || !res.data) {
+        // TODO: error handling
+        return;
+      }
+      allClubs = res.data.clubs;
+      fetchUserShelf();
+      const transformedClubs = allClubs.map(c => transformClub(c));
+      setUserClubsTransformed(transformedClubs);
+    });
+  }, [userId]);
+
+  useEffect(() => {
+    if (user) {
+      fetchReferrals(user);
+      const isUserMe = myUserId === user._id;
+      if (isUserMe) {
+        fetchQuestions(user.questions);
+        fetchUserPalettes(user._id);
+      }
+      setUserIsMe(isUserMe);
+    }
+  }, [user, myUserId, fetchQuestions]);
 
   useEffect(() => {
     const selPal = getSelectablePalettes(
@@ -263,39 +284,25 @@ export default function UserView(props: UserViewProps) {
     setSelectablePalettes(selPal);
   }, [userPalettes]);
 
-  useEffect(() => window.addEventListener('scroll', listenToScroll), []);
-
-  useEffect(() => {
-    return () => {
-      window.removeEventListener('scroll', listenToScroll);
-    };
-  }, []);
-
   const listenToScroll = () => {
     const winScroll =
       document.body.scrollTop || document.documentElement.scrollTop;
     setScrolled(winScroll);
   };
 
-  async function getGenres() {
-    const res = await getAllGenres();
-    if (res.status === 200) {
-      setGenres(res.data);
-    } else {
-      // TODO: error handling
-    }
-  }
-
-  function sortQuestions(user: User, questions: Services.GetProfileQuestions) {
-    setUserQuestionsWkspc(user.questions);
+  function sortQuestions(
+    userQA: UserQA[],
+    profileQuestions: ProfileQuestion[]
+  ) {
+    setUserQuestionsWkspc(userQA);
     const initUnansweredQs: ProfileQuestion[] = [];
     const initAnsweredQs: UserQAwMinMax[] = [];
     const initQuestions = {
       initUnansweredQs,
       initAnsweredQs,
     };
-    questions.questions.forEach(q => {
-      const uq = user.questions.find(uq => uq.id === q.id);
+    profileQuestions.forEach(q => {
+      const uq = userQA.find(uq => uq.id === q.id);
       if (uq) {
         initQuestions.initAnsweredQs.push({ ...uq, min: q.min, max: q.max });
       } else {
@@ -397,8 +404,11 @@ export default function UserView(props: UserViewProps) {
           q => q.answer.split(' ').join('').length !== 0
         );
         userCopy = { ...userCopy, questions: userQuestionsAnswered };
-        if (questions) {
-          const initQuestions = sortQuestions(userCopy, questions);
+        if (profileQuestions) {
+          const initQuestions = sortQuestions(
+            userCopy.questions,
+            profileQuestions
+          );
           setInitQuestions(initQuestions);
         }
         setQuestionsModified(false);
@@ -568,8 +578,13 @@ export default function UserView(props: UserViewProps) {
   };
 
   let nameplateBgImagePosition;
-  if(user.palette && user.palette.bgImage && user.palette.mobileAlignment && screenSmallerThanSm){
-    switch(user.palette.mobileAlignment){
+  if (
+    user.palette &&
+    user.palette.bgImage &&
+    user.palette.mobileAlignment &&
+    screenSmallerThanSm
+  ) {
+    switch (user.palette.mobileAlignment) {
       case 'left':
         nameplateBgImagePosition = 'center left';
         break;
@@ -602,7 +617,16 @@ export default function UserView(props: UserViewProps) {
         }}
       >
         {user.palette && user.palette.bgImage && (
-          <img src={user.palette.bgImage} className={classes.bgImage} style={nameplateBgImagePosition ? { objectPosition: nameplateBgImagePosition } : undefined} />
+          <img
+            src={user.palette.bgImage}
+            alt="background"
+            className={classes.bgImage}
+            style={
+              nameplateBgImagePosition
+                ? { objectPosition: nameplateBgImagePosition }
+                : undefined
+            }
+          />
         )}
         <UserAvatar user={user} size={screenSmallerThanSm ? 96 : 144} />
         <div

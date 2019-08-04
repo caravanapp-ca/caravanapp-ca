@@ -1,6 +1,6 @@
 {
   "name": "@caravan/buddy-reading-types",
-  "version": "0.0.1-alpha.0",
+  "version": "1.0.0",
   "description": "Shared type definitions for Caravan's buddy reading website",
   "main": "index.d.ts",
   "publishConfig": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "exit 0",
-    "lint": "tsc --noEmit && eslint 'index.d.ts' --quiet --fix",
+    "lint": "tsc --noEmit && eslint \"index.d.ts\" --quiet --fix",
     "test": "echo \"Tests are not implemented.\" && exit 0"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/types",
