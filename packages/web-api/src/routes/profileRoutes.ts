@@ -1,5 +1,5 @@
 import express from 'express';
-import { Services, ProfileQuestions } from '@caravan/buddy-reading-types';
+import { Services } from '@caravan/buddy-reading-types';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { ProfileQuestionsDoc } from '../../typings';
 

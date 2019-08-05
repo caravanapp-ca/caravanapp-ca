@@ -65,7 +65,7 @@ const userShelfEntryDefinition: SameKeysAs<
 
 const userShelfEntrySchema = new Schema(userShelfEntryDefinition);
 
-const mapUserShelfDefinition: any = {
+const mapUserShelfDefinition = {
   notStarted: { type: [userShelfEntrySchema], required: true },
   read: { type: [userShelfEntrySchema], required: true },
 };
