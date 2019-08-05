@@ -27,7 +27,7 @@ import {
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
-import { shelfEntryWithHttpsBookUrl } from '../services/club';
+import { shelfEntryWithHttpsBookUrl, getClubUrl } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
@@ -724,6 +724,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       nsfw: body.nsfw || false,
       userLimit: body.maxMembers,
       permissionOverwrites: channelCreationOverwrites,
+      topic: body.bio,
     };
     const channel = (await guild.createChannel(
       newChannel.name,
@@ -750,6 +751,11 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
+
+    const channelTopic = `${getClubUrl(newClub.id)}\n\n${
+      body.bio ? body.bio.substr(0, 1024) : ''
+    }`;
+    channel.setTopic(channelTopic);
 
     createReferralAction(userId, 'createClub');
 
