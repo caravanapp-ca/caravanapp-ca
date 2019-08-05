@@ -1,6 +1,6 @@
 # Dockerfile
 FROM node:8.12.0
-WORDKIR /app
+WORKDIR /app
 ADD package.json yarn.lock ./
 RUN yarn install
 ADD . .
