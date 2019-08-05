@@ -5,6 +5,6 @@ ADD package.json yarn.lock ./
 RUN yarn install
 ADD . .
 RUN yarn bootstrap
-RUN yarn test:ci
-RUN yarn lint
-RUN yarn build
+RUN yarn test:ci && \
+  yarn lint && \
+  yarn build
