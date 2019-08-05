@@ -9,8 +9,7 @@
   "scripts": {
     "build": "exit 0",
     "lint": "tsc --noEmit && eslint \"index.d.ts\" --quiet --fix",
-    "test": "echo \"Tests are not implemented.\" && exit 0",
-    "test:ci": "echo \"Tests are not implemented.\" && exit 0"
+    "test": "echo \"Tests are not implemented.\" && exit 0"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/types",
   "keywords": [
