@@ -12,7 +12,6 @@ import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import {
   User,
-  Services,
   UserWithInvitableClubs,
 } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
