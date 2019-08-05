@@ -2,9 +2,10 @@
   "name": "@caravan/buddy-reading",
   "private": true,
   "scripts": {
+    "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "test": "lerna run test --parallel",
     "lint": "lerna run lint",
+    "test": "lerna exec -- npm run test",
     "start": "cd ./packages/web-api && npm start",
     "create-env": "printenv > ./packages/web-api/.env",
     "deploy:production": "yarn build && yarn deploy-only:production",

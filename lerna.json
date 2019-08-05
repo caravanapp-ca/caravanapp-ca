@@ -17,5 +17,6 @@
   "packages": ["packages/*"],
   "ignoreChanges": ["**/*.md"],
   "npmClient": "yarn",
+  "useWorkspaces": true,
   "npmClientArgs": ["--no-lockfile"]
 }
