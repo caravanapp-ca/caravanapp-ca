@@ -9,7 +9,8 @@
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "dev:watch": "cross-env NODE_ENV=development nodemon --inspect src/index.ts",
-    "lint": "tsc --noEmit && eslint \"src/**/*.{js,ts}\" --quiet --fix",
+    "lint": "eslint \"src/**/*.{js,ts}\"",
+    "lint:fix": "tsc --noEmit && eslint \"src/**/*.{js,ts}\" --quiet --fix",
     "test": "jest"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/web-api",
