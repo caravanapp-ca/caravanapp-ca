@@ -2,6 +2,7 @@
   "name": "@caravan/buddy-reading",
   "private": true,
   "scripts": {
+    "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "lint": "lerna run lint",
     "test:ci": "lerna exec -- npm run test:ci",
