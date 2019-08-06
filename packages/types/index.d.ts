@@ -1,5 +1,3 @@
-import { GuildMember } from 'discord.js';
-import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
 
 declare module '@caravan/buddy-reading-types' {
