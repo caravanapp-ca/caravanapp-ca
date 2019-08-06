@@ -55,4 +55,4 @@ const referralSchema = new Schema<ReferralDoc>(referralDefinition, {
   timestamps: true,
 });
 
-export default model<ReferralDoc>('Referral', referralSchema);
+export const ReferralModel = model<ReferralDoc>('Referral', referralSchema);

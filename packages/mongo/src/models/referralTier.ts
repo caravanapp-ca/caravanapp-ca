@@ -23,7 +23,7 @@ const referralTiersDefinition: SameKeysAs<
 
 const referralTiersSchema = new Schema(referralTiersDefinition);
 
-export default model<ReferralTierDoc>(
+export const ReferralTierModel = model<ReferralTierDoc>(
   'ReferralTier',
   referralTiersSchema,
   'referralTiers'

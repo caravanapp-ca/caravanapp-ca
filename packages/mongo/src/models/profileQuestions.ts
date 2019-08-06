@@ -35,7 +35,7 @@ const profileQuestionsSchema = new Schema<ProfileQuestionsDoc>(
   }
 );
 
-export default model<ProfileQuestionsDoc>(
+export const ProfileQuestionsModel = model<ProfileQuestionsDoc>(
   'ProfileQuestion',
   profileQuestionsSchema,
   'profileQuestions'

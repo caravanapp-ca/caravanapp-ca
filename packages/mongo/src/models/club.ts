@@ -89,4 +89,4 @@ const clubSchema = new Schema<ClubDoc>(definition, {
   timestamps: true,
 });
 
-export default model<ClubDoc>('Club', clubSchema);
+export const ClubModel = model<ClubDoc>('Club', clubSchema);

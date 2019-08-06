@@ -18,4 +18,4 @@ const definition: SameKeysAs<FilterAutoMongoKeys<Session>> = {
 
 const sessionSchema = new Schema<SessionDoc>(definition);
 
-export default model<SessionDoc>('Session', sessionSchema);
+export const SessionModel = model<SessionDoc>('Session', sessionSchema);

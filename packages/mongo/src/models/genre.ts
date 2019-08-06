@@ -26,4 +26,4 @@ const genresSchema = new Schema<GenreDoc>(genresSchemaDefinition, {
   timestamps: true,
 });
 
-export default model<GenreDoc>('Genre', genresSchema);
+export const GenreModel = model<GenreDoc>('Genre', genresSchema);

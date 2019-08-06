@@ -131,4 +131,4 @@ const userSchema = new Schema<UserDoc>(userDefinition, {
   timestamps: true,
 });
 
-export default model<UserDoc>('User', userSchema);
+export const UserModel = model<UserDoc>('User', userSchema);

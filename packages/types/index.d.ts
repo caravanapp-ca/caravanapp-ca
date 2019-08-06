@@ -278,13 +278,14 @@ declare module '@caravan/buddy-reading-types' {
     | 'shelf'
     | 'palette';
 
-  export type BookSource =
-    | 'google'
-    | 'wattpad'
-    | 'amazon'
-    | 'goodreads'
-    | 'custom'
-    | 'unknown';
+  export enum BookSource {
+    GOOGLE = 'google',
+    WATTPAD = 'wattpad',
+    AMAZON = 'amazon',
+    GOODREADS = 'goodreads',
+    CUSTOM = 'custom',
+    UNKNOWN = 'unknown',
+  }
 
   export type ChannelSource = 'discord';
 
