@@ -28,7 +28,12 @@ import { ReadingDiscordBot } from './services/discord';
   await connectToDb();
 
   // logs in
-  ReadingDiscordBot.getInstance();
+  const client = ReadingDiscordBot.getInstance();
+  client.on('ready', () => {
+    client.guilds.forEach(guild => {
+      guild.fetchMembers();
+    });
+  });
 
   const port = process.env.PORT || 3001;
   const env = process.env.NODE_ENV || 'development';
