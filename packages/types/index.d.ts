@@ -6,6 +6,7 @@ declare module '@caravan/buddy-reading-types' {
     'createdAt' | 'updatedAt' | '__v' | '_id'
   >;
   // TODO: Improve by nesting the SameKeysAs
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export type SameKeysAs<Base> = { [Key in keyof Base]: any };
 
   export interface DocumentFields {
@@ -410,6 +411,7 @@ declare module '@caravan/buddy-reading-types' {
     }
     export interface CreateClubResult {
       club: Club;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       discord: any;
     }
     export interface GetGenres extends Omit<Genres, '_id'> {}
