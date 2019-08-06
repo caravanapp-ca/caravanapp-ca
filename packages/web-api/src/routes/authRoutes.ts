@@ -212,7 +212,9 @@ router.get('/discord/callback', async (req, res) => {
   if (successfulAuthentication) {
     req.session.token = accessToken;
     req.session.userId = userDoc.id;
-    res.cookie('userId', userDoc.id);
+    res.cookie('userId', userDoc.id, {
+      expires: new Date(Date.now() + 2592000000),
+    });
     res.redirect(`/?state=${state}`);
     console.log(
       `Successful authentication {id: ${userDoc.id}, discordId: ${userDoc.discordId}}.`
