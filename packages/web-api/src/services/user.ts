@@ -1,7 +1,6 @@
 import { GuildMember } from 'discord.js';
-import { BadgeDoc, UserDoc, UserModel } from '@caravan/buddy-reading-mongo';
+import { checkObjectIdIsValid, BadgeDoc, UserDoc, UserModel } from '@caravan/buddy-reading-mongo';
 import { ReadingDiscordBot } from './discord';
-import { checkObjectIdIsValid } from '../common/mongoose';
 import { getBadges } from './badge';
 
 export const mutateUserDiscordContent = (userDoc: UserDoc) => {

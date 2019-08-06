@@ -1,7 +1,7 @@
 import express from 'express';
 import { TextChannel } from 'discord.js';
 import { check, validationResult } from 'express-validator';
-import SessionModel from '../models/session';
+import { SessionModel } from '@caravan/buddy-reading-mongo';
 import { ReadingDiscordBot } from '../services/discord';
 import { hasScope } from '../common/discordbot';
 

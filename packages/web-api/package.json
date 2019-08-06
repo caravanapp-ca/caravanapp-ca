@@ -4,11 +4,13 @@
   "description": "Web API for Caravan's buddy reading website",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build:clean && tsc",
+    "build": "npm run build:clean && npm run build:mongo && tsc",
     "build:clean": "rimraf ./dist",
+    "build:mongo": "cd ../mongo && npm run build",
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
-    "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
-    "dev:watch": "cross-env NODE_ENV=development nodemon --inspect src/index.ts",
+    "dev": "cross-env NODE_ENV=development npm run build:mongo && nodemon src/index.ts",
+    "dev:prebuilt": "cross-env NODE_ENV=development nodemon --inspect src/index.ts",
+    "dev:watch": "cross-env NODE_ENV=development npm run build:mongo && nodemon --inspect src/index.ts",
     "lint": "eslint \"src/**/*\"",
     "lint:fix": "eslint \"src/**/*\" --quiet --fix",
     "test": "jest"

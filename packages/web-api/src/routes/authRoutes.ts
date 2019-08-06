@@ -4,13 +4,12 @@ import {
   Session,
   User,
 } from '@caravan/buddy-reading-types';
+import { SessionModel, UserModel, } from '@caravan/buddy-reading-mongo';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
   ReadingDiscordBot,
 } from '../services/discord';
-import SessionModel from '../models/session';
-import UserModel from '../models/user';
 import { generateSlugIds } from '../common/url';
 import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
 import {
