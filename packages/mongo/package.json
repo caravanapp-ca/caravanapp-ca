@@ -28,13 +28,13 @@
     "utility-types": "^3.7.0"
   },
   "devDependencies": {
-    "@types/mongoose": "^5.5.11",
-    "@typescript-eslint/eslint-plugin": "^1.9.0",
-    "@typescript-eslint/parser": "^1.9.0",
-    "eslint": "^5.16.0",
-    "eslint-config-prettier": "^4.3.0",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^1.17.1",
-    "typescript": "^3.5.1"
+    "@types/mongoose": "5.5.7",
+    "prettier": "^1.18.2",
+    "typescript": "^3.5.3"
   }
 }
