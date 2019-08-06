@@ -16,8 +16,7 @@
     "deploy-only:staging": "gcloud app deploy app.staging.yaml"
   },
   "dependencies": {
-    "lerna": "^3.13.1",
-    "lerna-changelog": "^0.8.2"
+    "lerna": "^3.16.4"
   },
   "workspaces": [
     "packages/*"
