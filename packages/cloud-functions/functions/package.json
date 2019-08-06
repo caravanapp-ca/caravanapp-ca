@@ -1,5 +1,5 @@
 {
-  "name": "@caravan/ps-club-membership-join",
+  "name": "@caravan/buddy-reading-cloud-functions",
   "version": "1.0.0",
   "scripts": {
     "lint": "node ../../../node_modules/eslint/bin/eslint.js ./**/**.ts",
