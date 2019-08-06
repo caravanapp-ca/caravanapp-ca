@@ -5,7 +5,7 @@ import {
   ReferralTier,
   ReferralTiers,
 } from '@caravan/buddy-reading-types';
-import { ReferralTierDoc } from '../../typings';
+import { ReferralTierDoc } from '../../';
 
 const referralTierDefinition: SameKeysAs<FilterAutoMongoKeys<ReferralTier>> = {
   tierNumber: { type: Number, required: true },

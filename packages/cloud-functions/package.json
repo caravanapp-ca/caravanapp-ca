@@ -1,0 +1,11 @@
+{
+  "name": "@caravan/functions-workspace",
+  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": {
+    "nohoist": [
+      "**"
+    ]
+  }
+}

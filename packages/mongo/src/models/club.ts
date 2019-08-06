@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { Omit } from 'utility-types';
 import {
   Club,
   ShelfEntry,
@@ -8,9 +9,8 @@ import {
   ClubReadingSchedule,
   Discussion,
 } from '@caravan/buddy-reading-types';
-import { Omit } from 'utility-types';
+import { ClubDoc } from '@caravan/buddy-reading-mongo';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
-import { ClubDoc } from '../../typings';
 
 const genresSchema = new Schema({
   key: String,

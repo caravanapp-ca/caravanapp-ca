@@ -9,8 +9,7 @@ import {
   UserBadge,
   PaletteObject,
 } from '@caravan/buddy-reading-types';
-import { UserDoc } from '../../typings';
-import { Omit } from 'utility-types';
+import { UserDoc } from '../../';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
 
 const selectedGenreDefinition: SameKeysAs<User['selectedGenres'][0]> = {

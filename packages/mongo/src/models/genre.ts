@@ -5,7 +5,7 @@ import {
   Genres,
   Genre,
 } from '@caravan/buddy-reading-types';
-import { GenreDoc } from '../../typings';
+import { GenreDoc } from '../../';
 
 const genreSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<Genre>> = {
   key: { type: String, required: true },

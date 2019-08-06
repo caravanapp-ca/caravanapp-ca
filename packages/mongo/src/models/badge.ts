@@ -5,7 +5,7 @@ import {
   Badges,
   Badge,
 } from '@caravan/buddy-reading-types';
-import { BadgeDoc } from '../../typings';
+import { BadgeDoc } from '../../';
 
 const badgeDefinition: SameKeysAs<FilterAutoMongoKeys<Badge>> = {
   key: { type: String, required: true },
@@ -20,4 +20,4 @@ const badgesDefinition: SameKeysAs<FilterAutoMongoKeys<Badges>> = {
 
 const badgesSchema = new Schema(badgesDefinition);
 
-export default model<BadgeDoc>('Badge', badgesSchema);
+export const BadgeModel = model<BadgeDoc>('Badge', badgesSchema);

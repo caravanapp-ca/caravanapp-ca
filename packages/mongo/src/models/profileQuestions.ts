@@ -4,7 +4,7 @@ import {
   SameKeysAs,
   ProfileQuestions,
 } from '@caravan/buddy-reading-types';
-import { ProfileQuestionsDoc } from '../../typings';
+import { ProfileQuestionsDoc } from '../../';
 
 const profileQuestionSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<ProfileQuestionsDoc['questions'][0]>

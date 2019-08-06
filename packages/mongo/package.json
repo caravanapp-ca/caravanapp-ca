@@ -1,0 +1,42 @@
+{
+  "name": "@caravan/buddy-reading-mongo",
+  "version": "1.0.0",
+  "description": "Shared type definitions for Caravan's buddy reading MongoDB",
+  "main": "index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint \"index.d.ts\"",
+    "test": "echo \"Tests are not implemented.\" && exit 0"
+  },
+  "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/mongo",
+  "keywords": [
+    "caravan",
+    "buddy",
+    "reading",
+    "types",
+    "mongodb"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quinnturner/buddy-reading-website/issues"
+  },
+  "homepage": "https://github.com/quinnturner/buddy-reading-website#readme",
+  "devDependencies": {
+    "@types/mongoose": "^5.5.11",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "prettier": "^1.17.1",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "@caravan/buddy-reading-types": "1.0.0",
+    "mongoose": "^5.6.8",
+    "utility-types": "^3.7.0"
+  }
+}
