@@ -3,6 +3,7 @@ import {
   FilterAutoMongoKeys,
   Session,
   User,
+  UserSettings,
 } from '@caravan/buddy-reading-types';
 import {
   DiscordOAuth2Url,
@@ -17,6 +18,7 @@ import {
   getReferralDoc,
   createReferralActionByDoc,
 } from '../services/referral';
+import { getUserSettings, createUserSettings } from '../services/userSettings';
 
 const router = express.Router();
 
@@ -89,7 +91,23 @@ router.get('/discord/callback', async (req, res) => {
 
   let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {
-    // Update the user, but lazy now. // THIS COMMENT IS OLD, NOT NECESSARY NOW?
+    // Do any user updates here.
+    // Check if we have an email for this user.
+    // TODO: Once every user in production has an email attached, we can remove these checks.
+    const userIdStr = userDoc._id.toHexString();
+    const userSettingsRes = await getUserSettings(userIdStr);
+    if (userSettingsRes && !userSettingsRes.email && discordUserData.email) {
+      // User settings exists but we don't have an email saved yet; add one.
+      userSettingsRes.email = discordUserData.email;
+      userSettingsRes.save();
+    } else if (!userSettingsRes && discordUserData.email) {
+      // User settings does not yet exist; add one with an email.
+      const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
+        userId: userIdStr,
+        email: discordUserData.email,
+      };
+      createUserSettings(newUserSettings);
+    }
   } else {
     const slugs = generateSlugIds(discordUserData.username);
     const availableSlugs = await getAvailableSlugIds(slugs);
@@ -136,6 +154,13 @@ router.get('/discord/callback', async (req, res) => {
       req.session.referredTempUid = undefined;
       res.clearCookie('refClickComplete');
     }
+
+    // Init user settings
+    const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
+      userId: userDoc._id.toHexString(),
+      email: discordUserData.email,
+    };
+    createUserSettings(newUserSettings);
   }
 
   try {

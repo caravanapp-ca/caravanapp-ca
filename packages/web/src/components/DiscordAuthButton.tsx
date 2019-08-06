@@ -45,14 +45,15 @@ function getOAuth2StateParam() {
   return oauthState;
 }
 
+function onClick() {
+  const oauth2State = getOAuth2StateParam();
+  const host =
+    process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '';
+  window.location.href = `${host}/api/auth/discord/login?state=${oauth2State}`;
+}
+
 export default function DiscordAuthButton(props: DiscordAuthButtonProps) {
   const classes = useStyles();
-  function onClick() {
-    const oauth2State = getOAuth2StateParam();
-    const host =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '';
-    window.location.href = `${host}/api/auth/discord/login?state=${oauth2State}`;
-  }
   return (
     <Button
       variant="contained"
