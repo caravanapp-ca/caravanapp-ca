@@ -12,7 +12,7 @@ const onJoinClub = (
 ) => {
   const { eventId } = context;
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.get(guildId);
+  let guild = client.guilds.get(guildId);
   if (!guild) {
     throw new Error(`[eventId: ${eventId}] - Could not find guild: ${guildId}`);
   }

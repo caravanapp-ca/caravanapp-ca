@@ -1,5 +1,10 @@
 import { GuildMember } from 'discord.js';
-import { checkObjectIdIsValid, BadgeDoc, UserDoc, UserModel } from '@caravan/buddy-reading-mongo';
+import {
+  checkObjectIdIsValid,
+  BadgeDoc,
+  UserDoc,
+  UserModel,
+} from '@caravan/buddy-reading-mongo';
 import { ReadingDiscordBot } from './discord';
 import { getBadges } from './badge';
 

@@ -4,7 +4,7 @@ import {
   Session,
   User,
 } from '@caravan/buddy-reading-types';
-import { SessionModel, UserModel, } from '@caravan/buddy-reading-mongo';
+import { SessionModel, UserModel } from '@caravan/buddy-reading-mongo';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,

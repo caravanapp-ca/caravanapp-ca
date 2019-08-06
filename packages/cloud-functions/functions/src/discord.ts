@@ -48,6 +48,8 @@ const ReadingDiscordBot = (() => {
     return discordClient;
   }
 
+  function getGuild(guildId: string) {}
+
   return {
     getInstance: () => {
       if (!instance) {
