@@ -74,6 +74,11 @@ const ReadingDiscordBot = (() => {
   function createInstance() {
     const discordClient = new Discord.Client();
     discordClient.login(DiscordBotSecret);
+    discordClient.on('ready', () => {
+      discordClient.guilds.forEach(guild => {
+        guild.fetchMembers();
+      });
+    });
     return discordClient;
   }
 
