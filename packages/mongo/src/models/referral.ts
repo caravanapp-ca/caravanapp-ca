@@ -1,12 +1,19 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
   Referral,
   UserReferredAction,
   ReferredUser,
+  MongoTimestamps,
 } from '@caravan/buddy-reading-types';
-import { ReferralDoc } from '../../';
+
+export interface ReferralDoc
+  extends Document,
+    MongoTimestamps,
+    Omit<Referral, '_id'> {
+  _id: Types.ObjectId;
+}
 
 const userReferredActionSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<UserReferredAction>

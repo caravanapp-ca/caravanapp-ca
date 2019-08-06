@@ -1,10 +1,13 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
   Session,
 } from '@caravan/buddy-reading-types';
-import { SessionDoc } from '../../';
+
+export interface SessionDoc extends Document, FilterAutoMongoKeys<Session> {
+  _id: Types.ObjectId;
+}
 
 const definition: SameKeysAs<FilterAutoMongoKeys<Session>> = {
   accessToken: { type: String, required: true },

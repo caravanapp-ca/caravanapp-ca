@@ -1,21 +1,12 @@
 // Import models
-import { BadgeModel } from './models/badge';
-import { ClubModel } from './models/club';
-import { GenreModel } from './models/genre';
-import { ProfileQuestionsModel } from './models/profileQuestions';
-import { ReferralModel } from './models/referral';
-import { ReferralTierModel } from './models/referralTier';
-import { SessionModel } from './models/session';
-import { UserModel } from './models/user';
-
-// Export models
+export { BadgeDoc, BadgeModel } from './models/badge';
+export { ClubDoc, ClubModel } from './models/club';
+export { GenreDoc, GenreModel } from './models/genre';
 export {
-  BadgeModel,
-  ClubModel,
-  GenreModel,
+  ProfileQuestionsDoc,
   ProfileQuestionsModel,
-  ReferralModel,
-  ReferralTierModel,
-  SessionModel,
-  UserModel,
-};
+} from './models/profileQuestions';
+export { ReferralDoc, ReferralModel } from './models/referral';
+export { ReferralTierDoc, ReferralTierModel } from './models//referralTier';
+export { SessionDoc, SessionModel } from './models/session';
+export { UserDoc, UserModel } from './models//user';

@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
 import { Omit } from 'utility-types';
 import {
   Club,
@@ -9,8 +9,18 @@ import {
   ClubReadingSchedule,
   Discussion,
 } from '@caravan/buddy-reading-types';
-import { ClubDoc } from '@caravan/buddy-reading-mongo';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
+
+export interface ShelfEntryDoc
+  extends Document,
+    FilterAutoMongoKeys<ShelfEntry> {
+  _id: Types.ObjectId;
+}
+
+export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
+  _id: Types.ObjectId;
+  shelf: ShelfEntryDoc[];
+}
 
 const genresSchema = new Schema({
   key: String,

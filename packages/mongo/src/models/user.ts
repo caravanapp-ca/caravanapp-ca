@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
 import {
   User,
   FilterAutoMongoKeys,
@@ -9,8 +9,11 @@ import {
   UserBadge,
   PaletteObject,
 } from '@caravan/buddy-reading-types';
-import { UserDoc } from '../../';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
+
+export interface UserDoc extends Document, Omit<User, '_id'> {
+  _id: Types.ObjectId;
+}
 
 const selectedGenreDefinition: SameKeysAs<User['selectedGenres'][0]> = {
   key: { type: String, required: true },

@@ -1,11 +1,14 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
   ReferralTier,
   ReferralTiers,
 } from '@caravan/buddy-reading-types';
-import { ReferralTierDoc } from '../../';
+
+export interface ReferralTierDoc extends Document, Omit<ReferralTiers, '_id'> {
+  _id: Types.ObjectId;
+}
 
 const referralTierDefinition: SameKeysAs<FilterAutoMongoKeys<ReferralTier>> = {
   tierNumber: { type: Number, required: true },
