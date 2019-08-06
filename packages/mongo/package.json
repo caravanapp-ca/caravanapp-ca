@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint \"src/**/*\"",
+    "lint:fix": "eslint \"src/**/*\" --quiet --fix",
     "test": "echo \"Tests are not implemented.\" && exit 0"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/mongo",

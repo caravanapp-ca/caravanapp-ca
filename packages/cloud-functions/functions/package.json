@@ -2,7 +2,8 @@
   "name": "@caravan/ps-club-membership-join",
   "version": "1.0.0",
   "scripts": {
-    "lint": "node ../../../node_modules/eslint/bin/eslint.js --max-warnings=0 ./**/**.ts",
+    "lint": "node ../../../node_modules/eslint/bin/eslint.js ./**/**.ts",
+    "lint:fix": "node ../../../node_modules/eslint/bin/eslint.js ./**/**.ts --quiet --fix",
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
