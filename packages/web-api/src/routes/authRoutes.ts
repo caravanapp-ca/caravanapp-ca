@@ -19,6 +19,7 @@ import {
   createReferralActionByDoc,
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
+import { UserSettingsDoc } from '../../typings';
 
 const router = express.Router();
 
@@ -92,18 +93,17 @@ router.get('/discord/callback', async (req, res) => {
   let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {
     // Do any user updates here.
-    // Check if we have an email for this user.
-    // TODO: Once every user in production has an email attached, we can remove these checks.
-    const userIdStr = userDoc._id.toHexString();
-    const userSettingsRes = await getUserSettings(userIdStr);
-    if (userSettingsRes && !userSettingsRes.email && discordUserData.email) {
+    // Temporarily, check if we have an email for this user.
+    // TODO: Once every user in production has an email in settings, we can remove these checks.
+    const userSettingsDoc = await getUserSettings(userDoc.id);
+    if (userSettingsDoc && !userSettingsDoc.email && discordUserData.email) {
       // User settings exists but we don't have an email saved yet; add one.
-      userSettingsRes.email = discordUserData.email;
-      userSettingsRes.save();
-    } else if (!userSettingsRes && discordUserData.email) {
+      userSettingsDoc.email = discordUserData.email;
+      userSettingsDoc.save();
+    } else if (!userSettingsDoc && discordUserData.email) {
       // User settings does not yet exist; add one with an email.
       const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
-        userId: userIdStr,
+        userId: userDoc.id,
         email: discordUserData.email,
       };
       createUserSettings(newUserSettings);
@@ -157,7 +157,7 @@ router.get('/discord/callback', async (req, res) => {
 
     // Init user settings
     const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
-      userId: userDoc._id.toHexString(),
+      userId: userDoc.id,
       email: discordUserData.email,
     };
     createUserSettings(newUserSettings);

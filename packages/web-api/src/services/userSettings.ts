@@ -4,11 +4,11 @@ import {
   FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
 
-export const getUserSettings = async (userId: string) => {
+export const getUserSettings = (userId: string) => {
   return UserSettingsModel.findOne({ userId });
 };
 
-export const createUserSettings = async (
+export const createUserSettings = (
   settings: FilterAutoMongoKeys<UserSettings>
 ) => {
   const userSettings = new UserSettingsModel(settings);
