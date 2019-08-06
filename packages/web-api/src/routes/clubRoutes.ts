@@ -32,7 +32,11 @@ import {
   UserModel
 } from "@caravan/buddy-reading-mongo";
 import { isAuthenticated } from "../middleware/auth";
-import { shelfEntryWithHttpsBookUrl } from "../services/club";
+import {
+  shelfEntryWithHttpsBookUrl,
+  getClubUrl,
+  getDefaultClubTopic
+} from "../services/club";
 import { ReadingDiscordBot } from "../services/discord";
 import { getUser, mutateUserBadges, getUsername } from "../services/user";
 import { createReferralAction } from "../services/referral";
@@ -725,7 +729,8 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       name: body.name,
       nsfw: body.nsfw || false,
       userLimit: body.maxMembers,
-      permissionOverwrites: channelCreationOverwrites
+      permissionOverwrites: channelCreationOverwrites,
+      topic: body.bio
     };
     const channel = (await guild.createChannel(
       newChannel.name,
@@ -752,6 +757,12 @@ router.post("/", isAuthenticated, async (req, res, next) => {
 
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
+
+    const channelTopic = getDefaultClubTopic(
+      getClubUrl(newClub.id),
+      club.bio || ""
+    );
+    channel.setTopic(channelTopic);
 
     createReferralAction(userId, "createClub");
 
