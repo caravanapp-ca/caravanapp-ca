@@ -4,7 +4,7 @@ import {
   SameKeysAs,
   UserPalettes,
 } from '@caravan/buddy-reading-types';
-import { UserPalettesDoc } from '../../typings';
+import { UserPalettesDoc } from '@caravan/buddy-reading-mongo';
 
 const userPalettesDefinition: SameKeysAs<FilterAutoMongoKeys<UserPalettes>> = {
   userId: { type: String, required: true },
