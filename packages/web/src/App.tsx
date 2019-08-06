@@ -33,6 +33,7 @@ import { handleReferral } from './services/referral';
 import About from './views/about/About';
 import getUtmSourceValue from './common/getUtmSourceValue';
 import { validateDiscordPermissions } from './services/auth';
+import { getOAuth2StateParam } from './common/auth';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -73,7 +74,8 @@ export function App(props: AppProps) {
     const getUserAsync = async () => {
       const userId = getCookie('userId');
       if (userId) {
-        validateDiscordPermissions();
+        const state = getOAuth2StateParam();
+        validateDiscordPermissions(state);
         const user = await getUser(userId);
         setUser(user);
         setLoadedUser(true);

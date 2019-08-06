@@ -19,7 +19,8 @@ import {
   createReferralActionByDoc,
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
-import { UserSettingsDoc } from '../../typings';
+import { getSession, validateSessionPermissions } from '../services/session';
+import { param } from 'express-validator';
 
 const router = express.Router();
 
@@ -28,6 +29,7 @@ export function destroySession(req: Request, res: Response) {
   res.clearCookie('userId');
 }
 
+// Don't think anything is hitting this endpoint...
 router.get('/discord/login', (req, res) => {
   const { state } = req.query;
   if (!state) {
@@ -35,6 +37,24 @@ router.get('/discord/login', (req, res) => {
     return;
   }
   res.redirect(DiscordOAuth2Url(state, req.headers.host));
+});
+
+router.get('/discord/validatePermissions', async (req, res) => {
+  const { state } = req.query;
+  if (!state) {
+    res.status(400).send('Require a state string to complete this request.');
+  }
+  const { userId } = req.session;
+  if (!userId) {
+    res.status(400).send('Require a logged in user to complete this request.');
+  }
+  const sessionDoc = await getSession(userId);
+  if (validateSessionPermissions(sessionDoc)) {
+    return res.sendStatus(200);
+  } else {
+    // This line doesn't seem to work...
+    res.redirect(DiscordOAuth2Url(state, req.headers.host));
+  }
 });
 
 function convertTokenResponseToModel(
