@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import copyToClipboard from 'copy-to-clipboard';
 import { User } from '@caravan/buddy-reading-types';
-import { getReferralLink } from '../functions/referral';
+import { getReferralLink } from '../common/referral';
 import fbSvg from '../resources/fb--whiteonblack.svg';
 import twitterSvg from '../resources/twitter--whiteonblack.svg';
 import emailSvg from '../resources/email--whiteonblack.svg';

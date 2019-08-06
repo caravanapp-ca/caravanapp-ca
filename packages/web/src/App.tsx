@@ -31,7 +31,8 @@ import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
 import About from './views/about/About';
-import getUtmSourceValue from './functions/getUtmSourceValue';
+import getUtmSourceValue from './common/getUtmSourceValue';
+import { validateDiscordPermissions } from './services/auth';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -72,6 +73,7 @@ export function App(props: AppProps) {
     const getUserAsync = async () => {
       const userId = getCookie('userId');
       if (userId) {
+        validateDiscordPermissions();
         const user = await getUser(userId);
         setUser(user);
         setLoadedUser(true);
@@ -88,10 +90,7 @@ export function App(props: AppProps) {
       }
     };
     getUserAsync();
-  }, []);
-
-  // Handle the `state` query to verify login
-  useEffect(() => {
+    // Handle the `state` query to verify login
     const queries = qs.parse(window.location.search);
     if (queries && queries.state) {
       // Someone tampered with the login, remove token

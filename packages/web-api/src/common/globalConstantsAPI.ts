@@ -9,3 +9,11 @@ export const discordGenChatChId = () => {
     return '589194387968491532';
   }
 };
+
+// Determines what Discord permissions we request from the user on auth.
+export const DiscordPermissions = [
+  'email',
+  'identify',
+  'guilds.join',
+  'gdm.join',
+];
