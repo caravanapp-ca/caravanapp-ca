@@ -26,10 +26,7 @@
   },
   "homepage": "https://github.com/quinnturner/buddy-reading-website#README",
   "dependencies": {
-<<<<<<< Updated upstream
-=======
     "@caravan/buddy-reading-mongo": "1.0.0",
->>>>>>> Stashed changes
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "btoa": "^1.2.1",
