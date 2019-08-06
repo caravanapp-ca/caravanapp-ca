@@ -9,7 +9,8 @@
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "dev:watch": "cross-env NODE_ENV=development nodemon --inspect src/index.ts",
-    "lint": "tsc --noEmit && eslint \"src/**/*.{js,ts}\" --quiet --fix",
+    "lint": "eslint \"src/**/*\"",
+    "lint:fix": "tsc --noEmit && eslint \"src/**/*.{js,ts}\" --quiet --fix",
     "test": "jest"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/web-api",
@@ -59,6 +60,7 @@
     "@typescript-eslint/parser": "^1.13.0",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-jest": "^22.14.1",
     "eslint-plugin-prettier": "^3.1.0",
     "jest": "24.7.1",
     "nodemon": "^1.19.1",
