@@ -20,10 +20,10 @@ import AboutYou from './AboutYou';
 import AnswerQuestion from './AnswerQuestion';
 import ProfileQuestionsCarousel from '../../components/ProfileQuestionsCarousel';
 import SelectBooks from './SelectBooks';
-import JoinClubs from './JoinClubs';
 import { getAllProfileQuestions } from '../../services/profile';
 import { updateUserProfile } from '../../services/user';
 import HeaderTitle from '../../components/HeaderTitle';
+import DownloadDiscordDialog from '../../components/DownloadDiscordDialog';
 
 interface OnboardingRouteParams {
   id: string;
@@ -150,6 +150,14 @@ export default function Onboarding(props: OnboardingProps) {
   const [submitState, setSubmitState] = React.useState<SubmissionState>(
     'notSubmitted'
   );
+
+  const [showDiscordDialog, setShowDiscordDialog] = React.useState<boolean>(
+    false
+  );
+
+  const [hasSeenDiscordDialog, setHasSeenDiscordDialog] = React.useState<
+    boolean
+  >(false);
 
   useEffect(() => {
     const getProfileQuestions = async () => {
@@ -294,6 +302,19 @@ export default function Onboarding(props: OnboardingProps) {
     setSelectedBooks(selectedBooks);
   }
 
+  function continueFromSelectBooks() {
+    if (hasSeenDiscordDialog) {
+      submitOnboarding();
+    } else {
+      setShowDiscordDialog(true);
+    }
+  }
+
+  function onCloseDiscordDialog() {
+    setHasSeenDiscordDialog(true);
+    submitOnboarding();
+  }
+
   async function submitOnboarding() {
     setSubmitState('submitted');
     const res = await updateUserProfile({
@@ -378,22 +399,17 @@ export default function Onboarding(props: OnboardingProps) {
             leftComponent={leftComponentAddBooks}
           />
           <SelectBooks
-            onContinue={submitOnboarding}
+            onContinue={continueFromSelectBooks}
             continuing={submitState === 'submitted'}
             onSubmitSelectedBooks={onSubmitSelectedBooks}
             selectedBooks={selectedBooks}
           />
         </>
       )}
-      {currentPage === 6 && (
-        <>
-          <Header
-            centerComponent={centerComponentJoinClubs}
-            leftComponent={leftComponentJoinClubs}
-          />
-          <JoinClubs onContinue={continueToBooksPage} />
-        </>
-      )}
+      <DownloadDiscordDialog
+        open={showDiscordDialog && !hasSeenDiscordDialog}
+        handleClose={onCloseDiscordDialog}
+      />
     </>
   );
 }
