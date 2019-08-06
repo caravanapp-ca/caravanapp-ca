@@ -1,4 +1,4 @@
-import { model, Schema, Types } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
@@ -7,7 +7,7 @@ import {
 import { UserSettingsDoc } from '../../typings';
 
 const UserSettingsDefinition: SameKeysAs<FilterAutoMongoKeys<UserSettings>> = {
-  userId: { type: Types.ObjectId, required: true },
+  userId: { type: String, required: true },
   email: { type: String },
 };
 
