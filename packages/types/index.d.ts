@@ -278,7 +278,7 @@ declare module '@caravan/buddy-reading-types' {
     | 'shelf'
     | 'palette';
 
-  export enum BookSource {
+  export const enum BookSource {
     GOOGLE = 'google',
     WATTPAD = 'wattpad',
     AMAZON = 'amazon',
@@ -331,6 +331,40 @@ declare module '@caravan/buddy-reading-types' {
     schedules: (
       | ClubReadingSchedule
       | FilterAutoMongoKeys<ClubReadingSchedule>)[];
+  }
+
+  /** Google Cloud Pub/Sub and Functions */
+
+  export namespace PubSub {
+    export const enum Topic {
+      CLUB_MEMBERSHIP = 'clubMembership',
+    }
+
+    export const enum Attributes {
+      CLUB_ID = 'clubId',
+      CLUB_DISCORD_ID = 'clubDiscordId',
+      CLUB_MEMBERSHIP_STATE = 'clubMembership',
+      DISCORD_GUILD_ID = 'guildId',
+      USER_DISCORD_ID = 'userDiscordId',
+      USER_ID = 'userId',
+    }
+
+    export namespace Message {
+      export interface ClubMembershipChange {
+        [PubSub.Attributes.CLUB_ID]: string;
+        [PubSub.Attributes.CLUB_MEMBERSHIP_STATE]: 'joined' | 'left';
+        [PubSub.Attributes.DISCORD_GUILD_ID]: string;
+        [PubSub.Attributes.USER_DISCORD_ID]: string;
+        [PubSub.Attributes.USER_ID]: string;
+      }
+    }
+  }
+
+  export namespace Firestore {
+    export const enum Collection {
+      /** The Document ID is the pub/sub eventId */
+      DiscordBotMessages = 'discordBotMessages',
+    }
   }
 
   export namespace Services {
@@ -456,12 +490,12 @@ declare module '@caravan/buddy-reading-types' {
       quoteSharingAllowed: boolean;
     }
 
-    export enum AccessViewStatus {
+    export const enum AccessViewStatus {
       FullPublicDomain = 'FULL_PUBLIC_DOMAIN',
       Sample = 'SAMPLE',
     }
 
-    export enum Country {
+    export const enum Country {
       CA = 'CA',
     }
 
@@ -471,17 +505,17 @@ declare module '@caravan/buddy-reading-types' {
       acsTokenLink?: string;
     }
 
-    export enum TextToSpeechPermission {
+    export const enum TextToSpeechPermission {
       Allowed = 'ALLOWED',
       AllowedForAccessibility = 'ALLOWED_FOR_ACCESSIBILITY',
     }
 
-    export enum Viewability {
+    export const enum Viewability {
       AllPages = 'ALL_PAGES',
       Partial = 'PARTIAL',
     }
 
-    export enum Kind {
+    export const enum Kind {
       BooksVolume = 'books#volume',
     }
 
@@ -512,7 +546,7 @@ declare module '@caravan/buddy-reading-types' {
       currencyCode: string;
     }
 
-    export enum Saleability {
+    export const enum Saleability {
       ForSale = 'FOR_SALE',
       Free = 'FREE',
       NotForSale = 'NOT_FOR_SALE',
@@ -557,17 +591,17 @@ declare module '@caravan/buddy-reading-types' {
       identifier: string;
     }
 
-    export enum Type {
+    export const enum Type {
       Isbn10 = 'ISBN_10',
       Isbn13 = 'ISBN_13',
       Other = 'OTHER',
     }
 
-    export enum Language {
+    export const enum Language {
       En = 'en',
     }
 
-    export enum MaturityRating {
+    export const enum MaturityRating {
       NotMature = 'NOT_MATURE',
     }
 
@@ -576,7 +610,7 @@ declare module '@caravan/buddy-reading-types' {
       containsImageBubbles: boolean;
     }
 
-    export enum PrintType {
+    export const enum PrintType {
       Book = 'BOOK',
     }
 
