@@ -19,6 +19,10 @@
     {
       "name": "Types",
       "path": "packages/types"
+    },
+    {
+      "name": "Cloud functions",
+      "path": "packages/cloud-functions"
     }
   ],
   "settings": {
