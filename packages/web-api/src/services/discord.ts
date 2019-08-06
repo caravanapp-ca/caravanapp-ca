@@ -9,7 +9,12 @@ import { ReferralTier } from '@caravan/buddy-reading-types';
 import { getReferralTier } from './referral';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
-const DiscordPermissions = ['identify', 'guilds.join', 'gdm.join'].join('%20');
+const DiscordPermissions = [
+  'email',
+  'identify',
+  'guilds.join',
+  'gdm.join',
+].join('%20');
 
 const DiscordApiUrl = 'https://discordapp.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;
