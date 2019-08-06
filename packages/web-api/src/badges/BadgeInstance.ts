@@ -1,4 +1,4 @@
-import { BadgeDoc, BadgeModel } from "@caravan/buddy-reading-mongo";
+import { BadgeDoc, BadgeModel } from '@caravan/buddy-reading-mongo';
 
 // Singleton pattern
 export const BadgeDocInstance = (() => {
@@ -13,8 +13,8 @@ export const BadgeDocInstance = (() => {
       throw new Error(`Error retrieving badges ${err}`);
     }
     if (!badgeDoc) {
-      console.error("Did not find any badges in database!");
-      throw new Error("Did not find any badges in database!");
+      console.error('Did not find any badges in database!');
+      throw new Error('Did not find any badges in database!');
     }
     return badgeDoc;
   }
@@ -25,6 +25,6 @@ export const BadgeDocInstance = (() => {
         instance = await createInstance();
       }
       return instance;
-    }
+    },
   };
 })();

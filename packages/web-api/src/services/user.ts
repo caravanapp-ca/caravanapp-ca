@@ -1,8 +1,8 @@
-import { GuildMember } from "discord.js";
-import { BadgeDoc, UserDoc, UserModel } from "@caravan/buddy-reading-mongo";
-import { ReadingDiscordBot } from "./discord";
-import { checkObjectIdIsValid } from "../common/mongoose";
-import { getBadges } from "./badge";
+import { GuildMember } from 'discord.js';
+import { BadgeDoc, UserDoc, UserModel } from '@caravan/buddy-reading-mongo';
+import { ReadingDiscordBot } from './discord';
+import { checkObjectIdIsValid } from '../common/mongoose';
+import { getBadges } from './badge';
 
 export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   if (!userDoc) {
@@ -35,7 +35,7 @@ const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
       //@ts-ignore
       ...userBadge.toObject(),
       name: allBadges.badges[userBadge.key].name,
-      description: allBadges.badges[userBadge.key].description
+      description: allBadges.badges[userBadge.key].description,
     };
   });
   ud.badges = mutantBadges;
@@ -97,7 +97,7 @@ export const userSlugExists = async (urlSlug: string) =>
 
 export const getAvailableSlugIds = async (slugIds: string[]) => {
   const unavailableSlugs: { urlSlug: string }[] = await UserModel.find({
-    urlSlug: { $in: slugIds }
+    urlSlug: { $in: slugIds },
   })
     .select({ urlSlug: 1 })
     .lean()

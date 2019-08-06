@@ -1,17 +1,17 @@
-import axios from "axios";
-import btoa from "btoa";
-import Discord, { TextChannel } from "discord.js";
-import fetch from "node-fetch";
-import { ReferralTier } from "@caravan/buddy-reading-types";
-import { UserDoc } from "@caravan/buddy-reading-mongo";
-import { getUser } from "./user";
-import { discordGenChatChId } from "../common/globalConstantsAPI";
-import { getReferralTier } from "./referral";
+import axios from 'axios';
+import btoa from 'btoa';
+import Discord, { TextChannel } from 'discord.js';
+import fetch from 'node-fetch';
+import { ReferralTier } from '@caravan/buddy-reading-types';
+import { UserDoc } from '@caravan/buddy-reading-mongo';
+import { getUser } from './user';
+import { discordGenChatChId } from '../common/globalConstantsAPI';
+import { getReferralTier } from './referral';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
-const DiscordPermissions = ["identify", "guilds.join", "gdm.join"].join("%20");
+const DiscordPermissions = ['identify', 'guilds.join', 'gdm.join'].join('%20');
 
-const DiscordApiUrl = "https://discordapp.com/api";
+const DiscordApiUrl = 'https://discordapp.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;
 const DiscordClientId = process.env.DISCORD_CLIENT_ID;
 const DiscordClientSecret = process.env.DISCORD_CLIENT_SECRET;
@@ -20,12 +20,12 @@ const DiscordBase64Credentials = btoa(
 );
 
 const getDiscordRedirectUri = (host: string) => {
-  if (process.env.GAE_ENV === "production") {
+  if (process.env.GAE_ENV === 'production') {
     // For max security, do no accept header as part of redirect url in production
     return DiscordRedirectUri;
   }
   // In staging environments and local environments, meh.
-  const prefix = process.env.NODE_ENV === "production" ? "https" : "http";
+  const prefix = process.env.NODE_ENV === 'production' ? 'https' : 'http';
   return encodeURIComponent(`${prefix}://${host}/api/auth/discord/callback`);
 };
 
@@ -61,7 +61,7 @@ interface OAuth2TokenResponseData {
   expires_in: number;
   refresh_token: string;
   scope: string;
-  token_type: "Bearer";
+  token_type: 'Bearer';
 
   error?: string;
   error_description?: string;
@@ -87,7 +87,7 @@ const ReadingDiscordBot = (() => {
 
     getMe: async (accessToken: string) => {
       const userResponse = await axios.get(`${DiscordApiUrl}/users/@me`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       return userResponse.data as DiscordUserResponseData;
     },
@@ -95,10 +95,10 @@ const ReadingDiscordBot = (() => {
     getToken: async (code: string, host: string) => {
       const tokenUri = GetDiscordTokenCallbackUri(code, host);
       const tokenResponse = await fetch(tokenUri, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Authorization: `Basic ${DiscordBase64Credentials}`
-        }
+          Authorization: `Basic ${DiscordBase64Credentials}`,
+        },
       });
       return (await tokenResponse.json()) as OAuth2TokenResponseData;
     },
@@ -106,13 +106,13 @@ const ReadingDiscordBot = (() => {
     refreshAccessToken: async (refreshToken: string) => {
       const refreshTokenUri = GetDiscordTokenRefreshCallbackUri(refreshToken);
       const tokenResponse = await fetch(refreshTokenUri, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Authorization: `Basic ${DiscordBase64Credentials}`
-        }
+          Authorization: `Basic ${DiscordBase64Credentials}`,
+        },
       });
       return (await tokenResponse.json()) as OAuth2TokenResponseData;
-    }
+    },
   };
 })();
 
@@ -140,14 +140,14 @@ export const sendNewTierDiscordMsg = async (
   newTier: number | ReferralTier
 ) => {
   let userObj = user;
-  if (typeof userObj === "string") {
+  if (typeof userObj === 'string') {
     userObj = await getUser(userObj);
     if (!userObj) {
       throw new Error(`Did not find user ${user} in db.`);
     }
   }
   let referralTier = newTier;
-  if (typeof referralTier === "number") {
+  if (typeof referralTier === 'number') {
     referralTier = await getReferralTier(referralTier);
     if (!referralTier) {
       throw new Error(`Did not find referral tier ${newTier} in db.`);
@@ -158,13 +158,11 @@ export const sendNewTierDiscordMsg = async (
   const genChatId = discordGenChatChId();
   const genChannel = guild.channels.get(genChatId) as TextChannel;
   if (!genChannel) {
-    console.log("Did not find #general-chat at channel id ${genChatId}");
+    console.log('Did not find #general-chat at channel id ${genChatId}');
     throw new Error(`Did not find #general-chat at channel id ${genChatId}`);
   }
-  const msgToSend = `<@${userObj.discordId}> just reached referral tier ${
-    referralTier.tierNumber
-  } (${referralTier.referralCount} referrals). Congratulations! :tada:`;
-  console.log("Sending Discord message to #general-chat", msgToSend);
+  const msgToSend = `<@${userObj.discordId}> just reached referral tier ${referralTier.tierNumber} (${referralTier.referralCount} referrals). Congratulations! :tada:`;
+  console.log('Sending Discord message to #general-chat', msgToSend);
   return genChannel.send(msgToSend);
 };
 
@@ -227,5 +225,5 @@ export {
   DiscordUserResponseData,
   GetDiscordTokenCallbackUri,
   GetDiscordTokenRefreshCallbackUri,
-  OAuth2TokenResponseData
+  OAuth2TokenResponseData,
 };

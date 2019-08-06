@@ -1,31 +1,31 @@
-import express from "express";
-import { check, validationResult } from "express-validator";
-import { Omit } from "utility-types";
-import mongoose from "mongoose";
+import express from 'express';
+import { check, validationResult } from 'express-validator';
+import { Omit } from 'utility-types';
+import mongoose from 'mongoose';
 import {
   User,
   ReadingSpeed,
   FilterAutoMongoKeys,
   UserQA,
   Services,
-  SameKeysAs
-} from "@caravan/buddy-reading-types";
-import { UserDoc, UserModel } from "@caravan/buddy-reading-mongo";
-import { isAuthenticatedButNotNecessarilyOnboarded } from "../middleware/auth";
+  SameKeysAs,
+} from '@caravan/buddy-reading-types';
+import { UserDoc, UserModel } from '@caravan/buddy-reading-mongo';
+import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import {
   userSlugExists,
   getMe,
   getUser,
-  mutateUserDiscordContent
-} from "../services/user";
-import { getGenreDoc } from "../services/genre";
-import { getProfileQuestions } from "../services/profileQuestions";
-import { createReferralAction } from "../services/referral";
+  mutateUserDiscordContent,
+} from '../services/user';
+import { getGenreDoc } from '../services/genre';
+import { getProfileQuestions } from '../services/profileQuestions';
+import { createReferralAction } from '../services/referral';
 
 const router = express.Router();
 
 // Get me, includes more sensitive stuff
-router.get("/@me", async (req, res, next) => {
+router.get('/@me', async (req, res, next) => {
   const { userId } = req.session;
   try {
     const user = await getMe(userId);
@@ -45,7 +45,7 @@ router.get("/@me", async (req, res, next) => {
 });
 
 // Get all users route
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   const { after, pageSize, onboardVersion } = req.query;
   // const { userId } = req.session;
   // let user: UserDoc | undefined;
@@ -57,7 +57,7 @@ router.get("/", async (req, res) => {
   if (after) {
     query._id = { $lt: after };
   }
-  if (onboardVersion && (onboardVersion === "0" || onboardVersion === "1")) {
+  if (onboardVersion && (onboardVersion === '0' || onboardVersion === '1')) {
     const onboardingVersionInt = parseInt(onboardVersion);
     query.onboardingVersion = onboardingVersionInt;
   }
@@ -71,17 +71,17 @@ router.get("/", async (req, res) => {
       .sort({ createdAt: -1 })
       .exec();
   } catch (err) {
-    console.error("Failed to get all users, ", err);
-    res.status(500).send("Failed to get all users.");
+    console.error('Failed to get all users, ', err);
+    res.status(500).send('Failed to get all users.');
   }
   if (!users) {
     res.sendStatus(404);
     return;
   }
-  const filteredUsers: Services.GetUsers["users"] = users
+  const filteredUsers: Services.GetUsers['users'] = users
     .map(userDocument => {
       mutateUserDiscordContent(userDocument);
-      const user: Omit<User, "createdAt" | "updatedAt"> & {
+      const user: Omit<User, 'createdAt' | 'updatedAt'> & {
         createdAt: string;
         updatedAt: string;
       } = {
@@ -93,19 +93,19 @@ router.get("/", async (req, res) => {
         updatedAt:
           userDocument.updatedAt instanceof Date
             ? userDocument.updatedAt.toISOString()
-            : userDocument.updatedAt
+            : userDocument.updatedAt,
       };
       return user;
     })
     .filter(c => c !== null);
   const result: Services.GetUsers = {
-    users: filteredUsers
+    users: filteredUsers,
   };
   res.status(200).json(result);
 });
 
 // Get a user
-router.get("/:urlSlugOrId", async (req, res, next) => {
+router.get('/:urlSlugOrId', async (req, res, next) => {
   const { urlSlugOrId } = req.params;
   try {
     const user = await getUser(urlSlugOrId);
@@ -124,14 +124,14 @@ router.get("/:urlSlugOrId", async (req, res, next) => {
   }
 });
 
-const READING_SPEEDS: ReadingSpeed[] = ["slow", "moderate", "fast"];
+const READING_SPEEDS: ReadingSpeed[] = ['slow', 'moderate', 'fast'];
 
-router.post("/:urlSlug/available", async (req, res, next) => {
+router.post('/:urlSlug/available', async (req, res, next) => {
   const { urlSlug } = req.params;
   try {
     const userExists = await userSlugExists(urlSlug);
     if (userExists) {
-      res.status(409).send("User already exists.");
+      res.status(409).send('User already exists.');
     } else {
       res.sendStatus(200);
     }
@@ -151,47 +151,47 @@ router.post("/:urlSlug/available", async (req, res, next) => {
 // TODO: Consider moving the update validation to the mongoose level
 // Modify a user
 router.put(
-  "/",
+  '/',
   isAuthenticatedButNotNecessarilyOnboarded,
-  check(["bio"], "Bio must not be more than 150 characters")
+  check(['bio'], 'Bio must not be more than 150 characters')
     .isString()
     .isLength({ max: 150 })
     .optional(),
-  check(["goodreadsUrl", "website", "photoUrl", "smallPhotoUrl"])
+  check(['goodreadsUrl', 'website', 'photoUrl', 'smallPhotoUrl'])
     .isURL()
     .optional({ checkFalsy: true }),
-  check("name")
+  check('name')
     .isString()
     .isLength({ min: 2, max: 30 })
     .optional(),
   check(
-    "readingSpeed",
-    `Reading speed must be one of ${READING_SPEEDS.join(",")}`
+    'readingSpeed',
+    `Reading speed must be one of ${READING_SPEEDS.join(',')}`
   ).isIn(READING_SPEEDS),
-  check("age", "Must be a valid age")
+  check('age', 'Must be a valid age')
     .isInt({ min: 13, max: 150 })
     .optional(),
-  check("gender")
+  check('gender')
     .isString()
     .isLength({ min: 1, max: 50 })
     .optional(),
-  check("location")
+  check('location')
     .isString()
     .isLength({ max: 300 })
     .optional(),
-  check("selectedGenres")
+  check('selectedGenres')
     .isArray()
     .optional(),
-  check("shelf")
+  check('shelf')
     .exists()
     .optional(),
-  check("questions").isArray(),
-  check("onboardingVersion")
+  check('questions').isArray(),
+  check('onboardingVersion')
     .isNumeric()
     .optional(),
   async (req, res) => {
-    ["goodreadsUrl", "website", "photoUrl", "smallPhotoUrl"].forEach(
-      x => (req.body[x] = x == null || x == "" ? undefined : req.body[x])
+    ['goodreadsUrl', 'website', 'photoUrl', 'smallPhotoUrl'].forEach(
+      x => (req.body[x] = x == null || x == '' ? undefined : req.body[x])
     );
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -208,14 +208,14 @@ router.put(
     const user: User = req.body;
     const [genreDoc, questionDoc] = await Promise.all([
       getGenreDoc(),
-      getProfileQuestions()
+      getProfileQuestions(),
     ]);
     if (!questionDoc) {
-      res.status(500).send("No questions found, oops!");
+      res.status(500).send('No questions found, oops!');
       return;
     }
     if (!genreDoc) {
-      res.status(500).send("No genres found, oops!");
+      res.status(500).send('No genres found, oops!');
       return;
     }
     const notStartedLimit = 500;
@@ -225,9 +225,7 @@ router.put(
       userShelf.notStarted.length > notStartedLimit
     ) {
       console.warn(
-        `User {id: ${req.user.id}, name: ${
-          req.user.name
-        }} missing notStarted key, or passed over ${notStartedLimit} entries.`
+        `User {id: ${req.user.id}, name: ${req.user.name}} missing notStarted key, or passed over ${notStartedLimit} entries.`
       );
       res
         .status(400)
@@ -239,9 +237,7 @@ router.put(
     const readLimit = 1000;
     if (!userShelf.read || userShelf.read.length > readLimit) {
       console.warn(
-        `User {id: ${req.user.id}, name: ${
-          req.user.name
-        }} shelf object is missing the read key, or passed over ${readLimit} entries!`
+        `User {id: ${req.user.id}, name: ${req.user.name}} shelf object is missing the read key, or passed over ${readLimit} entries!`
       );
       res
         .status(400)
@@ -273,7 +269,7 @@ router.put(
           if (validGenre) {
             const newValidUserGenre: { key: string; name: string } = {
               key: g.key,
-              name: validGenre.name
+              name: validGenre.name,
             };
             return newValidUserGenre;
           }
@@ -285,7 +281,7 @@ router.put(
         if (validQuestion) {
           const newUserQA: UserQA = {
             ...q,
-            title: validQuestion.title
+            title: validQuestion.title,
           };
           return newUserQA;
         }
@@ -293,21 +289,19 @@ router.put(
       });
     } catch (err) {
       console.warn(
-        `User {id: ${req.user.id}, name: ${
-          req.user.name
-        }} update user QA/genre issue:\n${err}`
+        `User {id: ${req.user.id}, name: ${req.user.name}} update user QA/genre issue:\n${err}`
       );
       res.status(400).send(err);
       return;
     }
     const newUserButWithPossibleNullValues: Omit<
       FilterAutoMongoKeys<User>,
-      | "isBot"
-      | "smallPhotoUrl"
-      | "discordId"
-      | "discordUsername"
-      | "onboardingVersion"
-      | "urlSlug"
+      | 'isBot'
+      | 'smallPhotoUrl'
+      | 'discordId'
+      | 'discordUsername'
+      | 'onboardingVersion'
+      | 'urlSlug'
     > = {
       age: user.age,
       bio: user.bio,
@@ -322,13 +316,13 @@ router.put(
       questions: userQA,
       shelf: userShelf,
       palette: user.palette,
-      badges: user.badges
+      badges: user.badges,
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const writeableObj: any = newUserButWithPossibleNullValues;
     Object.keys(writeableObj).forEach(key => {
       switch (key) {
-        case "palette":
+        case 'palette':
           break;
         default:
           writeableObj[key] == null && delete writeableObj[key];
@@ -337,7 +331,7 @@ router.put(
     });
     try {
       let userDoc = await UserModel.findByIdAndUpdate(userId, writeableObj, {
-        new: true
+        new: true,
       });
       if (
         userDoc &&
@@ -348,12 +342,12 @@ router.put(
         // Perhaps send email or whatever.
         userDoc.onboardingVersion = 1;
         userDoc = await userDoc.save();
-        createReferralAction(userId, "onboarded");
+        createReferralAction(userId, 'onboarded');
       }
       res.status(200).send(userDoc);
     } catch (err) {
-      console.error("Failed to save user data", err);
-      res.status(500).send("Failed to save user data");
+      console.error('Failed to save user data', err);
+      res.status(500).send('Failed to save user data');
     }
   }
 );

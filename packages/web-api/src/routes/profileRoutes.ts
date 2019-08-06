@@ -1,15 +1,15 @@
-import express from "express";
-import { Services } from "@caravan/buddy-reading-types";
-import { ProfileQuestionsDoc } from "@caravan/buddy-reading-mongo";
-import { getProfileQuestions } from "../services/profileQuestions";
+import express from 'express';
+import { Services } from '@caravan/buddy-reading-types';
+import { ProfileQuestionsDoc } from '@caravan/buddy-reading-mongo';
+import { getProfileQuestions } from '../services/profileQuestions';
 
 const router = express.Router();
 
-router.get("/questions", async (req, res, next) => {
+router.get('/questions', async (req, res, next) => {
   try {
     const profileQuestionsDoc = await getProfileQuestions();
     if (!profileQuestionsDoc) {
-      res.status(500).send("No profile questions found, oops!");
+      res.status(500).send('No profile questions found, oops!');
       return;
     }
     // ProfileQuestionsDoc is not the correct type since it doesn't
@@ -17,11 +17,11 @@ router.get("/questions", async (req, res, next) => {
     const obj: ProfileQuestionsDoc = profileQuestionsDoc.toObject();
     const filtered = obj.questions.filter(q => q.visible);
     const resData: Services.GetProfileQuestions = {
-      questions: filtered
+      questions: filtered,
     };
     res.status(200).json(resData);
   } catch (err) {
-    console.error("Failed to get profile questions.", err);
+    console.error('Failed to get profile questions.', err);
     return next(err);
   }
 });

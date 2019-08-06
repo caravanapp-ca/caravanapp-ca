@@ -1,6 +1,6 @@
-import { ShelfEntry } from "@caravan/buddy-reading-types";
+import { ShelfEntry } from '@caravan/buddy-reading-types';
 
-const knownHttpsRedirects = ["http://books.google.com/books/"];
+const knownHttpsRedirects = ['http://books.google.com/books/'];
 
 export const getClubUrl = (clubId: string) =>
   `https://caravanapp.ca/clubs/${clubId}`;
@@ -18,7 +18,7 @@ export const shelfEntryWithHttpsBookUrl = (shelfEntry: ShelfEntry) => {
   ) {
     const newItem: ShelfEntry = {
       ...shelfEntry,
-      coverImageURL: shelfEntry.coverImageURL.replace("http:", "https:")
+      coverImageURL: shelfEntry.coverImageURL.replace('http:', 'https:'),
     };
     return newItem;
   }
