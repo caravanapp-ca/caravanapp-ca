@@ -7,7 +7,8 @@ export const getSession = (userId: string) => {
 };
 
 export const validateSessionPermissions = (session: SessionDoc) => {
-  if (session.scope !== DiscordPermissions.join(' ')) {
+  const discordPermissions = DiscordPermissions.join(' ');
+  if (session.scope !== discordPermissions) {
     return false;
   } else {
     return true;

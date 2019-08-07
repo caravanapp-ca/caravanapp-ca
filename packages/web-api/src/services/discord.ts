@@ -34,6 +34,7 @@ const getDiscordRedirectUri = (host: string) => {
 
 const DiscordOAuth2Url = (state: string, host: string) => {
   const redirectUri = getDiscordRedirectUri(host);
+  const test = `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${DiscordPermissionsParam}&state=${state}`;
   return `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${DiscordPermissionsParam}&state=${state}`;
 };
 const GetDiscordTokenCallbackUri = (code: string, host: string) => {

@@ -5,7 +5,7 @@ import { KEY_DISCORD_OAUTH_STATE } from './localStorage';
  * @see https://auth0.com/docs/protocols/oauth2/mitigate-csrf-attacks
  * @see https://stackoverflow.com/a/52420482/4400318
  */
-export function getOAuth2StateParam() {
+function getOAuth2StateParam() {
   const discordOAuthState = localStorage.getItem(KEY_DISCORD_OAUTH_STATE);
   if (discordOAuthState) {
     return discordOAuthState;
@@ -28,3 +28,10 @@ export function getOAuth2StateParam() {
 
   return oauthState;
 }
+
+export const getDiscordAuthUrl = () => {
+  const oauth2State = getOAuth2StateParam();
+  const host =
+    process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '';
+  return `${host}/api/auth/discord/login?state=${oauth2State}`;
+};

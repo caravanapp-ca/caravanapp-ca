@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, makeStyles } from '@material-ui/core';
 import LockIcon from '@material-ui/icons/Lock';
-import { getOAuth2StateParam } from '../common/auth';
+import { getDiscordAuthUrl } from '../common/auth';
 
 export interface DiscordAuthButtonProps {}
 
@@ -16,10 +16,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function onClick() {
-  const oauth2State = getOAuth2StateParam();
-  const host =
-    process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '';
-  window.location.href = `${host}/api/auth/discord/login?state=${oauth2State}`;
+  const discordAuthUrl = getDiscordAuthUrl();
+  window.location.href = discordAuthUrl;
 }
 
 export default function DiscordAuthButton(props: DiscordAuthButtonProps) {

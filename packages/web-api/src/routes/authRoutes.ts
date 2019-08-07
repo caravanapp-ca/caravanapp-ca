@@ -40,20 +40,27 @@ router.get('/discord/login', (req, res) => {
 });
 
 router.get('/discord/validatePermissions', async (req, res) => {
-  const { state } = req.query;
-  if (!state) {
-    res.status(400).send('Require a state string to complete this request.');
-  }
   const { userId } = req.session;
   if (!userId) {
     res.status(400).send('Require a logged in user to complete this request.');
   }
-  const sessionDoc = await getSession(userId);
-  if (validateSessionPermissions(sessionDoc)) {
-    return res.sendStatus(200);
-  } else {
-    // This line doesn't seem to work...
-    res.redirect(DiscordOAuth2Url(state, req.headers.host));
+  try {
+    const sessionDoc = await getSession(userId);
+    if (!sessionDoc) {
+      throw new Error(
+        `SessionDoc in validatePermissions is null { userId: ${userId} }`
+      );
+    }
+    const validSessionPermissions = validateSessionPermissions(sessionDoc);
+    if (!validSessionPermissions) {
+      console.log(
+        `User ${userId} has invalid Discord session permissions, redirect to Discord auth.`
+      );
+    }
+    return res.status(200).send({ authRequired: !validSessionPermissions });
+  } catch (err) {
+    console.error(`Validating sessionDoc failed: { userId: ${userId} }`, err);
+    return res.status(500).send({ authRequired: true });
   }
 });
 
