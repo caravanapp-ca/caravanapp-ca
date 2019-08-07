@@ -256,6 +256,11 @@ declare module '@caravan/buddy-reading-types' {
     mobileAlignment?: 'left' | 'center' | 'right';
   }
 
+  export interface UserSettings extends DocumentFields, MongoTimestamps {
+    userId: string;
+    email?: string;
+  }
+
   export interface UserPalettes extends DocumentFields, MongoTimestamps {
     userId: string;
     hasSets?: PaletteSet[];
