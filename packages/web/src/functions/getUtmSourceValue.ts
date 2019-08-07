@@ -8,6 +8,9 @@ export default function getUtmSourceValue(urlValue: string) {
     case 'gr':
     case 'em':
     case 'rd':
+    case 'cpp':
+    case 'cph':
+    case 'cpc':
       return filteredUrlValue;
     default:
       throw new Error(`Unknown utm_source: ${filteredUrlValue}`);

@@ -18,6 +18,9 @@ export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   em: true,
   gr: true,
   rd: true,
+  cpp: true,
+  cph: true,
+  cpc: true,
 };
 
 export const ALLOWED_REFERRAL_DESTINATIONS: {
