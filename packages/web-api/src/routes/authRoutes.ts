@@ -20,7 +20,6 @@ import {
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
 import { getSession, validateSessionPermissions } from '../services/session';
-import { param } from 'express-validator';
 import { DISCORD_PERMISSIONS } from '../common/globalConstantsAPI';
 
 const router = express.Router();
