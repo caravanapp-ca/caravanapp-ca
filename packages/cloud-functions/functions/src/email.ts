@@ -1,10 +1,8 @@
-import * as functions from 'firebase-functions';
 import { shouldSendWithLease, markSent } from './idempotent';
 import { db } from './db';
 
 export const sendEmail = async (
-  eventId: string,
-  event: functions.pubsub.Message
+  eventId: string
 ) => {
   const emailRef = db.collection('sentEmails').doc(eventId);
 

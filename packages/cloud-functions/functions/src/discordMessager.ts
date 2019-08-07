@@ -1,22 +1,31 @@
-import * as functions from 'firebase-functions';
 import { Firestore } from '@caravan/buddy-reading-types';
 import { shouldSendWithLease, markSent } from './idempotent';
 import { db } from './db';
+import { MessageOptions, Channel, TextChannel } from 'discord.js';
 
 export const sendDiscordMessage = async (
   eventId: string,
-  event: functions.pubsub.Message
+  channel: Channel,
+  content?: string,
+  options?: MessageOptions
 ) => {
+  if (channel.type !== 'text' && channel.type !== 'dm') {
+    return undefined;
+  }
   const botMessageDocRef = db
     .collection(Firestore.Collection.DiscordBotMessages)
     .doc(eventId);
 
   const send = await shouldSendWithLease(botMessageDocRef);
   if (send) {
-    // Send email.
-    // sgMail.setApiKey(...);
-    // sgMail.send({ ..., text: content.text });
-    return markSent(botMessageDocRef);
+    const discordMessage = await (channel as TextChannel).sendMessage(
+      content,
+      options
+    );
+    return {
+      firestoreRef: markSent(botMessageDocRef),
+      discordMessage,
+    };
   }
   // Do more here.
   return undefined;
