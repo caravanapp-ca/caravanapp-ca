@@ -6,9 +6,8 @@ import {
 
 export const getReferralLink = (
   userId: string | undefined,
-  location: 'home' | 'club',
-  clubId?: string | undefined,
-  source?: ReferralSource
+  location: 'home' | 'profile' | 'club',
+  clubId?: string | undefined
 ) => {
   if (location) {
     // TODO: add more cases - should we parse URL?
@@ -16,9 +15,34 @@ export const getReferralLink = (
     const clubIdQuery = clubId ? `/${clubId}` : '';
     switch (location) {
       case 'home':
-        return `https://${window.location.host}/clubs${refQuery}`;
+        const homeSourceParam = 'utm_source=cph';
+        let urlHomeParam = '';
+        if (refQuery !== '') {
+          urlHomeParam = refQuery + '&' + homeSourceParam;
+        } else {
+          urlHomeParam = '?' + homeSourceParam;
+        }
+        return `https://${window.location.host}/clubs${urlHomeParam}`;
+      case 'profile':
+        const profileSourceParam = 'utm_source=cpp';
+        let urlProfileParam = '';
+        if (refQuery !== '') {
+          urlProfileParam = refQuery + '&' + profileSourceParam;
+        } else {
+          urlProfileParam = '?' + profileSourceParam;
+        }
+        return `https://${window.location.host}/clubs${urlProfileParam}`;
       case 'club':
-        return `https://${window.location.host}/clubs${clubIdQuery}${refQuery}`;
+        const clubSourceParam = 'utm_source=cpc';
+        let urlClubParam = '';
+        if (refQuery !== '') {
+          urlClubParam = refQuery + '&' + clubSourceParam;
+        } else {
+          urlClubParam = '?' + clubSourceParam;
+        }
+        return `https://${
+          window.location.host
+        }/clubs${clubIdQuery}${urlClubParam}`;
       default:
         return `https://${window.location.host}`;
     }

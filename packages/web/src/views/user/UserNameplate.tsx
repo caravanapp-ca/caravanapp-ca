@@ -299,7 +299,7 @@ export default function UserNameplate(props: UserNameplateProps) {
               variant="outlined"
               color="primary"
               onClick={() =>
-                copyToClipboard(getReferralLink(user._id, 'home')) &&
+                copyToClipboard(getReferralLink(user._id, 'profile')) &&
                 onCopyReferralLink()
               }
               style={{ marginTop: theme.spacing(1) }}
