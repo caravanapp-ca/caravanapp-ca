@@ -5,14 +5,14 @@ import fetch from 'node-fetch';
 import { getUser } from './user';
 import { UserDoc } from '../../typings';
 import {
-  discordGenChatChId,
-  DiscordPermissions,
+  DISCORD_GEN_CHAT_ID,
+  DISCORD_PERMISSIONS,
 } from '../common/globalConstantsAPI';
 import { ReferralTier } from '@caravan/buddy-reading-types';
 import { getReferralTier } from './referral';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
-const DiscordPermissionsParam = DiscordPermissions.join('%20');
+const DiscordPermissionsParam = DISCORD_PERMISSIONS.join('%20');
 
 const DiscordApiUrl = 'https://discordapp.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;
@@ -164,7 +164,7 @@ export const sendNewTierDiscordMsg = async (
   }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
-  const genChatId = discordGenChatChId();
+  const genChatId = DISCORD_GEN_CHAT_ID();
   const genChannel = guild.channels.get(genChatId) as TextChannel;
   if (!genChannel) {
     console.log('Did not find #general-chat at channel id ${genChatId}');

@@ -21,6 +21,7 @@ import {
 import { getUserSettings, createUserSettings } from '../services/userSettings';
 import { getSession, validateSessionPermissions } from '../services/session';
 import { param } from 'express-validator';
+import { DISCORD_PERMISSIONS } from '../common/globalConstantsAPI';
 
 const router = express.Router();
 
@@ -29,7 +30,6 @@ export function destroySession(req: Request, res: Response) {
   res.clearCookie('userId');
 }
 
-// Don't think anything is hitting this endpoint...
 router.get('/discord/login', (req, res) => {
   const { state } = req.query;
   if (!state) {
@@ -120,6 +120,19 @@ router.get('/discord/callback', async (req, res) => {
   let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {
     // Do any user updates here.
+
+    // Check if the user has provided any new Discord permissions.
+    // If so, update their session doc.
+    const sessionDoc = await getSession(userDoc.id);
+    if (sessionDoc) {
+      const discordPermissions = DISCORD_PERMISSIONS.join(' ');
+      if (sessionDoc.scope !== discordPermissions) {
+        sessionDoc.scope = discordPermissions;
+        sessionDoc.save();
+      }
+    } else {
+      throw new Error(`sessionDoc doesn't exist for user ${userDoc.id}`);
+    }
     // Temporarily, check if we have an email for this user.
     // TODO: Once every user in production has an email in settings, we can remove these checks.
     const userSettingsDoc = await getUserSettings(userDoc.id);
