@@ -60,8 +60,8 @@ import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import ScheduleView from './schedule-view/ScheduleView';
 import { getAllGenres } from '../../services/genre';
 import {
-  defaultClubScheduleDuration,
-  defaultClubScheduleDiscussionFreq,
+  DEFAULT_CLUB_SCHED_DURATION,
+  DEFAULT_CLUB_SCHED_DISC_FREQ,
 } from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -374,8 +374,8 @@ export default function ClubComponent(props: ClubProps) {
     setSchedule({
       shelfEntryId: currBook._id,
       startDate: null,
-      duration: defaultClubScheduleDuration,
-      discussionFrequency: defaultClubScheduleDiscussionFreq,
+      duration: DEFAULT_CLUB_SCHED_DURATION,
+      discussionFrequency: DEFAULT_CLUB_SCHED_DISC_FREQ,
       discussions: [],
     });
   };

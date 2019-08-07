@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUserSettings } from '../services/userSettings';
+import { getUserSettings, initSettings } from '../services/userSettings';
 
 const router = express.Router();
 
@@ -11,7 +11,9 @@ router.get('/@me', async (req, res) => {
     if (userSettings) {
       return res.status(200).send(userSettings);
     } else {
-      return res.status(401).send(`No user settings found for user ${userId}`);
+      console.log(`Initiating settings for user ${userId}`);
+      const newSettings = await initSettings(userId);
+      return res.status(200).send(newSettings);
     }
   } catch (err) {
     return res

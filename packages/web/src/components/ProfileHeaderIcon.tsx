@@ -31,13 +31,10 @@ interface HeaderRightProps extends RouteComponentProps<{}> {
 
 function ProfileHeaderIcon(props: HeaderRightProps) {
   const classes = useStyles();
-
   const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
-
   const { user } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-
   const [
     headerProfileMenuIsOpen,
     setHeaderProfileMenuOpenState,
@@ -64,6 +61,12 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
   function navigateToYourProfile() {
     if (user) {
       props.history.push(`/user/${user.urlSlug}`);
+    }
+  }
+
+  function navigateToSettings() {
+    if (user) {
+      props.history.push(`/settings`);
     }
   }
 
@@ -117,6 +120,7 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
         onClose={handleProfileMenuClose}
       >
         <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
+        <MenuItem onClick={navigateToSettings}>Settings</MenuItem>
         <MenuItem onClick={openChat}>Open chat</MenuItem>
         <MenuItem onClick={logout}>Log out</MenuItem>
       </Menu>

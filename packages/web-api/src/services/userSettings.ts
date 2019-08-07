@@ -18,3 +18,23 @@ export const createUserSettings = (
     throw new Error(`Failed to create user settings ${settings}`);
   }
 };
+
+export const initSettings = async (userId: string) => {
+  const existingUserSettings = await getUserSettings(userId);
+  if (existingUserSettings) {
+    console.error(
+      `Attempted to init user settings, but user settings already exist for user ${userId}!`
+    );
+    return existingUserSettings;
+  }
+  const newSettings: FilterAutoMongoKeys<UserSettings> = {
+    userId,
+  };
+  const newSettingsModel = new UserSettingsModel(newSettings);
+  try {
+    const res = await newSettingsModel.save();
+    return res;
+  } catch (err) {
+    return undefined;
+  }
+};

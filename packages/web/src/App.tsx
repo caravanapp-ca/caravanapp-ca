@@ -34,6 +34,7 @@ import About from './views/about/About';
 import getUtmSourceValue from './common/getUtmSourceValue';
 import { validateDiscordPermissions } from './services/auth';
 import { getDiscordAuthUrl } from './common/auth';
+import Settings from './views/settings/Settings';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -183,6 +184,11 @@ export function App(props: AppProps) {
                   exact
                   path="/privacy"
                   render={props => forceOnboard(user, <Privacy />)}
+                />
+                <Route
+                  exact
+                  path="/settings"
+                  render={props => forceOnboard(user, <Settings user={user} />)}
                 />
                 <Route
                   path="/clubs/:id/manage-shelf"
