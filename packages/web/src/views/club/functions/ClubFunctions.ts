@@ -5,6 +5,8 @@ import {
   ReadingState,
   GoogleBooks,
   ClubReadingSchedule,
+  Services,
+  ClubTransformed,
 } from '@caravan/buddy-reading-types';
 import { scheduleStrToDates } from '../../../functions/scheduleStrToDates';
 
@@ -20,6 +22,33 @@ export function getCurrentSchedule(
     }
   }
   return null;
+}
+
+export const transformClub = (club: Services.GetClubs['clubs'][0]) => {
+  const transformedClub: ClubTransformed = {
+    club,
+    schedule: null,
+  };
+  if (club.newShelf.current.length > 0) {
+    let schedule = club.schedules.find(
+      sched => sched.shelfEntryId === club.newShelf.current[0]._id
+    );
+    if (schedule) {
+      schedule = scheduleStrToDates(schedule);
+      transformedClub.schedule = schedule;
+    }
+  }
+  return transformedClub;
+};
+
+export function getWantToRead(club: Club): ShelfEntry[] {
+  if (club && club.shelf) {
+    const wantToRead = club.shelf.filter(
+      book => book.readingState === 'notStarted'
+    );
+    return wantToRead;
+  }
+  return [];
 }
 
 export function getShelfFromGoogleBooks(

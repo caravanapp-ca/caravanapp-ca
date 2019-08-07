@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '@caravan/buddy-reading-types';
-import { Avatar, makeStyles, Theme, createStyles } from '@material-ui/core';
+import { Avatar, makeStyles, createStyles } from '@material-ui/core';
 import { shrinkDiscordPhotoSize } from '../../common/discord';
 
 interface UserAvatarProps {

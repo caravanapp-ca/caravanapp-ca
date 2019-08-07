@@ -13,6 +13,8 @@ import {
   Referral,
   ReferralTiers,
   ClubShelfType,
+  UserPalettes,
+  UserSettings,
 } from '@caravan/buddy-reading-types';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
@@ -27,6 +29,14 @@ export interface GenreDoc extends Document, Omit<Genres, '_id'> {
 }
 
 export interface BadgeDoc extends Document, Omit<Badges, '_id'> {
+  _id: MongooseTypes.ObjectId;
+}
+
+export interface UserPalettesDoc extends Document, Omit<UserPalettes, '_id'> {
+  _id: MongooseTypes.ObjectId;
+}
+
+export interface UserSettingsDoc extends Document, Omit<UserSettings, '_id'> {
   _id: MongooseTypes.ObjectId;
 }
 

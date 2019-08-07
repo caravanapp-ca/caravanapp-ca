@@ -20,10 +20,10 @@ import AboutYou from './AboutYou';
 import AnswerQuestion from './AnswerQuestion';
 import ProfileQuestionsCarousel from '../../components/ProfileQuestionsCarousel';
 import SelectBooks from './SelectBooks';
-import JoinClubs from './JoinClubs';
 import { getAllProfileQuestions } from '../../services/profile';
 import { updateUserProfile } from '../../services/user';
 import HeaderTitle from '../../components/HeaderTitle';
+import DownloadDiscordDialog from '../../components/DownloadDiscordDialog';
 
 interface OnboardingRouteParams {
   id: string;
@@ -151,6 +151,14 @@ export default function Onboarding(props: OnboardingProps) {
     'notSubmitted'
   );
 
+  const [showDiscordDialog, setShowDiscordDialog] = React.useState<boolean>(
+    false
+  );
+
+  const [hasSeenDiscordDialog, setHasSeenDiscordDialog] = React.useState<
+    boolean
+  >(false);
+
   useEffect(() => {
     const getProfileQuestions = async () => {
       const response = await getAllProfileQuestions();
@@ -180,22 +188,15 @@ export default function Onboarding(props: OnboardingProps) {
   }, [submitState]);
 
   useEffect(() => {
-    const getUnansweredProfileQuestions = async () => {
-      if (profileQuestions) {
-        // Get all the ids of the questions they've answered and add them to an array
-        const answeredIds: string[] = [];
-        for (let i = 0; i < answers.length; i++) {
-          answeredIds.push(answers[i].id);
-        }
-        // Make the unanswered questions not include the ids of the questions they've already answered
-        const updatedQuestions = profileQuestions.questions.filter(
-          q => !answeredIds.includes(q.id)
-        );
-        setUnansweredProfileQuestions(updatedQuestions);
-      }
-    };
-    getUnansweredProfileQuestions();
-  }, [answers]);
+    if (profileQuestions && Array.isArray(profileQuestions.questions)) {
+      const answeredIds = answers.map(a => a.id);
+      // Make the unanswered questions not include the ids of the questions they've already answered
+      const updatedQuestions = profileQuestions.questions.filter(
+        q => !answeredIds.includes(q.id)
+      );
+      setUnansweredProfileQuestions(updatedQuestions);
+    }
+  }, [profileQuestions, answers]);
 
   function onGenreSelected(
     genreKey: string,
@@ -301,6 +302,19 @@ export default function Onboarding(props: OnboardingProps) {
     setSelectedBooks(selectedBooks);
   }
 
+  function continueFromSelectBooks() {
+    if (hasSeenDiscordDialog) {
+      submitOnboarding();
+    } else {
+      setShowDiscordDialog(true);
+    }
+  }
+
+  function onCloseDiscordDialog() {
+    setHasSeenDiscordDialog(true);
+    submitOnboarding();
+  }
+
   async function submitOnboarding() {
     setSubmitState('submitted');
     const res = await updateUserProfile({
@@ -385,22 +399,17 @@ export default function Onboarding(props: OnboardingProps) {
             leftComponent={leftComponentAddBooks}
           />
           <SelectBooks
-            onContinue={submitOnboarding}
+            onContinue={continueFromSelectBooks}
             continuing={submitState === 'submitted'}
             onSubmitSelectedBooks={onSubmitSelectedBooks}
             selectedBooks={selectedBooks}
           />
         </>
       )}
-      {currentPage === 6 && (
-        <>
-          <Header
-            centerComponent={centerComponentJoinClubs}
-            leftComponent={leftComponentJoinClubs}
-          />
-          <JoinClubs onContinue={continueToBooksPage} />
-        </>
-      )}
+      <DownloadDiscordDialog
+        open={showDiscordDialog && !hasSeenDiscordDialog}
+        handleClose={onCloseDiscordDialog}
+      />
     </>
   );
 }

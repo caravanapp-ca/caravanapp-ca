@@ -117,49 +117,208 @@ export const whiteTheme = responsiveFontSizes(
   })
 );
 
-export const paletteColours: PaletteObject[] = [
+export const palettes: PaletteObject[] = [
+  // COLOUR BACKGROUNDS
   // White
-  { key: '#FFFFFF', textColor: 'primary' },
+  { id: 'col-whi', set: 'colour', key: '#FFFFFF', textColor: 'primary' },
   // Caravan Blurple
-  { key: '#5c6bc0', textColor: 'white' },
+  { id: 'col-cbl', set: 'colour', key: '#5c6bc0', textColor: 'white' },
   // Red
-  { key: '#f44336', textColor: 'white' },
+  { id: 'col-red', set: 'colour', key: '#f44336', textColor: 'white' },
   // Pink
-  { key: '#e91e63', textColor: 'white' },
+  { id: 'col-pin', set: 'colour', key: '#e91e63', textColor: 'white' },
   // Purple
-  { key: '#9c27b0', textColor: 'white' },
+  { id: 'col-pur', set: 'colour', key: '#9c27b0', textColor: 'white' },
   // Deep Purple
-  { key: '#673ab7', textColor: 'white' },
+  { id: 'col-dpu', set: 'colour', key: '#673ab7', textColor: 'white' },
   // Indigo
-  { key: '#3f51b5', textColor: 'white' },
+  { id: 'col-ind', set: 'colour', key: '#3f51b5', textColor: 'white' },
   // Blue
-  { key: '#2196f3', textColor: 'white' },
+  { id: 'col-blu', set: 'colour', key: '#2196f3', textColor: 'white' },
   // Light Blue
-  { key: '#03a9f4', textColor: 'primary' },
+  { id: 'col-lbl', set: 'colour', key: '#03a9f4', textColor: 'primary' },
   // Cyan
-  { key: '#00bcd4', textColor: 'primary' },
+  { id: 'col-cya', set: 'colour', key: '#00bcd4', textColor: 'primary' },
   // Teal
-  { key: '#009688', textColor: 'white' },
+  { id: 'col-tea', set: 'colour', key: '#009688', textColor: 'white' },
   // Green
-  { key: '#4caf50', textColor: 'primary' },
+  { id: 'col-gre', set: 'colour', key: '#4caf50', textColor: 'primary' },
   // Light Green
-  { key: '#8bc34a', textColor: 'primary' },
+  { id: 'col-lgr', set: 'colour', key: '#8bc34a', textColor: 'primary' },
   // Lime
-  { key: '#cddc39', textColor: 'primary' },
+  { id: 'col-lim', set: 'colour', key: '#cddc39', textColor: 'primary' },
   // Yellow
-  { key: '#ffeb3b', textColor: 'primary' },
+  { id: 'col-yel', set: 'colour', key: '#ffeb3b', textColor: 'primary' },
   // Amber
-  { key: '#ffc107', textColor: 'primary' },
+  { id: 'col-amb', set: 'colour', key: '#ffc107', textColor: 'primary' },
   // Orange
-  { key: '#ff9800', textColor: 'primary' },
+  { id: 'col-ora', set: 'colour', key: '#ff9800', textColor: 'primary' },
   // Deep Orange
-  { key: '#ff5722', textColor: 'white' },
+  { id: 'col-dor', set: 'colour', key: '#ff5722', textColor: 'white' },
   // Brown
-  { key: '#795548', textColor: 'white' },
+  { id: 'col-bro', set: 'colour', key: '#795548', textColor: 'white' },
   // Grey
-  { key: '#9e9e9e', textColor: 'primary' },
+  { id: 'col-gre', set: 'colour', key: '#9e9e9e', textColor: 'primary' },
   // Blue Grey
-  { key: '#607d8b', textColor: 'white' },
+  { id: 'col-bgr', set: 'colour', key: '#607d8b', textColor: 'white' },
+  // IMAGE BACKGROUNDS
+  // Nature - Glaciers
+  {
+    id: 'nat-gla',
+    set: 'nature',
+    key: '#039BE5',
+    textColor: 'primary',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-gla.svg',
+    mobileAlignment: 'right',
+  },
+  // Nature - Sunset
+  {
+    id: 'nat-sun',
+    set: 'nature',
+    key: '#183E68',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-sun.svg',
+  },
+  // Nature - Desert
+  {
+    id: 'nat-des',
+    set: 'nature',
+    key: '#FFCA28',
+    textColor: 'primary',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-des.svg',
+  },
+  // Nature - Volcano
+  {
+    id: 'nat-vol',
+    set: 'nature',
+    key: '#283593',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-vol.svg',
+  },
+  // Nature - Waterfall
+  {
+    id: 'nat-wat',
+    set: 'nature',
+    key: '#43A047',
+    textColor: 'primary',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-wat.svg',
+  },
+  // Nature - All of Us
+  {
+    id: 'nat-all',
+    set: 'nature',
+    key: '#3C3E67',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-all.svg',
+    mobileAlignment: 'left',
+  },
+  // Nature - Planet Earth
+  {
+    id: 'nat-pla',
+    set: 'nature',
+    key: '#3C3E67',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-pla.svg',
+    mobileAlignment: 'left',    
+  },
+  // Nature - OUTTA
+  {
+    id: 'nat-out',
+    set: 'nature',
+    key: '#3C3E67',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-out.svg',
+    mobileAlignment: 'left',    
+  },
+  // QUOTE BACKGROUNDS
+  // Quote - Read Love Repeat
+  {
+    id: 'quo-rea',
+    set: 'quote',
+    key: '#4DB6AC',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-rea.svg',
+    mobileAlignment: 'left',
+  },
+  // Quote - Lose & Find
+  {
+    id: 'quo-los',
+    set: 'quote',
+    key: '#F1D4C3',
+    textColor: 'primary',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-los.svg',
+    mobileAlignment: 'left',    
+  },
+  // Quote - Hot Coffee
+  {
+    id: 'quo-hot',
+    set: 'quote',
+    key: '#7C98A2',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-hot.svg',
+    mobileAlignment: 'left',    
+  },
+  // Quote - Treasure
+  {
+    id: 'quo-tre',
+    set: 'quote',
+    key: '#705838',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-tre.svg',
+    mobileAlignment: 'left',
+  },
+  // Quote - Perspective
+  {
+    id: 'quo-per',
+    set: 'quote',
+    key: '#EDE0D6',
+    textColor: 'primary',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-per.svg',
+    mobileAlignment: 'left',    
+  },
+  // Quote - TOG
+  {
+    id: 'quo-tog',
+    set: 'quote',
+    key: '#B14AFF',
+    textColor: 'white',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-tog.svg',
+    mobileAlignment: 'left',    
+  },
+  // Quote - Maybe
+  {
+    id: 'quo-may',
+    set: 'quote',
+    key: '#F1D3DF',
+    textColor: 'primary',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-may.svg',
+    mobileAlignment: 'left',    
+  },
+  // Quote - Somewhere
+  {
+    id: 'quo-som',
+    set: 'quote',
+    key: '#F2EECD',
+    textColor: 'primary',
+    bgImage:
+      'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-som.svg',
+    mobileAlignment: 'left',        
+  },
 ];
 
 export const makeUserTheme = (palette: PaletteObject | null) => {
@@ -234,7 +393,7 @@ const getUserTextPalette = (palette: PaletteObject) => {
 };
 
 // paletteColours[1] is the location of Caravan Blurple
-export const darkTheme = makeUserDarkTheme(paletteColours[1]) as Theme;
+export const darkTheme = makeUserDarkTheme(palettes[1]) as Theme;
 
 export const linkColor: string = '#0365D6';
 

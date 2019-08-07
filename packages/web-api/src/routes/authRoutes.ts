@@ -3,6 +3,7 @@ import {
   FilterAutoMongoKeys,
   Session,
   User,
+  UserSettings,
 } from '@caravan/buddy-reading-types';
 import {
   DiscordOAuth2Url,
@@ -17,6 +18,8 @@ import {
   getReferralDoc,
   createReferralActionByDoc,
 } from '../services/referral';
+import { getUserSettings, createUserSettings } from '../services/userSettings';
+import { UserSettingsDoc } from '../../typings';
 
 const router = express.Router();
 
@@ -62,9 +65,9 @@ function convertTokenResponseToModel(
 // );
 
 router.get('/discord/callback', async (req, res) => {
-  const { code, error, error_description, state } = req.query;
+  const { code, error, error_description: errorDescription, state } = req.query;
   if (error) {
-    res.redirect(`/?error=${error}&error_description=${error_description}`);
+    res.redirect(`/?error=${error}&error_description=${errorDescription}`);
     return;
   }
   let successfulAuthentication = true;
@@ -89,7 +92,22 @@ router.get('/discord/callback', async (req, res) => {
 
   let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {
-    // Update the user, but lazy now. // THIS COMMENT IS OLD, NOT NECESSARY NOW?
+    // Do any user updates here.
+    // Temporarily, check if we have an email for this user.
+    // TODO: Once every user in production has an email in settings, we can remove these checks.
+    const userSettingsDoc = await getUserSettings(userDoc.id);
+    if (userSettingsDoc && !userSettingsDoc.email && discordUserData.email) {
+      // User settings exists but we don't have an email saved yet; add one.
+      userSettingsDoc.email = discordUserData.email;
+      userSettingsDoc.save();
+    } else if (!userSettingsDoc && discordUserData.email) {
+      // User settings does not yet exist; add one with an email.
+      const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
+        userId: userDoc.id,
+        email: discordUserData.email,
+      };
+      createUserSettings(newUserSettings);
+    }
   } else {
     const slugs = generateSlugIds(discordUserData.username);
     const availableSlugs = await getAvailableSlugIds(slugs);
@@ -136,6 +154,13 @@ router.get('/discord/callback', async (req, res) => {
       req.session.referredTempUid = undefined;
       res.clearCookie('refClickComplete');
     }
+
+    // Init user settings
+    const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
+      userId: userDoc.id,
+      email: discordUserData.email,
+    };
+    createUserSettings(newUserSettings);
   }
 
   try {
@@ -212,7 +237,12 @@ router.get('/discord/callback', async (req, res) => {
   if (successfulAuthentication) {
     req.session.token = accessToken;
     req.session.userId = userDoc.id;
-    res.cookie('userId', userDoc.id);
+    const numDaysBeforeExpiry = 30;
+    const numMillisecondsBeforeExpiry =
+      1000 * 60 * 60 * 24 * numDaysBeforeExpiry;
+    res.cookie('userId', userDoc.id, {
+      expires: new Date(Date.now() + numMillisecondsBeforeExpiry),
+    });
     res.redirect(`/?state=${state}`);
     console.log(
       `Successful authentication {id: ${userDoc.id}, discordId: ${userDoc.discordId}}.`
