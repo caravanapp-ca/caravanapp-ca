@@ -1,9 +1,7 @@
 import { shouldSendWithLease, markSent } from './idempotent';
 import { db } from './db';
 
-export const sendEmail = async (
-  eventId: string
-) => {
+export const sendEmail = async (eventId: string) => {
   const emailRef = db.collection('sentEmails').doc(eventId);
 
   const send = await shouldSendWithLease(emailRef);

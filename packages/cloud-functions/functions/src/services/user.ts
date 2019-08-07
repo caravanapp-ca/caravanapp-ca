@@ -5,7 +5,8 @@ import {
 } from '@caravan/buddy-reading-mongo';
 import { GuildMember } from 'discord.js';
 
-export const getUserProfileUrl = (urlSlug: string) => `https://caravanapp.ca/users/${urlSlug}`;
+export const getUserProfileUrl = (urlSlug: string) =>
+  `https://caravanapp.ca/users/${urlSlug}`;
 
 export const getUser = async (urlSlugOrId: string) => {
   const isObjId = checkObjectIdIsValid(urlSlugOrId);

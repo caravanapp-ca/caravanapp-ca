@@ -1,8 +1,5 @@
 import btoa from 'btoa';
-import { Client as DiscordClient, TextChannel } from 'discord.js';
-import { UserDoc } from '@caravan/buddy-reading-mongo';
-import { ReferralTier } from '@caravan/buddy-reading-types';
-import { getUser } from './services/user';
+import { Client as DiscordClient } from 'discord.js';
 
 const DiscordApiUrl = 'https://discordapp.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;

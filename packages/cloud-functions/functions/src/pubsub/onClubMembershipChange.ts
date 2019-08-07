@@ -45,7 +45,7 @@ const onJoinClub = async (
     const [, userDoc, clubDoc] = await Promise.all([
       guild.fetchMembers(),
       getUser(userId),
-      getClub(clubId)
+      getClub(clubId),
     ]);
     if (!userDoc) {
       throw new Error(`[eventId: ${eventId}] - Could not find user: ${userId}`);
@@ -59,7 +59,9 @@ const onJoinClub = async (
       questions[Math.floor(Math.random() * questions.length)];
     const channel = guild.channels.get(channelId);
     if (!channel) {
-      throw new Error(`[eventId: ${eventId}] - Could not find discord channel: ${channelId}`);
+      throw new Error(
+        `[eventId: ${eventId}] - Could not find discord channel: ${channelId}`
+      );
     }
     const discordMessage = `<@${discordId}> just joined the club! When asked "${
       randomQuestion.title
@@ -75,22 +77,22 @@ const onJoinClub = async (
   return await callWhenReady(client, main);
 };
 
-const onLeaveClub = (
-  _context: functions.EventContext,
-  _clubId: string,
-  _guildId: string,
-  _userDiscordId: string,
-  _userId: string
-) => {
-  // const { eventId } = context;
-  // const client = ReadingDiscordBot.getInstance();
-  // const guild = client.guilds.get(guildId);
-  // if (!guild) {
-  //   throw new Error(`[eventId: ${eventId}] - Could not find guild: ${guildId}`);
-  // }
-  // guild.
-  return undefined;
-};
+// const onLeaveClub = (
+//   context: functions.EventContext,
+//   clubId: string,
+//   guildId: string,
+//   userDiscordId: string,
+//   userId: string
+// ) => {
+//   const { eventId } = context;
+//   const client = ReadingDiscordBot.getInstance();
+//   const guild = client.guilds.get(guildId);
+//   if (!guild) {
+//     throw new Error(`[eventId: ${eventId}] - Could not find guild: ${guildId}`);
+//   }
+//   guild.
+//   return undefined;
+// };
 
 export const onClubMembershipChanged = functions.pubsub
   .topic(PubSub.Topic.CLUB_MEMBERSHIP)
@@ -120,7 +122,7 @@ export const onClubMembershipChanged = functions.pubsub
         await onJoinClub(context, clubId, guildId, userDiscordId, userId);
         break;
       case 'left':
-        onLeaveClub(context, clubId, guildId, userDiscordId, userId);
+        // onLeaveClub(context, clubId, guildId, userDiscordId, userId);
         break;
       default:
         throw new Error(invalidAttributesMessage);
