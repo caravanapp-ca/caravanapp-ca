@@ -5,10 +5,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import copyToClipboard from 'copy-to-clipboard';
 import { User } from '@caravan/buddy-reading-types';
 import { getReferralLink } from '../common/referral';
-import fbSvg from '../resources/fb--whiteonblack.svg';
-import twitterSvg from '../resources/twitter--whiteonblack.svg';
-import emailSvg from '../resources/email--whiteonblack.svg';
-import copySvg from '../resources/copy--whiteonblack.svg';
+import fbSvg from '../resources/share-icons/fb--whiteonblack.svg';
+import twitterSvg from '../resources/share-icons/twitter--whiteonblack.svg';
+import emailSvg from '../resources/share-icons/email--whiteonblack.svg';
+import copySvg from '../resources/share-icons/copy--whiteonblack.svg';
 import rdSvg from '../resources/share-icons/reddit--whiteonblack.svg';
 
 const useStyles = makeStyles(theme => ({
