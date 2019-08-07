@@ -4,7 +4,7 @@
   "description": "Web API for Caravan's buddy reading website",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build:clean && npm run build:mongo && tsc",
+    "build": "npm run build:clean && tsc",
     "build:clean": "rimraf ./dist",
     "build:mongo": "cd ../mongo && npm run build",
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
