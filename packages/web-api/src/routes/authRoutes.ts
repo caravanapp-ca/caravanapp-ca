@@ -144,6 +144,11 @@ router.get('/discord/callback', async (req, res) => {
       const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
         userId: userDoc.id,
         email: discordUserData.email,
+        emailSettings: {
+          recs: true,
+          reminders: true,
+          updates: true,
+        },
       };
       createUserSettings(newUserSettings);
     }
@@ -198,6 +203,11 @@ router.get('/discord/callback', async (req, res) => {
     const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
       userId: userDoc.id,
       email: discordUserData.email,
+      emailSettings: {
+        recs: true,
+        reminders: true,
+        updates: true,
+      },
     };
     createUserSettings(newUserSettings);
   }

@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { HelpOutline } from '@material-ui/icons';
 import { MAX_EMAIL_LENGTH } from '../common/globalConstants';
+import { validEmail } from '../common/validEmail';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,14 +52,23 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface UserEmailFieldProps {
   editable?: boolean;
-  onChange: (newVal: string) => void;
+  onChange: (newVal: string, valid: boolean) => void;
   value?: string;
 }
+
+const validateEmail = (email?: string) => {
+  if (!email || email.length === 0) {
+    return true;
+  } else {
+    return validEmail(email);
+  }
+};
 
 export default function UserEmailField(props: UserEmailFieldProps) {
   const { editable, onChange, value } = props;
   const [focused, setFocused] = useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [error, setError] = useState<[boolean, string]>([false, '']);
   const classes = useStyles();
 
   const handleHelpMouseEnter = (
@@ -81,14 +91,27 @@ export default function UserEmailField(props: UserEmailFieldProps) {
     }
   };
 
+  const handleFocus = () => {
+    setFocused(true);
+  };
+
+  const handleBlur = () => {
+    setFocused(false);
+    if (validateEmail(value)) {
+      setError([false, '']);
+    } else {
+      setError([true, 'Please enter a valid email address!']);
+    }
+  };
+
   const open = Boolean(anchorEl);
 
   return (
     <div className={classes.root}>
       <TextField
-        onChange={e => onChange(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onChange={e => onChange(e.target.value, validateEmail(e.target.value))}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         disabled={editable ? !editable : false}
         InputProps={{
           classes: {
@@ -106,8 +129,11 @@ export default function UserEmailField(props: UserEmailFieldProps) {
         id="user-email"
         label="Your Email"
         value={value}
+        error={error[0]}
         helperText={
-          focused
+          error[0]
+            ? error[1]
+            : focused
             ? value
               ? `${MAX_EMAIL_LENGTH - value.length} chars remaining`
               : `${MAX_EMAIL_LENGTH} chars remaining`
@@ -146,14 +172,14 @@ export default function UserEmailField(props: UserEmailFieldProps) {
         disableRestoreFocus
       >
         <Container className={classes.popoverContainer} maxWidth="xs">
-          <Typography variant="body2">
+          <Typography variant="body2" gutterBottom>
             Caravan will use your email to:
           </Typography>
           <Typography variant="body2">
             • Send reminders of upcoming discussions
           </Typography>
-          <Typography variant="body2">• Recommend clubs</Typography>
-          <Typography variant="body2">
+          <Typography variant="body2">• Recommend clubs and users</Typography>
+          <Typography variant="body2" gutterBottom>
             • Keep you posted on Caravan updates
           </Typography>
           <Typography variant="body2">

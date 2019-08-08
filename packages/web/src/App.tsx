@@ -188,7 +188,9 @@ export function App(props: AppProps) {
                 <Route
                   exact
                   path="/settings"
-                  render={props => forceOnboard(user, <Settings user={user} />)}
+                  render={props =>
+                    forceOnboard(user, <Settings {...props} user={user} />)
+                  }
                 />
                 <Route
                   path="/clubs/:id/manage-shelf"

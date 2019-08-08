@@ -29,6 +29,11 @@ export const initSettings = async (userId: string) => {
   }
   const newSettings: FilterAutoMongoKeys<UserSettings> = {
     userId,
+    emailSettings: {
+      reminders: true,
+      recs: true,
+      updates: true,
+    },
   };
   const newSettingsModel = new UserSettingsModel(newSettings);
   try {

@@ -22,4 +22,8 @@ router.get('/@me', async (req, res) => {
   }
 });
 
+router.put('@me', async(req, res) => {
+  const { settings } = req.body;
+})
+
 export default router;

@@ -6,12 +6,22 @@ import {
   Typography,
   Container,
   Button,
+  IconButton,
 } from '@material-ui/core';
-import { Redirect } from 'react-router';
-import { User, UserSettings } from '@caravan/buddy-reading-types';
+import { ArrowBackIos } from '@material-ui/icons';
+import { Redirect, RouteComponentProps } from 'react-router';
+import {
+  User,
+  UserSettings,
+  EmailSettings,
+} from '@caravan/buddy-reading-types';
 import clsx from 'clsx';
 import { getMySettings } from '../../services/userSettings';
 import UserEmailField from '../../components/UserEmailField';
+import UserEmailSettings from './UserEmailSettings';
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,6 +30,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sectionContainer: {
       marginTop: theme.spacing(4),
+    },
+    subsectionContainer: {
+      marginTop: theme.spacing(2),
     },
     buttonsContainer: {
       display: 'flex',
@@ -31,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface SettingsProps {
+interface SettingsProps extends RouteComponentProps {
   user: User | null;
 }
 
@@ -44,10 +57,33 @@ const getSettings = async () => {
   }
 };
 
+const centerComponent = <HeaderTitle title="Settings" />;
+
 export default function Settings(props: SettingsProps) {
   const { user } = props;
   const [settings, setSettings] = useState<UserSettings>();
+  const [madeChanges, setMadeChanges] = useState<boolean>(false);
   const classes = useStyles();
+
+  const backButtonAction = () => {
+    if (props.history.length > 2) {
+      props.history.goBack();
+    } else {
+      props.history.replace('/');
+    }
+  };
+
+  const rightComponent = <ProfileHeaderIcon user={user} />;
+  const leftComponent = (
+    <IconButton
+      edge="start"
+      color="inherit"
+      aria-label="Back"
+      onClick={backButtonAction}
+    >
+      <ArrowBackIos />
+    </IconButton>
+  );
 
   useEffect(() => {
     if (user) {
@@ -59,30 +95,61 @@ export default function Settings(props: SettingsProps) {
     return <Redirect to="/" />;
   }
 
-  const onChangeSettings = (field: 'email', newVal: string) => {
+  const onChangeSettings = (
+    field: 'email' | 'emailSettings',
+    newVal: string | EmailSettings,
+    valid?: boolean
+  ) => {
     if (!settings) {
       throw new Error('Attempted to update user settings that were undefined.');
     }
     setSettings({ ...settings, [field]: newVal });
+    if (valid === false) {
+      setMadeChanges(false);
+    } else {
+      setMadeChanges(true);
+    }
   };
 
-  const onSaveSettings = () => {};
+  const onSaveSettings = () => {
+    if (!settings) {
+      throw new Error('Attempted to save user settings that were undefined.');
+    }
+    updateMySettings(settings);
+  };
 
   return (
-    <Container className={classes.container} maxWidth="md">
-      <Typography variant="h3">Settings</Typography>
-      <div className={classes.sectionContainer}>
-        <Typography variant="h5">Email Preferences</Typography>
+    <>
+      <Header
+        leftComponent={leftComponent}
+        centerComponent={centerComponent}
+        rightComponent={rightComponent}
+      />
+      <Container className={classes.container} maxWidth="md">
+        <Typography variant="h5" gutterBottom>
+          Email Preferences
+        </Typography>
         <UserEmailField
           value={settings ? settings.email : undefined}
-          onChange={newVal => onChangeSettings('email', newVal)}
+          onChange={(newVal, valid) => onChangeSettings('email', newVal, valid)}
         />
-      </div>
-      <div className={clsx(classes.sectionContainer, classes.buttonsContainer)}>
-        <Button color="secondary" variant="contained" onClick={onSaveSettings}>
-          <Typography variant="button">SAVE</Typography>
-        </Button>
-      </div>
-    </Container>
+        <UserEmailSettings
+          value={settings ? settings.emailSettings : undefined}
+          onChange={newVal => onChangeSettings('emailSettings', newVal)}
+        />
+        <div
+          className={clsx(classes.sectionContainer, classes.buttonsContainer)}
+        >
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={onSaveSettings}
+            disabled={!madeChanges}
+          >
+            <Typography variant="button">SAVE</Typography>
+          </Button>
+        </div>
+      </Container>
+    </>
   );
 }
