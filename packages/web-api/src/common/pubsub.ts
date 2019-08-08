@@ -1,0 +1,33 @@
+import { PubSub } from '@google-cloud/pubsub';
+import fs from 'fs';
+import { JWTInput } from 'google-auth-library';
+
+export const pubsubClient = (() => {
+  let instance: PubSub;
+
+  function createInstance() {
+    if (process.env.NODE_ENV === 'production' && process.env.GAE_ENV) {
+      // In a cloud environment, let the config be auto-handled by PubSub
+      const client = new PubSub();
+      return client;
+    } else {
+      // In a local environment, use a service account to access the appropriate PubSub stuff!
+      const keyFilename = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+      const client = new PubSub({
+        keyFilename: keyFilename,
+      });
+      return client;
+    }
+  }
+
+  return {
+    getInstance: () => {
+      if (!instance) {
+        instance = createInstance();
+      }
+      return instance;
+    },
+  };
+})();
+
+const pubsub = new PubSub();
