@@ -6,7 +6,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import copyToClipboard from 'copy-to-clipboard';
 import { User } from '@caravan/buddy-reading-types';
 import { washedTheme } from '../theme';
-import { getReferralLink } from '../functions/referral';
+import { getReferralLink } from '../common/referral';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {

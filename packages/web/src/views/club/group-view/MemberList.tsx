@@ -4,7 +4,7 @@ import { Avatar, IconButton, Grid } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
-import { getBadgeToDisplay } from '../../../functions/getBadgeToDisplay';
+import { getBadgeToDisplay } from '../../../common/getBadgeToDisplay';
 import { shrinkDiscordPhotoSize } from '../../../common/discord';
 
 interface MemberListProps {
