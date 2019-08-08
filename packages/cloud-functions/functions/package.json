@@ -4,6 +4,7 @@
   "scripts": {
     "lint": "eslint \"./**/**.ts\"",
     "lint:fix": "eslint \"./**/**.ts\" --quiet --fix",
+    "prebuild": "cd ../../../ && npm run prebuild && cd ./packages/cloud-functions/functions",
     "build": "tsc",
     "test": "jest",
     "deploy:prod:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --project=buddyreading --runtime nodejs10 --env-vars-file .env.production.yaml --trigger-topic club-membership",

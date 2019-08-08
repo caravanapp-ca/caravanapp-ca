@@ -51,7 +51,7 @@ describe('functions/pubsub', () => {
   });
 
   it('publishes a message', async () => {
-    const topic: PubSub.Topic = 'clubMembership';
+    const topic: PubSub.Topic = 'club-membership';
     const response = await requestRetry({
       url: `${BASE_URL}/`,
       method: 'POST',

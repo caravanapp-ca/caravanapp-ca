@@ -29,5 +29,3 @@ export const pubsubClient = (() => {
     },
   };
 })();
-
-const pubsub = new PubSub();

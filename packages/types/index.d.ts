@@ -339,7 +339,7 @@ declare module '@caravan/buddy-reading-types' {
   /** Google Cloud Pub/Sub and Functions */
 
   export namespace PubSub {
-    export type Topic = 'clubMembership';
+    export type Topic = 'club-membership';
 
     export namespace Message {
       export interface ClubMembershipChange {

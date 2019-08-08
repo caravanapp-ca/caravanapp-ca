@@ -24,6 +24,7 @@ import {
   GroupVibe,
   ActiveFilter,
   SameKeysAs,
+  PubSub,
 } from '@caravan/buddy-reading-types';
 import {
   ClubDoc,
@@ -41,6 +42,7 @@ import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
 import { getBadges } from '../services/badge';
+import { pubsubClient } from '../common/pubsub';
 
 const router = express.Router();
 
@@ -1140,6 +1142,15 @@ router.put(
           }
         );
         createReferralAction(userId, 'joinClub');
+        const pubsub = pubsubClient.getInstance();
+        const topic: PubSub.Topic = 'club-membership';
+        const message: PubSub.Message.ClubMembershipChange = {
+          userId: userId,
+          clubId: club.id,
+          clubMembership: 'joined',
+        };
+        const buffer = Buffer.from(JSON.stringify(message));
+        pubsub.topic(topic).publish(buffer);
       }
     } else {
       if (isOwner) {
@@ -1157,6 +1168,15 @@ router.put(
           MANAGE_MESSAGES: false,
         }
       );
+      const pubsub = pubsubClient.getInstance();
+      const topic: PubSub.Topic = 'club-membership';
+      const message: PubSub.Message.ClubMembershipChange = {
+        userId: userId,
+        clubId: club.id,
+        clubMembership: 'left',
+      };
+      const buffer = Buffer.from(JSON.stringify(message));
+      pubsub.topic(topic).publish(buffer);
     }
     // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
     await guild.fetchMembers();
