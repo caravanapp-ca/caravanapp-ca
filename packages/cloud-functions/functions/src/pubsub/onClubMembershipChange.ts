@@ -12,7 +12,6 @@ export const onJoinClub = async (
   userId: string
 ) => {
   const { eventId } = context;
-  const client = ReadingDiscordBot.getInstance();
   const [userDoc, clubDoc] = await Promise.all([
     getUser(userId).then(userDoc => {
       if (!userDoc) {
@@ -35,6 +34,7 @@ export const onJoinClub = async (
   ]);
   const { discordId, questions } = userDoc;
   const { channelId } = clubDoc;
+  const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
   if (!guild) {
     throw new Error(`[eventId: ${eventId}] - Could not find guild`);
@@ -88,6 +88,7 @@ export const onClubMembershipChange = async (
     Buffer.from(event.data, 'base64').toString()
   );
 
+  console.log(`[eventId: ${eventId}] - Attributes: { clubId: ${clubId}, clubMembership: ${clubMembership}, userId: ${userId} }`);
   const invalidAttributesMessage = `[eventId: ${eventId}] - Invalid attributes: { clubId: ${clubId}, clubMembership: ${clubMembership}, userId: ${userId} }`;
   if (clubId == null || clubMembership == null || userId == null) {
     throw new Error(invalidAttributesMessage);
@@ -97,7 +98,7 @@ export const onClubMembershipChange = async (
   const onReadyPromise = new Promise<void>(resolve =>
     client.on('ready', resolve)
   );
-  await Promise.all([onReadyPromise, connect]);
+  await Promise.all([onReadyPromise, connect()]);
 
   switch (clubMembership) {
     case 'joined':
@@ -109,5 +110,5 @@ export const onClubMembershipChange = async (
     default:
       throw new Error(invalidAttributesMessage);
   }
-  disconnect();
+  await disconnect();
 };

@@ -5,9 +5,9 @@ const firestore = new Firestore();
 
 const dbConnectionString = process.env.MONGO_DB;
 const options: ConnectionOptions = {
-  reconnectTries: 5,
-  reconnectInterval: 300,
-  poolSize: 3, // Maintain up to 10 socket connections
+  reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
+  reconnectInterval: 1000,
+  poolSize: 10, // Maintain up to 10 socket connections
   useNewUrlParser: true,
 };
 
