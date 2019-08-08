@@ -1,3 +1,5 @@
+import { ReadingState } from '@caravan/buddy-reading-types';
+
 // This function returns the channel ID for #general-chat
 // TODO: This breaks if we have multiple Discord servers.
 export const DISCORD_GEN_CHAT_ID = () => {
@@ -10,6 +12,12 @@ export const DISCORD_GEN_CHAT_ID = () => {
   }
 };
 
+export const VALID_READING_STATES: ReadingState[] = [
+  'current',
+  'notStarted',
+  'read',
+];
+export const MAX_SHELF_SIZE = 10000;
 // Determines what Discord permissions we request from the user on auth.
 export const DISCORD_PERMISSIONS = [
   'email',
