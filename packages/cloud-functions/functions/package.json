@@ -22,7 +22,6 @@
     "mongoose": "^5.6.9"
   },
   "devDependencies": {
-    "@caravan/buddy-reading-types-local": "./src/workspace/types/package.json",
     "@google-cloud/functions-framework": "^1.2.1",
     "@types/requestretry": "^1.12.5",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
