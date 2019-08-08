@@ -185,7 +185,7 @@ const sortShelf = (oldShelf: ShelfEntryDoc[]): ClubShelf => {
   return newShelf;
 };
 
-router.put('/convertClubShelves', async (req, res, next) => {
+router.put('/convertClubShelves', async (req, res) => {
   try {
     ClubModel.find().then(async allClubs => {
       const promises = allClubs.map(c => {
@@ -1155,7 +1155,7 @@ router.put(
   }
 );
 
-router.put('/:id/shelf', isAuthenticated, async (req, res, next) => {
+router.put('/:id/shelf', isAuthenticated, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const errorArr = errors.array();
