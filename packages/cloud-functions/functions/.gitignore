@@ -69,3 +69,5 @@ node_modules/
 # dotenv environment variables file
 .env
 .env.yaml
+.env.staging.yaml
+.env.production.yaml

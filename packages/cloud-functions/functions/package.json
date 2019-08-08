@@ -6,7 +6,8 @@
     "lint:fix": "eslint \"./**/**.ts\" --quiet --fix",
     "build": "tsc",
     "test": "jest",
-    "deploy:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --runtime nodejs10 --env-vars-file .env.yaml --trigger-topic club-membership",
+    "deploy:prod:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --project=buddyreading --runtime nodejs10 --env-vars-file .env.production.yaml --trigger-topic club-membership",
+    "deploy:staging:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --project=buddyreading-staging-env --runtime nodejs10 --env-vars-file .env.staging.yaml --trigger-topic club-membership",
     "dev": "functions-framework --target=onClubMembershipChange"
   },
   "engines": {
