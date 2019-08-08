@@ -4,7 +4,7 @@ import BookList from './BookList';
 import {
   SelectedGenre,
   Services,
-  ClubShelfType,
+  ClubShelf,
 } from '@caravan/buddy-reading-types';
 import GenreChip from '../../../components/GenreChip';
 
@@ -27,7 +27,7 @@ interface ShelfViewProps {
   isEditing: boolean;
   onGenreClick: (key: string, currActive: boolean) => void;
   selectedGenres: SelectedGenre[];
-  shelf: ClubShelfType;
+  shelf: ClubShelf;
 }
 
 export default function ShelfView(props: ShelfViewProps) {

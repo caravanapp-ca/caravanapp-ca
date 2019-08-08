@@ -1,3 +1,5 @@
+import { ReadingState } from "@caravan/buddy-reading-types";
+
 // This function returns the channel ID for #general-chat
 // TODO: This breaks if we have multiple Discord servers.
 export const discordGenChatChId = () => {
@@ -9,3 +11,6 @@ export const discordGenChatChId = () => {
     return '589194387968491532';
   }
 };
+
+export const VALID_READING_STATES: ReadingState[] = ['current', 'notStarted', 'read'];
+export const MAX_SHELF_SIZE = 10000;

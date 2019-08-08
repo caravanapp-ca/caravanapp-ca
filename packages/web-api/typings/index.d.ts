@@ -12,7 +12,7 @@ import {
   Badges,
   Referral,
   ReferralTiers,
-  ClubShelfType,
+  ClubShelf,
   UserPalettes,
   UserSettings,
 } from '@caravan/buddy-reading-types';

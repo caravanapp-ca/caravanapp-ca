@@ -111,7 +111,7 @@ export async function updateShelf(
     [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
   }
 ) {
-  const res = await axios.put(`${clubRoute}/${clubId}/updateShelf`, {
+  const res = await axios.put(`${clubRoute}/${clubId}/shelf`, {
     newShelf,
   });
   return res;

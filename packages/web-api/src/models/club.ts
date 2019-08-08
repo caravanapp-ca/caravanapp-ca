@@ -7,7 +7,7 @@ import {
   BookSource,
   ClubReadingSchedule,
   Discussion,
-  ClubShelfType,
+  ClubShelf,
 } from '@caravan/buddy-reading-types';
 import { Omit } from 'utility-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
@@ -48,10 +48,10 @@ const shelfSchema = new Schema(shelfSchemaDefinition, {
   timestamps: true,
 });
 
-const clubShelfDefinition: SameKeysAs<FilterAutoMongoKeys<ClubShelfType>> = {
-  current: { type: [shelfSchema], required: true },
-  notStarted: { type: [shelfSchema], required: true },
-  read: { type: [shelfSchema], required: true },
+const clubShelfDefinition: SameKeysAs<FilterAutoMongoKeys<ClubShelf>> = {
+  current: { type: [shelfSchema], required: true, default: []},
+  notStarted: { type: [shelfSchema], required: true, default: [] },
+  read: { type: [shelfSchema], required: true, default: [] },
 };
 
 const clubShelfSchema = new Schema(clubShelfDefinition, { _id: false });

@@ -23,7 +23,7 @@ import {
   ReadingSpeed,
   GroupVibe,
   ActiveFilter,
-  ClubShelfType,
+  ClubShelf,
   SameKeysAs,
 } from '@caravan/buddy-reading-types';
 import ClubModel from '../models/club';
@@ -39,8 +39,23 @@ import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
 import { ClubDoc, UserDoc, ShelfEntryDoc } from '../../typings';
 import { getBadges } from '../services/badge';
+import { VALID_READING_STATES, MAX_SHELF_SIZE } from '../common/globalConstantsAPI';
 
 const router = express.Router();
+
+const getValidShelfFromNewShelf = (newShelf: any) => {
+  const validShelf: ClubShelf = {notStarted: [], current: [], read: []};
+    VALID_READING_STATES.forEach(state => {
+    if (Array.isArray(newShelf[state])) {
+      let truncatedShelf = newShelf[state];
+      if (truncatedShelf.length > MAX_SHELF_SIZE){
+        truncatedShelf = truncatedShelf.slice(0, MAX_SHELF_SIZE);
+      }
+      validShelf[state] = truncatedShelf.map(shelfEntryWithHttpsBookUrl);
+    }
+  });
+  return validShelf;
+}
 
 const isInChannel = (member: GuildMember, club: ClubDoc) =>
   (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
@@ -146,18 +161,19 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
 If you see sortShelf and router.put('/convertClubShelves'), delete these functions!!! (Single use scripts for converting club shelves to a new format).
 */
 
-const sortShelf = (oldShelf: ShelfEntryDoc[]): ClubShelfType => {
-  const newShelf: ClubShelfType = { current: [], notStarted: [], read: [] };
+const sortShelf = (oldShelf: ShelfEntryDoc[]): ClubShelf => {
+  const newShelf: ClubShelf = { current: [], notStarted: [], read: [] };
   oldShelf.forEach(b => {
+    const book = b.toObject();
     switch (b.readingState) {
       case 'notStarted':
-        newShelf.notStarted.push(b.toObject());
+        newShelf.notStarted.push(book);
         break;
       case 'read':
-        newShelf.read.push(b.toObject());
+        newShelf.read.push(book);
         break;
       case 'current':
-        newShelf.current.push(b.toObject());
+        newShelf.current.push(book);
         break;
       default:
         console.error(`Book ${b._id} has an invalid readingState`);
@@ -169,7 +185,7 @@ const sortShelf = (oldShelf: ShelfEntryDoc[]): ClubShelfType => {
 router.put('/convertClubShelves', async (req, res, next) => {
   try {
     ClubModel.find().then(async allClubs => {
-      const promises = allClubs.map(async c => {
+      const promises = allClubs.map(c => {
         c.newShelf = sortShelf(c.shelf);
         c.save();
         return c;
@@ -794,13 +810,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    let newShelf = body.newShelf;
-    for (var key in newShelf) {
-      const keyTyped = key as ReadingState;
-      if (newShelf[keyTyped].length > 0) {
-        newShelf[keyTyped].map(shelfEntryWithHttpsBookUrl);
-      }
-    }
+    const validShelf = getValidShelfFromNewShelf(body.newShelf || {})
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
@@ -808,7 +818,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       maxMembers: body.maxMembers,
       readingSpeed: body.readingSpeed,
       genres: body.genres,
-      newShelf: newShelf,
+      newShelf: validShelf,
       schedules: body.schedules,
       ownerId: userId,
       ownerDiscordId: req.user.discordId,
@@ -1004,8 +1014,8 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   }
 });
 
+// TODO: This route is to be deprecated once every club is moved to the new shelf format
 // Update a club's currently read book
-
 router.put(
   '/:id/updatebook',
   isAuthenticated,
@@ -1141,7 +1151,7 @@ router.put(
     return res.sendStatus(400);
   });
 
-router.put('/:id/updateShelf', isAuthenticated, async (req, res, next) => {
+router.put('/:id/shelf', isAuthenticated, async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const errorArr = errors.array();
@@ -1149,13 +1159,14 @@ router.put('/:id/updateShelf', isAuthenticated, async (req, res, next) => {
   }
   const { id: clubId } = req.params;
   const { newShelf } = req.body;
+  const validShelf = getValidShelfFromNewShelf(newShelf);
   // TODO: We should do more validation on newShelf here, or, find a way to catch the Mongoose Model errors.
   let updatedClub: ClubDoc;
   try {
     updatedClub = await ClubModel.findByIdAndUpdate(
       clubId,
       {
-        newShelf,
+        validShelf,
       },
       { new: true }
     );

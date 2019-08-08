@@ -1,7 +1,6 @@
 import { GuildMember } from 'discord.js';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
-import { ShelfEntryDoc } from '../web-api/typings';
 
 declare module '@caravan/buddy-reading-types' {
   export type FilterAutoMongoKeys<Base> = Omit<
@@ -40,7 +39,7 @@ declare module '@caravan/buddy-reading-types' {
     ownerId: string;
     ownerDiscordId?: string;
     shelf?: ShelfEntry[];
-    newShelf: ClubShelfType;
+    newShelf: ClubShelf;
     schedules: ClubReadingSchedule[];
     bio?: string;
     members: User[];
@@ -108,7 +107,7 @@ declare module '@caravan/buddy-reading-types' {
     current?: UserShelfEntry[];
   }
 
-  export type ClubShelfType = { [K in ReadingState]: ShelfEntry[] };
+  export type ClubShelf = { [K in ReadingState]: ShelfEntry[] };
 
   export type UninitClubShelfType = {
     [K in ReadingState]: FilterAutoMongoKeys<ShelfEntry>[]
@@ -358,7 +357,7 @@ declare module '@caravan/buddy-reading-types' {
         ownerName: string;
         guildId: string;
         shelf?: ShelfEntry[];
-        newShelf: ClubShelfType;
+        newShelf: ClubShelf;
         schedules: ClubReadingSchedule[];
         bio?: string;
         maxMembers: number;
@@ -379,7 +378,7 @@ declare module '@caravan/buddy-reading-types' {
       ownerId: string;
       ownerDiscordId: string;
       shelf?: ShelfEntry[];
-      newShelf: ClubShelfType;
+      newShelf: ClubShelf;
       schedules: ClubReadingSchedule[];
       bio: string;
       members: User[];

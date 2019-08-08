@@ -222,11 +222,12 @@ export default function ClubComponent(props: ClubProps) {
         const club = await getClub(clubId);
         setClub(club);
         if (club) {
+          const currentlyReadingBook = club.newShelf.current[0]
           if (club.newShelf.current.length > 0) {
-            setCurrBook(club.newShelf.current[0]);
+            setCurrBook(currentlyReadingBook);
           }
-          if (club.newShelf.current[0]) {
-            const schedule = getCurrentSchedule(club, club.newShelf.current[0]);
+          if (currentlyReadingBook) {
+            const schedule = getCurrentSchedule(club, currentlyReadingBook);
             setSchedule(schedule);
           } else {
             setSchedule(null);
