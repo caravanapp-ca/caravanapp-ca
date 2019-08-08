@@ -9,7 +9,7 @@ import {
   UserWithInvitableClubs,
   User,
 } from '@caravan/buddy-reading-types';
-import { getRandomInviteMessage } from '../functions/getRandomInviteMessage';
+import { getRandomInviteMessage } from '../common/getRandomInviteMessage';
 
 const clubRoute = '/api/club';
 const discordRoute = '/api/discord';

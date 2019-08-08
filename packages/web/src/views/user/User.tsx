@@ -44,11 +44,11 @@ import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
 import { getReferralCount } from '../../services/referral';
 import { transformClub } from '../club/functions/ClubFunctions';
-import validURL from '../../functions/validURL';
+import validURL from '../../common/validURL';
 import { makeUserTheme, makeUserDarkTheme, palettes } from '../../theme';
 import { globalPaletteSets } from '../../common/globalConstants';
 import { getUserPalettes } from '../../services/userPalettes';
-import { getSelectablePalettes } from '../../functions/userPalettes';
+import { getSelectablePalettes } from '../../common/userPalettes';
 
 interface MinMax {
   min: number;

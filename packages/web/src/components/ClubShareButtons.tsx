@@ -4,11 +4,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import copyToClipboard from 'copy-to-clipboard';
 import { User } from '@caravan/buddy-reading-types';
-import { getReferralLink } from '../functions/referral';
-import fbSvg from '../resources/fb--whiteonblack.svg';
-import twitterSvg from '../resources/twitter--whiteonblack.svg';
-import emailSvg from '../resources/email--whiteonblack.svg';
-import copySvg from '../resources/copy--whiteonblack.svg';
+import { getReferralLink } from '../common/referral';
+import fbSvg from '../resources/share-icons/fb--whiteonblack.svg';
+import twitterSvg from '../resources/share-icons/twitter--whiteonblack.svg';
+import emailSvg from '../resources/share-icons/email--whiteonblack.svg';
+import copySvg from '../resources/share-icons/copy--whiteonblack.svg';
+import rdSvg from '../resources/share-icons/reddit--whiteonblack.svg';
 
 const useStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -18,7 +19,9 @@ const useStyles = makeStyles(theme => ({
   },
   shareButton: {
     backgroundColor: 'white',
-    marginRight: theme.spacing(1),
+  },
+  iconButton: {
+    padding: theme.spacing(1),
   },
   shareIcon: {
     height: 40,
@@ -56,6 +59,30 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
 
   return (
     <div className={classes.buttonContainer}>
+      <Tooltip title="Share club on Reddit" aria-label="Share club on Reddit">
+        <Link
+          href={
+            user
+              ? `http://www.reddit.com/submit?url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Fref%3D${
+                  user._id
+                }%26utm_source%3Drd&title=Check%20out%20this%20online%20book%20club%20on%20Caravan%20currently%20reading%20${encodeURIComponent(
+                  `"${bookTitle}"`
+                )}`
+              : `http://www.reddit.com/submit?url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Futm_source%3Drd&title=Check%20out%20this%20online%20book%20club%20on%20Caravan%20currently%20reading%20${encodeURIComponent(
+                  `"${bookTitle}"`
+                )}`
+          }
+          target={'_blank'}
+        >
+          <IconButton color="primary" classes={{ root: classes.iconButton }}>
+            <img
+              src={rdSvg}
+              alt="Share club on Reddit"
+              className={classes.shareIcon}
+            />
+          </IconButton>
+        </Link>
+      </Tooltip>
       <Tooltip
         title="Share club on Facebook"
         aria-label="Share club on Facebook"
@@ -70,7 +97,7 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
           }
           target={'_blank'}
         >
-          <IconButton color="primary">
+          <IconButton color="primary" classes={{ root: classes.iconButton }}>
             <img
               src={fbSvg}
               alt="Share club on Facebook"
@@ -96,7 +123,7 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
           }
           target={'_blank'}
         >
-          <IconButton color="primary">
+          <IconButton color="primary" classes={{ root: classes.iconButton }}>
             <img
               src={twitterSvg}
               alt="Share club on Twitter"
@@ -124,7 +151,7 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
           }
           target={'_blank'}
         >
-          <IconButton color="primary">
+          <IconButton color="primary" classes={{ root: classes.iconButton }}>
             <img
               src={emailSvg}
               alt="Share club via email"
@@ -138,7 +165,11 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
         aria-label="Copy link to clipboard"
       >
         <Link>
-          <IconButton onClick={callCopyToClipboardMethod} color="primary">
+          <IconButton
+            color="primary"
+            className={classes.iconButton}
+            onClick={callCopyToClipboardMethod}
+          >
             <img
               src={copySvg}
               alt="Copy to clipboard"
