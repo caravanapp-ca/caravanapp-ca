@@ -2,9 +2,10 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "module": "commonjs",
+    "allowJs": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "outDir": "lib",
+    "outDir": "dist",
     "sourceMap": true,
     "strict": true,
     "target": "es2017"

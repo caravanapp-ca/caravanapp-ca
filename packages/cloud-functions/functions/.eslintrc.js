@@ -2,6 +2,7 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    'jest/globals': true,
   },
   parser: '@typescript-eslint/parser',
   extends: [

@@ -5,33 +5,35 @@
     "lint": "eslint \"./**/**.ts\"",
     "lint:fix": "eslint \"./**/**.ts\" --quiet --fix",
     "build": "tsc",
-    "serve": "npm run build && firebase serve --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "dev": "functions-framework --target=onClubMembershipChanged",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "test": "jest",
+    "deploy:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --runtime nodejs10 --env-vars-file .env.yaml --trigger-topic club-membership",
+    "dev": "functions-framework --target=onClubMembershipChange"
   },
   "engines": {
     "node": "10"
   },
   "license": "UNLICENSED",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "dependencies": {
+    "@google-cloud/firestore": "^2.2.6",
+    "@google-cloud/pubsub": "^0.30.3",
     "btoa": "^1.2.1",
-    "firebase-admin": "^8.3.0",
-    "firebase-functions": "^3.2.0"
+    "discord.js": "^11.5.1",
+    "mongoose": "^5.6.9"
   },
   "devDependencies": {
-    "@caravan/buddy-reading-types": "1.0.0",
+    "@caravan/buddy-reading-types-local": "./src/workspace/types/package.json",
     "@google-cloud/functions-framework": "^1.2.1",
+    "@types/requestretry": "^1.12.5",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "prettier": "^1.18.2",
-    "typescript": "^3.2.2"
+    "requestretry": "^4.0.0",
+    "typescript": "^3.2.2",
+    "utility-types": "^3.7.0"
   },
   "workspaces": {
     "nohoist": [

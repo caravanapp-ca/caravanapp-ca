@@ -7,7 +7,9 @@ yarn-error.log*
 firebase-debug.log*
 
 # Output directory
-lib/
+dist/
+# Everything in this folder gets copied at build-time rather than being committed to git
+src/workspace/
 
 # Firebase cache
 .firebase/
@@ -66,3 +68,4 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.yaml
