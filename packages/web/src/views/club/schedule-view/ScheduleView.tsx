@@ -154,8 +154,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
   >(schedule ? new Array(schedule.discussions.length).fill(false) : []);
 
   // Placed this here because I was getting the error:
-  // React Hook "usePickerState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?
-  const { pickerProps, wrapperProps, inputProps } = usePickerState(
+  // React Hooks must be called in the exact same order in every component render.
+  const { pickerProps } = usePickerState(
     {
       value: props.schedule ? props.schedule.startDate : null,
       onChange: date => handleScheduleChange('startDate', date),
@@ -245,7 +245,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
 
   const renderDay = (
     day: MaterialUiPickersDate,
-    selectedDate: MaterialUiPickersDate,
+    _selectedDate: MaterialUiPickersDate,
     dayInCurrentMonth: boolean
   ) => {
     // Shouldn't happen under any normal circumstances.
@@ -502,7 +502,9 @@ export default function ScheduleView(props: ScheduleViewProps) {
                   id={`discussion-${index + 1}`}
                   label={`Discussion ${index + 1} - ${format(d.date, 'PPP')}`}
                   placeholder={`Chapters ${3 * index + 1}-${3 * (index + 1)}`}
-                  inputProps={{ maxLength: discussionLabelMax }}
+                  InputProps={{
+                    inputProps: { maxLength: discussionLabelMax },
+                  }}
                   onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
                   onBlur={() => onBlurFocusDiscussionLabel('blur', index)}
                   // error={}
@@ -598,6 +600,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
                         disabled: classes.disabled,
                         notchedOutline: classes.notchedOutline,
                       },
+                      inputProps: { maxLength: discussionLabelMax },
                     }}
                     InputLabelProps={{
                       classes: {
@@ -607,8 +610,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
                     id={`discussion-${index + 1}`}
                     label={`Discussion ${index + 1}: ${format(d.date, 'PPP')}`}
                     placeholder={`Chapters ${3 * index + 1}-${3 * (index + 1)}`}
-                    //eslint-disable-next-line react/jsx-no-duplicate-props
-                    inputProps={{ maxLength: discussionLabelMax }}
                     onFocus={() => onBlurFocusDiscussionLabel('focus', index)}
                     onBlur={() => onBlurFocusDiscussionLabel('blur', index)}
                     // error={}

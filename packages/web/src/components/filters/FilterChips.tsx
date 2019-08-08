@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
+import { makeStyles, createStyles, Chip } from '@material-ui/core';
 import clsx from 'clsx';
 import { FilterChipType } from '@caravan/buddy-reading-types';
 
@@ -34,9 +34,8 @@ interface FilterChipsProps {
 
 export default function FilterChips(props: FilterChipsProps) {
   const classes = useStyles();
-  const theme = useTheme();
 
-  const { name, active, type, chipKey, onRemove } = props;
+  const { name, type, chipKey, onRemove } = props;
 
   const wrapperClassName = clsx(classes.baseChip, {
     [classes.genreChip]: type === 'genres',

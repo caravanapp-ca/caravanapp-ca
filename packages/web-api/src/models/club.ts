@@ -5,7 +5,6 @@ import {
   FilterAutoMongoKeys,
   SameKeysAs,
   BookSource,
-  SelectedGenre,
   ClubReadingSchedule,
   Discussion,
 } from '@caravan/buddy-reading-types';

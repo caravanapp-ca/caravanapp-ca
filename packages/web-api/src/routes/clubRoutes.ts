@@ -23,11 +23,16 @@ import {
   ReadingSpeed,
   GroupVibe,
   ActiveFilter,
+  SameKeysAs,
 } from '@caravan/buddy-reading-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
-import { shelfEntryWithHttpsBookUrl } from '../services/club';
+import {
+  shelfEntryWithHttpsBookUrl,
+  getClubUrl,
+  getDefaultClubTopic,
+} from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
@@ -136,7 +141,7 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   return foundUsers;
 }
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
   const currUserId = req.session.userId;
   let currUser: UserDoc | undefined;
@@ -147,7 +152,7 @@ router.get('/', async (req, res, next) => {
   if (userId) {
     user = await getUser(userId);
   }
-  const query: any = {};
+  const query: SameKeysAs<Partial<Club>> = {};
   if ((!search || search.length === 0) && after) {
     query._id = { $lt: after };
   }
@@ -301,7 +306,7 @@ router.get('/', async (req, res, next) => {
 
 // Get all of a user's clubs, with members attached.
 // Quite heavyweight, use the route for without members above if you just need a member count
-router.get('/wMembers/user/:userId', async (req, res, next) => {
+router.get('/wMembers/user/:userId', async (req, res) => {
   // Get query params.
   const { after, pageSize, activeFilter, search } = req.query;
   const { userId } = req.params;
@@ -315,7 +320,7 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
     return res.status(400).send('Require a valid user id to get user clubs');
   }
   // Apply necessary filters
-  const query: any = {
+  const query: SameKeysAs<Partial<Club>> = {
     channelSource: 'discord',
   };
   if ((!search || search.length === 0) && after) {
@@ -493,7 +498,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Get a club's members
-router.get('/members/:id', async (req, res, next) => {
+router.get('/members/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const clubDoc = await ClubModel.findById(id);
@@ -553,7 +558,7 @@ router.post(
       const guild = client.guilds.first();
       const guildMembersPromises: Promise<{
         club: ClubDoc;
-        guildMembers: any[];
+        guildMembers: User[];
       }>[] = [];
       let guildErr: Error | null = null;
       // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
@@ -603,7 +608,7 @@ router.post(
 router.post(
   '/getClubsByIdNoMembers',
   check('clubIds').isArray(),
-  async (req, res, next) => {
+  async (req, res) => {
     const { clubIds } = req.body;
     let clubs: ClubDoc[];
     try {
@@ -681,12 +686,10 @@ interface CreateClubBody
   extends CreateChannelInput,
     Omit<Club, 'ownerId' | 'channelId'> {}
 
-const knownHttpsRedirects = ['http://books.google.com/books/'];
-
 // Create club
 router.post('/', isAuthenticated, async (req, res, next) => {
   try {
-    const { userId, token } = req.session;
+    const { userId } = req.session;
     const discordClient = ReadingDiscordBot.getInstance();
     const guild = discordClient.guilds.first();
 
@@ -705,10 +708,11 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       if (user === req.user.discordId) {
         allowed.push('MANAGE_MESSAGES');
       }
-      return {
+      const overwrites: ChannelCreationOverwrites = {
         id: user,
         allow: allowed,
-      } as ChannelCreationOverwrites;
+      };
+      return overwrites;
     });
 
     // Make all channels unlisted (might have to handle Genre channels differently in the future)
@@ -723,6 +727,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       nsfw: body.nsfw || false,
       userLimit: body.maxMembers,
       permissionOverwrites: channelCreationOverwrites,
+      topic: body.bio,
     };
     const channel = (await guild.createChannel(
       newChannel.name,
@@ -749,6 +754,12 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
+
+    const channelTopic = getDefaultClubTopic(
+      getClubUrl(newClub.id),
+      club.bio || ''
+    );
+    channel.setTopic(channelTopic);
 
     createReferralAction(userId, 'createClub');
 
@@ -807,7 +818,7 @@ router.put(
   check('newClub.vibe', `Vibe must be one of ${GROUP_VIBES.join(', ')}`).isIn(
     GROUP_VIBES
   ),
-  async (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorArr = errors.array();
@@ -935,13 +946,13 @@ router.put(
   check('prevBookId').isString(),
   check('currBookAction').isString(),
   check('wantToRead').isArray(),
-  async (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorArr = errors.array();
       return res.status(422).json({ errors: errorArr });
     }
-    const clubId = req.params.id;
+    const clubId = req.params.id as string;
     const {
       newBook,
       newEntry,
@@ -951,12 +962,12 @@ router.put(
     } = req.body;
     let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
     const shelfEntry = shelfEntryWithHttpsBookUrl(newBook);
-    let resultPrev, resultNew;
+    let resultNew;
     if (currBookAction !== 'current') {
       if (prevBookId) {
         switch (currBookAction as CurrBookAction) {
           case 'delete':
-            resultPrev = await ClubModel.updateOne(
+            await ClubModel.updateOne(
               { _id: clubId },
               { $pull: { shelf: { _id: prevBookId } } }
             );
@@ -972,13 +983,9 @@ router.put(
               'shelf.$.updatedAt': new Date(),
             };
             try {
-              resultPrev = await ClubModel.findOneAndUpdate(
-                prevCondition,
-                prevUpdate,
-                {
-                  new: true,
-                }
-              );
+              await ClubModel.findOneAndUpdate(prevCondition, prevUpdate, {
+                new: true,
+              });
             } catch (err) {
               return res.status(400).send(err);
             }
@@ -1028,21 +1035,15 @@ router.put(
         return res.status(400).send(err);
       }
     }
-    // TODO: typing here is a bitch.
-    let updateObject: any[] = [];
-    if (wantToReadArr.length > 0) {
-      const wtrReadingState: ReadingState = 'notStarted';
-      updateObject = wantToReadArr.map(b => {
-        return {
-          ...b,
-          readingState: wtrReadingState,
-          publishedDate: b.publishedDate
-            ? new Date(b.publishedDate)
-            : undefined,
-          updatedAt: new Date(),
-        };
-      });
-    }
+    const wtrReadingState: ReadingState = 'notStarted';
+    const updateObject = wantToReadArr.map(b => {
+      return {
+        ...b,
+        readingState: wtrReadingState,
+        publishedDate: b.publishedDate ? new Date(b.publishedDate) : undefined,
+        updatedAt: new Date(),
+      };
+    });
     const wtrCondition = {
       _id: clubId,
     };
@@ -1051,7 +1052,7 @@ router.put(
     };
     let resultWTR;
     try {
-      let removeWTR = await ClubModel.update(
+      await ClubModel.update(
         { _id: clubId },
         {
           $pull: {
@@ -1079,7 +1080,7 @@ router.put(
   '/:clubId/membership',
   isAuthenticated,
   check('isMember').isBoolean(),
-  async (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });

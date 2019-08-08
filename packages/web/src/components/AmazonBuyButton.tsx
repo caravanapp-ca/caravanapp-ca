@@ -16,12 +16,15 @@ const useStyles = makeStyles(theme => ({
 export default function AmazonBuyButton(props: AmazonBuyButtonProps) {
   const classes = useStyles();
 
-  const { link } = props;
+  // Note: for now we're just linking to the Amazon Books page
+  // const { link } = props;
 
   return (
     <Link
       className={classes.chip}
-      href={link ? link : 'http://bit.ly/2Y6Teus'}
+      href={
+        'https://www.amazon.com/b?_encoding=UTF8&tag=caravanclub0a-20&linkCode=ur2&linkId=7c2b4dc572c63afc5fd43f7a00dfbeaf&camp=1789&creative=9325&node=283155'
+      }
       target={'_blank'}
     >
       <Typography variant="caption">BUY ON AMAZON</Typography>

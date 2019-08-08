@@ -8,6 +8,7 @@ import {
   FilterAutoMongoKeys,
   UserQA,
   Services,
+  SameKeysAs,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -46,14 +47,14 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res) => {
-  const { after, pageSize, onboardVersion, activeFilter } = req.query;
+  const { after, pageSize, onboardVersion } = req.query;
   // const { userId } = req.session;
   // let user: UserDoc | undefined;
   // if (userId) {
   //   user = await getUser(userId);
   // }
   // Only get users who have finished onboarding
-  const query: any = {};
+  const query: SameKeysAs<Partial<User>> = {};
   if (after) {
     query._id = { $lt: after };
   }
@@ -189,7 +190,7 @@ router.put(
   check('onboardingVersion')
     .isNumeric()
     .optional(),
-  async (req, res, next) => {
+  async (req, res) => {
     ['goodreadsUrl', 'website', 'photoUrl', 'smallPhotoUrl'].forEach(
       x => (req.body[x] = x == null || x == '' ? undefined : req.body[x])
     );
@@ -218,7 +219,6 @@ router.put(
       res.status(500).send('No genres found, oops!');
       return;
     }
-
     const notStartedLimit = 500;
     const userShelf = user.shelf;
     if (
@@ -258,7 +258,6 @@ router.put(
         //@ts-ignore
         (b._id = b._id ? new mongoose.Types.ObjectId(b._id) : undefined)
     );
-
     let userGenres: {
       key: string;
       name: string;
@@ -278,7 +277,6 @@ router.put(
           throw new Error(`Unknown genre: ${g.key}, ${g.name}`);
         })
         .sort((a, b) => a.name.localeCompare(b.name));
-
       userQA = user.questions.map(q => {
         const validQuestion = questionDoc.questions.find(f => f.id === q.id);
         if (validQuestion) {
@@ -297,7 +295,6 @@ router.put(
       res.status(400).send(err);
       return;
     }
-
     const newUserButWithPossibleNullValues: Omit<
       FilterAutoMongoKeys<User>,
       | 'isBot'
@@ -322,7 +319,7 @@ router.put(
       palette: user.palette,
       badges: user.badges,
     };
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const writeableObj: any = newUserButWithPossibleNullValues;
     Object.keys(writeableObj).forEach(key => {
       switch (key) {
@@ -330,9 +327,9 @@ router.put(
           break;
         default:
           writeableObj[key] == null && delete writeableObj[key];
+          break;
       }
     });
-
     try {
       let userDoc = await UserModel.findByIdAndUpdate(userId, writeableObj, {
         new: true,

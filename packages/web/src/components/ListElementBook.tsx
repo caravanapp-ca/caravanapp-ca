@@ -7,7 +7,6 @@ import {
   Typography,
   Link,
 } from '@material-ui/core';
-import { useTheme } from '@material-ui/styles';
 import { Services } from '@caravan/buddy-reading-types';
 import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
 import Truncate from 'react-truncate';
@@ -62,7 +61,6 @@ export default function ListElementBook(props: ListElementBookProps) {
     primary,
     secondary,
     tertiary,
-    selected,
   } = props;
 
   let shortenedTitle = primaryText;
