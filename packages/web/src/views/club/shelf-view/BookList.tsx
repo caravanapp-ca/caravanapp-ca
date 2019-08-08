@@ -181,17 +181,18 @@ export default function BookList(props: BookListProps) {
                     case 'buy':
                       tertiaryElement = buyButton(b.amazonLink);
                   }
-                  const id = b.isbn || index.toString();
+                  //Generate unique ID for each book to handle duplicates
+                  const bookId = b.isbn + index.toString() + id;
                   return (
                     <ListElementBook
-                      id={id}
+                      id={bookId}
+                      key={bookId}
                       index={index}
                       clubId={b.clubId}
                       club={b.club}
                       coverImage={b.coverImageURL}
                       primaryText={b.title}
                       secondaryText={b.author}
-                      key={b.isbn || index}
                       primary={primaryElement}
                       secondary={secondaryElement}
                       tertiary={tertiaryElement}
@@ -199,7 +200,9 @@ export default function BookList(props: BookListProps) {
                       selected={selected}
                       draggable={droppable}
                       isDragging={
-                        draggingElementId ? draggingElementId === id : undefined
+                        draggingElementId
+                          ? draggingElementId === bookId
+                          : undefined
                       }
                     />
                   );
@@ -250,16 +253,18 @@ export default function BookList(props: BookListProps) {
               case 'buy':
                 tertiaryElement = buyButton(b.amazonLink);
             }
+            //Generate unique ID for each book to handle duplicates
+            const bookId = b.isbn + index.toString() + id;
             return (
               <ListElementBook
-                id={b.isbn || index.toString()}
+                id={bookId}
+                key={bookId}
                 index={index}
                 clubId={b.clubId}
                 club={b.club}
                 coverImage={b.coverImageURL}
                 primaryText={b.title}
                 secondaryText={b.author}
-                key={b.isbn || index}
                 primary={primaryElement}
                 secondary={secondaryElement}
                 tertiary={tertiaryElement}

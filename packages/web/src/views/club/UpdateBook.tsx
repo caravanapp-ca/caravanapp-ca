@@ -172,10 +172,18 @@ export default function UpdateBook(props: UpdateBookProps) {
   const rightComponent = <ProfileHeaderIcon user={user} />;
 
   const deleteHandler = (elementId: string, index: number, listId: string) => {
-    const deleteId = listId as ReadingState;
+    if (!sortedShelf.hasOwnProperty(listId)) {
+      throw new Error(`Invalid listId: ${listId}`);
+    }
+    const listIdTyped = listId as ReadingState;
     const newSortedShelf = { ...sortedShelf };
-    newSortedShelf[deleteId].splice(index, 1);
+    newSortedShelf[listIdTyped].splice(index, 1);
     setSortedShelf(newSortedShelf);
+    if (listIdTyped === 'current') {
+      const validCurrentShelf = isValidCurrentShelf(newSortedShelf.current);
+      setValidCurrentShelf(validCurrentShelf);
+    }
+    setMadeSavableMods(true);
   };
 
   const onDragStart = (initial: DragStart, provided: ResponderProvided) => {
@@ -185,6 +193,7 @@ export default function UpdateBook(props: UpdateBookProps) {
   const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
     const { destination, source, draggableId } = result;
 
+    setDraggingElementId(undefined);
     if (!destination) {
       return;
     }
@@ -215,7 +224,6 @@ export default function UpdateBook(props: UpdateBookProps) {
     newSortedShelf[destDroppableId].splice(destination.index, 0, movedBook);
 
     setSortedShelf(newSortedShelf);
-    setDraggingElementId(undefined);
 
     const validCurrentShelf = isValidCurrentShelf(newSortedShelf.current);
     setValidCurrentShelf(validCurrentShelf);
@@ -289,6 +297,8 @@ export default function UpdateBook(props: UpdateBookProps) {
               maxSelected={9}
               secondary="delete"
               inheritSearchedBooks={searchedBooks}
+              itemsDraggable={true}
+              draggingElementId={draggingElementId}
             />
             {searchedBooks.length > 0 && (
               <Typography

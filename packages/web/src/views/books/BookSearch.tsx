@@ -61,6 +61,8 @@ interface BookSearchProps {
   secondary?: 'delete';
   initialSelectedBooks?: FilterAutoMongoKeys<ShelfEntry>[];
   inheritSearchedBooks?: FilterAutoMongoKeys<ShelfEntry>[];
+  itemsDraggable?: boolean;
+  draggingElementId?: string;
 }
 
 const searchRef = React.createRef();
@@ -75,6 +77,8 @@ export default function BookSearch(props: BookSearchProps) {
     secondary,
     initialSelectedBooks,
     inheritSearchedBooks,
+    itemsDraggable,
+    draggingElementId,
   } = props;
 
   const maxSelected = props.maxSelected || 1000;
@@ -269,8 +273,9 @@ export default function BookSearch(props: BookSearchProps) {
             onRadioPress={onChangeBookToRead}
             radioValue={radioValue ? radioValue : undefined}
             onDelete={onDeleteSelectedBook}
-            droppable
+            droppable={itemsDraggable}
             disableDrop={true}
+            draggingElementId={draggingElementId}
           />
         </div>
       )}

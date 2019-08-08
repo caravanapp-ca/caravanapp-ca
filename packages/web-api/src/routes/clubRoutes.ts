@@ -1160,13 +1160,12 @@ router.put('/:id/shelf', isAuthenticated, async (req, res, next) => {
   const { id: clubId } = req.params;
   const { newShelf } = req.body;
   const validShelf = getValidShelfFromNewShelf(newShelf);
-  // TODO: We should do more validation on newShelf here, or, find a way to catch the Mongoose Model errors.
   let updatedClub: ClubDoc;
   try {
     updatedClub = await ClubModel.findByIdAndUpdate(
       clubId,
       {
-        validShelf,
+        newShelf: validShelf,
       },
       { new: true }
     );
