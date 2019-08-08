@@ -39,23 +39,26 @@ import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
 import { ClubDoc, UserDoc, ShelfEntryDoc } from '../../typings';
 import { getBadges } from '../services/badge';
-import { VALID_READING_STATES, MAX_SHELF_SIZE } from '../common/globalConstantsAPI';
+import {
+  VALID_READING_STATES,
+  MAX_SHELF_SIZE,
+} from '../common/globalConstantsAPI';
 
 const router = express.Router();
 
 const getValidShelfFromNewShelf = (newShelf: any) => {
-  const validShelf: ClubShelf = {notStarted: [], current: [], read: []};
-    VALID_READING_STATES.forEach(state => {
+  const validShelf: ClubShelf = { notStarted: [], current: [], read: [] };
+  VALID_READING_STATES.forEach(state => {
     if (Array.isArray(newShelf[state])) {
       let truncatedShelf = newShelf[state];
-      if (truncatedShelf.length > MAX_SHELF_SIZE){
+      if (truncatedShelf.length > MAX_SHELF_SIZE) {
         truncatedShelf = truncatedShelf.slice(0, MAX_SHELF_SIZE);
       }
       validShelf[state] = truncatedShelf.map(shelfEntryWithHttpsBookUrl);
     }
   });
   return validShelf;
-}
+};
 
 const isInChannel = (member: GuildMember, club: ClubDoc) =>
   (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
@@ -810,7 +813,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    const validShelf = getValidShelfFromNewShelf(body.newShelf || {})
+    const validShelf = getValidShelfFromNewShelf(body.newShelf || {});
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
@@ -1149,13 +1152,14 @@ router.put(
       return res.status(200).send({ resultNew });
     }
     return res.sendStatus(400);
-  });
+  }
+);
 
 router.put('/:id/shelf', isAuthenticated, async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const errorArr = errors.array();
-    return res.status(422).json({ errors: errorArr })
+    return res.status(422).json({ errors: errorArr });
   }
   const { id: clubId } = req.params;
   const { newShelf } = req.body;

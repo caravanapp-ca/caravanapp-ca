@@ -49,7 +49,7 @@ const shelfSchema = new Schema(shelfSchemaDefinition, {
 });
 
 const clubShelfDefinition: SameKeysAs<FilterAutoMongoKeys<ClubShelf>> = {
-  current: { type: [shelfSchema], required: true, default: []},
+  current: { type: [shelfSchema], required: true, default: [] },
   notStarted: { type: [shelfSchema], required: true, default: [] },
   read: { type: [shelfSchema], required: true, default: [] },
 };
