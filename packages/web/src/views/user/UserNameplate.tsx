@@ -1,9 +1,9 @@
 import React from 'react';
-import { User, PaletteObject } from '@caravan/buddy-reading-types';
+import clsx from 'clsx';
+import copyToClipboard from 'copy-to-clipboard';
 import {
   Button,
   createStyles,
-  Fab,
   Link,
   makeStyles,
   TextField,
@@ -12,14 +12,14 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import copyToClipboard from 'copy-to-clipboard';
+import { User, PaletteObject } from '@caravan/buddy-reading-types';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
 import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
-import { paletteColours } from '../../theme';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
-import { getReferralLink } from '../../functions/referral';
-import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
+import { getReferralLink } from '../../common/referral';
+import { getBadgeToDisplay } from '../../common/getBadgeToDisplay';
+import PaletteButton from '../../components/PaletteButton';
 
 interface UserNameplateProps {
   user: User;
@@ -33,6 +33,7 @@ interface UserNameplateProps {
   valid: [boolean, string][];
   userDarkTheme?: Theme;
   onCopyReferralLink: () => void;
+  selectablePalettes?: PaletteObject[];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,10 +43,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     leftIcon: {
       marginRight: theme.spacing(1),
-    },
-    editContainer: {
-      display: 'flex',
-      flexDirection: 'column',
     },
     textField: {
       marginTop: theme.spacing(1),
@@ -59,6 +56,20 @@ const useStyles = makeStyles((theme: Theme) =>
     referralLinkField: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
+    },
+    nameplateShade: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      padding: 8,
+      borderRadius: 4,
+    },
+    containerImgWhiteText: {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    containerImgPrimaryText: {
+      backgroundColor: 'rgba(255, 255, 255, 0.6)',
     },
   })
 );
@@ -75,6 +86,7 @@ export default function UserNameplate(props: UserNameplateProps) {
     valid,
     userDarkTheme,
     onCopyReferralLink,
+    selectablePalettes,
   } = props;
   const [focused, setFocused] = React.useState<{
     name: boolean;
@@ -107,10 +119,21 @@ export default function UserNameplate(props: UserNameplateProps) {
 
   const badgeToDisplay = getBadgeToDisplay(user.badges);
 
+  const nameplateShadeClass = clsx(classes.nameplateShade, {
+    [classes.containerImgWhiteText]:
+      user.palette &&
+      user.palette.bgImage != null &&
+      user.palette.textColor === 'white',
+    [classes.containerImgPrimaryText]:
+      user.palette &&
+      user.palette.bgImage != null &&
+      user.palette.textColor === 'primary',
+  });
+
   if (userIsMe && isEditing && onEdit) {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <div className={classes.editContainer}>
+        <div className={nameplateShadeClass}>
           <TextField
             id="display-name"
             label="Display Name"
@@ -170,120 +193,121 @@ export default function UserNameplate(props: UserNameplateProps) {
             margin="normal"
             variant="outlined"
           />
-          <Typography color="textSecondary">Palette</Typography>
-          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-            {paletteColours.map(colourObj => (
-              <Fab
-                size="small"
-                aria-label="palette-colour"
-                style={{
-                  backgroundColor: colourObj.key,
-                  marginRight: theme.spacing(1),
-                  marginTop: theme.spacing(1),
-                }}
-                onClick={() => onEdit('palette', colourObj)}
-              />
-            ))}
-          </div>
+          {selectablePalettes && selectablePalettes.length > 0 && (
+            <>
+              <Typography color="textSecondary">Palette</Typography>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {selectablePalettes.map(paletteObj => (
+                  <PaletteButton
+                    palette={paletteObj}
+                    onClick={palette => onEdit('palette', palette)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </MuiThemeProvider>
     );
   } else {
     return (
       <MuiThemeProvider theme={userDarkTheme}>
-        <div className={classes.nameAndBadge}>
+        <div className={nameplateShadeClass}>
+          <div className={classes.nameAndBadge}>
+            <Typography
+              variant="h4"
+              color="textPrimary"
+              style={{ fontWeight: 600 }}
+            >
+              {user.name}
+            </Typography>
+            {badgeToDisplay && <UserBadgeIcon badge={badgeToDisplay} />}
+          </div>
           <Typography
-            variant="h4"
+            variant="body1"
             color="textPrimary"
-            style={{ fontWeight: 600 }}
+            style={{ marginTop: badgeToDisplay ? 0 : theme.spacing(1) }}
           >
-            {user.name}
+            {user.bio}
           </Typography>
-          {badgeToDisplay && <UserBadgeIcon badge={badgeToDisplay} />}
+          <Typography variant="body1" color="textPrimary">
+            <Link
+              href={
+                user.website
+                  ? user.website.startsWith('http')
+                    ? user.website
+                    : `https://${user.website}`
+                  : ''
+              }
+            >
+              {user.website}
+            </Link>
+          </Typography>
+          {referralStatus && (
+            <Typography
+              variant="body2"
+              style={{ fontWeight: 600 }}
+              color="textPrimary"
+            >
+              {referralStatus}
+            </Typography>
+          )}
+          {user && !userIsMe && (
+            <Button
+              variant="outlined"
+              color="primary"
+              href="https://discordapp.com/channels/592761082523680798/592810415193587724"
+              target="_blank"
+              style={{ marginTop: theme.spacing(1) }}
+            >
+              {!userDarkTheme && (
+                <DiscordLogo
+                  style={{
+                    marginRight: theme.spacing(1),
+                    height: 28,
+                    width: 28,
+                  }}
+                />
+              )}
+              {userDarkTheme &&
+                user.palette &&
+                user.palette.textColor === 'primary' && (
+                  <DiscordLogoDark
+                    style={{
+                      marginRight: theme.spacing(1),
+                      height: 28,
+                      width: 28,
+                    }}
+                  />
+                )}
+              {userDarkTheme &&
+                user.palette &&
+                user.palette.textColor === 'white' && (
+                  <DiscordLogoWhite
+                    style={{
+                      marginRight: theme.spacing(1),
+                      height: 28,
+                      width: 28,
+                    }}
+                  />
+                )}
+              <Typography variant="button">{msgBtnLabelCaps}</Typography>
+            </Button>
+          )}
+          {user && userIsMe && (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() =>
+                copyToClipboard(getReferralLink(user._id, 'profile')) &&
+                onCopyReferralLink()
+              }
+              style={{ marginTop: theme.spacing(1) }}
+            >
+              <Typography variant="button">Copy Referral Link</Typography>
+            </Button>
+          )}
         </div>
-        <Typography
-          variant="body1"
-          color="textPrimary"
-          style={{ marginTop: badgeToDisplay ? 0 : theme.spacing(1) }}
-        >
-          {user.bio}
-        </Typography>
-        <Typography variant="body1" color="textPrimary">
-          <Link
-            href={
-              user.website
-                ? user.website.startsWith('http')
-                  ? user.website
-                  : `https://${user.website}`
-                : ''
-            }
-          >
-            {user.website}
-          </Link>
-        </Typography>
-        {referralStatus && (
-          <Typography
-            variant="body2"
-            style={{ fontWeight: 600 }}
-            color="textPrimary"
-          >
-            {referralStatus}
-          </Typography>
-        )}
-        {user && !userIsMe && (
-          <Button
-            variant="outlined"
-            color="primary"
-            href="https://discordapp.com/channels/592761082523680798/592810415193587724"
-            target="_blank"
-            style={{ marginTop: theme.spacing(1) }}
-          >
-            {!userDarkTheme && (
-              <DiscordLogo
-                style={{
-                  marginRight: theme.spacing(1),
-                  height: 28,
-                  width: 28,
-                }}
-              />
-            )}
-            {userDarkTheme &&
-              user.palette &&
-              user.palette.textColor === 'primary' && (
-                <DiscordLogoDark
-                  style={{
-                    marginRight: theme.spacing(1),
-                    height: 28,
-                    width: 28,
-                  }}
-                />
-              )}
-            {userDarkTheme &&
-              user.palette &&
-              user.palette.textColor === 'white' && (
-                <DiscordLogoWhite
-                  style={{
-                    marginRight: theme.spacing(1),
-                    height: 28,
-                    width: 28,
-                  }}
-                />
-              )}
-            <Typography variant="button">{msgBtnLabelCaps}</Typography>
-          </Button>
-        )}
-        {user && userIsMe && (
-          <Button
-            variant="outlined"
-            onClick={() =>
-              copyToClipboard(getReferralLink(user._id, 'home')) &&
-              onCopyReferralLink()
-            }
-            style={{ marginTop: theme.spacing(1) }}
-          >
-            <Typography variant="button">Copy Referral Link</Typography>
-          </Button>
-        )}
       </MuiThemeProvider>
     );
   }

@@ -31,7 +31,9 @@ import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
 import About from './views/about/About';
-import getUtmSourceValue from './functions/getUtmSourceValue';
+import getUtmSourceValue from './common/getUtmSourceValue';
+import { validateDiscordPermissions } from './services/auth';
+import { getDiscordAuthUrl } from './common/auth';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -72,29 +74,32 @@ export function App(props: AppProps) {
     const getUserAsync = async () => {
       const userId = getCookie('userId');
       if (userId) {
-        getUser(userId).then(async user => {
-          if (user) {
-            await setUser(user);
-            setLoadedUser(true);
-            localStorage.setItem(KEY_USER, JSON.stringify(user));
-          } else {
-            await setUser(null);
-            setLoadedUser(true);
-            localStorage.removeItem(KEY_USER);
-            console.info('Are you having fun messing with cookies? :)');
+        validateDiscordPermissions().then(res => {
+          if (res.status === 200 || res.status === 500) {
+            const dataTyped = res.data as { authRequired: boolean };
+            if (dataTyped.authRequired) {
+              const discordAuthUrl = getDiscordAuthUrl();
+              window.location.href = discordAuthUrl;
+            }
           }
         });
+        const user = await getUser(userId);
+        setUser(user);
+        setLoadedUser(true);
+        if (user) {
+          localStorage.setItem(KEY_USER, JSON.stringify(user));
+        } else {
+          localStorage.removeItem(KEY_USER);
+          console.info('Are you having fun messing with cookies? :)');
+        }
       } else {
-        await setUser(null);
+        setUser(null);
         setLoadedUser(true);
         localStorage.removeItem(KEY_USER);
       }
     };
     getUserAsync();
-  }, []);
-
-  // Handle the `state` query to verify login
-  useEffect(() => {
+    // Handle the `state` query to verify login
     const queries = qs.parse(window.location.search);
     if (queries && queries.state) {
       // Someone tampered with the login, remove token

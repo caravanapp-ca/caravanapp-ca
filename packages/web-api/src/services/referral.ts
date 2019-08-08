@@ -17,10 +17,14 @@ export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   tw: true,
   em: true,
   gr: true,
+  rd: true,
+  cpp: true,
+  cph: true,
+  cpc: true,
 };
 
 export const ALLOWED_REFERRAL_DESTINATIONS: {
-  [key in ReferralDestination]: boolean
+  [key in ReferralDestination]: boolean;
 } = {
   home: true,
   club: true,
@@ -30,7 +34,7 @@ export async function handleFirstVisit(
   referredTempUid: string,
   referredById: string,
   referralDestination: ReferralDestination,
-  utm_source?: ReferralSource
+  utmSource?: ReferralSource
 ) {
   const newReferral: Omit<
     FilterAutoMongoKeys<Referral>,
@@ -44,7 +48,7 @@ export async function handleFirstVisit(
         timestamp: new Date(),
       },
     ],
-    source: utm_source,
+    source: utmSource,
     referralDestination: referralDestination,
     referredAndNotJoined: true,
   };
@@ -55,12 +59,8 @@ export async function handleFirstVisit(
   return referralDoc;
 }
 
-export async function createReferralAction(
-  referredId: string,
-  action: ReferralAction
-) {
-  const referralDoc = await getReferralDoc(referredId);
-  return createReferralActionByDoc(referralDoc, action);
+export function getReferralDoc(userId: string) {
+  return ReferralModel.findOne({ userId });
 }
 
 export async function createReferralActionByDoc(
@@ -143,10 +143,6 @@ export async function createReferralActionByDoc(
   return referralDoc.save();
 }
 
-export function getReferralDoc(userId: string) {
-  return ReferralModel.findOne({ userId });
-}
-
 export const getReferralTiersDoc = () => {
   // TODO: Consider adding in-memory storage to reduce DB calls.
   return ReferralTierModel.findOne({});
@@ -162,3 +158,11 @@ export const getReferralTier = async (tierNum: number) => {
   }
   return referralTier;
 };
+
+export async function createReferralAction(
+  referredId: string,
+  action: ReferralAction
+) {
+  const referralDoc = await getReferralDoc(referredId);
+  return createReferralActionByDoc(referralDoc, action);
+}

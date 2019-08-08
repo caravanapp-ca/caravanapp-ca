@@ -1,4 +1,4 @@
-import { referralBadgeKeys } from '../common/globalConstants';
+import { referralBadgeKeys } from './globalConstants';
 import { UserBadge } from '@caravan/buddy-reading-types';
 
 export const getBadgeToDisplay = (badges: UserBadge[] | undefined) => {

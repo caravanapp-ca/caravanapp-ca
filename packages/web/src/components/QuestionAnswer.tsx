@@ -77,9 +77,8 @@ export default function QuestionAnswer(props: QuestionAnswerProps) {
           disabled: classes.disabled,
           notchedOutline: classes.notchedOutline,
         },
+        inputProps: { maxLength },
       }}
-      //eslint-disable-next-line react/jsx-no-duplicate-props
-      inputProps={{ maxLength }}
       InputLabelProps={{
         classes: {
           disabled: classes.disabledLabel,

@@ -7,6 +7,7 @@ import {
   UserShelfEntry,
   BookSource,
   UserBadge,
+  PaletteObject,
 } from '@caravan/buddy-reading-types';
 import { UserDoc } from '../../typings';
 import { Omit } from 'utility-types';
@@ -64,7 +65,7 @@ const userShelfEntryDefinition: SameKeysAs<
 
 const userShelfEntrySchema = new Schema(userShelfEntryDefinition);
 
-const mapUserShelfDefinition: any = {
+const mapUserShelfDefinition = {
   notStarted: { type: [userShelfEntrySchema], required: true },
   read: { type: [userShelfEntrySchema], required: true },
 };
@@ -73,9 +74,18 @@ const mapUserShelfSchema = new Schema(mapUserShelfDefinition, {
   _id: false,
 });
 
-const paletteSchema = new Schema({
+const paletteDefinition: FilterAutoMongoKeys<SameKeysAs<PaletteObject>> = {
+  id: { type: String, required: true },
   key: { type: String, required: true },
   textColor: { type: String, required: true },
+  bgImage: { type: String },
+  set: { type: String },
+  mobileAlignment: { type: String },
+};
+
+const paletteSchema = new Schema(paletteDefinition, {
+  _id: false,
+  timestamps: true,
 });
 
 const userBadgeDefinition: FilterAutoMongoKeys<SameKeysAs<UserBadge>> = {

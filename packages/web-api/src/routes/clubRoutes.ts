@@ -23,18 +23,42 @@ import {
   ReadingSpeed,
   GroupVibe,
   ActiveFilter,
+  ClubShelf,
+  SameKeysAs,
 } from '@caravan/buddy-reading-types';
 import ClubModel from '../models/club';
 import UserModel from '../models/user';
 import { isAuthenticated } from '../middleware/auth';
-import { shelfEntryWithHttpsBookUrl } from '../services/club';
+import {
+  shelfEntryWithHttpsBookUrl,
+  getClubUrl,
+  getDefaultClubTopic,
+} from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
-import { ClubDoc, UserDoc } from '../../typings';
+import { ClubDoc, UserDoc, ShelfEntryDoc } from '../../typings';
 import { getBadges } from '../services/badge';
+import {
+  VALID_READING_STATES,
+  MAX_SHELF_SIZE,
+} from '../common/globalConstantsAPI';
 
 const router = express.Router();
+
+const getValidShelfFromNewShelf = (newShelf: ClubShelf) => {
+  const validShelf: ClubShelf = { notStarted: [], current: [], read: [] };
+  VALID_READING_STATES.forEach(state => {
+    if (Array.isArray(newShelf[state])) {
+      let truncatedShelf = newShelf[state];
+      if (truncatedShelf.length > MAX_SHELF_SIZE) {
+        truncatedShelf = truncatedShelf.slice(0, MAX_SHELF_SIZE);
+      }
+      validShelf[state] = truncatedShelf.map(shelfEntryWithHttpsBookUrl);
+    }
+  });
+  return validShelf;
+};
 
 const isInChannel = (member: GuildMember, club: ClubDoc) =>
   (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
@@ -136,7 +160,67 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   return foundUsers;
 }
 
-router.get('/', async (req, res, next) => {
+/*
+If you see sortShelf and router.put('/convertClubShelves'), delete these functions!!! (Single use scripts for converting club shelves to a new format).
+*/
+
+const sortShelf = (oldShelf: ShelfEntryDoc[]): ClubShelf => {
+  const newShelf: ClubShelf = { current: [], notStarted: [], read: [] };
+  oldShelf.forEach(b => {
+    const book = b.toObject();
+    switch (b.readingState) {
+      case 'notStarted':
+        newShelf.notStarted.push(book);
+        break;
+      case 'read':
+        newShelf.read.push(book);
+        break;
+      case 'current':
+        newShelf.current.push(book);
+        break;
+      default:
+        console.error(`Book ${b._id} has an invalid readingState`);
+    }
+  });
+  return newShelf;
+};
+
+router.put('/convertClubShelves', async (req, res) => {
+  try {
+    ClubModel.find().then(async allClubs => {
+      const promises = allClubs.map(c => {
+        c.newShelf = sortShelf(c.shelf);
+        c.save();
+        return c;
+      });
+      const results = await Promise.all(promises);
+      return res.status(200).send(results);
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(`Error converting all club shelves: ${err}`);
+  }
+});
+
+// const sanitizeClubShelf = (shelf: ShelfEntry[]) => {
+//   const newShelf = shelf.map(item => {
+//     if (
+//       item &&
+//       item.coverImageURL &&
+//       knownHttpsRedirects.find(url => item.coverImageURL.startsWith(url))
+//     ) {
+//       const newItem: ShelfEntry = {
+//         ...item,
+//         coverImageURL: item.coverImageURL.replace('http:', 'https:'),
+//       };
+//       return newItem;
+//     }
+//     return item;
+//   });
+//   return newShelf;
+// };
+
+router.get('/', async (req, res) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
   const currUserId = req.session.userId;
   let currUser: UserDoc | undefined;
@@ -147,7 +231,7 @@ router.get('/', async (req, res, next) => {
   if (userId) {
     user = await getUser(userId);
   }
-  const query: any = {};
+  const query: SameKeysAs<Partial<Club>> = {};
   if ((!search || search.length === 0) && after) {
     query._id = { $lt: after };
   }
@@ -301,7 +385,7 @@ router.get('/', async (req, res, next) => {
 
 // Get all of a user's clubs, with members attached.
 // Quite heavyweight, use the route for without members above if you just need a member count
-router.get('/wMembers/user/:userId', async (req, res, next) => {
+router.get('/wMembers/user/:userId', async (req, res) => {
   // Get query params.
   const { after, pageSize, activeFilter, search } = req.query;
   const { userId } = req.params;
@@ -315,7 +399,7 @@ router.get('/wMembers/user/:userId', async (req, res, next) => {
     return res.status(400).send('Require a valid user id to get user clubs');
   }
   // Apply necessary filters
-  const query: any = {
+  const query: SameKeysAs<Partial<Club>> = {
     channelSource: 'discord',
   };
   if ((!search || search.length === 0) && after) {
@@ -493,7 +577,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Get a club's members
-router.get('/members/:id', async (req, res, next) => {
+router.get('/members/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const clubDoc = await ClubModel.findById(id);
@@ -553,7 +637,7 @@ router.post(
       const guild = client.guilds.first();
       const guildMembersPromises: Promise<{
         club: ClubDoc;
-        guildMembers: any[];
+        guildMembers: User[];
       }>[] = [];
       let guildErr: Error | null = null;
       // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
@@ -603,7 +687,7 @@ router.post(
 router.post(
   '/getClubsByIdNoMembers',
   check('clubIds').isArray(),
-  async (req, res, next) => {
+  async (req, res) => {
     const { clubIds } = req.body;
     let clubs: ClubDoc[];
     try {
@@ -681,12 +765,10 @@ interface CreateClubBody
   extends CreateChannelInput,
     Omit<Club, 'ownerId' | 'channelId'> {}
 
-const knownHttpsRedirects = ['http://books.google.com/books/'];
-
 // Create club
 router.post('/', isAuthenticated, async (req, res, next) => {
   try {
-    const { userId, token } = req.session;
+    const { userId } = req.session;
     const discordClient = ReadingDiscordBot.getInstance();
     const guild = discordClient.guilds.first();
 
@@ -705,10 +787,11 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       if (user === req.user.discordId) {
         allowed.push('MANAGE_MESSAGES');
       }
-      return {
+      const overwrites: ChannelCreationOverwrites = {
         id: user,
         allow: allowed,
-      } as ChannelCreationOverwrites;
+      };
+      return overwrites;
     });
 
     // Make all channels unlisted (might have to handle Genre channels differently in the future)
@@ -723,13 +806,20 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       nsfw: body.nsfw || false,
       userLimit: body.maxMembers,
       permissionOverwrites: channelCreationOverwrites,
+      topic: body.bio,
     };
     const channel = (await guild.createChannel(
       newChannel.name,
       newChannel
     )) as TextChannel;
 
-    const shelf = body.shelf.map(shelfEntryWithHttpsBookUrl);
+    const validShelf = getValidShelfFromNewShelf(
+      body.newShelf || {
+        current: [],
+        notStarted: [],
+        read: [],
+      }
+    );
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
@@ -737,7 +827,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       maxMembers: body.maxMembers,
       readingSpeed: body.readingSpeed,
       genres: body.genres,
-      shelf,
+      newShelf: validShelf,
       schedules: body.schedules,
       ownerId: userId,
       ownerDiscordId: req.user.discordId,
@@ -749,6 +839,12 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 
     const club = new ClubModel(clubModelBody);
     const newClub = await club.save();
+
+    const channelTopic = getDefaultClubTopic(
+      getClubUrl(newClub.id),
+      club.bio || ''
+    );
+    channel.setTopic(channelTopic);
 
     createReferralAction(userId, 'createClub');
 
@@ -807,7 +903,7 @@ router.put(
   check('newClub.vibe', `Vibe must be one of ${GROUP_VIBES.join(', ')}`).isIn(
     GROUP_VIBES
   ),
-  async (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorArr = errors.array();
@@ -927,6 +1023,7 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   }
 });
 
+// TODO: This route is to be deprecated once every club is moved to the new shelf format
 // Update a club's currently read book
 router.put(
   '/:id/updatebook',
@@ -935,13 +1032,13 @@ router.put(
   check('prevBookId').isString(),
   check('currBookAction').isString(),
   check('wantToRead').isArray(),
-  async (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorArr = errors.array();
       return res.status(422).json({ errors: errorArr });
     }
-    const clubId = req.params.id;
+    const clubId = req.params.id as string;
     const {
       newBook,
       newEntry,
@@ -951,12 +1048,12 @@ router.put(
     } = req.body;
     let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
     const shelfEntry = shelfEntryWithHttpsBookUrl(newBook);
-    let resultPrev, resultNew;
+    let resultNew;
     if (currBookAction !== 'current') {
       if (prevBookId) {
         switch (currBookAction as CurrBookAction) {
           case 'delete':
-            resultPrev = await ClubModel.updateOne(
+            await ClubModel.updateOne(
               { _id: clubId },
               { $pull: { shelf: { _id: prevBookId } } }
             );
@@ -972,13 +1069,9 @@ router.put(
               'shelf.$.updatedAt': new Date(),
             };
             try {
-              resultPrev = await ClubModel.findOneAndUpdate(
-                prevCondition,
-                prevUpdate,
-                {
-                  new: true,
-                }
-              );
+              await ClubModel.findOneAndUpdate(prevCondition, prevUpdate, {
+                new: true,
+              });
             } catch (err) {
               return res.status(400).send(err);
             }
@@ -1028,21 +1121,15 @@ router.put(
         return res.status(400).send(err);
       }
     }
-    // TODO: typing here is a bitch.
-    let updateObject: any[] = [];
-    if (wantToReadArr.length > 0) {
-      const wtrReadingState: ReadingState = 'notStarted';
-      updateObject = wantToReadArr.map(b => {
-        return {
-          ...b,
-          readingState: wtrReadingState,
-          publishedDate: b.publishedDate
-            ? new Date(b.publishedDate)
-            : undefined,
-          updatedAt: new Date(),
-        };
-      });
-    }
+    const wtrReadingState: ReadingState = 'notStarted';
+    const updateObject = wantToReadArr.map(b => {
+      return {
+        ...b,
+        readingState: wtrReadingState,
+        publishedDate: b.publishedDate ? new Date(b.publishedDate) : undefined,
+        updatedAt: new Date(),
+      };
+    });
     const wtrCondition = {
       _id: clubId,
     };
@@ -1051,7 +1138,7 @@ router.put(
     };
     let resultWTR;
     try {
-      let removeWTR = await ClubModel.update(
+      await ClubModel.update(
         { _id: clubId },
         {
           $pull: {
@@ -1074,12 +1161,42 @@ router.put(
   }
 );
 
+router.put('/:id/shelf', isAuthenticated, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const errorArr = errors.array();
+    return res.status(422).json({ errors: errorArr });
+  }
+  const { id: clubId } = req.params;
+  // Using type assertion here, but we will sanitize with getValidShelfFromNewShelf.
+  const newShelf = req.body.newShelf as ClubShelf;
+  const validShelf = getValidShelfFromNewShelf(newShelf);
+  let updatedClub: ClubDoc;
+  try {
+    updatedClub = await ClubModel.findByIdAndUpdate(
+      clubId,
+      {
+        newShelf: validShelf,
+      },
+      { new: true }
+    );
+  } catch (err) {
+    console.error(`Failed to update shelf for club ${clubId}: ${err}`);
+    return res.status(400).send(`Failed to update shelf for club ${clubId}`);
+  }
+  if (!updatedClub) {
+    console.error(`Could not find club ${clubId}`);
+    return res.status(404).send(`Could not find club ${clubId}`);
+  }
+  return res.status(200).send(updatedClub);
+});
+
 // Modify current user's club membership
 router.put(
   '/:clubId/membership',
   isAuthenticated,
   check('isMember').isBoolean(),
-  async (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
