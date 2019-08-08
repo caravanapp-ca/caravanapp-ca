@@ -299,6 +299,7 @@ router.put(
       FilterAutoMongoKeys<User>,
       | 'isBot'
       | 'smallPhotoUrl'
+      | 'photoUrl'
       | 'discordId'
       | 'discordUsername'
       | 'onboardingVersion'
@@ -310,7 +311,6 @@ router.put(
       goodreadsUrl: user.goodreadsUrl,
       location: user.location,
       name: user.name,
-      photoUrl: user.photoUrl,
       readingSpeed: user.readingSpeed,
       website: user.website,
       selectedGenres: userGenres,
