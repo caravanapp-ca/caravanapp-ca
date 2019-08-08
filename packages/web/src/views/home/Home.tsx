@@ -49,7 +49,7 @@ import {
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
 import { transformClub } from '../club/functions/ClubFunctions';
-import shuffleArr from '../../functions/shuffleArr';
+import shuffleArr from '../../common/shuffleArr';
 import FilterSearch from '../../components/filters/FilterSearch';
 import Splash from './Splash';
 import ShareIconButton from '../../components/ShareIconButton';

@@ -17,8 +17,8 @@ import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg'
 import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
-import { getReferralLink } from '../../functions/referral';
-import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
+import { getReferralLink } from '../../common/referral';
+import { getBadgeToDisplay } from '../../common/getBadgeToDisplay';
 import PaletteButton from '../../components/PaletteButton';
 
 interface UserNameplateProps {

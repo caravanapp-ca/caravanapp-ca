@@ -19,7 +19,9 @@ import {
   createReferralActionByDoc,
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
-import { UserSettingsDoc } from '../../typings';
+import { getSession } from '../services/session';
+import { validateSessionPermissions } from '../common/session';
+import { DISCORD_PERMISSIONS } from '../common/globalConstantsAPI';
 
 const router = express.Router();
 
@@ -35,6 +37,33 @@ router.get('/discord/login', (req, res) => {
     return;
   }
   res.redirect(DiscordOAuth2Url(state, req.headers.host));
+});
+
+router.get('/discord/validatePermissions', async (req, res) => {
+  const { userId } = req.session;
+  if (!userId) {
+    return res
+      .status(400)
+      .send('Require a logged in user to complete this request.');
+  }
+  try {
+    const sessionDoc = await getSession(userId);
+    if (!sessionDoc) {
+      throw new Error(
+        `SessionDoc in validatePermissions is null { userId: ${userId} }`
+      );
+    }
+    const validSessionPermissions = validateSessionPermissions(sessionDoc);
+    if (!validSessionPermissions) {
+      console.log(
+        `User ${userId} has invalid Discord session permissions, redirect to Discord auth.`
+      );
+    }
+    return res.status(200).send({ authRequired: !validSessionPermissions });
+  } catch (err) {
+    console.error(`Validating sessionDoc failed: { userId: ${userId} }`, err);
+    return res.status(500).send({ authRequired: true });
+  }
 });
 
 function convertTokenResponseToModel(
@@ -93,6 +122,19 @@ router.get('/discord/callback', async (req, res) => {
   let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {
     // Do any user updates here.
+
+    // Check if the user has provided any new Discord permissions.
+    // If so, update their session doc.
+    const sessionDoc = await getSession(userDoc.id);
+    if (sessionDoc) {
+      const discordPermissions = DISCORD_PERMISSIONS.join(' ');
+      if (sessionDoc.scope !== discordPermissions) {
+        sessionDoc.scope = discordPermissions;
+        sessionDoc.save();
+      }
+    } else {
+      throw new Error(`sessionDoc doesn't exist for user ${userDoc.id}`);
+    }
     // Temporarily, check if we have an email for this user.
     // TODO: Once every user in production has an email in settings, we can remove these checks.
     const userSettingsDoc = await getUserSettings(userDoc.id);

@@ -4,17 +4,15 @@ import Discord, { TextChannel } from 'discord.js';
 import fetch from 'node-fetch';
 import { getUser } from './user';
 import { UserDoc } from '../../typings';
-import { discordGenChatChId } from '../common/globalConstantsAPI';
+import {
+  DISCORD_GEN_CHAT_ID,
+  DISCORD_PERMISSIONS,
+} from '../common/globalConstantsAPI';
 import { ReferralTier } from '@caravan/buddy-reading-types';
 import { getReferralTier } from './referral';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
-const DiscordPermissions = [
-  'email',
-  'identify',
-  'guilds.join',
-  'gdm.join',
-].join('%20');
+const DiscordPermissionsParam = DISCORD_PERMISSIONS.join('%20');
 
 const DiscordApiUrl = 'https://discordapp.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;
@@ -36,7 +34,7 @@ const getDiscordRedirectUri = (host: string) => {
 
 const DiscordOAuth2Url = (state: string, host: string) => {
   const redirectUri = getDiscordRedirectUri(host);
-  return `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${DiscordPermissions}&state=${state}`;
+  return `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${DiscordPermissionsParam}&state=${state}`;
 };
 const GetDiscordTokenCallbackUri = (code: string, host: string) => {
   const redirectUri = getDiscordRedirectUri(host);
@@ -44,7 +42,7 @@ const GetDiscordTokenCallbackUri = (code: string, host: string) => {
     DiscordRedirectUri}`;
 };
 const GetDiscordTokenRefreshCallbackUri = (refreshToken: string) =>
-  `${DiscordApiUrl}/oauth2/token?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissions}`;
+  `${DiscordApiUrl}/oauth2/token?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissionsParam}`;
 
 interface DiscordUserResponseData {
   id: string;
@@ -165,7 +163,7 @@ export const sendNewTierDiscordMsg = async (
   }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
-  const genChatId = discordGenChatChId();
+  const genChatId = DISCORD_GEN_CHAT_ID();
   const genChannel = guild.channels.get(genChatId) as TextChannel;
   if (!genChannel) {
     console.log('Did not find #general-chat at channel id ${genChatId}');

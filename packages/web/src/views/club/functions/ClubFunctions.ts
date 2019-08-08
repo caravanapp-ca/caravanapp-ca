@@ -8,7 +8,7 @@ import {
   Services,
   ClubTransformed,
 } from '@caravan/buddy-reading-types';
-import { scheduleStrToDates } from '../../../functions/scheduleStrToDates';
+import { scheduleStrToDates } from '../../../common/scheduleStrToDates';
 
 export function getCurrentBook(club: Club): ShelfEntry | null {
   if (club && club.shelf) {

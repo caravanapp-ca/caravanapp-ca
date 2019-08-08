@@ -4,12 +4,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import copyToClipboard from 'copy-to-clipboard';
 import { User } from '@caravan/buddy-reading-types';
-import { getReferralLink } from '../functions/referral';
-import rdSvg from '../resources/share-icons/reddit--whiteonblack.svg';
+import { getReferralLink } from '../common/referral';
 import fbSvg from '../resources/share-icons/fb--whiteonblack.svg';
 import twitterSvg from '../resources/share-icons/twitter--whiteonblack.svg';
 import emailSvg from '../resources/share-icons/email--whiteonblack.svg';
 import copySvg from '../resources/share-icons/copy--whiteonblack.svg';
+import rdSvg from '../resources/share-icons/reddit--whiteonblack.svg';
 
 const useStyles = makeStyles(theme => ({
   buttonContainer: {
