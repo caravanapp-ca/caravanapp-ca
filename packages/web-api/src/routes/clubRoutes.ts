@@ -46,7 +46,7 @@ import {
 
 const router = express.Router();
 
-const getValidShelfFromNewShelf = (newShelf: any) => {
+const getValidShelfFromNewShelf = (newShelf: ClubShelf) => {
   const validShelf: ClubShelf = { notStarted: [], current: [], read: [] };
   VALID_READING_STATES.forEach(state => {
     if (Array.isArray(newShelf[state])) {
@@ -813,7 +813,13 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    const validShelf = getValidShelfFromNewShelf(body.newShelf || {});
+    const validShelf = getValidShelfFromNewShelf(
+      body.newShelf || {
+        current: [],
+        notStarted: [],
+        read: [],
+      }
+    );
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
@@ -1162,7 +1168,8 @@ router.put('/:id/shelf', isAuthenticated, async (req, res) => {
     return res.status(422).json({ errors: errorArr });
   }
   const { id: clubId } = req.params;
-  const { newShelf } = req.body;
+  // Using type assertion here, but we will sanitize with getValidShelfFromNewShelf.
+  const newShelf = req.body.newShelf as ClubShelf;
   const validShelf = getValidShelfFromNewShelf(newShelf);
   let updatedClub: ClubDoc;
   try {
