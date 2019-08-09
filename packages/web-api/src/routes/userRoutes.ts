@@ -22,6 +22,7 @@ import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc } from '../../typings';
 import { createReferralAction } from '../services/referral';
+import Fuse from 'fuse.js';
 
 const router = express.Router();
 
@@ -47,7 +48,7 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res) => {
-  const { after, pageSize, onboardVersion } = req.query;
+  const { after, pageSize, onboardVersion, search } = req.query;
   // const { userId } = req.session;
   // let user: UserDoc | undefined;
   // if (userId) {
@@ -55,7 +56,7 @@ router.get('/', async (req, res) => {
   // }
   // Only get users who have finished onboarding
   const query: SameKeysAs<Partial<User>> = {};
-  if (after) {
+  if ((!search || search.length === 0) && after) {
     query._id = { $lt: after };
   }
   if (onboardVersion && (onboardVersion === '0' || onboardVersion === '1')) {
@@ -79,7 +80,7 @@ router.get('/', async (req, res) => {
     res.sendStatus(404);
     return;
   }
-  const filteredUsers: Services.GetUsers['users'] = users
+  let filteredUsers: Services.GetUsers['users'] = users
     .map(userDocument => {
       mutateUserDiscordContent(userDocument);
       const user: Omit<User, 'createdAt' | 'updatedAt'> & {
@@ -99,6 +100,15 @@ router.get('/', async (req, res) => {
       return user;
     })
     .filter(c => c !== null);
+    if ((search && search.length) > 0) {
+      const fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {
+        // TODO: Typescript doesn't like the use of keys here.
+        // @ts-ignore
+        keys: ['name', 'shelf.notStarted.title', 'shelf.notStarted.author'],
+      };
+      const fuse = new Fuse(filteredUsers, fuseOptions);
+      filteredUsers = fuse.search(search);
+    }
   const result: Services.GetUsers = {
     users: filteredUsers,
   };
