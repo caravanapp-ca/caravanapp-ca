@@ -1,5 +1,5 @@
 import React from 'react';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Droppable } from 'react-beautiful-dnd';
 import {
   ShelfEntry,
   UserShelfEntry,
@@ -17,7 +17,6 @@ import { Radio, IconButton, Paper, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlusIcon from '@material-ui/icons/Add';
 import AmazonBuyButton from '../../../components/AmazonBuyButton';
-import clsx from 'clsx';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -157,10 +156,6 @@ export default function BookList(props: BookListProps) {
                 {...provided.droppableProps}
               >
                 {(data as UserShelfEntry[]).map((b, index) => {
-                  let selected = false;
-                  if (radioValue && radioValue === b._id) {
-                    selected = true;
-                  }
                   let primaryElement: JSX.Element | undefined;
                   switch (primary) {
                     case 'radio':
@@ -197,7 +192,6 @@ export default function BookList(props: BookListProps) {
                       secondary={secondaryElement}
                       tertiary={tertiaryElement}
                       onClick={onClick}
-                      selected={selected}
                       draggable={droppable}
                       isDragging={
                         draggingElementId
@@ -229,10 +223,6 @@ export default function BookList(props: BookListProps) {
       <Paper>
         <List dense={false}>
           {(data as UserShelfEntry[]).map((b, index) => {
-            let selected = false;
-            if (radioValue && radioValue === b._id) {
-              selected = true;
-            }
             let primaryElement: JSX.Element | undefined;
             switch (primary) {
               case 'radio':
@@ -269,7 +259,6 @@ export default function BookList(props: BookListProps) {
                 secondary={secondaryElement}
                 tertiary={tertiaryElement}
                 onClick={onClick}
-                selected={selected}
               />
             );
           })}

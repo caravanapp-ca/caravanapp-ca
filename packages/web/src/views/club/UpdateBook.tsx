@@ -191,7 +191,7 @@ export default function UpdateBook(props: UpdateBookProps) {
   };
 
   const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
-    const { destination, source, draggableId } = result;
+    const { destination, source } = result;
 
     setDraggingElementId(undefined);
     if (!destination) {
@@ -200,7 +200,7 @@ export default function UpdateBook(props: UpdateBookProps) {
 
     if (
       source.droppableId === destination.droppableId &&
-      source.index == destination.index
+      source.index === destination.index
     ) {
       return;
     }
