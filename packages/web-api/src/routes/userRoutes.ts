@@ -69,7 +69,6 @@ router.get('/', async (req, res) => {
   let users: UserDoc[];
   try {
     users = await UserModel.find(query)
-      .limit(limit)
       .sort({ createdAt: -1 })
       .exec();
   } catch (err) {
@@ -110,6 +109,15 @@ router.get('/', async (req, res) => {
     };
     const fuse = new Fuse(filteredUsers, fuseOptions);
     filteredUsers = fuse.search(search);
+  }
+  if (after) {
+    const afterIndex = filteredUsers.findIndex(c => c._id.toString() === after);
+    if (afterIndex >= 0) {
+      filteredUsers = filteredUsers.slice(afterIndex + 1);
+    }
+  }
+  if (filteredUsers.length > limit) {
+    filteredUsers = filteredUsers.slice(0, limit);
   }
   const result: Services.GetUsers = {
     users: filteredUsers,
