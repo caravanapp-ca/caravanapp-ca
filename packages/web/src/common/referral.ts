@@ -1,5 +1,4 @@
 import {
-  ReferralSource,
   ReferralTiers,
   ReferralTier,
 } from '@caravan/buddy-reading-types';

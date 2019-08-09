@@ -25,7 +25,6 @@ export interface ListElementBookProps {
   tertiary?: JSX.Element;
   tertiaryLink?: string;
   onClick?: any;
-  selected?: boolean;
   draggable?: boolean;
   isDragging?: boolean;
 }
@@ -68,7 +67,6 @@ export default function ListElementBook(props: ListElementBookProps) {
     primary,
     secondary,
     tertiary,
-    selected,
     draggable,
     isDragging,
   } = props;

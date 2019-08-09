@@ -1,8 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
 import {
-  Theme,
-  createStyles,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -11,8 +8,6 @@ import {
   Button,
   Link,
 } from '@material-ui/core';
-
-const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
 interface DownloadDiscordDialogProps {
   open: boolean;
@@ -23,7 +18,6 @@ export default function DownloadDiscordDialog(
   props: DownloadDiscordDialogProps
 ) {
   const { open, handleClose } = props;
-  const classes = useStyles();
   return (
     <Dialog
       open={open}

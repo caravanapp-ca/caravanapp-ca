@@ -183,24 +183,6 @@ export default function CreateClub(props: CreateClubProps) {
         });
       }
     });
-    const selectedBooksWReadingState = selectedBooks.map(book => {
-      if (
-        book.sourceId !== bookToRead.sourceId &&
-        book.readingState !== 'notStarted'
-      ) {
-        const bookCopy = { ...book };
-        bookCopy.readingState = 'notStarted';
-        return bookCopy;
-      } else if (
-        book.sourceId === bookToRead.sourceId &&
-        book.readingState !== 'current'
-      ) {
-        const bookCopy = { ...book };
-        bookCopy.readingState = 'current';
-        return bookCopy;
-      }
-      return book;
-    });
     const clubObj: Services.CreateClubProps = {
       name: selectedGroupName,
       newShelf: initShelf,

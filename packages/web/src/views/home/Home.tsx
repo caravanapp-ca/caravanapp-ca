@@ -101,9 +101,15 @@ const useStyles = makeStyles(theme => ({
     //For some reason the "create club" icon button had marginLeft = -12
     marginLeft: 0,
   },
-  filterGrid: {
+  clubsFilterGrid: {
     marginTop: '16px',
     padding: '0px 16px',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  usersFilterGrid: {
+    marginTop: '16px',
+    padding: '0px 8px',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -201,7 +207,8 @@ export default function Home(props: HomeProps) {
     clubSpeedFiltersApplied ||
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
-  const [search, setSearch] = React.useState<string>('');
+  const [clubsSearch, setClubsSearch] = React.useState<string>('');
+  const [usersSearch, setUsersSearch] = React.useState<string>('');
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -236,7 +243,7 @@ export default function Home(props: HomeProps) {
         afterClubsQuery,
         pageSize,
         activeClubsFilter,
-        search
+        clubsSearch
       );
       const clubs = res.data
         ? res.data.clubs.map(c => transformClub(c))
@@ -261,7 +268,7 @@ export default function Home(props: HomeProps) {
     activeClubsFilter,
     clubMembershipFiltersApplied,
     afterClubsQuery,
-    search,
+    clubsSearch,
   ]);
 
   useEffect(() => {
@@ -269,8 +276,9 @@ export default function Home(props: HomeProps) {
       return;
     }
     const pageSize = 12;
+    setLoadingMoreUsers(true);
     (async () => {
-      const res = await getAllUsers(afterUsersQuery, 1, pageSize);
+      const res = await getAllUsers(afterUsersQuery, 1, pageSize, usersSearch);
       if (res.status === 200) {
         let currUserClubsWithMembers: ClubWithMemberIds[] = [];
         if (user) {
@@ -296,25 +304,27 @@ export default function Home(props: HomeProps) {
             });
           }
         }
-        const allUsers = res.data.users;
-        const allUsersShuffled = allUsers.map(user => shuffleUser(user));
-        const allUsersWithInvitableClubs = transformUserToInvitableClub(
+        const allUsers = res.data ? res.data.users : undefined;
+        const allUsersShuffled = allUsers ? allUsers.map(user => shuffleUser(user)) : undefined;
+        const allUsersWithInvitableClubs = allUsersShuffled ? transformUserToInvitableClub(
           allUsersShuffled,
           currUserClubsWithMembers
-        );
-        setShowLoadMoreUsers(allUsersWithInvitableClubs.length === pageSize);
-        setUsersResult(s => ({
-          status: 'loaded',
-          payload:
-            s.status === 'loaded'
-              ? [...s.payload, ...allUsersWithInvitableClubs]
-              : allUsersWithInvitableClubs,
-        }));
-        setLoadingMoreUsers(false);
+        ) : undefined;
+        if(allUsersWithInvitableClubs) {
+          setShowLoadMoreUsers(allUsersWithInvitableClubs.length === pageSize);
+          setUsersResult(s => ({
+            status: 'loaded',
+            payload:
+              s.status === 'loaded'
+                ? [...s.payload, ...allUsersWithInvitableClubs]
+                : allUsersWithInvitableClubs,
+          }));
+          setLoadingMoreUsers(false);
+        }
       }
     })();
     setLoadingMoreUsers(true);
-  }, [user, userLoaded, afterUsersQuery]);
+  }, [user, userLoaded, afterUsersQuery, usersSearch]);
 
   // Get genres on mount
   useEffect(() => {
@@ -495,17 +505,39 @@ export default function Home(props: HomeProps) {
     await setAfterClubsQuery(undefined);
   };
 
-  const onClearSearch = async () => {
-    if (search !== '') {
+  const onClearClubsSearch = async () => {
+    if (clubsSearch !== '') {
       await resetLoadMoreClubs();
-      setSearch('');
+      setClubsSearch('');
     }
   };
 
-  const onSearchSubmitted = async (str: string) => {
-    if (str !== search) {
+  const onSearchClubsSubmitted = async (str: string) => {
+    if (str !== clubsSearch) {
       await resetLoadMoreClubs();
-      setSearch(str);
+      setClubsSearch(str);
+    }
+  };
+
+  const resetLoadMoreUsers = async () => {
+    await setUsersResult(s => ({
+      ...s,
+      status: 'loading',
+    }));
+    await setAfterUsersQuery(undefined);
+  };
+
+  const onClearUsersSearch = async () => {
+    if (usersSearch !== '') {
+      await resetLoadMoreUsers();
+      setUsersSearch('');
+    }
+  };
+
+  const onSearchUsersSubmitted = async (str: string) => {
+    if (str !== usersSearch) {
+      await resetLoadMoreUsers();
+      setUsersSearch(str);
     }
   };
 
@@ -562,14 +594,19 @@ export default function Home(props: HomeProps) {
     </>
   );
 
-  let emptyFilterResultMsg = 'Oops... no clubs turned up!';
-  if (search.length > 0 && clubFiltersApplied) {
-    emptyFilterResultMsg +=
+  let emptyClubsFilterResultMsg = 'Oops... no clubs turned up!';
+  if (clubsSearch.length > 0 && clubFiltersApplied) {
+    emptyClubsFilterResultMsg +=
       ' Try other search terms, or relaxing your filters.';
-  } else if (search.length > 0) {
-    emptyFilterResultMsg += ' Try other search terms.';
+  } else if (clubsSearch.length > 0) {
+    emptyClubsFilterResultMsg += ' Try other search terms.';
   } else if (clubFiltersApplied) {
-    emptyFilterResultMsg += ' Try relaxing your filters.';
+    emptyClubsFilterResultMsg += ' Try relaxing your filters.';
+  }
+
+  let emptyUsersFilterResultMsg = 'Oops...no users turned up!';
+  if(usersSearch.length > 0){
+    emptyUsersFilterResultMsg += ' Try other search terms.';
   }
 
   return (
@@ -596,16 +633,20 @@ export default function Home(props: HomeProps) {
             variant={screenSmallerThanMd ? 'fullWidth' : undefined}
             centered={!screenSmallerThanMd}
           >
-            <Tab label="Clubs" />
-            <Tab label="People" />
+            <Tab label="Join Clubs" />
+            <Tab label="Find A Buddy" />
           </Tabs>
         </Element>
         {tabValue === 0 && (
           <>
-            <Container className={classes.filterGrid} maxWidth="md">
+            <Container className={classes.clubsFilterGrid} maxWidth="md">
               <FilterSearch
-                onClearSearch={onClearSearch}
-                onSearchSubmitted={onSearchSubmitted}
+                onClearSearch={onClearClubsSearch}
+                onSearchSubmitted={onSearchClubsSubmitted}
+                searchBoxLabel={'Search clubs by club name, book title, or author'}
+                searchBoxLabelSmall={'Search clubs'}
+                searchBoxId={'club-search'}
+                loadingMore={loadingMoreClubs}
               />
               <ClubFilters
                 onClickGenreFilter={() => setShowGenreFilter(true)}
@@ -668,13 +709,13 @@ export default function Home(props: HomeProps) {
               clubsTransformedResult.payload.length > 0 && (
                 <ClubCards
                   clubsTransformed={clubsTransformedResult.payload}
-                  showResultsCount={search.length > 0 || clubFiltersApplied}
+                  showResultsCount={clubsSearch.length > 0 || clubFiltersApplied}
                   resultsLoaded={clubsTransformedResult.status === 'loaded'}
                 />
               )}
             {clubsTransformedResult.status === 'loaded' &&
               clubsTransformedResult.payload.length === 0 &&
-              (clubFiltersApplied || search.length > 0) && (
+              (clubFiltersApplied || clubsSearch.length > 0) && (
                 <Typography
                   color="textSecondary"
                   style={{
@@ -684,7 +725,7 @@ export default function Home(props: HomeProps) {
                     marginBottom: theme.spacing(4),
                   }}
                 >
-                  {emptyFilterResultMsg}
+                  {emptyClubsFilterResultMsg}
                 </Typography>
               )}
             {clubsTransformedResult.status === 'loaded' &&
@@ -713,17 +754,6 @@ export default function Home(props: HomeProps) {
                   </Button>
                 </div>
               )}
-            {loadingMoreClubs && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                <CircularProgress />
-              </div>
-            )}
             <GenreFilterModal
               allGenres={allGenres}
               filteredGenres={stagingClubsFilter.genres}
@@ -804,12 +834,39 @@ export default function Home(props: HomeProps) {
         )}
         {tabValue === 1 && (
           <>
-            {usersResult.status === 'loaded' &&
-              usersResult.payload.length > 0 && (
+            <Container className={classes.usersFilterGrid} maxWidth="md">
+              <FilterSearch
+                onClearSearch={onClearUsersSearch}
+                onSearchSubmitted={onSearchUsersSubmitted}
+                searchBoxLabel={'Search users by name or shelf (book title or author)'}
+                searchBoxLabelSmall={'Search users'}
+                searchBoxId={'users-search'}
+                loadingMore={loadingMoreUsers}
+              />
+            </Container>
+            {(usersResult.status === 'loaded' || usersResult.status === 'loading') &&
+            usersResult.payload && usersResult.payload.length > 0 && (
                 <UserCards
                   usersWithInvitableClubs={usersResult.payload}
                   currUser={user}
+                  showResultsCount={usersSearch.length > 0}
+                  resultsLoaded={usersResult.status === 'loaded'}
                 />
+              )}
+            {usersResult.status === 'loaded' &&
+              usersResult.payload.length === 0 &&
+              usersSearch.length > 0 && (
+                <Typography
+                  color="textSecondary"
+                  style={{
+                    textAlign: 'center',
+                    fontStyle: 'italic',
+                    marginTop: theme.spacing(4),
+                    marginBottom: theme.spacing(4),
+                  }}
+                >
+                  {emptyUsersFilterResultMsg}
+                </Typography>
               )}
             {usersResult.status === 'loaded' &&
               showLoadMoreUsers &&

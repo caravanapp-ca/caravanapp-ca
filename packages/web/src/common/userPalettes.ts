@@ -7,10 +7,10 @@ import {
 export const getSelectablePalettes = (
   palettes: PaletteObject[],
   userPalettes: UserPalettes | null,
-  globalPaletteSets: PaletteSet[]
+  GLOBAL_PALETTE_SETS: PaletteSet[]
 ) => {
   const selectablePalettes = palettes.filter(f => {
-    if (f.set && globalPaletteSets.includes(f.set)) {
+    if (f.set && GLOBAL_PALETTE_SETS.includes(f.set)) {
       return true;
     }
     if (userPalettes) {

@@ -27,6 +27,7 @@ export async function getAllUsers(
   after?: string,
   onboardVersion?: number,
   pageSize?: number,
+  search?: string,
   activeFilter?: ActiveFilter
 ) {
   const res = await axios.get<Services.GetUsers>(userRoute, {
@@ -34,6 +35,7 @@ export async function getAllUsers(
       after,
       onboardVersion,
       pageSize,
+      search,
       activeFilter,
     },
   });
