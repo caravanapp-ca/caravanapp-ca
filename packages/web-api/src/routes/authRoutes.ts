@@ -21,7 +21,10 @@ import {
 import { getUserSettings, createUserSettings } from '../services/userSettings';
 import { getSession } from '../services/session';
 import { validateSessionPermissions } from '../common/session';
-import { DISCORD_PERMISSIONS, DEFAULT_EMAIL_SETTINGS } from '../common/globalConstantsAPI';
+import {
+  DISCORD_PERMISSIONS,
+  DEFAULT_EMAIL_SETTINGS,
+} from '../common/globalConstantsAPI';
 
 const router = express.Router();
 
