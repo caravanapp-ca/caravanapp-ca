@@ -495,14 +495,14 @@ export default function Home(props: HomeProps) {
     await setAfterClubsQuery(undefined);
   };
 
-  const onClearSearch = async () => {
+  const onClearClubsSearch = async () => {
     if (search !== '') {
       await resetLoadMoreClubs();
       setSearch('');
     }
   };
 
-  const onSearchSubmitted = async (str: string) => {
+  const onSearchClubsSubmitted = async (str: string) => {
     if (str !== search) {
       await resetLoadMoreClubs();
       setSearch(str);
@@ -597,15 +597,15 @@ export default function Home(props: HomeProps) {
             centered={!screenSmallerThanMd}
           >
             <Tab label="Clubs" />
-            <Tab label="People" />
+            <Tab label="Find A Buddy" />
           </Tabs>
         </Element>
         {tabValue === 0 && (
           <>
             <Container className={classes.filterGrid} maxWidth="md">
               <FilterSearch
-                onClearSearch={onClearSearch}
-                onSearchSubmitted={onSearchSubmitted}
+                onClearSearch={onClearClubsSearch}
+                onSearchSubmitted={onSearchClubsSubmitted}
               />
               <ClubFilters
                 onClickGenreFilter={() => setShowGenreFilter(true)}
