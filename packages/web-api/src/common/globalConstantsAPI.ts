@@ -28,7 +28,6 @@ export const DISCORD_PERMISSIONS = [
   'gdm.join',
 ];
 
-
 /**
  * Determines what we default email settings to.
  * If you're making a change here you will also need to change the default
@@ -38,5 +37,5 @@ export const DISCORD_PERMISSIONS = [
 export const DEFAULT_EMAIL_SETTINGS: EmailSettings = {
   recs: true,
   reminders: true,
-  updates: true
-}
+  updates: true,
+};
