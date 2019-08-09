@@ -3,6 +3,7 @@ import {
   UserSettings,
   FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
+import { DEFAULT_EMAIL_SETTINGS } from '../common/globalConstantsAPI';
 
 export const getUserSettings = (userId: string) => {
   return UserSettingsModel.findOne({ userId });
@@ -29,11 +30,7 @@ export const initSettings = async (userId: string) => {
   }
   const newSettings: FilterAutoMongoKeys<UserSettings> = {
     userId,
-    emailSettings: {
-      reminders: true,
-      recs: true,
-      updates: true,
-    },
+    emailSettings: DEFAULT_EMAIL_SETTINGS,
   };
   const newSettingsModel = new UserSettingsModel(newSettings);
   try {

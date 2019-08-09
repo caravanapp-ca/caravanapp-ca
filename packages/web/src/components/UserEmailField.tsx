@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     disabledLabel: {
       color: theme.palette.primary.main + ' !important',
     },
-    button: {
+    helpButton: {
       margin: theme.spacing(1),
       // This compensates for the height of the helper text on the text field.
       marginBottom: theme.spacing(1) + 12,
@@ -144,7 +144,7 @@ export default function UserEmailField(props: UserEmailFieldProps) {
         fullWidth
       />
       <IconButton
-        className={classes.button}
+        className={classes.helpButton}
         aria-label="help"
         onMouseEnter={handleHelpMouseEnter}
         onMouseLeave={handleHelpMouseLeave}
