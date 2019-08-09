@@ -6,6 +6,7 @@ import {
   TextField,
   IconButton,
   useMediaQuery,
+  CircularProgress,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import theme from '../../theme';
@@ -25,6 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
 interface FilterSearchProps {
   onClearSearch: () => void;
   onSearchSubmitted: (search: string) => void;
+  searchBoxLabel: string;
+  searchBoxLabelSmall: string;
+  searchBoxId: string;
+  loadingMore: boolean;
 }
 
 const validSearch = (search: string): boolean => {
@@ -38,7 +43,7 @@ const validSearch = (search: string): boolean => {
 
 export default function FilterSearch(props: FilterSearchProps) {
   const classes = useStyles();
-  const { onClearSearch, onSearchSubmitted } = props;
+  const { onClearSearch, onSearchSubmitted, searchBoxLabel, searchBoxLabelSmall, searchBoxId, loadingMore } = props;
   const [search, setSearch] = React.useState<string>('');
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -65,19 +70,33 @@ export default function FilterSearch(props: FilterSearchProps) {
 
   return (
     <div className={classes.searchContainer}>
-      <IconButton
+      {loadingMore ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'column',
+              padding: 12
+            }}
+          >
+          <CircularProgress size={24}/>
+        </div>
+      ) : (
+        <IconButton
         className={classes.iconButton}
         aria-label="Search"
         onClick={handleSearchClick}
-      >
+        >
         <Search />
       </IconButton>
+      )}
+
       <TextField
-        id="club-search"
+        id={searchBoxId}
         label={
           screenSmallerThanSm
-            ? 'Search clubs'
-            : 'Search clubs by club name, book title, or author'
+            ? searchBoxLabelSmall
+            : searchBoxLabel
         }
         type="search"
         onChange={handleOnChange}
