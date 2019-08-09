@@ -16,7 +16,7 @@ import {
   EmailSettings,
 } from '@caravan/buddy-reading-types';
 import clsx from 'clsx';
-import { getMySettings } from '../../services/userSettings';
+import { getMySettings, updateMySettings } from '../../services/userSettings';
 import UserEmailField from '../../components/UserEmailField';
 import UserEmailSettings from './UserEmailSettings';
 import Header from '../../components/Header';
@@ -74,7 +74,7 @@ export default function Settings(props: SettingsProps) {
   };
 
   const rightComponent = <ProfileHeaderIcon user={user} />;
-  const leftComponent = (
+  const leftComponent =
     <IconButton
       edge="start"
       color="inherit"
@@ -83,7 +83,7 @@ export default function Settings(props: SettingsProps) {
     >
       <ArrowBackIos />
     </IconButton>
-  );
+  ;
 
   useEffect(() => {
     if (user) {

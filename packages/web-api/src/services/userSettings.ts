@@ -43,3 +43,11 @@ export const initSettings = async (userId: string) => {
     return undefined;
   }
 };
+
+export const updateUserSettings = (userId: string, settings: UserSettings) => {
+  try{
+    return UserSettingsModel.findByIdAndUpdate(userId, settings);
+  } catch (err){
+    throw new Error(`Failed to update user settings for user ${userId}: ${err}`);
+  }
+}
