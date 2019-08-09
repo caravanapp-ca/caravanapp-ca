@@ -100,7 +100,7 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export type UserShelfType = {
-    [K in UserShelfReadingState]: UserShelfEntry[]
+    [K in UserShelfReadingState]: UserShelfEntry[];
   };
 
   interface UserShelf extends UserShelfType {
@@ -110,7 +110,7 @@ declare module '@caravan/buddy-reading-types' {
   export type ClubShelf = { [K in ReadingState]: ShelfEntry[] };
 
   export type UninitClubShelfType = {
-    [K in ReadingState]: FilterAutoMongoKeys<ShelfEntry>[]
+    [K in ReadingState]: FilterAutoMongoKeys<ShelfEntry>[];
   };
 
   export interface SelectedGenre {
@@ -213,6 +213,7 @@ declare module '@caravan/buddy-reading-types' {
     title: string;
     badgeKey?: string;
     discordRole?: string;
+    profileBgSet?: string;
   }
 
   export interface ReferralTiers {
