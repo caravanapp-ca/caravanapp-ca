@@ -268,8 +268,17 @@ declare module '@caravan/buddy-reading-types' {
     mobileAlignment?: 'left' | 'center' | 'right';
   }
 
+  export interface EmailSettings {
+    reminders: boolean;
+    recs: boolean;
+    updates: boolean;
+    // Type signature for indexing
+    [key: string]: boolean;
+  }
+
   export interface UserSettings extends DocumentFields, MongoTimestamps {
     userId: string;
+    emailSettings: EmailSettings;
     email?: string;
   }
 

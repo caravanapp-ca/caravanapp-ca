@@ -1,4 +1,4 @@
-import { ReadingState } from '@caravan/buddy-reading-types';
+import { ReadingState, EmailSettings } from '@caravan/buddy-reading-types';
 
 // This function returns the channel ID for #general-chat
 // TODO: This breaks if we have multiple Discord servers.
@@ -17,7 +17,9 @@ export const VALID_READING_STATES: ReadingState[] = [
   'notStarted',
   'read',
 ];
+
 export const MAX_SHELF_SIZE = 10000;
+
 // Determines what Discord permissions we request from the user on auth.
 export const DISCORD_PERMISSIONS = [
   'email',
@@ -25,3 +27,15 @@ export const DISCORD_PERMISSIONS = [
   'guilds.join',
   'gdm.join',
 ];
+
+/**
+ * Determines what we default email settings to.
+ * If you're making a change here you will also need to change the default
+ * on the model as I couldn't find a way to make those align.
+ */
+
+export const DEFAULT_EMAIL_SETTINGS: EmailSettings = {
+  recs: true,
+  reminders: true,
+  updates: true,
+};
