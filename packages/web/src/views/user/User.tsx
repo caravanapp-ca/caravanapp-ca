@@ -319,14 +319,11 @@ export default function UserView(props: UserViewProps) {
       read: [],
     };
     clubs.forEach(c => {
-      const currBook = c.shelf.find(b => b.readingState === 'current');
-      if (currBook) {
-        userShelf.current.push({
-          ...currBook,
-          clubId: c._id,
-          club: c,
-        });
-      }
+      userShelf.current.push({
+        ...c.newShelf.current[0],
+        clubId: c._id,
+        club: c,
+      });
     });
     userShelf.notStarted = user.shelf.notStarted;
     userShelf.read = user.shelf.read;

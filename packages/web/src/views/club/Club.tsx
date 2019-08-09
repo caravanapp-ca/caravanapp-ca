@@ -42,7 +42,7 @@ import {
   deleteClub,
   modifyClub,
 } from '../../services/club';
-import { getCurrentBook, getCurrentSchedule } from './functions/ClubFunctions';
+import { getCurrentSchedule } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
@@ -222,10 +222,12 @@ export default function ClubComponent(props: ClubProps) {
         const club = await getClub(clubId);
         setClub(club);
         if (club) {
-          const currBook = getCurrentBook(club);
-          setCurrBook(currBook);
-          if (currBook) {
-            const schedule = getCurrentSchedule(club, currBook);
+          const currentlyReadingBook = club.newShelf.current[0]
+          if (club.newShelf.current.length > 0) {
+            setCurrBook(currentlyReadingBook);
+          }
+          if (currentlyReadingBook) {
+            const schedule = getCurrentSchedule(club, currentlyReadingBook);
             setSchedule(schedule);
           } else {
             setSchedule(null);
@@ -561,7 +563,7 @@ export default function ClubComponent(props: ClubProps) {
                   genres={genres || undefined}
                   isEditing={isEditing}
                   onGenreClick={onGenreClick}
-                  shelf={club.shelf}
+                  shelf={club.newShelf}
                   selectedGenres={club.genres}
                 />
               )}

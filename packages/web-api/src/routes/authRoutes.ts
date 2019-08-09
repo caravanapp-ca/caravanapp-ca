@@ -19,7 +19,8 @@ import {
   createReferralActionByDoc,
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
-import { getSession, validateSessionPermissions } from '../services/session';
+import { getSession } from '../services/session';
+import { validateSessionPermissions } from '../common/session';
 import { DISCORD_PERMISSIONS } from '../common/globalConstantsAPI';
 
 const router = express.Router();
@@ -41,7 +42,9 @@ router.get('/discord/login', (req, res) => {
 router.get('/discord/validatePermissions', async (req, res) => {
   const { userId } = req.session;
   if (!userId) {
-    res.status(400).send('Require a logged in user to complete this request.');
+    return res
+      .status(400)
+      .send('Require a logged in user to complete this request.');
   }
   try {
     const sessionDoc = await getSession(userId);
