@@ -21,7 +21,10 @@ import {
 import { getUserSettings, createUserSettings } from '../services/userSettings';
 import { getSession } from '../services/session';
 import { validateSessionPermissions } from '../common/session';
-import { DISCORD_PERMISSIONS } from '../common/globalConstantsAPI';
+import {
+  DISCORD_PERMISSIONS,
+  DEFAULT_EMAIL_SETTINGS,
+} from '../common/globalConstantsAPI';
 
 const router = express.Router();
 
@@ -147,6 +150,7 @@ router.get('/discord/callback', async (req, res) => {
       const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
         userId: userDoc.id,
         email: discordUserData.email,
+        emailSettings: DEFAULT_EMAIL_SETTINGS,
       };
       createUserSettings(newUserSettings);
     }
@@ -201,6 +205,7 @@ router.get('/discord/callback', async (req, res) => {
     const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
       userId: userDoc.id,
       email: discordUserData.email,
+      emailSettings: DEFAULT_EMAIL_SETTINGS,
     };
     createUserSettings(newUserSettings);
   }

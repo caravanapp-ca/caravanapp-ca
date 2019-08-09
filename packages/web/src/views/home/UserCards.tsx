@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
   },
   cardGrid: {
-    padding: `${theme.spacing(8)}px 16px`,
+    padding: `${theme.spacing(4)}px 16px ${theme.spacing(8)}px`,
   },
   cardContent: {
     position: 'relative',
@@ -110,6 +110,8 @@ const useStyles = makeStyles(theme => ({
 interface UserCardProps {
   usersWithInvitableClubs: UserWithInvitableClubs[];
   currUser: User | null;
+  showResultsCount?: boolean;
+  resultsLoaded?: boolean;
 }
 
 // Make this approximately the height of a standard UserCard
@@ -119,7 +121,7 @@ const lazyloadOffset = 4;
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
-  const { usersWithInvitableClubs, currUser } = props;
+  const { usersWithInvitableClubs, currUser, showResultsCount, resultsLoaded } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
@@ -137,6 +139,13 @@ export default function UserCards(props: UserCardProps) {
   return (
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
+      {showResultsCount && resultsLoaded && (
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {`${usersWithInvitableClubs.length} result${
+              usersWithInvitableClubs.length === 1 ? '' : 's'
+            }`}
+          </Typography>
+        )}
         <Grid container spacing={4}>
           {usersWithInvitableClubs.map(u => {
             const {

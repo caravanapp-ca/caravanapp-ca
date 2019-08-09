@@ -47,8 +47,6 @@ const centerComponentAnswerQuestion = <HeaderTitle title="Write Answer" />;
 
 const centerComponentAddBooks = <HeaderTitle title="Shelf" />;
 
-const centerComponentJoinClubs = <HeaderTitle title="Join or Start Clubs" />;
-
 export default function Onboarding(props: OnboardingProps) {
   const leftComponentAboutYou = (
     <IconButton
@@ -84,17 +82,6 @@ export default function Onboarding(props: OnboardingProps) {
       color="inherit"
       aria-label="Back"
       onClick={() => setCurrentPage(2)}
-    >
-      <BackIcon />
-    </IconButton>
-  );
-
-  const leftComponentJoinClubs = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Back"
-      onClick={() => setCurrentPage(5)}
     >
       <BackIcon />
     </IconButton>

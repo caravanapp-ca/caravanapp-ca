@@ -46,7 +46,7 @@ import { getReferralCount } from '../../services/referral';
 import { transformClub } from '../club/functions/ClubFunctions';
 import validURL from '../../common/validURL';
 import { makeUserTheme, makeUserDarkTheme, palettes } from '../../theme';
-import { globalPaletteSets } from '../../common/globalConstants';
+import { GLOBAL_PALETTE_SETS } from '../../common/globalConstants';
 import { getUserPalettes } from '../../services/userPalettes';
 import { getSelectablePalettes } from '../../common/userPalettes';
 
@@ -279,7 +279,7 @@ export default function UserView(props: UserViewProps) {
     const selPal = getSelectablePalettes(
       palettes,
       userPalettes,
-      globalPaletteSets
+      GLOBAL_PALETTE_SETS
     );
     setSelectablePalettes(selPal);
   }, [userPalettes]);
