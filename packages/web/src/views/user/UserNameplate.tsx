@@ -20,6 +20,7 @@ import UserBadgeIcon from '../../components/UserBadgeIcon';
 import { getReferralLink } from '../../common/referral';
 import { getBadgeToDisplay } from '../../common/getBadgeToDisplay';
 import PaletteButton from '../../components/PaletteButton';
+import { DISCORD_GUILD_LINK } from '../../common/globalConstants';
 
 interface UserNameplateProps {
   user: User;
