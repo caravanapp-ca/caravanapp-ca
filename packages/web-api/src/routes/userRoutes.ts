@@ -54,11 +54,11 @@ router.get('/', async (req, res) => {
   // if (userId) {
   //   user = await getUser(userId);
   // }
-  // Only get users who have finished onboarding
   const query: SameKeysAs<Partial<User>> = {};
   if ((!search || search.length === 0) && after) {
     query._id = { $lt: after };
   }
+  // Only get users who have finished onboarding
   if (onboardVersion && (onboardVersion === '0' || onboardVersion === '1')) {
     const onboardingVersionInt = parseInt(onboardVersion);
     query.onboardingVersion = onboardingVersionInt;

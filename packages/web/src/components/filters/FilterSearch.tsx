@@ -72,20 +72,21 @@ export default function FilterSearch(props: FilterSearchProps) {
     <div className={classes.searchContainer}>
       {loadingMore ? (
           <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-          }}
-        >
-          <CircularProgress />
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'column',
+              padding: 12
+            }}
+          >
+          <CircularProgress size={24}/>
         </div>
       ) : (
         <IconButton
         className={classes.iconButton}
         aria-label="Search"
         onClick={handleSearchClick}
-      >
+        >
         <Search />
       </IconButton>
       )}
