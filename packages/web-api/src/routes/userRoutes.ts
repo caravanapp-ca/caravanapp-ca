@@ -104,9 +104,7 @@ router.get('/', async (req, res) => {
     const fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {
       // TODO: Typescript doesn't like the use of keys here.
       // @ts-ignore
-      keys: [
-        { name: 'shelf.notStarted.title', weight: 1 / 1 },
-      ],
+      keys: [{ name: 'shelf.notStarted.title', weight: 1 / 1 }],
     };
     const fuse = new Fuse(filteredUsers, fuseOptions);
     filteredUsers = fuse.search(search);
