@@ -25,6 +25,7 @@ export const EMAIL_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<EmailSettings> = {
 export const DISCORD_GUILD_LINK = () => {
   if (process.env.NODE_ENV === 'production') {
     // We're in prod
+    // TODO: This link isn't correct, it links to a club.
     return 'https://discord.gg/SmsYdBR';
   } else {
     // We're in test
