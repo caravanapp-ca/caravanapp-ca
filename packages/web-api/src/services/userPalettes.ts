@@ -15,7 +15,6 @@ export const initUserPalettes = async (
 ) => {
   try {
     const newUserPalettes = new UserPalettesModel(userPalettes);
-    newUserPalettes._id = new mongoose.Types.ObjectId();
     const newUserPalettesRes = await newUserPalettes.save();
     return newUserPalettesRes;
   } catch (err) {
