@@ -202,24 +202,6 @@ router.put('/convertClubShelves', async (req, res) => {
   }
 });
 
-// const sanitizeClubShelf = (shelf: ShelfEntry[]) => {
-//   const newShelf = shelf.map(item => {
-//     if (
-//       item &&
-//       item.coverImageURL &&
-//       knownHttpsRedirects.find(url => item.coverImageURL.startsWith(url))
-//     ) {
-//       const newItem: ShelfEntry = {
-//         ...item,
-//         coverImageURL: item.coverImageURL.replace('http:', 'https:'),
-//       };
-//       return newItem;
-//     }
-//     return item;
-//   });
-//   return newShelf;
-// };
-
 router.get('/', async (req, res) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
   const currUserId = req.session.userId;
@@ -356,7 +338,13 @@ router.get('/', async (req, res) => {
     const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
       // TODO: Typescript doesn't like the use of keys here.
       // @ts-ignore
-      keys: ['name', 'shelf.title', 'shelf.author'],
+      keys: [
+        { name: 'newShelf.current.title', weight: 3 / 9 },
+        { name: 'name', weight: 2 / 9 },
+        { name: 'newShelf.current.author', weight: 2 / 9 },
+        { name: 'newShelf.notStarted.title', weight: 1 / 9 },
+        { name: 'newShelf.notStarted.author', weight: 1 / 9 },
+      ],
     };
     const fuse = new Fuse(filteredClubsWithMemberCounts, fuseOptions);
     filteredClubsWithMemberCounts = fuse.search(search);
