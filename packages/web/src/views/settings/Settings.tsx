@@ -22,6 +22,7 @@ import UserEmailSettings from './UserEmailSettings';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import CustomSnackbar, { CustomSnackbarProps } from '../../components/CustomSnackbar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,6 +64,14 @@ export default function Settings(props: SettingsProps) {
   const { user } = props;
   const [settings, setSettings] = useState<UserSettings>();
   const [madeChanges, setMadeChanges] = useState<boolean>(false);
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'success',
+    }
+  );
   const classes = useStyles();
 
   const backButtonAction = () => {
@@ -111,12 +120,32 @@ export default function Settings(props: SettingsProps) {
     }
   };
 
-  const onSaveSettings = () => {
+  const onSaveSettings = async () => {
     if (!settings) {
       throw new Error('Attempted to save user settings that were undefined.');
     }
-    updateMySettings(settings);
+    const res = await updateMySettings(settings);
+    if(res.status === 200){
+      setMadeChanges(false);
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'success',
+        message: 'Successfully updated your settings!',
+      });
+    } else {
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'warning',
+        message: 'Whoops, we ran into some trouble saving your settings.',
+      });
+    }
   };
+
+  function onSnackbarClose(){
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
+  }
 
   return (
     <>
@@ -150,6 +179,7 @@ export default function Settings(props: SettingsProps) {
           </Button>
         </div>
       </Container>
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }

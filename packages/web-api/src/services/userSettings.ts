@@ -44,9 +44,10 @@ export const initSettings = async (userId: string) => {
   }
 };
 
-export const updateUserSettings = (userId: string, settings: UserSettings) => {
+export const updateUserSettings = async (userId: string, settings: UserSettings) => {
   try{
-    return UserSettingsModel.findByIdAndUpdate(userId, settings);
+    const newUserSettings = await UserSettingsModel.findOneAndUpdate({ userId }, settings, { new: true });
+    return newUserSettings;
   } catch (err){
     throw new Error(`Failed to update user settings for user ${userId}: ${err}`);
   }

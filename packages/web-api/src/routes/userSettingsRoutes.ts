@@ -23,7 +23,7 @@ router.get('/@me', async (req, res) => {
 });
 
 // Update my user settings
-router.put('@me', async(req, res) => {
+router.put('/@me', async(req, res) => {
   const { userId } = req.session;
   const { settings } = req.body;
   try{
@@ -31,6 +31,7 @@ router.put('@me', async(req, res) => {
     if(newUserSettings){
       return res.status(200).send(newUserSettings);
     } else {
+      console.error(`Didn't find existing user settings for user ${userId}`);
       return res.status(404).send(`Didn't find existing user settings for user ${userId}`);
     }
   } catch (err) {
