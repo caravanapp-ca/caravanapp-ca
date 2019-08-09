@@ -105,9 +105,7 @@ router.get('/', async (req, res) => {
       // TODO: Typescript doesn't like the use of keys here.
       // @ts-ignore
       keys: [
-        { name: 'name', weight: 4 / 10 },
-        { name: 'shelf.notStarted.title', weight: 3 / 10 },
-        { name: 'shelf.notStarted.author', weight: 3 / 10 },
+        { name: 'shelf.notStarted.title', weight: 1 / 1 },
       ],
     };
     const fuse = new Fuse(filteredUsers, fuseOptions);
