@@ -74,6 +74,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const guildLink = DISCORD_GUILD_LINK();
+
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
@@ -256,7 +258,7 @@ export default function UserNameplate(props: UserNameplateProps) {
             <Button
               variant="outlined"
               color="primary"
-              href="https://discordapp.com/channels/592761082523680798/592810415193587724"
+              href={guildLink}
               target="_blank"
               style={{ marginTop: theme.spacing(1) }}
             >

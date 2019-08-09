@@ -21,3 +21,13 @@ export const EMAIL_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<EmailSettings> = {
   recs: 'Recommend new clubs and users to read with',
   updates: 'Keep me posted on Caravan updates',
 };
+
+export const DISCORD_GUILD_LINK = () => {
+  if (process.env.NODE_ENV === 'production') {
+    // We're in prod
+    return 'https://discord.gg/SmsYdBR';
+  } else {
+    // We're in test
+    return 'https://discord.gg/EhnJHz3';
+  }
+};

@@ -13,6 +13,7 @@ import { darkTheme, whiteTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import splash from '../../resources/splash.svg';
 import { User } from '@caravan/buddy-reading-types';
+import { DISCORD_GUILD_LINK } from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,6 +77,8 @@ interface SplashProps {
   onDismissClick: () => void;
   onSeeClubsClick: () => void;
 }
+
+const guildLink = DISCORD_GUILD_LINK();
 
 export default function Splash(props: SplashProps) {
   const { user, onLoginClick, onDismissClick, onSeeClubsClick } = props;
@@ -171,7 +174,7 @@ export default function Splash(props: SplashProps) {
               variant="contained"
               color="secondary"
               className={classes.button}
-              href="https://discordapp.com/channels/592761082523680798/592761082523680806"
+              href={guildLink}
               target="_blank"
             >
               <Typography variant="button">OPEN CHAT</Typography>
