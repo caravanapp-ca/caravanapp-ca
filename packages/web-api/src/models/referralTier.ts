@@ -11,9 +11,9 @@ const referralTierDefinition: SameKeysAs<FilterAutoMongoKeys<ReferralTier>> = {
   tierNumber: { type: Number, required: true },
   referralCount: { type: Number, required: true },
   title: { type: String, required: true },
+  profileBgSets: { type: [String], required: true, default: [] },
   badgeKey: { type: String },
   discordRole: { type: String },
-  profileBgSet: { type: String },
 };
 
 const referralTiersDefinition: SameKeysAs<

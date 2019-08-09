@@ -213,7 +213,7 @@ declare module '@caravan/buddy-reading-types' {
     title: string;
     badgeKey?: string;
     discordRole?: string;
-    profileBgSet?: string;
+    profileBgSets: PaletteSet[];
   }
 
   export interface ReferralTiers {

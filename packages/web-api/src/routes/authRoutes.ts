@@ -133,7 +133,7 @@ router.get('/discord/callback', async (req, res) => {
         sessionDoc.save();
       }
     } else {
-      throw new Error(`sessionDoc doesn't exist for user ${userDoc.id}`);
+      console.error(`sessionDoc doesn't exist for user ${userDoc.id}`);
     }
     // Temporarily, check if we have an email for this user.
     // TODO: Once every user in production has an email in settings, we can remove these checks.
