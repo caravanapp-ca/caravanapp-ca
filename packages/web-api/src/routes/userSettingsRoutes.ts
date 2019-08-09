@@ -1,5 +1,9 @@
 import express from 'express';
-import { getUserSettings, initSettings, updateUserSettings } from '../services/userSettings';
+import {
+  getUserSettings,
+  initSettings,
+  updateUserSettings,
+} from '../services/userSettings';
 
 const router = express.Router();
 
@@ -23,20 +27,24 @@ router.get('/@me', async (req, res) => {
 });
 
 // Update my user settings
-router.put('/@me', async(req, res) => {
+router.put('/@me', async (req, res) => {
   const { userId } = req.session;
   const { settings } = req.body;
-  try{
+  try {
     const newUserSettings = await updateUserSettings(userId, settings);
-    if(newUserSettings){
+    if (newUserSettings) {
       return res.status(200).send(newUserSettings);
     } else {
       console.error(`Didn't find existing user settings for user ${userId}`);
-      return res.status(404).send(`Didn't find existing user settings for user ${userId}`);
+      return res
+        .status(404)
+        .send(`Didn't find existing user settings for user ${userId}`);
     }
   } catch (err) {
-    console.error(`Failed to update user settings for ${userId}: ${err}`)
-    return res.status(400).send(`Failed to update user settings for ${userId}: ${err}`);
+    console.error(`Failed to update user settings for ${userId}: ${err}`);
+    return res
+      .status(400)
+      .send(`Failed to update user settings for ${userId}: ${err}`);
   }
 });
 
