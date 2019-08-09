@@ -838,7 +838,7 @@ export default function Home(props: HomeProps) {
               <FilterSearch
                 onClearSearch={onClearUsersSearch}
                 onSearchSubmitted={onSearchUsersSubmitted}
-                searchBoxLabel={'Search users by name or shelf (book title or author)'}
+                searchBoxLabel={'Search users by titles of books on their shelf'}
                 searchBoxLabelSmall={'Search users'}
                 searchBoxId={'users-search'}
                 loadingMore={loadingMoreUsers}
