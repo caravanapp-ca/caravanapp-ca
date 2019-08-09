@@ -305,12 +305,16 @@ export default function Home(props: HomeProps) {
           }
         }
         const allUsers = res.data ? res.data.users : undefined;
-        const allUsersShuffled = allUsers ? allUsers.map(user => shuffleUser(user)) : undefined;
-        const allUsersWithInvitableClubs = allUsersShuffled ? transformUserToInvitableClub(
-          allUsersShuffled,
-          currUserClubsWithMembers
-        ) : undefined;
-        if(allUsersWithInvitableClubs) {
+        const allUsersShuffled = allUsers
+          ? allUsers.map(user => shuffleUser(user))
+          : undefined;
+        const allUsersWithInvitableClubs = allUsersShuffled
+          ? transformUserToInvitableClub(
+              allUsersShuffled,
+              currUserClubsWithMembers
+            )
+          : undefined;
+        if (allUsersWithInvitableClubs) {
           setShowLoadMoreUsers(allUsersWithInvitableClubs.length === pageSize);
           setUsersResult(s => ({
             status: 'loaded',
@@ -519,27 +523,27 @@ export default function Home(props: HomeProps) {
     }
   };
 
-  const resetLoadMoreUsers = async () => {
-    await setUsersResult(s => ({
-      ...s,
-      status: 'loading',
-    }));
-    await setAfterUsersQuery(undefined);
-  };
+  // const resetLoadMoreUsers = async () => {
+  //   await setUsersResult(s => ({
+  //     ...s,
+  //     status: 'loading',
+  //   }));
+  //   await setAfterUsersQuery(undefined);
+  // };
 
-  const onClearUsersSearch = async () => {
-    if (usersSearch !== '') {
-      await resetLoadMoreUsers();
-      setUsersSearch('');
-    }
-  };
+  // const onClearUsersSearch = async () => {
+  //   if (usersSearch !== '') {
+  //     await resetLoadMoreUsers();
+  //     setUsersSearch('');
+  //   }
+  // };
 
-  const onSearchUsersSubmitted = async (str: string) => {
-    if (str !== usersSearch) {
-      await resetLoadMoreUsers();
-      setUsersSearch(str);
-    }
-  };
+  // const onSearchUsersSubmitted = async (str: string) => {
+  //   if (str !== usersSearch) {
+  //     await resetLoadMoreUsers();
+  //     setUsersSearch(str);
+  //   }
+  // };
 
   const onSeeClubsClick = () => {
     scroller.scrollTo('tabs', { smooth: true });
@@ -605,7 +609,7 @@ export default function Home(props: HomeProps) {
   }
 
   let emptyUsersFilterResultMsg = 'Oops...no users turned up!';
-  if(usersSearch.length > 0){
+  if (usersSearch.length > 0) {
     emptyUsersFilterResultMsg += ' Try other search terms.';
   }
 
@@ -643,7 +647,9 @@ export default function Home(props: HomeProps) {
               <FilterSearch
                 onClearSearch={onClearClubsSearch}
                 onSearchSubmitted={onSearchClubsSubmitted}
-                searchBoxLabel={'Search clubs by club name, book title, or author'}
+                searchBoxLabel={
+                  'Search clubs by club name, book title, or author'
+                }
                 searchBoxLabelSmall={'Search clubs'}
                 searchBoxId={'club-search'}
                 loadingMore={loadingMoreClubs}
@@ -709,7 +715,9 @@ export default function Home(props: HomeProps) {
               clubsTransformedResult.payload.length > 0 && (
                 <ClubCards
                   clubsTransformed={clubsTransformedResult.payload}
-                  showResultsCount={clubsSearch.length > 0 || clubFiltersApplied}
+                  showResultsCount={
+                    clubsSearch.length > 0 || clubFiltersApplied
+                  }
                   resultsLoaded={clubsTransformedResult.status === 'loaded'}
                 />
               )}
@@ -834,7 +842,7 @@ export default function Home(props: HomeProps) {
         )}
         {tabValue === 1 && (
           <>
-            <Container className={classes.usersFilterGrid} maxWidth="md">
+            {/* <Container className={classes.usersFilterGrid} maxWidth="md">
               <FilterSearch
                 onClearSearch={onClearUsersSearch}
                 onSearchSubmitted={onSearchUsersSubmitted}
@@ -843,9 +851,11 @@ export default function Home(props: HomeProps) {
                 searchBoxId={'users-search'}
                 loadingMore={loadingMoreUsers}
               />
-            </Container>
-            {(usersResult.status === 'loaded' || usersResult.status === 'loading') &&
-            usersResult.payload && usersResult.payload.length > 0 && (
+            </Container> */}
+            {(usersResult.status === 'loaded' ||
+              usersResult.status === 'loading') &&
+              usersResult.payload &&
+              usersResult.payload.length > 0 && (
                 <UserCards
                   usersWithInvitableClubs={usersResult.payload}
                   currUser={user}
