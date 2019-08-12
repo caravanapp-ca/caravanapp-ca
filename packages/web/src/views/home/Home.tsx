@@ -58,6 +58,7 @@ import ShareIconButton from '../../components/ShareIconButton';
 import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
+import UserSearchFilter from '../../components/filters/UserSearchFilter';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -178,7 +179,9 @@ export default function Home(props: HomeProps) {
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
   const [tabValue, setTabValue] = React.useState(0);
-  const [userSearchTabValue, setUserSearchTabValue] = React.useState(0);
+  const [userSearchField, setUserSearchField] = React.useState<UserSearchField>(
+    'username'
+  );
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [afterClubsQuery, setAfterClubsQuery] = React.useState<
     string | undefined
@@ -281,16 +284,6 @@ export default function Home(props: HomeProps) {
     const pageSize = 12;
     setLoadingMoreUsers(true);
     (async () => {
-      let userSearchField: UserSearchField;
-      switch (userSearchTabValue) {
-        case 0:
-          userSearchField = 'bookTitle';
-          break;
-        case 1:
-        default:
-          userSearchField = 'username';
-          break;
-      }
       const res = await getAllUsers(
         afterUsersQuery,
         1,
@@ -347,7 +340,7 @@ export default function Home(props: HomeProps) {
       }
     })();
     setLoadingMoreUsers(true);
-  }, [user, userLoaded, afterUsersQuery, usersSearch, userSearchTabValue]);
+  }, [user, userLoaded, afterUsersQuery, usersSearch, userSearchField]);
 
   // Get genres on mount
   useEffect(() => {
@@ -378,8 +371,11 @@ export default function Home(props: HomeProps) {
     setTabValue(newValue);
   };
 
-  const handleUserSearchTabChange = async (newValue: number) => {
-    setUserSearchTabValue(newValue);
+  const handleUserSearchFieldChange = async (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => {
+    const userSearchFieldValue = event.target.value as UserSearchField;
+    setUserSearchField(userSearchFieldValue);
     if (usersSearch !== '') {
       await resetLoadMoreUsers();
     }
@@ -873,59 +869,20 @@ export default function Home(props: HomeProps) {
                 onClearSearch={onClearUsersSearch}
                 onSearchSubmitted={onSearchUsersSubmitted}
                 searchBoxLabel={
-                  userSearchTabValue === 0
+                  userSearchField === 'bookTitle'
                     ? 'Search users by titles of books on their shelf'
+                    : userSearchField === 'bookAuthor'
+                    ? 'Search users by authors of books on their shelf'
                     : 'Search users by username'
                 }
                 searchBoxLabelSmall={'Search users'}
                 searchBoxId={'users-search'}
                 loadingMore={loadingMoreUsers}
               />
-              <Select
-                native
-                value={10}
-                inputProps={{
-                  name: 'age',
-                  id: 'age-native-simple',
-                }}
-              >
-                <option value="" />
-                <option value={10}>Ten</option>
-                <option value={20}>Twenty</option>
-                <option value={30}>Thirty</option>
-              </Select>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: screenSmallerThanMd ? 'center' : 'flex-start',
-                }}
-              >
-                <MuiThemeProvider
-                  theme={userSearchTabValue === 0 ? theme : washedTheme}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ textTransform: 'none', margin: theme.spacing(1) }}
-                    size="small"
-                    onClick={() => handleUserSearchTabChange(0)}
-                  >
-                    By shelf (book title)
-                  </Button>
-                </MuiThemeProvider>
-                <MuiThemeProvider
-                  theme={userSearchTabValue === 1 ? theme : washedTheme}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ textTransform: 'none', margin: theme.spacing(1) }}
-                    onClick={() => handleUserSearchTabChange(1)}
-                  >
-                    By user name
-                  </Button>
-                </MuiThemeProvider>
-              </div>
+              <UserSearchFilter
+                handleChange={handleUserSearchFieldChange}
+                searchField={userSearchField}
+              />
             </Container>
             {(usersResult.status === 'loaded' ||
               usersResult.status === 'loading') &&
