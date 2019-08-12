@@ -43,6 +43,7 @@ export default function UserSearchFilter(props: UserSearchFilterProps) {
             name: 'age',
             id: 'age-simple',
           }}
+          disableUnderline
         >
           <MenuItem value={'username'}>By user name</MenuItem>
           <MenuItem value={'bookTitle'}>
