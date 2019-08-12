@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Element, scroller } from 'react-scroll';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -20,6 +20,7 @@ import {
   ClubTransformed,
   ClubWithMemberIds,
   UserWithInvitableClubs,
+  UserSearchField,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -45,6 +46,7 @@ import {
   useMediaQuery,
   useTheme,
   CircularProgress,
+  Select,
 } from '@material-ui/core';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
@@ -176,6 +178,7 @@ export default function Home(props: HomeProps) {
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
   const [tabValue, setTabValue] = React.useState(0);
+  const [userSearchTabValue, setUserSearchTabValue] = React.useState(0);
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [afterClubsQuery, setAfterClubsQuery] = React.useState<
     string | undefined
@@ -278,7 +281,23 @@ export default function Home(props: HomeProps) {
     const pageSize = 12;
     setLoadingMoreUsers(true);
     (async () => {
-      const res = await getAllUsers(afterUsersQuery, 1, pageSize, usersSearch);
+      let userSearchField: UserSearchField;
+      switch (userSearchTabValue) {
+        case 0:
+          userSearchField = 'bookTitle';
+          break;
+        case 1:
+        default:
+          userSearchField = 'username';
+          break;
+      }
+      const res = await getAllUsers(
+        afterUsersQuery,
+        1,
+        pageSize,
+        usersSearch,
+        userSearchField
+      );
       if (res.status === 200) {
         let currUserClubsWithMembers: ClubWithMemberIds[] = [];
         if (user) {
@@ -305,12 +324,16 @@ export default function Home(props: HomeProps) {
           }
         }
         const allUsers = res.data ? res.data.users : undefined;
-        const allUsersShuffled = allUsers ? allUsers.map(user => shuffleUser(user)) : undefined;
-        const allUsersWithInvitableClubs = allUsersShuffled ? transformUserToInvitableClub(
-          allUsersShuffled,
-          currUserClubsWithMembers
-        ) : undefined;
-        if(allUsersWithInvitableClubs) {
+        const allUsersShuffled = allUsers
+          ? allUsers.map(user => shuffleUser(user))
+          : undefined;
+        const allUsersWithInvitableClubs = allUsersShuffled
+          ? transformUserToInvitableClub(
+              allUsersShuffled,
+              currUserClubsWithMembers
+            )
+          : undefined;
+        if (allUsersWithInvitableClubs) {
           setShowLoadMoreUsers(allUsersWithInvitableClubs.length === pageSize);
           setUsersResult(s => ({
             status: 'loaded',
@@ -324,7 +347,7 @@ export default function Home(props: HomeProps) {
       }
     })();
     setLoadingMoreUsers(true);
-  }, [user, userLoaded, afterUsersQuery, usersSearch]);
+  }, [user, userLoaded, afterUsersQuery, usersSearch, userSearchTabValue]);
 
   // Get genres on mount
   useEffect(() => {
@@ -353,6 +376,13 @@ export default function Home(props: HomeProps) {
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
+  };
+
+  const handleUserSearchTabChange = async (newValue: number) => {
+    setUserSearchTabValue(newValue);
+    if (usersSearch !== '') {
+      await resetLoadMoreUsers();
+    }
   };
 
   function onCloseLoginModal() {
@@ -605,7 +635,7 @@ export default function Home(props: HomeProps) {
   }
 
   let emptyUsersFilterResultMsg = 'Oops...no users turned up!';
-  if(usersSearch.length > 0){
+  if (usersSearch.length > 0) {
     emptyUsersFilterResultMsg += ' Try other search terms.';
   }
 
@@ -643,7 +673,9 @@ export default function Home(props: HomeProps) {
               <FilterSearch
                 onClearSearch={onClearClubsSearch}
                 onSearchSubmitted={onSearchClubsSubmitted}
-                searchBoxLabel={'Search clubs by club name, book title, or author'}
+                searchBoxLabel={
+                  'Search clubs by club name, book title, or author'
+                }
                 searchBoxLabelSmall={'Search clubs'}
                 searchBoxId={'club-search'}
                 loadingMore={loadingMoreClubs}
@@ -709,7 +741,9 @@ export default function Home(props: HomeProps) {
               clubsTransformedResult.payload.length > 0 && (
                 <ClubCards
                   clubsTransformed={clubsTransformedResult.payload}
-                  showResultsCount={clubsSearch.length > 0 || clubFiltersApplied}
+                  showResultsCount={
+                    clubsSearch.length > 0 || clubFiltersApplied
+                  }
                   resultsLoaded={clubsTransformedResult.status === 'loaded'}
                 />
               )}
@@ -838,14 +872,65 @@ export default function Home(props: HomeProps) {
               <FilterSearch
                 onClearSearch={onClearUsersSearch}
                 onSearchSubmitted={onSearchUsersSubmitted}
-                searchBoxLabel={'Search users by titles of books on their shelf'}
+                searchBoxLabel={
+                  userSearchTabValue === 0
+                    ? 'Search users by titles of books on their shelf'
+                    : 'Search users by username'
+                }
                 searchBoxLabelSmall={'Search users'}
                 searchBoxId={'users-search'}
                 loadingMore={loadingMoreUsers}
               />
+              <Select
+                native
+                value={10}
+                inputProps={{
+                  name: 'age',
+                  id: 'age-native-simple',
+                }}
+              >
+                <option value="" />
+                <option value={10}>Ten</option>
+                <option value={20}>Twenty</option>
+                <option value={30}>Thirty</option>
+              </Select>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: screenSmallerThanMd ? 'center' : 'flex-start',
+                }}
+              >
+                <MuiThemeProvider
+                  theme={userSearchTabValue === 0 ? theme : washedTheme}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ textTransform: 'none', margin: theme.spacing(1) }}
+                    size="small"
+                    onClick={() => handleUserSearchTabChange(0)}
+                  >
+                    By shelf (book title)
+                  </Button>
+                </MuiThemeProvider>
+                <MuiThemeProvider
+                  theme={userSearchTabValue === 1 ? theme : washedTheme}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ textTransform: 'none', margin: theme.spacing(1) }}
+                    onClick={() => handleUserSearchTabChange(1)}
+                  >
+                    By user name
+                  </Button>
+                </MuiThemeProvider>
+              </div>
             </Container>
-            {(usersResult.status === 'loaded' || usersResult.status === 'loading') &&
-            usersResult.payload && usersResult.payload.length > 0 && (
+            {(usersResult.status === 'loaded' ||
+              usersResult.status === 'loading') &&
+              usersResult.payload &&
+              usersResult.payload.length > 0 && (
                 <UserCards
                   usersWithInvitableClubs={usersResult.payload}
                   currUser={user}
