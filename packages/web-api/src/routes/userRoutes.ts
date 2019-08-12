@@ -9,6 +9,7 @@ import {
   UserQA,
   Services,
   SameKeysAs,
+  UserSearchField,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -48,7 +49,13 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res) => {
-  const { after, pageSize, onboardVersion, search } = req.query;
+  const {
+    after,
+    pageSize,
+    onboardVersion,
+    search,
+    userSearchField,
+  } = req.query;
   // const { userId } = req.session;
   // let user: UserDoc | undefined;
   // if (userId) {
@@ -68,10 +75,16 @@ router.get('/', async (req, res) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let users: UserDoc[];
   try {
-    users = await UserModel.find(query)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .exec();
+    if (search && search.length > 0) {
+      users = await UserModel.find(query)
+        .sort({ createdAt: -1 })
+        .exec();
+    } else {
+      users = await UserModel.find(query)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec();
+    }
   } catch (err) {
     console.error('Failed to get all users, ', err);
     res.status(500).send('Failed to get all users.');
@@ -100,6 +113,37 @@ router.get('/', async (req, res) => {
       return user;
     })
     .filter(c => c !== null);
+  if ((search && search.length) > 0) {
+    let fuseSearchKey: string;
+    switch (userSearchField) {
+      case 'bookTitle':
+        fuseSearchKey = 'shelf.notStarted.title';
+        break;
+      case 'bookAuthor':
+        fuseSearchKey = 'shelf.notStarted.author';
+        break;
+      case 'username':
+      default:
+        fuseSearchKey = 'name';
+        break;
+    }
+    const fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {
+      // TODO: Typescript doesn't like the use of keys here.
+      // @ts-ignore
+      keys: [{ name: fuseSearchKey, weight: 1 / 1 }],
+    };
+    const fuse = new Fuse(filteredUsers, fuseOptions);
+    filteredUsers = fuse.search(search);
+  }
+  if (after) {
+    const afterIndex = filteredUsers.findIndex(c => c._id.toString() === after);
+    if (afterIndex >= 0) {
+      filteredUsers = filteredUsers.slice(afterIndex + 1);
+    }
+  }
+  if (filteredUsers.length > limit) {
+    filteredUsers = filteredUsers.slice(0, limit);
+  }
   const result: Services.GetUsers = {
     users: filteredUsers,
   };
