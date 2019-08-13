@@ -240,6 +240,39 @@ declare module '@caravan/buddy-reading-types' {
     referrals: Referral[];
   }
 
+  export interface Post extends DocumentFields, MongoTimestamps {
+    userId: string;
+    postType: PostType;
+    content: PostContent;
+  }
+
+  export interface ShelfPost {
+    shelf: FilterAutoMongoKeys<ShelfEntry>[];
+    title: string;
+    description?: string;
+    genres?: SelectedGenre[];
+    interests?: Interest[];
+  }
+
+  export interface ProgressUpdatePost {
+    book: FilterAutoMongoKeys<ShelfEntry>;
+    type: ProgressUpdateType;
+    containsSpoiler: boolean;
+    description: string;
+  }
+
+  export interface WantToReadAboutPost {
+    genres?: SelectedGenre[];
+    interests?: Interest[];
+    description: string;
+  }
+
+  export interface Interest {
+    key: string;
+    name: string;
+    imageUrl?: string;
+  }
+
   export interface FilterChip {
     type: FilterChipType;
     name: string;
@@ -352,6 +385,19 @@ declare module '@caravan/buddy-reading-types' {
 
   export type ReferralDestination = 'home' | 'club';
 
+  export type PostType = 'shelf' | 'progressUpdate' | 'wantToReadAbout';
+
+  export type PostContent =
+    | ShelfPost
+    | ProgressUpdatePost
+    | WantToReadAboutPost;
+
+  export type ProgressUpdateType =
+    | 'starting'
+    | 'chapterUpdate'
+    | 'plotUpdate'
+    | 'finished';
+
   export type GroupVibe =
     | 'chill'
     | 'power'
@@ -426,6 +472,9 @@ declare module '@caravan/buddy-reading-types' {
     export interface CreateClubResult {
       club: Club;
       discord: any;
+    }
+    export interface CreateShelfPostResult {
+      shelf: ShelfPost;
     }
     export interface GetGenres extends Omit<Genres, '_id'> {}
     export interface ReadingPreferencesResult {

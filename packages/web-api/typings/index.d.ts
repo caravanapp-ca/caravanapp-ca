@@ -15,6 +15,7 @@ import {
   ClubShelf,
   UserPalettes,
   UserSettings,
+  Post,
 } from '@caravan/buddy-reading-types';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
@@ -77,5 +78,9 @@ export interface ReferralDoc
   extends Document,
     MongoTimestamps,
     Omit<Referral, '_id'> {
+  _id: MongooseTypes.ObjectId;
+}
+
+export interface PostDoc extends Document, MongoTimestamps, Omit<Post, '_id'> {
   _id: MongooseTypes.ObjectId;
 }

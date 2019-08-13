@@ -59,6 +59,8 @@ import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
 import UserSearchFilter from '../../components/filters/UserSearchFilter';
+import Composer from '../../components/Composer';
+import ShelfUploadModal from '../../components/post-uploads/ShelfUploadModal';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -85,12 +87,6 @@ const useStyles = makeStyles(theme => ({
   },
   heroButtons: {
     marginTop: theme.spacing(4),
-  },
-  tabs: {
-    position: 'relative',
-    zIndex: 1,
-    flexGrow: 1,
-    backgroundColor: '#FFFFFF',
   },
   bottomAuthButton: {
     display: 'flex',
@@ -215,6 +211,16 @@ export default function Home(props: HomeProps) {
     clubMembershipFiltersApplied;
   const [clubsSearch, setClubsSearch] = React.useState<string>('');
   const [usersSearch, setUsersSearch] = React.useState<string>('');
+
+  const [showShelfUpload, setShowShelfUpload] = React.useState(false);
+  const [
+    showProgressUpdateUpload,
+    setShowProgressUpdateUpload,
+  ] = React.useState(false);
+  const [
+    showWantToReadAboutUpload,
+    setShowWantToReadAboutUpload,
+  ] = React.useState(false);
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -661,6 +667,7 @@ export default function Home(props: HomeProps) {
           >
             <Tab label="Join Clubs" />
             <Tab label="Find A Buddy" />
+            <Tab label="Feed" />
           </Tabs>
         </Element>
         {tabValue === 0 && (
@@ -953,6 +960,27 @@ export default function Home(props: HomeProps) {
                   <CircularProgress />
                 </div>
               )}
+          </>
+        )}
+        {tabValue === 2 && (
+          <>
+            <Container className={classes.usersFilterGrid} maxWidth="md">
+              <Composer
+                onClickShelfUpload={() => setShowShelfUpload(true)}
+                onClickProgressUpdateUpload={() =>
+                  setShowProgressUpdateUpload(true)
+                }
+                onClickWantToReadAboutUpload={() =>
+                  setShowWantToReadAboutUpload(true)
+                }
+              />
+            </Container>
+            <ShelfUploadModal
+              smallScreen={screenSmallerThanSm}
+              open={showShelfUpload}
+              handleClose={() => setShowShelfUpload(false)}
+              userId={user ? user._id : null}
+            />
           </>
         )}
       </main>
