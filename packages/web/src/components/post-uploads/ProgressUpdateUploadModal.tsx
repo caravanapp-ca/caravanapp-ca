@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ShelfUploadModalProps {
+interface ProgressUpdateUploadModalProps {
   smallScreen: boolean;
   open: boolean;
   handleClose: () => void;
@@ -60,7 +60,9 @@ const TransitionAction = React.forwardRef<unknown, TransitionProps>(
   }
 );
 
-export default function ShelfUploadModal(props: ShelfUploadModalProps) {
+export default function ProgressUpdateUploadModal(
+  props: ProgressUpdateUploadModalProps
+) {
   const classes = useStyles();
   const { smallScreen, open, handleClose, userId } = props;
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('lg');
@@ -92,7 +94,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
     if (userId) {
       const postContent: FilterAutoMongoKeys<Post> = {
         userId,
-        postType: 'shelf',
+        postType: 'progressUpdate',
         content: {
           shelf,
           title: shelfTitle,

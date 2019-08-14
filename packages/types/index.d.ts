@@ -473,8 +473,8 @@ declare module '@caravan/buddy-reading-types' {
       club: Club;
       discord: any;
     }
-    export interface CreateShelfPostResult {
-      shelf: ShelfPost;
+    export interface UploadPostResult {
+      post: Post;
     }
     export interface GetGenres extends Omit<Genres, '_id'> {}
     export interface ReadingPreferencesResult {

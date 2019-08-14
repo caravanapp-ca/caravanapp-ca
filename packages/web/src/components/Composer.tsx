@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
   fab: {
     margin: theme.spacing(1),
+    textTransform: 'none',
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
@@ -54,6 +55,15 @@ export default function Composer(props: ComposerProps) {
         >
           <NavigationIcon className={classes.extendedIcon} />
           Shelf
+        </Fab>
+        <Fab
+          variant="extended"
+          aria-label="delete"
+          className={classes.fab}
+          onClick={onClickProgressUpdateUpload}
+        >
+          <NavigationIcon className={classes.extendedIcon} />
+          Progress Update
         </Fab>
       </div>
     </>

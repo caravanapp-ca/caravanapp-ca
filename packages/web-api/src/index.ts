@@ -16,6 +16,7 @@ import discordRoutes from './routes/discordRoutes';
 import referralRoutes from './routes/referralRoutes';
 import userPalettesRoutes from './routes/userPalettesRoutes';
 import userSettingsRoutes from './routes/userSettingsRoutes';
+import postRoutes from './routes/postRoutes';
 
 import {
   connect as connectToDb,
@@ -83,6 +84,7 @@ import { ReadingDiscordBot } from './services/discord';
   app.use('/api/referrals', referralRoutes);
   app.use('/api/userPalettes', userPalettesRoutes);
   app.use('/api/userSettings', userSettingsRoutes);
+  app.use('/api/post', postRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));
