@@ -242,11 +242,11 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface Post extends DocumentFields, MongoTimestamps {
     userId: string;
-    postType: PostType;
     content: PostContent;
   }
 
   export interface ShelfPost {
+    postType: 'shelf';
     shelf: FilterAutoMongoKeys<ShelfEntry>[];
     title: string;
     description?: string;
@@ -255,13 +255,15 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export interface ProgressUpdatePost {
+    postType: 'progressUpdate';
     book: FilterAutoMongoKeys<ShelfEntry>;
-    type: ProgressUpdateType;
+    progressUpdateType: ProgressUpdateType;
     containsSpoiler: boolean;
     description: string;
   }
 
   export interface WantToReadAboutPost {
+    postType: 'wantToReadAbout';
     genres?: SelectedGenre[];
     interests?: Interest[];
     description: string;

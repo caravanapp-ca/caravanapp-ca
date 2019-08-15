@@ -92,8 +92,8 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
     if (userId) {
       const postContent: FilterAutoMongoKeys<Post> = {
         userId,
-        postType: 'shelf',
         content: {
+          postType: 'shelf',
           shelf,
           title: shelfTitle,
           description: shelfDescription,

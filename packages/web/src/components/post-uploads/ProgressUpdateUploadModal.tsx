@@ -6,6 +6,7 @@ import {
   ShelfEntry,
   ShelfPost,
   Post,
+  ProgressUpdateType,
 } from '@caravan/buddy-reading-types';
 import {
   Dialog,
@@ -70,35 +71,39 @@ export default function ProgressUpdateUploadModal(
   const [draggingElementId, setDraggingElementId] = React.useState<
     string | undefined
   >(undefined);
-  const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
-    []
-  );
-  const [shelfTitle, setShelfTitle] = React.useState<string>('');
-  const [shelfDescription, setShelfDescription] = React.useState<string>('');
-
-  const readyToPost = shelf.length > 0 && shelfTitle.length > 0;
+  const [book, setBook] = React.useState<
+    FilterAutoMongoKeys<ShelfEntry> | undefined
+  >(undefined);
+  const [
+    progressUpdateDescription,
+    setProgressUpdateDescription,
+  ] = React.useState<string>('');
+  const [progressUpdateType, setProgressUpdateType] = React.useState<
+    ProgressUpdateType
+  >('starting');
+  const readyToPost = book && progressUpdateDescription.length > 0;
   function onSubmitSelectedBooks(
-    selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
+    selectedBook: FilterAutoMongoKeys<ShelfEntry>[]
   ) {
-    setShelf(selectedBooks);
+    setBook(selectedBook[0]);
   }
 
   function onCloseModal() {
     handleClose();
-    setShelf([]);
-    setShelfTitle('');
-    setShelfDescription('');
+    setBook(undefined);
+    setProgressUpdateDescription('');
   }
 
-  async function postShelf() {
-    if (userId) {
+  async function postProgressUpdate() {
+    if (userId && book) {
       const postContent: FilterAutoMongoKeys<Post> = {
         userId,
-        postType: 'progressUpdate',
         content: {
-          shelf,
-          title: shelfTitle,
-          description: shelfDescription,
+          postType: 'progressUpdate',
+          book,
+          progressUpdateType,
+          containsSpoiler: false,
+          description: progressUpdateDescription,
         },
       };
       await uploadPost(postContent);
@@ -122,8 +127,12 @@ export default function ProgressUpdateUploadModal(
             <Button color="inherit" onClick={onCloseModal}>
               Cancel
             </Button>
-            <Typography variant="h6">Upload Shelf</Typography>
-            <Button color="inherit" disabled={!readyToPost} onClick={postShelf}>
+            <Typography variant="h6">Post Progress Update</Typography>
+            <Button
+              color="inherit"
+              disabled={!readyToPost}
+              onClick={postProgressUpdate}
+            >
               Post
             </Button>
           </Toolbar>
@@ -131,39 +140,21 @@ export default function ProgressUpdateUploadModal(
         <Container maxWidth="md" className={classes.dialogContent}>
           <div className={classes.sectionContainer}>
             <Typography variant="h6" gutterBottom>
-              Add books *
+              Select a Book *
             </Typography>
             <BookSearch
               onSubmitBooks={onSubmitSelectedBooks}
-              maxSelected={9}
+              maxSelected={1}
               secondary="delete"
             />
           </div>
           <div className={classes.sectionContainer}>
             <Typography variant="h6" gutterBottom>
-              Name this shelf *
+              Talk about it! *
             </Typography>
             <TextField
               id="filled-name"
-              label="Shelf Title"
-              helperText="50 character limit"
-              variant="outlined"
-              fullWidth
-              inputProps={{ maxLength: 50 }}
-              onChange={(
-                e: React.ChangeEvent<
-                  HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-                >
-              ) => setShelfTitle(e.target.value)}
-            />
-          </div>
-          <div className={classes.sectionContainer}>
-            <Typography variant="h6" gutterBottom>
-              Describe this shelf
-            </Typography>
-            <TextField
-              id="filled-name"
-              label="Shelf Description"
+              label="Progress Update Description"
               helperText="300 character limit"
               variant="outlined"
               multiline
@@ -174,7 +165,7 @@ export default function ProgressUpdateUploadModal(
                 e: React.ChangeEvent<
                   HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
                 >
-              ) => setShelfDescription(e.target.value)}
+              ) => setProgressUpdateDescription(e.target.value)}
             />
           </div>
         </Container>
