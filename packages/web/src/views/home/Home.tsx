@@ -61,6 +61,7 @@ import CustomSnackbar, {
 import UserSearchFilter from '../../components/filters/UserSearchFilter';
 import Composer from '../../components/Composer';
 import ShelfUploadModal from '../../components/post-uploads/ShelfUploadModal';
+import ProgressUpdateUploadModal from '../../components/post-uploads/ProgressUpdateUploadModal';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -171,6 +172,9 @@ export default function Home(props: HomeProps) {
   const [loadingMoreClubs, setLoadingMoreClubs] = React.useState<boolean>(
     false
   );
+  const [currUsersClubs, setCurrUsersClubs] = React.useState<
+    Services.GetClubById[]
+  >([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
@@ -307,16 +311,21 @@ export default function Home(props: HomeProps) {
             {
               genres: [],
               speed: [],
-              capacity: [
-                { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-              ],
+              // capacity: [
+              //   { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
+              // ],
+              capacity: [],
               membership: [
                 { key: 'myClubs', name: 'My clubs', type: 'membership' },
               ],
             }
           );
           if (currUserClubsRes.status === 200) {
-            currUserClubsWithMembers = currUserClubsRes.data.map(c => {
+            setCurrUsersClubs(currUserClubsRes.data);
+            const clubsWithOpenSpots = currUserClubsRes.data.filter(
+              c => c.members.length < c.maxMembers
+            );
+            currUserClubsWithMembers = clubsWithOpenSpots.map(c => {
               const memberIds = c.members.map(m => m._id);
               return { club: c, memberIds };
             });

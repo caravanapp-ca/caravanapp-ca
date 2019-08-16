@@ -31,6 +31,7 @@ import { TransitionProps } from 'react-transition-group/Transition';
 import BookSearch from '../../views/books/BookSearch';
 import { uploadPost } from '../../services/post';
 import { DialogProps } from '@material-ui/core/Dialog';
+import ProgressUpdateSlider from './ProgressUpdateSlider';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -147,6 +148,9 @@ export default function ProgressUpdateUploadModal(
               maxSelected={1}
               secondary="delete"
             />
+          </div>
+          <div className={classes.sectionContainer}>
+            <ProgressUpdateSlider />
           </div>
           <div className={classes.sectionContainer}>
             <Typography variant="h6" gutterBottom>

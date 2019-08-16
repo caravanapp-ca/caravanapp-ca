@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Services,
   FilterChip,
@@ -6,6 +6,7 @@ import {
   ShelfEntry,
   ShelfPost,
   Post,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import {
   Dialog,
@@ -21,6 +22,7 @@ import {
   Slide,
   Container,
   TextField,
+  CircularProgress,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import GenreChip from '../../components/GenreChip';
@@ -30,6 +32,7 @@ import { TransitionProps } from 'react-transition-group/Transition';
 import BookSearch from '../../views/books/BookSearch';
 import { uploadPost } from '../../services/post';
 import { DialogProps } from '@material-ui/core/Dialog';
+import { getAllGenres } from '../../services/genre';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -44,6 +47,11 @@ const useStyles = makeStyles(theme => ({
   },
   sectionContainer: {
     marginTop: theme.spacing(4),
+  },
+  genresContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 }));
 
@@ -71,10 +79,19 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
   );
+  const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
+  const [shelfGenres, setShelfGenres] = React.useState<SelectedGenre[]>([]);
   const [shelfTitle, setShelfTitle] = React.useState<string>('');
   const [shelfDescription, setShelfDescription] = React.useState<string>('');
+  const [postingShelf, setPostingShelf] = React.useState(false);
 
-  const readyToPost = shelf.length > 0 && shelfTitle.length > 0;
+  const readyToPost =
+    shelf.length > 0 && shelfTitle.length > 0 && shelfGenres.length > 0;
+
+  useEffect(() => {
+    getGenres();
+  }, []);
+
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
   ) {
@@ -83,6 +100,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
 
   function onCloseModal() {
     handleClose();
+    setShelfGenres([]);
     setShelf([]);
     setShelfTitle('');
     setShelfDescription('');
@@ -96,12 +114,45 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
           postType: 'shelf',
           shelf,
           title: shelfTitle,
+          genres: shelfGenres,
           description: shelfDescription,
         },
       };
-      await uploadPost(postContent);
+      setPostingShelf(true);
+      const uploadShelfRes = await uploadPost(postContent);
+      const { data } = uploadShelfRes;
+      if (data) {
+        setPostingShelf(false);
+        onCloseModal();
+      }
     }
   }
+
+  const getGenres = async () => {
+    const res = await getAllGenres();
+    if (res.status === 200) {
+      setGenres(res.data);
+    } else {
+      // TODO: error handling
+    }
+  };
+
+  const onGenreClick = (key: string, currActive: boolean) => {
+    if (!genres) {
+      return;
+    }
+    let selectedGenresNew: SelectedGenre[];
+    if (!currActive) {
+      selectedGenresNew = [...shelfGenres];
+      selectedGenresNew.push({
+        key,
+        name: genres.genres[key].name,
+      });
+    } else {
+      selectedGenresNew = shelfGenres.filter(sg => sg.key !== key);
+    }
+    setShelfGenres(selectedGenresNew);
+  };
 
   return (
     <div>
@@ -110,7 +161,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
         fullWidth={!smallScreen}
         maxWidth={maxWidth}
         open={open}
-        onClose={handleClose}
+        onClose={onCloseModal}
         // @ts-ignore
         TransitionComponent={TransitionAction}
         scroll={scroll}
@@ -137,6 +188,26 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
               secondary="delete"
             />
           </div>
+          {genres && (
+            <div className={classes.sectionContainer}>
+              <Typography variant="h6" gutterBottom>
+                Tag genres *
+              </Typography>
+              <div className={classes.genresContainer}>
+                {genres.mainGenres.map(g => (
+                  <GenreChip
+                    key={g}
+                    genreKey={g}
+                    name={genres.genres[g].name}
+                    active={shelfGenres.some(sg => sg.key === g)}
+                    clickable={true}
+                    onClick={onGenreClick}
+                    small={smallScreen}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <div className={classes.sectionContainer}>
             <Typography variant="h6" gutterBottom>
               Name this shelf *
@@ -174,6 +245,27 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
                 >
               ) => setShelfDescription(e.target.value)}
             />
+          </div>
+          <div className={classes.sectionContainer}>
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {!postingShelf && (
+                <Button
+                  variant="contained"
+                  disabled={!readyToPost}
+                  onClick={postShelf}
+                  color="secondary"
+                >
+                  POST
+                </Button>
+              )}
+              {postingShelf && <CircularProgress />}
+            </div>
           </div>
         </Container>
       </Dialog>

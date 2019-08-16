@@ -56,6 +56,18 @@ const shelfSchema: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
 };
 
 const shelfPostSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfPost>> = {
+  postType: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function(v: String) {
+        return v === 'shelf';
+      },
+      message: function(props: { value: string }) {
+        `${props.value} does not match the expected value, shelf.`;
+      },
+    },
+  },
   shelf: { type: [shelfSchema], required: true },
   title: { type: String, required: true },
   description: { type: String },
@@ -70,8 +82,20 @@ const shelfPostSchema = new Schema(shelfPostSchemaDefinition, {
 const progressUpdatePostSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<ProgressUpdatePost>
 > = {
+  postType: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function(v: String) {
+        return v === 'progressUpdate';
+      },
+      message: function(props: { value: string }) {
+        `${props.value} does not match the expected value, progressUpdate.`;
+      },
+    },
+  },
   book: { type: shelfSchema, required: true },
-  type: {
+  progressUpdateType: {
     type: String,
     required: true,
   },
@@ -89,6 +113,18 @@ const progressUpdatePostSchema = new Schema(
 const wantToReadAboutSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<WantToReadAboutPost>
 > = {
+  postType: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function(v: String) {
+        return v === 'wantToReadAbout';
+      },
+      message: function(props: { value: string }) {
+        `${props.value} does not match the expected value, wantToReadAbout.`;
+      },
+    },
+  },
   genres: { type: [genresSchema] },
   interests: { type: [interestsSchema] },
   description: { type: String, required: true },
@@ -100,7 +136,6 @@ const wantToReadAboutSchema = new Schema(wantToReadAboutSchemaDefinition, {
 
 const postDefinition: SameKeysAs<FilterAutoMongoKeys<Post>> = {
   userId: { type: String, required: true },
-  postType: { type: String, required: true },
   content: {
     type: [shelfPostSchema] || [progressUpdatePostSchema] || [
         wantToReadAboutSchema,

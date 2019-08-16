@@ -56,15 +56,6 @@ export default function Composer(props: ComposerProps) {
           <NavigationIcon className={classes.extendedIcon} />
           Shelf
         </Fab>
-        <Fab
-          variant="extended"
-          aria-label="delete"
-          className={classes.fab}
-          onClick={onClickProgressUpdateUpload}
-        >
-          <NavigationIcon className={classes.extendedIcon} />
-          Progress Update
-        </Fab>
       </div>
     </>
   );
