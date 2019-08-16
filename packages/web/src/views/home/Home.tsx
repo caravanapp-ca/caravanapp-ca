@@ -21,6 +21,7 @@ import {
   ClubWithMemberIds,
   UserWithInvitableClubs,
   UserSearchField,
+  Post,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -62,6 +63,8 @@ import UserSearchFilter from '../../components/filters/UserSearchFilter';
 import Composer from '../../components/Composer';
 import ShelfUploadModal from '../../components/post-uploads/ShelfUploadModal';
 import ProgressUpdateUploadModal from '../../components/post-uploads/ProgressUpdateUploadModal';
+import { getAllPosts } from '../../services/post';
+import PostCards from './PostCards';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -166,10 +169,16 @@ export default function Home(props: HomeProps) {
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
+  const [postsResult, setPostsResult] = React.useState<Service<Post[]>>({
+    status: 'loading',
+  });
   const [loadingMoreUsers, setLoadingMoreUsers] = React.useState<boolean>(
     false
   );
   const [loadingMoreClubs, setLoadingMoreClubs] = React.useState<boolean>(
+    false
+  );
+  const [loadingMorePosts, setLoadingMorePosts] = React.useState<boolean>(
     false
   );
   const [currUsersClubs, setCurrUsersClubs] = React.useState<
@@ -186,8 +195,15 @@ export default function Home(props: HomeProps) {
   const [afterClubsQuery, setAfterClubsQuery] = React.useState<
     string | undefined
   >(undefined);
+  const [afterUsersQuery, setAfterUsersQuery] = React.useState<
+    string | undefined
+  >(undefined);
+  const [afterPostsQuery, setAfterPostsQuery] = React.useState<
+    string | undefined
+  >(undefined);
   const [showLoadMoreClubs, setShowLoadMoreClubs] = React.useState(false);
   const [showLoadMoreUsers, setShowLoadMoreUsers] = React.useState(false);
+  const [showLoadMorePosts, setShowLoadMorePosts] = React.useState(false);
   const [allGenres, setAllGenres] = React.useState<Services.GetGenres | null>(
     null
   );
@@ -201,9 +217,6 @@ export default function Home(props: HomeProps) {
   const [activeClubsFilter, setActiveClubsFilter] = React.useState<
     ActiveFilter
   >(defaultActiveFilter);
-  const [afterUsersQuery, setAfterUsersQuery] = React.useState<
-    string | undefined
-  >(undefined);
   const clubGenreFiltersApplied = activeClubsFilter.genres.length > 0;
   const clubSpeedFiltersApplied = activeClubsFilter.speed.length > 0;
   const clubCapacityFiltersApplied = activeClubsFilter.capacity.length > 0;
@@ -356,6 +369,29 @@ export default function Home(props: HomeProps) {
     })();
     setLoadingMoreUsers(true);
   }, [user, userLoaded, afterUsersQuery, usersSearch, userSearchField]);
+
+  useEffect(() => {
+    if (!userLoaded) {
+      return;
+    }
+    const pageSize = 12;
+    setLoadingMorePosts(true);
+    (async () => {
+      const res = await getAllPosts(afterPostsQuery, pageSize);
+      if (res.status === 200) {
+        const allPosts = res.data ? res.data.posts : undefined;
+        if (allPosts) {
+          setShowLoadMorePosts(allPosts.length === pageSize);
+          setPostsResult(s => ({
+            status: 'loaded',
+            payload:
+              s.status === 'loaded' ? [...s.payload, ...allPosts] : allPosts,
+          }));
+          setLoadingMorePosts(false);
+        }
+      }
+    })();
+  }, [user, userLoaded, afterPostsQuery]);
 
   // Get genres on mount
   useEffect(() => {
@@ -581,6 +617,15 @@ export default function Home(props: HomeProps) {
       setUsersSearch(str);
     }
   };
+
+  function onUploadPost(postType: string) {
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'success',
+      message: `Successfully uploaded ${postType}!`,
+    });
+  }
 
   const onSeeClubsClick = () => {
     scroller.scrollTo('tabs', { smooth: true });
@@ -984,10 +1029,22 @@ export default function Home(props: HomeProps) {
                 }
               />
             </Container>
+            {(postsResult.status === 'loaded' ||
+              postsResult.status === 'loading') &&
+              postsResult.payload &&
+              postsResult.payload.length > 0 && (
+                <PostCards
+                  posts={postsResult.payload}
+                  currUser={user}
+                  showResultsCount={false}
+                  resultsLoaded={postsResult.status === 'loaded'}
+                />
+              )}
             <ShelfUploadModal
               smallScreen={screenSmallerThanSm}
               open={showShelfUpload}
               handleClose={() => setShowShelfUpload(false)}
+              onPostShelf={onUploadPost}
               userId={user ? user._id : null}
             />
           </>

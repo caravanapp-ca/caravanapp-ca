@@ -241,8 +241,15 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export interface Post extends DocumentFields, MongoTimestamps {
-    userId: string;
+    userInfo: PostUserInfo;
     content: PostContent;
+  }
+
+  export interface PostUserInfo {
+    userId: string;
+    name: string;
+    urlSlug: string;
+    photoUrl: string;
   }
 
   export interface ShelfPost {
@@ -513,6 +520,15 @@ declare module '@caravan/buddy-reading-types' {
         badges: UserBadge[];
         createdAt: string;
         updatedAt: string;
+      }[];
+    }
+    export interface GetPosts {
+      posts: {
+        _id: string;
+        createdAt: string;
+        updatedAt: string;
+        userInfo: PostUserInfo;
+        content: PostContent;
       }[];
     }
   }

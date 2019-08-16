@@ -7,6 +7,7 @@ import {
   ShelfPost,
   Post,
   SelectedGenre,
+  PostContent,
 } from '@caravan/buddy-reading-types';
 import {
   Dialog,
@@ -59,6 +60,7 @@ interface ShelfUploadModalProps {
   smallScreen: boolean;
   open: boolean;
   handleClose: () => void;
+  onPostShelf: (postType: string) => void;
   userId: string | null;
 }
 
@@ -70,7 +72,7 @@ const TransitionAction = React.forwardRef<unknown, TransitionProps>(
 
 export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const classes = useStyles();
-  const { smallScreen, open, handleClose, userId } = props;
+  const { smallScreen, open, handleClose, userId, onPostShelf } = props;
   const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('lg');
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
   const [draggingElementId, setDraggingElementId] = React.useState<
@@ -108,21 +110,19 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
 
   async function postShelf() {
     if (userId) {
-      const postContent: FilterAutoMongoKeys<Post> = {
-        userId,
-        content: {
-          postType: 'shelf',
-          shelf,
-          title: shelfTitle,
-          genres: shelfGenres,
-          description: shelfDescription,
-        },
+      const postContent: PostContent = {
+        postType: 'shelf',
+        shelf,
+        title: shelfTitle,
+        genres: shelfGenres,
+        description: shelfDescription,
       };
       setPostingShelf(true);
-      const uploadShelfRes = await uploadPost(postContent);
+      const uploadShelfRes = await uploadPost(postContent, userId);
       const { data } = uploadShelfRes;
       if (data) {
         setPostingShelf(false);
+        onPostShelf('shelf');
         onCloseModal();
       }
     }

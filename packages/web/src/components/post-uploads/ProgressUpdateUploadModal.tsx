@@ -7,6 +7,7 @@ import {
   ShelfPost,
   Post,
   ProgressUpdateType,
+  PostContent,
 } from '@caravan/buddy-reading-types';
 import {
   Dialog,
@@ -97,17 +98,14 @@ export default function ProgressUpdateUploadModal(
 
   async function postProgressUpdate() {
     if (userId && book) {
-      const postContent: FilterAutoMongoKeys<Post> = {
-        userId,
-        content: {
-          postType: 'progressUpdate',
-          book,
-          progressUpdateType,
-          containsSpoiler: false,
-          description: progressUpdateDescription,
-        },
+      const postContent: PostContent = {
+        postType: 'progressUpdate',
+        book,
+        progressUpdateType,
+        containsSpoiler: false,
+        description: progressUpdateDescription,
       };
-      await uploadPost(postContent);
+      await uploadPost(postContent, userId);
     }
   }
 

@@ -8,9 +8,11 @@ import {
   BookSource,
   ProgressUpdatePost,
   WantToReadAboutPost,
+  PostUserInfo,
 } from '@caravan/buddy-reading-types';
 import { PostDoc } from '../../typings';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
+import { UserInfo } from 'os';
 
 const genresSchema = new Schema({
   key: String,
@@ -134,12 +136,23 @@ const wantToReadAboutSchema = new Schema(wantToReadAboutSchemaDefinition, {
   _id: false,
 });
 
-const postDefinition: SameKeysAs<FilterAutoMongoKeys<Post>> = {
+const postUserInfoSchemaDefinition: SameKeysAs<
+  FilterAutoMongoKeys<PostUserInfo>
+> = {
   userId: { type: String, required: true },
+  name: { type: String, required: true },
+  urlSlug: { type: String, required: true },
+  photoUrl: { type: String, required: true },
+};
+
+const postUserInfoSchema = new Schema(postUserInfoSchemaDefinition, {
+  _id: false,
+});
+
+const postDefinition: SameKeysAs<FilterAutoMongoKeys<Post>> = {
+  userInfo: { type: postUserInfoSchema, required: true },
   content: {
-    type: [shelfPostSchema] || [progressUpdatePostSchema] || [
-        wantToReadAboutSchema,
-      ],
+    type: shelfPostSchema || progressUpdatePostSchema || wantToReadAboutSchema,
     required: true,
   },
 };
