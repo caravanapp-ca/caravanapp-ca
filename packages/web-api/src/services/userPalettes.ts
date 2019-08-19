@@ -13,16 +13,9 @@ export const getUserPalettes = async (userId: string) => {
 const initUserPalettes = async (
   userPalettes: FilterAutoMongoKeys<UserPalettes>
 ) => {
-  try {
-    const newUserPalettes = new UserPalettesModel(userPalettes);
-    const newUserPalettesRes = await newUserPalettes.save();
-    return newUserPalettesRes;
-  } catch (err) {
-    console.error(
-      `Error initiating user palettes for user ${userPalettes.userId}: ${err}`
-    );
-    return;
-  }
+  const newUserPalettes = new UserPalettesModel(userPalettes);
+  const newUserPalettesRes = await newUserPalettes.save();
+  return newUserPalettesRes;
 };
 
 export const giveUserPalettes = async (
