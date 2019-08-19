@@ -43,7 +43,14 @@ const validSearch = (search: string): boolean => {
 
 export default function FilterSearch(props: FilterSearchProps) {
   const classes = useStyles();
-  const { onClearSearch, onSearchSubmitted, searchBoxLabel, searchBoxLabelSmall, searchBoxId, loadingMore } = props;
+  const {
+    onClearSearch,
+    onSearchSubmitted,
+    searchBoxLabel,
+    searchBoxLabelSmall,
+    searchBoxId,
+    loadingMore,
+  } = props;
   const [search, setSearch] = React.useState<string>('');
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -71,33 +78,29 @@ export default function FilterSearch(props: FilterSearchProps) {
   return (
     <div className={classes.searchContainer}>
       {loadingMore ? (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
-              padding: 12
-            }}
-          >
-          <CircularProgress size={24}/>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
+            padding: 12,
+          }}
+        >
+          <CircularProgress size={24} />
         </div>
       ) : (
         <IconButton
-        className={classes.iconButton}
-        aria-label="Search"
-        onClick={handleSearchClick}
+          className={classes.iconButton}
+          aria-label="Search"
+          onClick={handleSearchClick}
         >
-        <Search />
-      </IconButton>
+          <Search />
+        </IconButton>
       )}
 
       <TextField
         id={searchBoxId}
-        label={
-          screenSmallerThanSm
-            ? searchBoxLabelSmall
-            : searchBoxLabel
-        }
+        label={screenSmallerThanSm ? searchBoxLabelSmall : searchBoxLabel}
         type="search"
         onChange={handleOnChange}
         onKeyDown={handleOnKeyDown}
