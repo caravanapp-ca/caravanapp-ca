@@ -13,6 +13,7 @@ import { darkTheme, whiteTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import splash from '../../resources/splash.svg';
 import { User } from '@caravan/buddy-reading-types';
+import { DISCORD_GUILD_LINK } from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -171,7 +172,7 @@ export default function Splash(props: SplashProps) {
               variant="contained"
               color="secondary"
               className={classes.button}
-              href="https://discordapp.com/channels/592761082523680798/592761082523680806"
+              href={DISCORD_GUILD_LINK}
               target="_blank"
             >
               <Typography variant="button">OPEN CHAT</Typography>
