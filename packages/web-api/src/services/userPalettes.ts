@@ -47,17 +47,17 @@ export const giveUserPalettes = async (
       sets.forEach(s => {
         if (!existingUserPalettes.hasSets.includes(s)) {
           existingUserPalettes.hasSets.push(s);
+          madeChanges = true;
         }
       });
-      madeChanges = true;
     }
     if (addIndividuals) {
       individuals.forEach(i => {
         if (!existingUserPalettes.hasIndividuals.includes(i)) {
           existingUserPalettes.hasIndividuals.push(i);
+          madeChanges = true;
         }
       });
-      madeChanges = true;
     }
     if (madeChanges) {
       try {
