@@ -78,8 +78,6 @@ interface SplashProps {
   onSeeClubsClick: () => void;
 }
 
-const guildLink = DISCORD_GUILD_LINK();
-
 export default function Splash(props: SplashProps) {
   const { user, onLoginClick, onDismissClick, onSeeClubsClick } = props;
   const classes = useStyles();
@@ -174,7 +172,7 @@ export default function Splash(props: SplashProps) {
               variant="contained"
               color="secondary"
               className={classes.button}
-              href={guildLink}
+              href={DISCORD_GUILD_LINK}
               target="_blank"
             >
               <Typography variant="button">OPEN CHAT</Typography>

@@ -75,8 +75,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const guildLink = DISCORD_GUILD_LINK();
-
 export default function UserNameplate(props: UserNameplateProps) {
   const classes = useStyles();
   const theme = useTheme();
@@ -259,7 +257,7 @@ export default function UserNameplate(props: UserNameplateProps) {
             <Button
               variant="outlined"
               color="primary"
-              href={guildLink}
+              href={DISCORD_GUILD_LINK}
               target="_blank"
               style={{ marginTop: theme.spacing(1) }}
             >

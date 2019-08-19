@@ -30,8 +30,6 @@ interface HeaderRightProps extends RouteComponentProps<{}> {
   user: User | null;
 }
 
-const guildLink = DISCORD_GUILD_LINK();
-
 function ProfileHeaderIcon(props: HeaderRightProps) {
   const classes = useStyles();
   const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
@@ -74,7 +72,7 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
   }
 
   function openChat() {
-    window.open(guildLink, '_blank');
+    window.open(DISCORD_GUILD_LINK, '_blank');
   }
 
   return (
