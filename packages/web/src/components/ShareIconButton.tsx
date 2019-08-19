@@ -6,7 +6,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import copyToClipboard from 'copy-to-clipboard';
 import { User } from '@caravan/buddy-reading-types';
 import { washedTheme } from '../theme';
-import { getReferralLink } from '../functions/referral';
+import { getReferralLink } from '../common/referral';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {
@@ -87,6 +87,19 @@ export default function ShareIconButton(props: ShareIconButtonProps) {
         }}
         onClose={handleShareMenuClose}
       >
+        <Link
+          href={
+            user
+              ? `http://www.reddit.com/submit?url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
+                  user._id
+                }%26utm_source%3Drd&title=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan%21`
+              : `http://www.reddit.com/submit?url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Drd&title=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan%21`
+          }
+          target={'_blank'}
+          onClick={() => setShareMenuIsOpen(false)}
+        >
+          <MenuItem>Reddit</MenuItem>
+        </Link>
         <Link
           href={
             user

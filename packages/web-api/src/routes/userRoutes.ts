@@ -9,6 +9,7 @@ import {
   UserQA,
   Services,
   SameKeysAs,
+  UserSearchField,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -22,6 +23,7 @@ import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { UserDoc } from '../../typings';
 import { createReferralAction } from '../services/referral';
+import Fuse from 'fuse.js';
 
 const router = express.Router();
 
@@ -47,17 +49,23 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res) => {
-  const { after, pageSize, onboardVersion } = req.query;
+  const {
+    after,
+    pageSize,
+    onboardVersion,
+    search,
+    userSearchField,
+  } = req.query;
   // const { userId } = req.session;
   // let user: UserDoc | undefined;
   // if (userId) {
   //   user = await getUser(userId);
   // }
-  // Only get users who have finished onboarding
   const query: SameKeysAs<Partial<User>> = {};
-  if (after) {
+  if ((!search || search.length === 0) && after) {
     query._id = { $lt: after };
   }
+  // Only get users who have finished onboarding
   if (onboardVersion && (onboardVersion === '0' || onboardVersion === '1')) {
     const onboardingVersionInt = parseInt(onboardVersion);
     query.onboardingVersion = onboardingVersionInt;
@@ -67,10 +75,16 @@ router.get('/', async (req, res) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let users: UserDoc[];
   try {
-    users = await UserModel.find(query)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .exec();
+    if (search && search.length > 0) {
+      users = await UserModel.find(query)
+        .sort({ createdAt: -1 })
+        .exec();
+    } else {
+      users = await UserModel.find(query)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec();
+    }
   } catch (err) {
     console.error('Failed to get all users, ', err);
     res.status(500).send('Failed to get all users.');
@@ -79,7 +93,7 @@ router.get('/', async (req, res) => {
     res.sendStatus(404);
     return;
   }
-  const filteredUsers: Services.GetUsers['users'] = users
+  let filteredUsers: Services.GetUsers['users'] = users
     .map(userDocument => {
       mutateUserDiscordContent(userDocument);
       const user: Omit<User, 'createdAt' | 'updatedAt'> & {
@@ -99,6 +113,62 @@ router.get('/', async (req, res) => {
       return user;
     })
     .filter(c => c !== null);
+  if ((search && search.length) > 0) {
+    let fuseSearchKey: string;
+    let fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {};
+    switch (userSearchField) {
+      case 'bookTitle':
+        fuseSearchKey = 'shelf.notStarted.title';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+      case 'bookAuthor':
+        fuseSearchKey = 'shelf.notStarted.author';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+      case 'username':
+      default:
+        fuseSearchKey = 'name';
+        fuseOptions = {
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+    }
+    const fuse = new Fuse(filteredUsers, fuseOptions);
+    filteredUsers = fuse.search(search);
+  }
+  if (after) {
+    const afterIndex = filteredUsers.findIndex(c => c._id.toString() === after);
+    if (afterIndex >= 0) {
+      filteredUsers = filteredUsers.slice(afterIndex + 1);
+    }
+  }
+  if (filteredUsers.length > limit) {
+    filteredUsers = filteredUsers.slice(0, limit);
+  }
   const result: Services.GetUsers = {
     users: filteredUsers,
   };
@@ -299,6 +369,7 @@ router.put(
       FilterAutoMongoKeys<User>,
       | 'isBot'
       | 'smallPhotoUrl'
+      | 'photoUrl'
       | 'discordId'
       | 'discordUsername'
       | 'onboardingVersion'
@@ -310,7 +381,6 @@ router.put(
       goodreadsUrl: user.goodreadsUrl,
       location: user.location,
       name: user.name,
-      photoUrl: user.photoUrl,
       readingSpeed: user.readingSpeed,
       website: user.website,
       selectedGenres: userGenres,

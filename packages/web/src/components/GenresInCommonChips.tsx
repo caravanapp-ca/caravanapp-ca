@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles, createStyles, Theme, Chip } from '@material-ui/core';
 import HeartIcon from '@material-ui/icons/Favorite';
-import hexToRgb from '../functions/hexToRGB';
+import hexToRgb from '../common/hexToRGB';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -31,7 +31,10 @@ import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
 import About from './views/about/About';
-import getUtmSourceValue from './functions/getUtmSourceValue';
+import getUtmSourceValue from './common/getUtmSourceValue';
+import { validateDiscordPermissions } from './services/auth';
+import { getDiscordAuthUrl } from './common/auth';
+import Settings from './views/settings/Settings';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -72,6 +75,15 @@ export function App(props: AppProps) {
     const getUserAsync = async () => {
       const userId = getCookie('userId');
       if (userId) {
+        validateDiscordPermissions().then(res => {
+          if (res.status === 200 || res.status === 500) {
+            const dataTyped = res.data as { authRequired: boolean };
+            if (dataTyped.authRequired) {
+              const discordAuthUrl = getDiscordAuthUrl();
+              window.location.href = discordAuthUrl;
+            }
+          }
+        });
         const user = await getUser(userId);
         setUser(user);
         setLoadedUser(true);
@@ -88,10 +100,7 @@ export function App(props: AppProps) {
       }
     };
     getUserAsync();
-  }, []);
-
-  // Handle the `state` query to verify login
-  useEffect(() => {
+    // Handle the `state` query to verify login
     const queries = qs.parse(window.location.search);
     if (queries && queries.state) {
       // Someone tampered with the login, remove token
@@ -175,6 +184,13 @@ export function App(props: AppProps) {
                   exact
                   path="/privacy"
                   render={props => forceOnboard(user, <Privacy />)}
+                />
+                <Route
+                  exact
+                  path="/settings"
+                  render={props =>
+                    forceOnboard(user, <Settings {...props} user={user} />)
+                  }
                 />
                 <Route
                   path="/clubs/:id/manage-shelf"

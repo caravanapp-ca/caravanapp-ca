@@ -8,17 +8,7 @@ import {
   Services,
   ClubTransformed,
 } from '@caravan/buddy-reading-types';
-import { scheduleStrToDates } from '../../../functions/scheduleStrToDates';
-
-export function getCurrentBook(club: Club): ShelfEntry | null {
-  if (club && club.shelf) {
-    const book = club.shelf.find(book => book.readingState === 'current');
-    if (book) {
-      return book;
-    }
-  }
-  return null;
-}
+import { scheduleStrToDates } from '../../../common/scheduleStrToDates';
 
 export function getCurrentSchedule(
   club: Club,
@@ -35,16 +25,13 @@ export function getCurrentSchedule(
 }
 
 export const transformClub = (club: Services.GetClubs['clubs'][0]) => {
-  const currentlyReading =
-    club.shelf.find(book => book.readingState === 'current') || null;
   const transformedClub: ClubTransformed = {
     club,
-    currentlyReading,
     schedule: null,
   };
-  if (currentlyReading) {
+  if (club.newShelf.current.length > 0) {
     let schedule = club.schedules.find(
-      sched => sched.shelfEntryId === currentlyReading._id
+      sched => sched.shelfEntryId === club.newShelf.current[0]._id
     );
     if (schedule) {
       schedule = scheduleStrToDates(schedule);
@@ -91,7 +78,7 @@ export function getShelfFromGoogleBooks(
             : undefined,
         coverImageURL:
           'imageLinks' in book.volumeInfo
-            ? book.volumeInfo.imageLinks.thumbnail
+            ? (book.volumeInfo.imageLinks.smallThumbnail ? book.volumeInfo.imageLinks.smallThumbnail : book.volumeInfo.imageLinks.thumbnail ? book.volumeInfo.imageLinks.thumbnail : require('../../../resources/generic-book-cover.jpg'))
             : require('../../../resources/generic-book-cover.jpg'),
       };
       return res;
