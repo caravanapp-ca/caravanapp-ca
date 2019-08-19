@@ -126,18 +126,6 @@ router.get('/discord/callback', async (req, res) => {
   if (userDoc) {
     // Do any user updates here.
 
-    // Check if the user has provided any new Discord permissions.
-    // If so, update their session doc.
-    const sessionDoc = await getSession(userDoc.id);
-    if (sessionDoc) {
-      const discordPermissions = DISCORD_PERMISSIONS.join(' ');
-      if (sessionDoc.scope !== discordPermissions) {
-        sessionDoc.scope = discordPermissions;
-        sessionDoc.save();
-      }
-    } else {
-      console.error(`sessionDoc doesn't exist for user ${userDoc.id}`);
-    }
     // Temporarily, check if we have an email for this user.
     // TODO: Once every user in production has an email in settings, we can remove these checks.
     const userSettingsDoc = await getUserSettings(userDoc.id);
@@ -223,6 +211,13 @@ router.get('/discord/callback', async (req, res) => {
       const accessTokenExpiresAt: number = currentSessionModel.get(
         'accessTokenExpiresAt'
       );
+      // Check if the user has provided any new Discord permissions.
+      // If so, update their session doc.
+      const discordPermissions = DISCORD_PERMISSIONS.join(' ');
+      if (currentSessionModel.scope !== discordPermissions) {
+        currentSessionModel.scope = discordPermissions;
+        currentSessionModel.save();
+      }
       const isExpired = Date.now() > accessTokenExpiresAt;
       if (isExpired) {
         // Begin token refresh

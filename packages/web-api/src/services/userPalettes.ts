@@ -10,7 +10,7 @@ export const getUserPalettes = async (userId: string) => {
   return UserPalettesModel.findOne({ userId });
 };
 
-export const initUserPalettes = async (
+const initUserPalettes = async (
   userPalettes: FilterAutoMongoKeys<UserPalettes>
 ) => {
   try {
@@ -30,52 +30,36 @@ export const giveUserPalettes = async (
   sets?: PaletteSet[],
   individuals?: string[]
 ) => {
+  const update: any = {};
   const addSets = sets && sets.length > 0;
   const addIndividuals = individuals && individuals.length > 0;
   if (addSets) {
     console.log(`Giving user ${userId} palette sets: ${sets.join(', ')}.`);
+    update.$addToSet.hasSets = { $each: sets };
   }
-  if (individuals && individuals.length > 0) {
+  if (addIndividuals) {
     console.log(
       `Giving user ${userId} individual palettes: ${individuals.join(', ')}.`
     );
+    update.$addToSet.hasIndividuals = { $each: individuals };
   }
-  const existingUserPalettes = await getUserPalettes(userId);
-  if (existingUserPalettes) {
-    let madeChanges = false;
-    if (addSets) {
-      sets.forEach(s => {
-        if (!existingUserPalettes.hasSets.includes(s)) {
-          existingUserPalettes.hasSets.push(s);
-          madeChanges = true;
-        }
-      });
+  if (addSets || addIndividuals) {
+    const newUserPalettes = await UserPalettesModel.findOneAndUpdate(
+      { userId },
+      update,
+      { new: true }
+    );
+    if (newUserPalettes) {
+      return newUserPalettes;
+    } else {
+      console.log(`Initiating new userPalettes document for ${userId}`);
+      const newUserPalettes: FilterAutoMongoKeys<UserPalettes> = {
+        userId,
+        hasSets: sets || [],
+        hasIndividuals: individuals || [],
+      };
+      const newUserPalettesRes = await initUserPalettes(newUserPalettes);
+      return newUserPalettesRes;
     }
-    if (addIndividuals) {
-      individuals.forEach(i => {
-        if (!existingUserPalettes.hasIndividuals.includes(i)) {
-          existingUserPalettes.hasIndividuals.push(i);
-          madeChanges = true;
-        }
-      });
-    }
-    if (madeChanges) {
-      try {
-        existingUserPalettes.save();
-      } catch (err) {
-        console.error(`Error updating userPalettes for user ${userId}`);
-        return;
-      }
-    }
-    return existingUserPalettes;
-  } else {
-    console.log(`Initiating new userPalettes document for ${userId}`);
-    const newUserPalettes: FilterAutoMongoKeys<UserPalettes> = {
-      userId,
-      hasSets: sets,
-      hasIndividuals: individuals,
-    };
-    const newUserPalettesRes = await initUserPalettes(newUserPalettes);
-    return newUserPalettesRes;
   }
 };
