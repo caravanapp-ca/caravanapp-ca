@@ -282,6 +282,13 @@ declare module '@caravan/buddy-reading-types' {
     imageUrl?: string;
   }
 
+  // Key will be the post id
+  export interface Like {
+    userId: string;
+    userPhotoUrl: string;
+    username: string;
+  }
+
   export interface FilterChip {
     type: FilterChipType;
     name: string;

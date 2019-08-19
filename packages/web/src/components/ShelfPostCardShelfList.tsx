@@ -13,22 +13,8 @@ const bookCoverMarginRight = theme.spacing(2);
 
 const useStyles = makeStyles(theme =>
   createStyles({
-    root: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    gridListDiv: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'flex-start',
-      overflow: 'hidden !important',
-      backgroundColor: theme.palette.background.paper,
-      margin: 3,
-    },
-    clickableIcon: {
-      height: 20,
-      width: 20,
+    shelfList: {
+      marginBottom: theme.spacing(2),
     },
     bookCover: {
       width: bookCoverWidth,
@@ -71,10 +57,10 @@ export default function ShelfPostCardShelfList(
   const settings = generateSliderSettings(slidesToShow, shelf);
 
   return (
-    <div>
+    <div className={classes.shelfList}>
       <Slider {...settings}>
         {shelf.map(book => (
-          <div>
+          <div key={book.isbn}>
             <Tooltip title={book.title} aria-label={book.title}>
               <img
                 src={book.coverImageURL}

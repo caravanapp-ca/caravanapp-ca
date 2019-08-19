@@ -134,13 +134,6 @@ export default function PostCards(props: PostCardProps) {
     setLoginModalShown(false);
   };
 
-  console.log('These are the posts I got');
-  console.log(posts);
-
-  // function instanceOfShelfPost(object: any): object is PostContent {
-  //   return object.postType === 'shelf';
-  // }
-
   return (
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
@@ -156,30 +149,30 @@ export default function PostCards(props: PostCardProps) {
             switch (content.postType) {
               case 'shelf':
               default:
-                console.log('This is the post');
-                console.log(p);
-                console.log('This is the shelf content');
-                console.log(content);
                 postCard = (
-                  <ShelfPostCard postContent={content} userInfo={userInfo} />
+                  <ShelfPostCard
+                    postContent={content}
+                    userInfo={userInfo}
+                    postId={p._id}
+                    currUser={currUser}
+                    key={p._id}
+                  />
                 );
                 break;
             }
-
-            console.log('This is the post card');
-            console.log(postCard);
 
             return (
               <LazyLoad
                 unmountIfInvisible={true}
                 offset={placeholderCardHeight * lazyloadOffset}
                 placeholder={
-                  <Grid item key={p._id} xs={12} sm={6}>
+                  <Grid item key={p._id} xs={12} sm={12}>
                     <PlaceholderCard height={placeholderCardHeight} />
                   </Grid>
                 }
+                key={p._id}
               >
-                <Grid item key={p._id} xs={12} sm={6}>
+                <Grid item key={p._id} xs={12} sm={12}>
                   {postCard}
                 </Grid>
               </LazyLoad>
