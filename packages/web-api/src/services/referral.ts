@@ -11,6 +11,7 @@ import ReferralTierModel from '../models/referralTier';
 import { ReferralDoc } from '../../typings';
 import { giveUserBadge } from './badge';
 import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
+import { giveUserPalettes } from './userPalettes';
 
 export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   fb: true,
@@ -131,6 +132,9 @@ export async function createReferralActionByDoc(
           }
           if (newTier.discordRole) {
             giveDiscordRole(referrerDoc.userId, newTier.discordRole);
+          }
+          if (newTier.profileBgSets.length > 0) {
+            giveUserPalettes(referrerDoc.userId, newTier.profileBgSets);
           }
           sendNewTierDiscordMsg(referrerDoc.userId, newTier);
         }
