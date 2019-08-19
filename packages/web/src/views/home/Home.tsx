@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Element, scroller } from 'react-scroll';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -20,6 +20,7 @@ import {
   ClubTransformed,
   ClubWithMemberIds,
   UserWithInvitableClubs,
+  UserSearchField,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -45,6 +46,7 @@ import {
   useMediaQuery,
   useTheme,
   CircularProgress,
+  Select,
 } from '@material-ui/core';
 import { getAllUsers } from '../../services/user';
 import UserCards from './UserCards';
@@ -56,6 +58,7 @@ import ShareIconButton from '../../components/ShareIconButton';
 import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
+import UserSearchFilter from '../../components/filters/UserSearchFilter';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -176,6 +179,9 @@ export default function Home(props: HomeProps) {
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
   const [tabValue, setTabValue] = React.useState(0);
+  const [userSearchField, setUserSearchField] = React.useState<UserSearchField>(
+    'username'
+  );
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [afterClubsQuery, setAfterClubsQuery] = React.useState<
     string | undefined
@@ -278,7 +284,13 @@ export default function Home(props: HomeProps) {
     const pageSize = 12;
     setLoadingMoreUsers(true);
     (async () => {
-      const res = await getAllUsers(afterUsersQuery, 1, pageSize, usersSearch);
+      const res = await getAllUsers(
+        afterUsersQuery,
+        1,
+        pageSize,
+        usersSearch,
+        userSearchField
+      );
       if (res.status === 200) {
         let currUserClubsWithMembers: ClubWithMemberIds[] = [];
         if (user) {
@@ -305,12 +317,16 @@ export default function Home(props: HomeProps) {
           }
         }
         const allUsers = res.data ? res.data.users : undefined;
-        const allUsersShuffled = allUsers ? allUsers.map(user => shuffleUser(user)) : undefined;
-        const allUsersWithInvitableClubs = allUsersShuffled ? transformUserToInvitableClub(
-          allUsersShuffled,
-          currUserClubsWithMembers
-        ) : undefined;
-        if(allUsersWithInvitableClubs) {
+        const allUsersShuffled = allUsers
+          ? allUsers.map(user => shuffleUser(user))
+          : undefined;
+        const allUsersWithInvitableClubs = allUsersShuffled
+          ? transformUserToInvitableClub(
+              allUsersShuffled,
+              currUserClubsWithMembers
+            )
+          : undefined;
+        if (allUsersWithInvitableClubs) {
           setShowLoadMoreUsers(allUsersWithInvitableClubs.length === pageSize);
           setUsersResult(s => ({
             status: 'loaded',
@@ -324,7 +340,7 @@ export default function Home(props: HomeProps) {
       }
     })();
     setLoadingMoreUsers(true);
-  }, [user, userLoaded, afterUsersQuery, usersSearch]);
+  }, [user, userLoaded, afterUsersQuery, usersSearch, userSearchField]);
 
   // Get genres on mount
   useEffect(() => {
@@ -353,6 +369,16 @@ export default function Home(props: HomeProps) {
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
+  };
+
+  const handleUserSearchFieldChange = async (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => {
+    const userSearchFieldValue = event.target.value as UserSearchField;
+    setUserSearchField(userSearchFieldValue);
+    if (usersSearch !== '') {
+      await resetLoadMoreUsers();
+    }
   };
 
   function onCloseLoginModal() {
@@ -605,7 +631,7 @@ export default function Home(props: HomeProps) {
   }
 
   let emptyUsersFilterResultMsg = 'Oops...no users turned up!';
-  if(usersSearch.length > 0){
+  if (usersSearch.length > 0) {
     emptyUsersFilterResultMsg += ' Try other search terms.';
   }
 
@@ -643,7 +669,9 @@ export default function Home(props: HomeProps) {
               <FilterSearch
                 onClearSearch={onClearClubsSearch}
                 onSearchSubmitted={onSearchClubsSubmitted}
-                searchBoxLabel={'Search clubs by club name, book title, or author'}
+                searchBoxLabel={
+                  'Search clubs by club name, book title, or author'
+                }
                 searchBoxLabelSmall={'Search clubs'}
                 searchBoxId={'club-search'}
                 loadingMore={loadingMoreClubs}
@@ -709,7 +737,9 @@ export default function Home(props: HomeProps) {
               clubsTransformedResult.payload.length > 0 && (
                 <ClubCards
                   clubsTransformed={clubsTransformedResult.payload}
-                  showResultsCount={clubsSearch.length > 0 || clubFiltersApplied}
+                  showResultsCount={
+                    clubsSearch.length > 0 || clubFiltersApplied
+                  }
                   resultsLoaded={clubsTransformedResult.status === 'loaded'}
                 />
               )}
@@ -838,14 +868,26 @@ export default function Home(props: HomeProps) {
               <FilterSearch
                 onClearSearch={onClearUsersSearch}
                 onSearchSubmitted={onSearchUsersSubmitted}
-                searchBoxLabel={'Search users by titles of books on their shelf'}
+                searchBoxLabel={
+                  userSearchField === 'bookTitle'
+                    ? 'Search users by titles of books on their shelf'
+                    : userSearchField === 'bookAuthor'
+                    ? 'Search users by authors of books on their shelf'
+                    : 'Search users by username'
+                }
                 searchBoxLabelSmall={'Search users'}
                 searchBoxId={'users-search'}
                 loadingMore={loadingMoreUsers}
               />
+              <UserSearchFilter
+                handleChange={handleUserSearchFieldChange}
+                searchField={userSearchField}
+              />
             </Container>
-            {(usersResult.status === 'loaded' || usersResult.status === 'loading') &&
-            usersResult.payload && usersResult.payload.length > 0 && (
+            {(usersResult.status === 'loaded' ||
+              usersResult.status === 'loading') &&
+              usersResult.payload &&
+              usersResult.payload.length > 0 && (
                 <UserCards
                   usersWithInvitableClubs={usersResult.payload}
                   currUser={user}

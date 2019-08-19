@@ -222,7 +222,7 @@ export default function ClubComponent(props: ClubProps) {
         const club = await getClub(clubId);
         setClub(club);
         if (club) {
-          const currentlyReadingBook = club.newShelf.current[0]
+          const currentlyReadingBook = club.newShelf.current[0];
           if (club.newShelf.current.length > 0) {
             setCurrBook(currentlyReadingBook);
           }
@@ -517,7 +517,24 @@ export default function ClubComponent(props: ClubProps) {
           members: result.data,
         };
         setClub(newClub);
+        const successfulSnackBarMessage = addMember
+          ? "Successfully joined club! Refresh the page if you're still not shown as a member."
+          : "Successfully  left club. Refresh the page if you're still shown as a member.";
+        setSnackbarProps({
+          ...snackbarProps,
+          isOpen: true,
+          variant: 'success',
+          message: successfulSnackBarMessage,
+        });
       }
+    } else {
+      const unsuccessfulSnackBarMessageVerb = addMember ? 'joining' : 'leaving';
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'warning',
+        message: `We ran into some trouble ${unsuccessfulSnackBarMessageVerb}. Try logging out then back in, or contact the Caravan team on Discord`,
+      });
     }
   }
 

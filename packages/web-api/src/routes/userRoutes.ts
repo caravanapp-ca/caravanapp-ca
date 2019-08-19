@@ -9,6 +9,7 @@ import {
   UserQA,
   Services,
   SameKeysAs,
+  UserSearchField,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
@@ -48,7 +49,13 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res) => {
-  const { after, pageSize, onboardVersion, search } = req.query;
+  const {
+    after,
+    pageSize,
+    onboardVersion,
+    search,
+    userSearchField,
+  } = req.query;
   // const { userId } = req.session;
   // let user: UserDoc | undefined;
   // if (userId) {
@@ -68,9 +75,16 @@ router.get('/', async (req, res) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let users: UserDoc[];
   try {
-    users = await UserModel.find(query)
-      .sort({ createdAt: -1 })
-      .exec();
+    if (search && search.length > 0) {
+      users = await UserModel.find(query)
+        .sort({ createdAt: -1 })
+        .exec();
+    } else {
+      users = await UserModel.find(query)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec();
+    }
   } catch (err) {
     console.error('Failed to get all users, ', err);
     res.status(500).send('Failed to get all users.');
@@ -100,13 +114,49 @@ router.get('/', async (req, res) => {
     })
     .filter(c => c !== null);
   if ((search && search.length) > 0) {
-    const fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {
-      // TODO: Typescript doesn't like the use of keys here.
-      // @ts-ignore
-      keys: [
-        { name: 'shelf.notStarted.title', weight: 1 / 1 },
-      ],
-    };
+    let fuseSearchKey: string;
+    let fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {};
+    switch (userSearchField) {
+      case 'bookTitle':
+        fuseSearchKey = 'shelf.notStarted.title';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+      case 'bookAuthor':
+        fuseSearchKey = 'shelf.notStarted.author';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+      case 'username':
+      default:
+        fuseSearchKey = 'name';
+        fuseOptions = {
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+    }
     const fuse = new Fuse(filteredUsers, fuseOptions);
     filteredUsers = fuse.search(search);
   }

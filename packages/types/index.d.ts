@@ -332,6 +332,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export type FilterChipType = 'genres' | 'speed' | 'capacity' | 'membership';
 
+  export type UserSearchField = 'bookTitle' | 'bookAuthor' | 'username';
+
   export type ReferralAction =
     | 'click'
     | 'login'
