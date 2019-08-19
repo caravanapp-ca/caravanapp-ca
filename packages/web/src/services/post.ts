@@ -5,7 +5,10 @@ import {
   Services,
   ActiveFilter,
   PostContent,
+  Like,
+  Likes,
 } from '@caravan/buddy-reading-types';
+import LikeModel from '../../../web-api/src/models/likes';
 
 const postRoute = '/api/post';
 

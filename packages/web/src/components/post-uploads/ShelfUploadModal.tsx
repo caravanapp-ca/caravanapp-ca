@@ -1,24 +1,16 @@
 import React, { useEffect } from 'react';
 import {
   Services,
-  FilterChip,
   FilterAutoMongoKeys,
   ShelfEntry,
-  ShelfPost,
-  Post,
   SelectedGenre,
   PostContent,
 } from '@caravan/buddy-reading-types';
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  useMediaQuery,
   makeStyles,
   AppBar,
   Toolbar,
-  IconButton,
   Typography,
   Slide,
   Container,
@@ -27,8 +19,6 @@ import {
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import GenreChip from '../../components/GenreChip';
-import theme from '../../theme';
-import { Transition } from 'react-transition-group';
 import { TransitionProps } from 'react-transition-group/Transition';
 import BookSearch from '../../views/books/BookSearch';
 import { uploadPost } from '../../services/post';
@@ -73,11 +63,9 @@ const TransitionAction = React.forwardRef<unknown, TransitionProps>(
 export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const classes = useStyles();
   const { smallScreen, open, handleClose, userId, onPostShelf } = props;
-  const [maxWidth, setMaxWidth] = React.useState<DialogProps['maxWidth']>('lg');
-  const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
-  const [draggingElementId, setDraggingElementId] = React.useState<
-    string | undefined
-  >(undefined);
+  const [maxWidth] = React.useState<DialogProps['maxWidth']>('lg');
+  const [scroll] = React.useState<DialogProps['scroll']>('paper');
+  const [] = React.useState<string | undefined>(undefined);
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
   );

@@ -9,6 +9,7 @@ import {
   PostUserInfo,
   PostContent,
   User,
+  Likes,
 } from '@caravan/buddy-reading-types';
 import theme from '../../theme';
 import Truncate from 'react-truncate';
@@ -17,6 +18,8 @@ import PostHeader from '../../components/PostHeader';
 import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
 import PostActions from '../../components/PostActions';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
+import { getPostLikes, modifyPostLike } from '../../services/like';
+import { Service } from '../../common/service';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -111,18 +114,46 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
   const { postContent, userInfo, postId, currUser } = props;
   const shelfPost = postContent as ShelfPost;
 
-  // useEffect(() => {
-  //   if (!postId) {
-  //     return;
-  //   }
-  //   (async () => {
-  //     const response = await getAllGenres();
-  //     if (response.status >= 200 && response.status < 300) {
-  //       const { data } = response;
-  //       setAllGenres(data);
-  //     }
-  //   })();
-  // }, [postId]);
+  const [postLikes, setPostLikes] = React.useState<Service<Likes>>({
+    status: 'loading',
+  });
+  const [hasLikedPost, setHasLikedPost] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    if (!postId) {
+      return;
+    }
+    (async () => {
+      const response = await getPostLikes(postId);
+      if (response.status >= 200 && response.status < 300) {
+        const { data } = response;
+        const likesObj = data as Likes;
+        setPostLikes({
+          status: 'loaded',
+          payload: likesObj,
+        });
+        if (currUser && currUser._id) {
+          likesObj.likes.map(l => {
+            if (l.userId === currUser._id) {
+              setHasLikedPost(true);
+            }
+          });
+        }
+      }
+    })();
+  }, [postId]);
+
+  async function handleLikeAction() {
+    if (postLikes.status === 'loaded' && currUser) {
+      const res = modifyPostLike(
+        currUser,
+        postId,
+        hasLikedPost,
+        postLikes.payload
+      );
+      setHasLikedPost(!hasLikedPost);
+    }
+  }
 
   let myGenres: string[] = [];
   if (currUser) {
@@ -198,7 +229,16 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           )}
         </CardContent>
         <CardActions className={classes.cardActions}>
-          <PostActions postId={postId} />
+          <PostActions
+            postId={postId}
+            likes={
+              postLikes.status === 'loaded' && postLikes.payload.likes
+                ? postLikes.payload.likes
+                : []
+            }
+            hasLikedPost={hasLikedPost}
+            onClickLike={handleLikeAction}
+          />
         </CardActions>
       </Card>
     </>

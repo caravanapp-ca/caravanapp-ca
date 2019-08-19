@@ -1,31 +1,11 @@
 import React from 'react';
 import LazyLoad from 'react-lazyload';
-import { CircularProgress, Link } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import {
-  User,
-  UserWithInvitableClubs,
-  Post,
-  ShelfPost,
-  PostContent,
-} from '@caravan/buddy-reading-types';
-import AdapterLink from '../../components/AdapterLink';
-import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
-import GenresInCommonChips from '../../components/GenresInCommonChips';
-import UserCardShelfList from '../../components/UserCardShelfList';
-import { InviteToClubMenu } from '../../components/InviteToClubMenu';
-import UserAvatar from '../user/UserAvatar';
-import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
-import QuestionAnswer from '../../components/QuestionAnswer';
-import { OwnProfileCardActions } from '../../components/OwnProfileCardActions';
+import { User, Post } from '@caravan/buddy-reading-types';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import ShelfPostCard from './ShelfPostCard';
 
@@ -128,7 +108,6 @@ export default function PostCards(props: PostCardProps) {
   const { posts, currUser, showResultsCount, resultsLoaded } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-  const [visitProfileLoadingId] = React.useState('');
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);

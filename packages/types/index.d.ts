@@ -283,6 +283,10 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   // Key will be the post id
+  export interface Likes extends DocumentFields, MongoTimestamps {
+    likes: Like[];
+  }
+
   export interface Like {
     userId: string;
     userPhotoUrl: string;

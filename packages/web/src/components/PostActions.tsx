@@ -3,6 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { makeStyles, Button, Typography } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import { Like } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({
   actionContainer: {
@@ -29,18 +30,26 @@ const useStyles = makeStyles(theme => ({
 
 interface PostActionsProps extends RouteComponentProps<{}> {
   postId: string;
+  likes: Like[];
+  hasLikedPost: boolean;
+  onClickLike: () => void;
 }
 
 function PostActions(props: PostActionsProps) {
   const classes = useStyles();
 
+  const { postId, likes, hasLikedPost, onClickLike } = props;
+
+  console.log('Likes in post actions');
+  console.log(likes);
+
   return (
     <div className={classes.actionContainer}>
       <div className={classes.likesContainer}>
-        <IconButton onClick={() => console.log('Like')}>
+        <IconButton onClick={() => onClickLike()}>
           <FavoriteIcon
             className={classes.likeButton}
-            style={{ fill: '#AF0020' }}
+            style={{ fill: hasLikedPost ? '#AF0020' : undefined }}
           />
         </IconButton>
       </div>

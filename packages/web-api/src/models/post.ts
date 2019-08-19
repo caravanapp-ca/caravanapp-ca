@@ -12,7 +12,6 @@ import {
 } from '@caravan/buddy-reading-types';
 import { PostDoc } from '../../typings';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
-import { UserInfo } from 'os';
 
 const genresSchema = new Schema({
   key: String,
