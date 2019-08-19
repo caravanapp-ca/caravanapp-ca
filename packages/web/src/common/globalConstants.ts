@@ -23,20 +23,11 @@ export const EMAIL_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<EmailSettings> = {
   updates: 'Keep me posted on Caravan updates',
 };
 
-export const DISCORD_GUILD_LINK = () => {
-  if (process.env.NODE_ENV === 'production') {
-    // We're in prod
-    if (isMobileDevice()) {
-      return 'https://discord.gg/dAXDb9E';
-    } else {
-      return 'https://discordapp.com/channels/592761082523680798/592761082523680806';
-    }
-  } else {
-    // We're in test
-    if (isMobileDevice()) {
-      return 'https://discord.gg/EhnJHz3';
-    } else {
-      return 'https://discordapp.com/channels/589194387968491530/589194387968491532';
-    }
-  }
-};
+export const DISCORD_GUILD_LINK =
+  process.env.NODE_ENV === 'production'
+    ? isMobileDevice()
+      ? 'https://discord.gg/dAXDb9E'
+      : 'https://discordapp.com/channels/592761082523680798/592761082523680806'
+    : isMobileDevice()
+    ? 'https://discord.gg/EhnJHz3'
+    : 'https://discordapp.com/channels/589194387968491530/589194387968491532';
