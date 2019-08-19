@@ -23,18 +23,25 @@ export const giveUserPalettes = async (
   sets?: PaletteSet[],
   individuals?: string[]
 ) => {
-  const update: any = {};
+  const update = {
+    $addToSet: {
+      hasSets: { $each: sets },
+      hasIndividuals: { $each: individuals },
+    },
+  };
   const addSets = sets && sets.length > 0;
   const addIndividuals = individuals && individuals.length > 0;
   if (addSets) {
     console.log(`Giving user ${userId} palette sets: ${sets.join(', ')}.`);
-    update.$addToSet.hasSets = { $each: sets };
+  } else {
+    delete update.$addToSet.hasSets;
   }
   if (addIndividuals) {
     console.log(
       `Giving user ${userId} individual palettes: ${individuals.join(', ')}.`
     );
-    update.$addToSet.hasIndividuals = { $each: individuals };
+  } else {
+    delete update.$addToSet.hasIndividuals;
   }
   if (addSets || addIndividuals) {
     const newUserPalettes = await UserPalettesModel.findOneAndUpdate(
