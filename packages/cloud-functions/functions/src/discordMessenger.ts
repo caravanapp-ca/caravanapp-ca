@@ -10,14 +10,18 @@ export const sendDiscordMessage = async (
   options?: MessageOptions
 ) => {
   if (channel.type !== 'text' && channel.type !== 'dm') {
-    console.error(`[eventId: ${eventId}] - Unexpected channel type: ${channel.type}.`);
+    console.error(
+      `[eventId: ${eventId}] - Unexpected channel type: ${channel.type}.`
+    );
     return undefined;
   }
 
   const collectionName: Firestore.CollectionName = 'discordBotMessages';
   const botMessageDocRef = firestore.collection(collectionName).doc(eventId);
 
-  console.log(`[eventId: ${eventId}] - Checking if ${botMessageDocRef.path} is leased.`)
+  console.log(
+    `[eventId: ${eventId}] - Checking if ${botMessageDocRef.path} is leased.`
+  );
   const send = await shouldSendWithLease(botMessageDocRef);
   if (send) {
     console.log(`[eventId: ${eventId}] - Sending discord message.`);
@@ -38,7 +42,9 @@ export const sendDiscordMessage = async (
       discordMessage,
     };
   } else {
-    console.log(`[eventId: ${eventId}] - Will not send discord message because the firestore doc is on lease.`);
+    console.log(
+      `[eventId: ${eventId}] - Will not send discord message because the firestore doc is on lease.`
+    );
     return undefined;
   }
 };

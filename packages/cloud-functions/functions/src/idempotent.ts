@@ -26,7 +26,7 @@ export function shouldSendWithLease(ref: DocumentReference) {
 export function markSent(ref: DocumentReference, extraData?: DocumentData) {
   const data: DocumentData = {
     sent: true,
-    ...(extraData || {})
-  }
+    ...(extraData || {}),
+  };
   return ref.set(data);
 }

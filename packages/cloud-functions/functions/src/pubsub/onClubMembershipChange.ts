@@ -15,19 +15,17 @@ export const onJoinClub = async (
   const { eventId } = context;
   const [userDoc, clubDoc] = await Promise.all([
     getUser(userId),
-    getClub(clubId)
+    getClub(clubId),
   ]);
   if (!userDoc) {
-    throw new Error(
-      `[eventId: ${eventId}] - Could not find user: ${userId}`
-    );
+    throw new Error(`[eventId: ${eventId}] - Could not find user: ${userId}`);
   }
   if (!clubDoc) {
-    throw new Error(
-      `[eventId: ${eventId}] - Could not find club: ${clubId}`
-    );
+    throw new Error(`[eventId: ${eventId}] - Could not find club: ${clubId}`);
   }
-  console.log(`[eventId: ${eventId}] - Fetched club ${clubId} and user ${userId}`);
+  console.log(
+    `[eventId: ${eventId}] - Fetched club ${clubId} and user ${userId}`
+  );
   const { discordId, questions } = userDoc;
   const { channelId } = clubDoc;
   const client = ReadingDiscordBot.getInstance();
