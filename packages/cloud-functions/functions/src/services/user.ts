@@ -1,5 +1,5 @@
 import { GuildMember } from 'discord.js';
-// These imports will only exist after running
+// These imports will only exist after building
 import { UserDoc, UserModel } from '../workspace/mongo/models/user';
 import { checkObjectIdIsValid } from '../workspace/mongo/common/mongoose';
 

@@ -14,7 +14,9 @@ export const sendDiscordMessage = async (
   }
 
   const collectionName: Firestore.CollectionName = 'discordBotMessages';
-  /*const botMessageDocRef = */ firestore.collection(collectionName).doc(eventId);
+  /*const botMessageDocRef = */ firestore
+    .collection(collectionName)
+    .doc(eventId);
 
   // const send = await shouldSendWithLease(botMessageDocRef);
   // if (send) {

@@ -5,33 +5,59 @@ import { sendDiscordMessage } from '../discordMessenger';
 import { getUser, getUserProfileUrl } from '../services/user';
 import { getClub } from '../services/club';
 import { disconnect, connect } from '../db';
+import { UserDoc, ClubDoc } from '../workspace/mongo';
+import { EventData } from '../..';
 
 export const onJoinClub = async (
-  context: any,
+  context: Required<CloudFunctionsContext>,
   clubId: string,
   userId: string
 ) => {
   const { eventId } = context;
-  const [userDoc, clubDoc] = await Promise.all([
-    getUser(userId).then(userDoc => {
-      if (!userDoc) {
-        throw new Error(
-          `[eventId: ${eventId}] - Could not find user: ${userId}`
-        );
-      }
-      console.log(`Got user doc ${userDoc.id}`);
-      return userDoc;
-    }),
-    getClub(clubId).then(clubDoc => {
-      if (!clubDoc) {
-        throw new Error(
-          `[eventId: ${eventId}] - Could not find club: ${clubId}`
-        );
-      }
-      console.log(`Got club doc ${clubDoc.id}`);
-      return clubDoc;
-    }),
-  ]);
+  let userDoc: UserDoc;
+  let clubDoc: ClubDoc;
+  try {
+    const doc = await getUser(userId);
+    if (!doc) {
+      throw new Error(`[eventId: ${eventId}] - Could not find user: ${userId}`);
+    }
+    userDoc = doc;
+  } catch (err) {
+    console.error(`[eventId: ${eventId}] - Failed getting user: ${userId}`);
+    throw err;
+  }
+  console.log(`Got user doc ${userDoc.id}`);
+  try {
+    const doc = await getClub(clubId);
+    if (!doc) {
+      throw new Error(`[eventId: ${eventId}] - Could not find club: ${clubId}`);
+    }
+    clubDoc = doc;
+  } catch (err) {
+    console.error(`[eventId: ${eventId}] - Failed getting club: ${clubId}`);
+    throw err;
+  }
+  console.log(`Got club doc ${clubDoc.id}`);
+  // const [userDoc, clubDoc] = await Promise.all([
+  //   getUser(userId).then(userDoc => {
+  //     if (!userDoc) {
+  //       throw new Error(
+  //         `[eventId: ${eventId}] - Could not find user: ${userId}`
+  //       );
+  //     }
+  //     console.log(`Got user doc ${userDoc.id}`);
+  //     return userDoc;
+  //   }),
+  //   getClub(clubId).then(clubDoc => {
+  //     if (!clubDoc) {
+  //       throw new Error(
+  //         `[eventId: ${eventId}] - Could not find club: ${clubId}`
+  //       );
+  //     }
+  //     console.log(`Got club doc ${clubDoc.id}`);
+  //     return clubDoc;
+  //   }),
+  // ]);
   const { discordId, questions } = userDoc;
   const { channelId } = clubDoc;
   const client = ReadingDiscordBot.getInstance();
@@ -76,8 +102,8 @@ export const onJoinClub = async (
 // };
 
 export const onClubMembershipChange = async (
-  event: any,
-  context: CloudFunctionsContext
+  event: EventData,
+  context: Required<CloudFunctionsContext>
 ) => {
   const { eventId } = context;
   const {
@@ -88,7 +114,9 @@ export const onClubMembershipChange = async (
     Buffer.from(event.data, 'base64').toString()
   );
 
-  console.log(`[eventId: ${eventId}] - Attributes: { clubId: ${clubId}, clubMembership: ${clubMembership}, userId: ${userId} }`);
+  console.log(
+    `[eventId: ${eventId}] - Attributes: { clubId: ${clubId}, clubMembership: ${clubMembership}, userId: ${userId} }`
+  );
   const invalidAttributesMessage = `[eventId: ${eventId}] - Invalid attributes: { clubId: ${clubId}, clubMembership: ${clubMembership}, userId: ${userId} }`;
   if (clubId == null || clubMembership == null || userId == null) {
     throw new Error(invalidAttributesMessage);

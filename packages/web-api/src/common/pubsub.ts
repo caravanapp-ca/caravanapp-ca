@@ -1,6 +1,4 @@
 import { PubSub } from '@google-cloud/pubsub';
-import fs from 'fs';
-import { JWTInput } from 'google-auth-library';
 
 export const pubsubClient = (() => {
   let instance: PubSub;
