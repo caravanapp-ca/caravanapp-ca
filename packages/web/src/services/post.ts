@@ -7,8 +7,9 @@ import {
   PostContent,
   Like,
   Likes,
+  PostAuthorInfo,
 } from '@caravan/buddy-reading-types';
-import LikeModel from '../../../web-api/src/models/likes';
+import LikeModel from '../../../web-api/src/models/like';
 
 const postRoute = '/api/post';
 
@@ -29,5 +30,12 @@ export async function getAllPosts(after?: string, pageSize?: number) {
       pageSize,
     },
   });
+  return res;
+}
+
+export async function getPostUserInfo(userId: string) {
+  const res = await axios.get<PostAuthorInfo>(
+    `${postRoute}/getPostUserInfo/${userId}`
+  );
   return res;
 }

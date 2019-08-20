@@ -6,10 +6,13 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   ShelfPost,
-  PostUserInfo,
+  PostAuthorInfo,
   PostContent,
   User,
   Likes,
+  Like,
+  FilterAutoMongoKeys,
+  ClubReadingSchedule,
 } from '@caravan/buddy-reading-types';
 import theme from '../../theme';
 import Truncate from 'react-truncate';
@@ -104,17 +107,19 @@ const useStyles = makeStyles(theme => ({
 
 interface ShelfPostCardProps {
   postContent: PostContent;
-  userInfo: PostUserInfo;
+  postAuthorInfo: PostAuthorInfo;
   postId: string;
   currUser: User | null;
 }
 
 export default function ShelfPostCard(props: ShelfPostCardProps) {
   const classes = useStyles();
-  const { postContent, userInfo, postId, currUser } = props;
+  const { postContent, postAuthorInfo, postId, currUser } = props;
   const shelfPost = postContent as ShelfPost;
 
-  const [postLikes, setPostLikes] = React.useState<Service<Likes>>({
+  const [postLikes, setPostLikes] = React.useState<
+    Service<Likes> | Service<FilterAutoMongoKeys<Likes>>
+  >({
     status: 'loading',
   });
   const [hasLikedPost, setHasLikedPost] = React.useState<boolean>(false);
@@ -125,7 +130,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     }
     (async () => {
       const response = await getPostLikes(postId);
-      if (response.status >= 200 && response.status < 300) {
+      if (response.status >= 200 && response.status < 204) {
         const { data } = response;
         const likesObj = data as Likes;
         setPostLikes({
@@ -134,18 +139,27 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         });
         if (currUser && currUser._id) {
           likesObj.likes.map(l => {
-            if (l.userId === currUser._id) {
+            if (l === currUser._id) {
               setHasLikedPost(true);
             }
           });
         }
+      } else {
+        const emptyLikesArr: string[] = [];
+        const emptyLikesObj: FilterAutoMongoKeys<Likes> = {
+          likes: emptyLikesArr,
+        };
+        setPostLikes({
+          status: 'loaded',
+          payload: emptyLikesObj,
+        });
       }
     })();
   }, [postId]);
 
   async function handleLikeAction() {
     if (postLikes.status === 'loaded' && currUser) {
-      const res = modifyPostLike(
+      const res = await modifyPostLike(
         currUser,
         postId,
         hasLikedPost,
@@ -179,7 +193,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     <>
       <Card className={classes.card}>
         <PostHeader
-          userInfo={userInfo}
+          postAuthorInfo={postAuthorInfo}
           iconColor={'#64B5F6'}
           postIcon={shelfIcon}
         />

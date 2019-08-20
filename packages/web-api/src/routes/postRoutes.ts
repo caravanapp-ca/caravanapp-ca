@@ -4,11 +4,12 @@ import {
   Post,
   SameKeysAs,
   Services,
+  PostAuthorInfo,
 } from '@caravan/buddy-reading-types';
 import PostModel from '../models/post';
 import { isAuthenticated } from '../middleware/auth';
-import { getMe, getUsername } from '../services/user';
 import { PostDoc } from '../../typings';
+import { getUser } from '../services/user';
 
 const router = express.Router();
 
@@ -17,16 +18,9 @@ router.post('/', isAuthenticated, async (req, res, next) => {
   console.log('Posting');
   try {
     const { postContent, userId } = req.body.params;
-    const user = await getMe(userId);
-    if (user) {
-      const postAuthorName = getUsername(user) || 'Caravan User';
+    if (userId && postContent) {
       const postToUpload: FilterAutoMongoKeys<Post> = {
-        userInfo: {
-          userId,
-          name: postAuthorName,
-          urlSlug: user.urlSlug,
-          photoUrl: user.photoUrl,
-        },
+        authorId: userId,
         content: postContent,
       };
       const post = new PostModel(postToUpload);
@@ -39,6 +33,31 @@ router.post('/', isAuthenticated, async (req, res, next) => {
   } catch (err) {
     console.log('Failed to upload post', err);
     return next(err);
+  }
+});
+
+// Get post author info
+router.get('/getPostUserInfo/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const user = await getUser(userId);
+  if (user) {
+    const userInfo: PostAuthorInfo = {
+      name: user.name
+        ? user.name
+        : user.urlSlug
+        ? user.urlSlug
+        : 'Caravan User',
+      urlSlug: user.urlSlug,
+      photoUrl: user.photoUrl,
+    };
+    return res.status(200).send(userInfo);
+  } else {
+    console.warn(
+      `Unable to get info about the author ${userId} who made a post.`
+    );
+    return res
+      .status(404)
+      .send(`Unable to get info about the author ${userId}`);
   }
 });
 

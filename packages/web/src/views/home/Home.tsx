@@ -22,6 +22,8 @@ import {
   UserWithInvitableClubs,
   UserSearchField,
   Post,
+  PostWithAuthorInfo,
+  PostAuthorInfo,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -63,7 +65,7 @@ import UserSearchFilter from '../../components/filters/UserSearchFilter';
 import Composer from '../../components/Composer';
 import ShelfUploadModal from '../../components/post-uploads/ShelfUploadModal';
 import ProgressUpdateUploadModal from '../../components/post-uploads/ProgressUpdateUploadModal';
-import { getAllPosts } from '../../services/post';
+import { getAllPosts, getPostUserInfo } from '../../services/post';
 import PostCards from './PostCards';
 
 interface HomeProps extends RouteComponentProps<{}> {
@@ -158,6 +160,30 @@ export function shuffleUser(user: User) {
   return user;
 }
 
+async function getPostsWithAuthorInfo(posts: Post[]) {
+  if (posts.length === 0) {
+    return undefined;
+  } else {
+    const postsWithAuthorInfo: (PostWithAuthorInfo | null)[] = await Promise.all(
+      posts.map(async p => {
+        const authorInfoRes = await getPostUserInfo(p.authorId).then(res => {
+          if (res.status >= 200 && res.status < 300) {
+            const authorInfo: PostAuthorInfo = res.data;
+            return { post: p, authorInfo: authorInfo };
+          } else {
+            return null;
+          }
+        });
+        return authorInfoRes;
+      })
+    );
+    const filteredPostsWithAuthorInfo = postsWithAuthorInfo.filter(
+      p => p !== null
+    ) as PostWithAuthorInfo[];
+    return filteredPostsWithAuthorInfo;
+  }
+}
+
 export default function Home(props: HomeProps) {
   const classes = useStyles();
   const { user, userLoaded } = props;
@@ -169,7 +195,9 @@ export default function Home(props: HomeProps) {
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
-  const [postsResult, setPostsResult] = React.useState<Service<Post[]>>({
+  const [postsResult, setPostsResult] = React.useState<
+    Service<PostWithAuthorInfo[]>
+  >({
     status: 'loading',
   });
   const [loadingMoreUsers, setLoadingMoreUsers] = React.useState<boolean>(
@@ -324,9 +352,6 @@ export default function Home(props: HomeProps) {
             {
               genres: [],
               speed: [],
-              // capacity: [
-              //   { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-              // ],
               capacity: [],
               membership: [
                 { key: 'myClubs', name: 'My clubs', type: 'membership' },
@@ -380,13 +405,20 @@ export default function Home(props: HomeProps) {
       const res = await getAllPosts(afterPostsQuery, pageSize);
       if (res.status === 200) {
         const allPosts = res.data ? res.data.posts : undefined;
-        if (allPosts) {
-          setShowLoadMorePosts(allPosts.length === pageSize);
-          setPostsResult(s => ({
-            status: 'loaded',
-            payload:
-              s.status === 'loaded' ? [...s.payload, ...allPosts] : allPosts,
-          }));
+        if (allPosts && allPosts.length > 0) {
+          const postsWithAuthorInfo:
+            | PostWithAuthorInfo[]
+            | undefined = await getPostsWithAuthorInfo(allPosts);
+          if (postsWithAuthorInfo) {
+            setShowLoadMorePosts(allPosts.length === pageSize);
+            setPostsResult(s => ({
+              status: 'loaded',
+              payload:
+                s.status === 'loaded'
+                  ? [...s.payload, ...postsWithAuthorInfo]
+                  : postsWithAuthorInfo,
+            }));
+          }
           setLoadingMorePosts(false);
         }
       }

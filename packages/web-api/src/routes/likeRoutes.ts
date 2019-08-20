@@ -6,7 +6,7 @@ import {
   Likes,
   Like,
 } from '@caravan/buddy-reading-types';
-import LikesModel from '../models/likes';
+import LikesModel from '../models/like';
 
 const router = express.Router();
 
@@ -15,31 +15,28 @@ router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
   const { postId } = req.params;
   try {
     const { user, alreadyLiked } = req.body.params;
-    const likes = req.body.params.likes as Like[];
-    let modifiedLikes: Like[] = [];
+    const likes = req.body.params.likes as string[];
+    let modifiedLikes: string[] = [];
     if (alreadyLiked) {
-      modifiedLikes = likes.filter(l => l.userId !== user._id);
+      modifiedLikes = likes.filter(l => l == user._id);
     } else {
-      const newLike: Like = {
-        userId: user._id,
-        userPhotoUrl: user.photoUrl,
-        username: user.name || user.urlSlug || 'Caravan User',
-      };
-      modifiedLikes = [...modifiedLikes, newLike];
+      modifiedLikes = [...modifiedLikes, user._id];
     }
     const updatedLikeObj: FilterAutoMongoKeys<Likes> = {
       likes: modifiedLikes,
     };
-    const result = await LikesModel.findByIdAndUpdate(postId, updatedLikeObj, {
-      new: true,
-    });
+    const result = await LikesModel.findOneAndUpdate(
+      { postId },
+      updatedLikeObj,
+      { new: true }
+    );
     if (result) {
       return res.status(200).send(result);
     } else {
       console.warn(
         `User ${user._id} attempted to modify likes of post id ${postId} but failed.`
       );
-      return res.status(404).send(`Unable to find post ${postId}`);
+      return res.status(206).send(`Unable to find post ${postId}`);
     }
   } catch (err) {
     console.log('Failed to modify post likes', err);
@@ -49,6 +46,18 @@ router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
 
 router.get('/likes/:postId', isAuthenticated, async (req, res, next) => {
   const { postId } = req.params;
-  const likesObj = await LikesModel.findById(postId);
-  return likesObj;
+  try {
+    const result = await LikesModel.findById(postId);
+    if (result) {
+      return res.status(200).send(result);
+    } else {
+      console.warn(`Post ${postId} has no likes.`);
+      return res.status(204).send(`Post ${postId} has no likes!`);
+    }
+  } catch (err) {
+    console.log('Failed to get post likes', err);
+    return next(err);
+  }
 });
+
+export default router;

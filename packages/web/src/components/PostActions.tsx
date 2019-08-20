@@ -28,9 +28,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface PostActionsProps extends RouteComponentProps<{}> {
+interface PostActionsProps {
   postId: string;
-  likes: Like[];
+  likes: string[];
   hasLikedPost: boolean;
   onClickLike: () => void;
 }
@@ -66,4 +66,4 @@ function PostActions(props: PostActionsProps) {
   );
 }
 
-export default withRouter(PostActions);
+export default PostActions;

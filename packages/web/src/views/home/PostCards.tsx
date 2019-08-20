@@ -5,7 +5,12 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User, Post } from '@caravan/buddy-reading-types';
+import {
+  User,
+  Post,
+  PostAuthorInfo,
+  PostWithAuthorInfo,
+} from '@caravan/buddy-reading-types';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import ShelfPostCard from './ShelfPostCard';
 
@@ -92,7 +97,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface PostCardProps {
-  posts: Post[];
+  posts: PostWithAuthorInfo[];
   currUser: User | null;
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
@@ -123,21 +128,24 @@ export default function PostCards(props: PostCardProps) {
         )}
         <Grid container spacing={4}>
           {posts.map(p => {
-            const { content, userInfo } = p;
+            const { post, authorInfo } = p;
+            const { content } = post;
             let postCard = <></>;
-            switch (content.postType) {
-              case 'shelf':
-              default:
-                postCard = (
-                  <ShelfPostCard
-                    postContent={content}
-                    userInfo={userInfo}
-                    postId={p._id}
-                    currUser={currUser}
-                    key={p._id}
-                  />
-                );
-                break;
+            if (authorInfo) {
+              switch (content.postType) {
+                case 'shelf':
+                default:
+                  postCard = (
+                    <ShelfPostCard
+                      postContent={content}
+                      postAuthorInfo={authorInfo}
+                      postId={post._id}
+                      currUser={currUser}
+                      key={post._id}
+                    />
+                  );
+                  break;
+              }
             }
 
             return (
@@ -145,13 +153,13 @@ export default function PostCards(props: PostCardProps) {
                 unmountIfInvisible={true}
                 offset={placeholderCardHeight * lazyloadOffset}
                 placeholder={
-                  <Grid item key={p._id} xs={12} sm={12}>
+                  <Grid item key={post._id} xs={12} sm={12}>
                     <PlaceholderCard height={placeholderCardHeight} />
                   </Grid>
                 }
-                key={p._id}
+                key={post._id}
               >
-                <Grid item key={p._id} xs={12} sm={12}>
+                <Grid item key={post._id} xs={12} sm={12}>
                   {postCard}
                 </Grid>
               </LazyLoad>

@@ -2,7 +2,7 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { makeStyles, Link } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
-import { PostUserInfo } from '@caravan/buddy-reading-types';
+import { PostAuthorInfo } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({
   heading: {
@@ -38,36 +38,34 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface PostHeaderProps extends RouteComponentProps<{}> {
-  userInfo: PostUserInfo;
+interface PostHeaderProps {
+  postAuthorInfo: PostAuthorInfo;
   postIcon: string;
   iconColor: string;
 }
 
 function PostHeader(props: PostHeaderProps) {
   const classes = useStyles();
-  const { userInfo, postIcon, iconColor } = props;
-
-  const nameField: string = userInfo.name || userInfo.urlSlug || 'Caravan User';
+  const { postAuthorInfo, postIcon, iconColor } = props;
 
   return (
     <div className={classes.heading}>
       <div className={classes.userHeading}>
-        <Link href={`/user/${userInfo.urlSlug}`}>
+        <Link href={`/user/${postAuthorInfo.urlSlug}`}>
           <Avatar
-            alt={nameField}
-            src={userInfo.photoUrl}
+            alt={postAuthorInfo.name}
+            src={postAuthorInfo.photoUrl}
             className={classes.headerAvatar}
           />
         </Link>
         <div className={classes.userTextContainer}>
           <Link
-            href={`/user/${userInfo.urlSlug}`}
+            href={`/user/${postAuthorInfo.urlSlug}`}
             variant="h5"
             className={classes.userNameText}
             color="primary"
           >
-            {nameField}
+            {postAuthorInfo.name}
           </Link>
         </div>
       </div>
@@ -81,4 +79,4 @@ function PostHeader(props: PostHeaderProps) {
   );
 }
 
-export default withRouter(PostHeader);
+export default PostHeader;

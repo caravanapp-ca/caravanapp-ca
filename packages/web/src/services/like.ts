@@ -1,18 +1,18 @@
 import axios from 'axios';
-import { Likes, User } from '@caravan/buddy-reading-types';
+import { Likes, User, FilterAutoMongoKeys } from '@caravan/buddy-reading-types';
 
 const likeRoute = '/api/like';
 
-export const getPostLikes = async (postId: string) => {
+export async function getPostLikes(postId: string) {
   const res = await axios.get(`${likeRoute}/likes/${postId}`);
   return res;
-};
+}
 
 export async function modifyPostLike(
   user: User,
   postId: string,
   alreadyLiked: boolean,
-  likes: Likes
+  likes: Likes | FilterAutoMongoKeys<Likes>
 ) {
   const res = await axios.post(`${likeRoute}/like/${postId}`, {
     params: {
