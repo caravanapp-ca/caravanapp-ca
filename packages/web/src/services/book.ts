@@ -11,8 +11,3 @@ export async function searchGoogleBooks(query: string) {
   const responseData = res.data as GoogleBooks.Books;
   return responseData;
 }
-
-export async function notifyOfClubShelfUpdate(clubId: string) {
-  const res = await axios.post(`${discordRoute}/updateClubShelf/${clubId}`, {});
-  return res;
-}
