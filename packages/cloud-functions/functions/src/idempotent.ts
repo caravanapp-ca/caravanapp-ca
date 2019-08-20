@@ -1,4 +1,4 @@
-import { DocumentReference } from '@google-cloud/firestore';
+import { DocumentReference, DocumentData } from '@google-cloud/firestore';
 import { firestore } from './db';
 import { IdempotentSendData } from '..';
 
@@ -23,6 +23,10 @@ export function shouldSendWithLease(ref: DocumentReference) {
   });
 }
 
-export function markSent(ref: DocumentReference) {
-  return ref.set({ sent: true });
+export function markSent(ref: DocumentReference, extraData?: DocumentData) {
+  const data: DocumentData = {
+    sent: true,
+    ...(extraData || {})
+  }
+  return ref.set(data);
 }

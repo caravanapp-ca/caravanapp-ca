@@ -13,11 +13,6 @@ const options: ConnectionOptions = {
 
 export function connect() {
   if (dbConnectionString) {
-    console.log(
-      `DBCon: ${
-        dbConnectionString ? dbConnectionString.substr(0, 4) : undefined
-      }`
-    );
     return mongoose.connect(dbConnectionString, options);
   }
   throw new Error('Undefined connection string');

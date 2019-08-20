@@ -5,7 +5,6 @@ import { sendDiscordMessage } from '../discordMessenger';
 import { getUser, getUserProfileUrl } from '../services/user';
 import { getClub } from '../services/club';
 import { disconnect, connect } from '../db';
-import { UserDoc, ClubDoc } from '../workspace/mongo';
 import { EventData } from '../..';
 
 export const onJoinClub = async (
@@ -14,50 +13,21 @@ export const onJoinClub = async (
   userId: string
 ) => {
   const { eventId } = context;
-  let userDoc: UserDoc;
-  let clubDoc: ClubDoc;
-  try {
-    const doc = await getUser(userId);
-    if (!doc) {
-      throw new Error(`[eventId: ${eventId}] - Could not find user: ${userId}`);
-    }
-    userDoc = doc;
-  } catch (err) {
-    console.error(`[eventId: ${eventId}] - Failed getting user: ${userId}`);
-    throw err;
+  const [userDoc, clubDoc] = await Promise.all([
+    getUser(userId),
+    getClub(clubId)
+  ]);
+  if (!userDoc) {
+    throw new Error(
+      `[eventId: ${eventId}] - Could not find user: ${userId}`
+    );
   }
-  console.log(`Got user doc ${userDoc.id}`);
-  try {
-    const doc = await getClub(clubId);
-    if (!doc) {
-      throw new Error(`[eventId: ${eventId}] - Could not find club: ${clubId}`);
-    }
-    clubDoc = doc;
-  } catch (err) {
-    console.error(`[eventId: ${eventId}] - Failed getting club: ${clubId}`);
-    throw err;
+  if (!clubDoc) {
+    throw new Error(
+      `[eventId: ${eventId}] - Could not find club: ${clubId}`
+    );
   }
-  console.log(`Got club doc ${clubDoc.id}`);
-  // const [userDoc, clubDoc] = await Promise.all([
-  //   getUser(userId).then(userDoc => {
-  //     if (!userDoc) {
-  //       throw new Error(
-  //         `[eventId: ${eventId}] - Could not find user: ${userId}`
-  //       );
-  //     }
-  //     console.log(`Got user doc ${userDoc.id}`);
-  //     return userDoc;
-  //   }),
-  //   getClub(clubId).then(clubDoc => {
-  //     if (!clubDoc) {
-  //       throw new Error(
-  //         `[eventId: ${eventId}] - Could not find club: ${clubId}`
-  //       );
-  //     }
-  //     console.log(`Got club doc ${clubDoc.id}`);
-  //     return clubDoc;
-  //   }),
-  // ]);
+  console.log(`[eventId: ${eventId}] - Fetched club ${clubId} and user ${userId}`);
   const { discordId, questions } = userDoc;
   const { channelId } = clubDoc;
   const client = ReadingDiscordBot.getInstance();
