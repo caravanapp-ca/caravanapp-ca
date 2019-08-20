@@ -45,7 +45,7 @@ export const onJoinClub = async (
     randomQuestion.title
   }", they answered "${
     randomQuestion.answer
-  }". More info on their Caravan profile ${getUserProfileUrl(userDoc.urlSlug)}`;
+  }". More info on their Caravan profile <${getUserProfileUrl(userDoc.urlSlug)}>`;
   if (channel.type === 'text') {
     return sendDiscordMessage(eventId, channel, discordMessage);
   }
