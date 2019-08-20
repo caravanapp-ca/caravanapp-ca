@@ -2,7 +2,7 @@
   "name": "@caravan/buddy-reading",
   "private": true,
   "scripts": {
-    "prebuild": "bash ./pre-deploy-cloud-functions.sh",
+    "prebuild": "sh ./pre-deploy-cloud-functions.sh",
     "build": "lerna run build",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",
