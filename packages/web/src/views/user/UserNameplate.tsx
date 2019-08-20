@@ -17,9 +17,10 @@ import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg'
 import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
 import UserBadgeIcon from '../../components/UserBadgeIcon';
-import { getReferralLink } from '../../functions/referral';
-import { getBadgeToDisplay } from '../../functions/getBadgeToDisplay';
+import { getReferralLink } from '../../common/referral';
+import { getBadgeToDisplay } from '../../common/getBadgeToDisplay';
 import PaletteButton from '../../components/PaletteButton';
+import { DISCORD_GUILD_LINK } from '../../common/globalConstants';
 
 interface UserNameplateProps {
   user: User;
@@ -256,7 +257,7 @@ export default function UserNameplate(props: UserNameplateProps) {
             <Button
               variant="outlined"
               color="primary"
-              href="https://discordapp.com/channels/592761082523680798/592810415193587724"
+              href={DISCORD_GUILD_LINK}
               target="_blank"
               style={{ marginTop: theme.spacing(1) }}
             >
@@ -299,7 +300,7 @@ export default function UserNameplate(props: UserNameplateProps) {
               variant="outlined"
               color="primary"
               onClick={() =>
-                copyToClipboard(getReferralLink(user._id, 'home')) &&
+                copyToClipboard(getReferralLink(user._id, 'profile')) &&
                 onCopyReferralLink()
               }
               style={{ marginTop: theme.spacing(1) }}

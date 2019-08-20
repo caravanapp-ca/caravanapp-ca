@@ -23,6 +23,7 @@ import {
   ReadingSpeed,
   GroupVibe,
   ActiveFilter,
+  ClubShelf,
   SameKeysAs,
   PubSub,
 } from '@caravan/buddy-reading-types';
@@ -41,10 +42,28 @@ import {
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
-import { getBadges } from '../services/badge';
 import { pubsubClient } from '../common/pubsub';
+import { getBadges } from '../services/badge';
+import {
+  VALID_READING_STATES,
+  MAX_SHELF_SIZE,
+} from '../common/globalConstantsAPI';
 
 const router = express.Router();
+
+const getValidShelfFromNewShelf = (newShelf: ClubShelf) => {
+  const validShelf: ClubShelf = { notStarted: [], current: [], read: [] };
+  VALID_READING_STATES.forEach(state => {
+    if (Array.isArray(newShelf[state])) {
+      let truncatedShelf = newShelf[state];
+      if (truncatedShelf.length > MAX_SHELF_SIZE) {
+        truncatedShelf = truncatedShelf.slice(0, MAX_SHELF_SIZE);
+      }
+      validShelf[state] = truncatedShelf.map(shelfEntryWithHttpsBookUrl);
+    }
+  });
+  return validShelf;
+};
 
 const isInChannel = (member: GuildMember, club: ClubDoc) =>
   (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
@@ -282,7 +301,13 @@ router.get('/', async (req, res) => {
     const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
       // TODO: Typescript doesn't like the use of keys here.
       // @ts-ignore
-      keys: ['name', 'shelf.title', 'shelf.author'],
+      keys: [
+        { name: 'newShelf.current.title', weight: 3 / 9 },
+        { name: 'name', weight: 2 / 9 },
+        { name: 'newShelf.current.author', weight: 2 / 9 },
+        { name: 'newShelf.notStarted.title', weight: 1 / 9 },
+        { name: 'newShelf.notStarted.author', weight: 1 / 9 },
+      ],
     };
     const fuse = new Fuse(filteredClubsWithMemberCounts, fuseOptions);
     filteredClubsWithMemberCounts = fuse.search(search);
@@ -739,7 +764,13 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       newChannel
     )) as TextChannel;
 
-    const shelf = body.shelf.map(shelfEntryWithHttpsBookUrl);
+    const validShelf = getValidShelfFromNewShelf(
+      body.newShelf || {
+        current: [],
+        notStarted: [],
+        read: [],
+      }
+    );
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
       name: body.name,
@@ -747,7 +778,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       maxMembers: body.maxMembers,
       readingSpeed: body.readingSpeed,
       genres: body.genres,
-      shelf,
+      newShelf: validShelf,
       schedules: body.schedules,
       ownerId: userId,
       ownerDiscordId: req.user.discordId,
@@ -943,6 +974,7 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   }
 });
 
+// TODO: This route is to be deprecated once every club is moved to the new shelf format
 // Update a club's currently read book
 router.put(
   '/:id/updatebook',
@@ -1079,6 +1111,36 @@ router.put(
     return res.sendStatus(400);
   }
 );
+
+router.put('/:id/shelf', isAuthenticated, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const errorArr = errors.array();
+    return res.status(422).json({ errors: errorArr });
+  }
+  const { id: clubId } = req.params;
+  // Using type assertion here, but we will sanitize with getValidShelfFromNewShelf.
+  const newShelf = req.body.newShelf as ClubShelf;
+  const validShelf = getValidShelfFromNewShelf(newShelf);
+  let updatedClub: ClubDoc;
+  try {
+    updatedClub = await ClubModel.findByIdAndUpdate(
+      clubId,
+      {
+        newShelf: validShelf,
+      },
+      { new: true }
+    );
+  } catch (err) {
+    console.error(`Failed to update shelf for club ${clubId}: ${err}`);
+    return res.status(400).send(`Failed to update shelf for club ${clubId}`);
+  }
+  if (!updatedClub) {
+    console.error(`Could not find club ${clubId}`);
+    return res.status(404).send(`Could not find club ${clubId}`);
+  }
+  return res.status(200).send(updatedClub);
+});
 
 // Modify current user's club membership
 router.put(

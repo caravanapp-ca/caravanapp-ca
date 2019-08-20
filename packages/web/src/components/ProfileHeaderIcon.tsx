@@ -10,6 +10,7 @@ import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGro
 import { washedTheme } from '../theme';
 import { logout } from '../services/user';
 import DiscordLoginModal from './DiscordLoginModal';
+import { DISCORD_GUILD_LINK } from '../common/globalConstants';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {
@@ -31,13 +32,10 @@ interface HeaderRightProps extends RouteComponentProps<{}> {
 
 function ProfileHeaderIcon(props: HeaderRightProps) {
   const classes = useStyles();
-
   const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
-
   const { user } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-
   const [
     headerProfileMenuIsOpen,
     setHeaderProfileMenuOpenState,
@@ -67,11 +65,14 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
     }
   }
 
+  function navigateToSettings() {
+    if (user) {
+      props.history.push(`/settings`);
+    }
+  }
+
   function openChat() {
-    window.open(
-      'https://discordapp.com/channels/592761082523680798/592761082523680806',
-      '_blank'
-    );
+    window.open(DISCORD_GUILD_LINK, '_blank');
   }
 
   return (
@@ -117,6 +118,7 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
         onClose={handleProfileMenuClose}
       >
         <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
+        <MenuItem onClick={navigateToSettings}>Settings</MenuItem>
         <MenuItem onClick={openChat}>Open chat</MenuItem>
         <MenuItem onClick={logout}>Log out</MenuItem>
       </Menu>

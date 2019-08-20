@@ -15,6 +15,7 @@ import testRoutes from './routes/testRoutes';
 import discordRoutes from './routes/discordRoutes';
 import referralRoutes from './routes/referralRoutes';
 import userPalettesRoutes from './routes/userPalettesRoutes';
+import userSettingsRoutes from './routes/userSettingsRoutes';
 
 import {
   connect as connectToDb,
@@ -65,7 +66,11 @@ import { pubsubClient } from './common/pubsub';
   }
   app.use(cookieParser());
   app.use(
-    cookieSession({ name: 'session', keys: [process.env.COOKIE_SESSION_KEY] })
+    cookieSession({
+      name: 'session',
+      keys: [process.env.COOKIE_SESSION_KEY],
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    })
   );
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -79,6 +84,7 @@ import { pubsubClient } from './common/pubsub';
   app.use('/api/discord', discordRoutes);
   app.use('/api/referrals', referralRoutes);
   app.use('/api/userPalettes', userPalettesRoutes);
+  app.use('/api/userSettings', userSettingsRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

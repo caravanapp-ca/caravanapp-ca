@@ -42,7 +42,7 @@ import {
   deleteClub,
   modifyClub,
 } from '../../services/club';
-import { getCurrentBook, getCurrentSchedule } from './functions/ClubFunctions';
+import { getCurrentSchedule } from './functions/ClubFunctions';
 import ClubHero from './ClubHero';
 import GroupView from './group-view/GroupView';
 import ShelfView from './shelf-view/ShelfView';
@@ -60,8 +60,8 @@ import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import ScheduleView from './schedule-view/ScheduleView';
 import { getAllGenres } from '../../services/genre';
 import {
-  defaultClubScheduleDuration,
-  defaultClubScheduleDiscussionFreq,
+  DEFAULT_CLUB_SCHED_DURATION,
+  DEFAULT_CLUB_SCHED_DISC_FREQ,
 } from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -222,10 +222,12 @@ export default function ClubComponent(props: ClubProps) {
         const club = await getClub(clubId);
         setClub(club);
         if (club) {
-          const currBook = getCurrentBook(club);
-          setCurrBook(currBook);
-          if (currBook) {
-            const schedule = getCurrentSchedule(club, currBook);
+          const currentlyReadingBook = club.newShelf.current[0];
+          if (club.newShelf.current.length > 0) {
+            setCurrBook(currentlyReadingBook);
+          }
+          if (currentlyReadingBook) {
+            const schedule = getCurrentSchedule(club, currentlyReadingBook);
             setSchedule(schedule);
           } else {
             setSchedule(null);
@@ -374,8 +376,8 @@ export default function ClubComponent(props: ClubProps) {
     setSchedule({
       shelfEntryId: currBook._id,
       startDate: null,
-      duration: defaultClubScheduleDuration,
-      discussionFrequency: defaultClubScheduleDiscussionFreq,
+      duration: DEFAULT_CLUB_SCHED_DURATION,
+      discussionFrequency: DEFAULT_CLUB_SCHED_DISC_FREQ,
       discussions: [],
     });
   };
@@ -515,7 +517,24 @@ export default function ClubComponent(props: ClubProps) {
           members: result.data,
         };
         setClub(newClub);
+        const successfulSnackBarMessage = addMember
+          ? "Successfully joined club! Refresh the page if you're still not shown as a member."
+          : "Successfully  left club. Refresh the page if you're still shown as a member.";
+        setSnackbarProps({
+          ...snackbarProps,
+          isOpen: true,
+          variant: 'success',
+          message: successfulSnackBarMessage,
+        });
       }
+    } else {
+      const unsuccessfulSnackBarMessageVerb = addMember ? 'joining' : 'leaving';
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'warning',
+        message: `We ran into some trouble ${unsuccessfulSnackBarMessageVerb}. Try logging out then back in, or contact the Caravan team on Discord`,
+      });
     }
   }
 
@@ -561,7 +580,7 @@ export default function ClubComponent(props: ClubProps) {
                   genres={genres || undefined}
                   isEditing={isEditing}
                   onGenreClick={onGenreClick}
-                  shelf={club.shelf}
+                  shelf={club.newShelf}
                   selectedGenres={club.genres}
                 />
               )}

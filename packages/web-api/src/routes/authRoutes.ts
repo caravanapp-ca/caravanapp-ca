@@ -8,7 +8,6 @@ import {
 import {
   SessionModel,
   UserModel,
-  UserSettingsDoc,
 } from '@caravan/buddy-reading-mongo';
 import {
   DiscordOAuth2Url,
@@ -22,6 +21,12 @@ import {
   createReferralActionByDoc,
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
+import { getSession } from '../services/session';
+import { validateSessionPermissions } from '../common/session';
+import {
+  DISCORD_PERMISSIONS,
+  DEFAULT_EMAIL_SETTINGS,
+} from '../common/globalConstantsAPI';
 
 const router = express.Router();
 
@@ -37,6 +42,33 @@ router.get('/discord/login', (req, res) => {
     return;
   }
   res.redirect(DiscordOAuth2Url(state, req.headers.host));
+});
+
+router.get('/discord/validatePermissions', async (req, res) => {
+  const { userId } = req.session;
+  if (!userId) {
+    return res
+      .status(400)
+      .send('Require a logged in user to complete this request.');
+  }
+  try {
+    const sessionDoc = await getSession(userId);
+    if (!sessionDoc) {
+      throw new Error(
+        `SessionDoc in validatePermissions is null { userId: ${userId} }`
+      );
+    }
+    const validSessionPermissions = validateSessionPermissions(sessionDoc);
+    if (!validSessionPermissions) {
+      console.log(
+        `User ${userId} has invalid Discord session permissions, redirect to Discord auth.`
+      );
+    }
+    return res.status(200).send({ authRequired: !validSessionPermissions });
+  } catch (err) {
+    console.error(`Validating sessionDoc failed: { userId: ${userId} }`, err);
+    return res.status(500).send({ authRequired: true });
+  }
 });
 
 function convertTokenResponseToModel(
@@ -95,6 +127,7 @@ router.get('/discord/callback', async (req, res) => {
   let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {
     // Do any user updates here.
+
     // Temporarily, check if we have an email for this user.
     // TODO: Once every user in production has an email in settings, we can remove these checks.
     const userSettingsDoc = await getUserSettings(userDoc.id);
@@ -107,6 +140,7 @@ router.get('/discord/callback', async (req, res) => {
       const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
         userId: userDoc.id,
         email: discordUserData.email,
+        emailSettings: DEFAULT_EMAIL_SETTINGS,
       };
       createUserSettings(newUserSettings);
     }
@@ -161,6 +195,7 @@ router.get('/discord/callback', async (req, res) => {
     const newUserSettings: FilterAutoMongoKeys<UserSettings> = {
       userId: userDoc.id,
       email: discordUserData.email,
+      emailSettings: DEFAULT_EMAIL_SETTINGS,
     };
     createUserSettings(newUserSettings);
   }
@@ -178,6 +213,13 @@ router.get('/discord/callback', async (req, res) => {
       const accessTokenExpiresAt: number = currentSessionModel.get(
         'accessTokenExpiresAt'
       );
+      // Check if the user has provided any new Discord permissions.
+      // If so, update their session doc.
+      const discordPermissions = DISCORD_PERMISSIONS.join(' ');
+      if (currentSessionModel.scope !== discordPermissions) {
+        currentSessionModel.scope = discordPermissions;
+        currentSessionModel.save();
+      }
       const isExpired = Date.now() > accessTokenExpiresAt;
       if (isExpired) {
         // Begin token refresh

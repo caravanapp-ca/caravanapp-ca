@@ -16,7 +16,6 @@ const userPalettesDefinition: SameKeysAs<FilterAutoMongoKeys<UserPalettes>> = {
 };
 
 const userPalettesSchema = new Schema(userPalettesDefinition, {
-  _id: false,
   timestamps: true,
 });
 

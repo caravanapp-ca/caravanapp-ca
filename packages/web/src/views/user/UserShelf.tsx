@@ -1,5 +1,8 @@
 import React from 'react';
-import { User, UserShelfType } from '@caravan/buddy-reading-types';
+import {
+  User,
+  UserShelf as UserShelfInterface,
+} from '@caravan/buddy-reading-types';
 import { Typography, makeStyles, useTheme, Container } from '@material-ui/core';
 import BookList from '../club/shelf-view/BookList';
 import clsx from 'clsx';
@@ -20,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 interface UserShelfProps {
   user: User;
   userIsMe: boolean;
-  shelf: UserShelfType;
+  shelf: UserShelfInterface;
   isEditing: boolean;
   onEdit: (field: 'shelf', newValue: any) => void;
 }
@@ -32,7 +35,10 @@ export default function UserShelf(props: UserShelfProps) {
   if (
     user &&
     !isEditing &&
-    shelf.current.length + shelf.notStarted.length + shelf.read.length === 0
+    ((shelf.current &&
+      shelf.current.length + shelf.notStarted.length + shelf.read.length ===
+        0) ||
+      (!shelf.current && shelf.notStarted.length + shelf.read.length === 0))
   ) {
     let noShelfMessage =
       'This user has not yet added any books to their shelf.';
@@ -58,7 +64,7 @@ export default function UserShelf(props: UserShelfProps) {
   }
   return (
     <div>
-      {shelf.current.length > 0 && (
+      {shelf.current && shelf.current.length > 0 && (
         <div
           className={
             shelf.notStarted.length > 0
@@ -69,7 +75,7 @@ export default function UserShelf(props: UserShelfProps) {
           <Typography variant="h6" className={classes.sectionLabel}>
             Currently Reading
           </Typography>
-          <BookList data={shelf.current} tertiary="buy" />
+          <BookList id="current" data={shelf.current} tertiary="buy" />
         </div>
       )}
       {shelf.notStarted.length > 0 && (
@@ -81,10 +87,10 @@ export default function UserShelf(props: UserShelfProps) {
           }
         >
           <Typography variant="h6" className={classes.sectionLabel}>
-            Wants to Read
+            To be Read
           </Typography>
           {(!isEditing || !onEdit) && (
-            <BookList data={shelf.notStarted} tertiary="buy" />
+            <BookList id="to-be-read" data={shelf.notStarted} tertiary="buy" />
           )}
         </div>
       )}
@@ -118,7 +124,9 @@ export default function UserShelf(props: UserShelfProps) {
           <Typography variant="h6" className={classes.sectionLabel}>
             Previously Read
           </Typography>
-          {(!isEditing || !onEdit) && <BookList data={shelf.read} />}
+          {(!isEditing || !onEdit) && (
+            <BookList id="previously-read" data={shelf.read} />
+          )}
           {isEditing && onEdit && (
             <UserShelfEditable
               readingState={'read'}

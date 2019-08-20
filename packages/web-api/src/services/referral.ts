@@ -13,12 +13,17 @@ import {
 import { Omit } from 'utility-types';
 import { giveUserBadge } from './badge';
 import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
+import { giveUserPalettes } from './userPalettes';
 
 export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   fb: true,
   tw: true,
   em: true,
   gr: true,
+  rd: true,
+  cpp: true,
+  cph: true,
+  cpc: true,
 };
 
 export const ALLOWED_REFERRAL_DESTINATIONS: {
@@ -129,6 +134,9 @@ export async function createReferralActionByDoc(
           }
           if (newTier.discordRole) {
             giveDiscordRole(referrerDoc.userId, newTier.discordRole);
+          }
+          if (newTier.profileBgSets.length > 0) {
+            giveUserPalettes(referrerDoc.userId, newTier.profileBgSets);
           }
           sendNewTierDiscordMsg(referrerDoc.userId, newTier);
         }

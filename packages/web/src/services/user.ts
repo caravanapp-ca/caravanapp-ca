@@ -6,6 +6,7 @@ import {
   FilterAutoMongoKeys,
   ActiveFilter,
   Services,
+  UserSearchField,
 } from '@caravan/buddy-reading-types';
 import { clearStorageAuthState } from '../common/localStorage';
 import { clearCookieAuthState } from '../common/cookies';
@@ -27,6 +28,8 @@ export async function getAllUsers(
   after?: string,
   onboardVersion?: number,
   pageSize?: number,
+  search?: string,
+  userSearchField?: UserSearchField,
   activeFilter?: ActiveFilter
 ) {
   const res = await axios.get<Services.GetUsers>(userRoute, {
@@ -34,6 +37,8 @@ export async function getAllUsers(
       after,
       onboardVersion,
       pageSize,
+      search,
+      userSearchField,
       activeFilter,
     },
   });
