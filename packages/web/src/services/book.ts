@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { GoogleBooks } from '@caravan/buddy-reading-types';
 
-const discordRoute = '/api/discord';
-
 export async function searchGoogleBooks(query: string) {
   const baseURL = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
     `intitle:${query}`

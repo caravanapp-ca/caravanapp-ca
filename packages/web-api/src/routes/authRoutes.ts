@@ -19,7 +19,7 @@ import {
   createReferralActionByDoc,
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
-import { getSession } from '../services/session';
+import { getSession, getSessionFromUserId } from '../services/session';
 import { validateSessionPermissions } from '../common/session';
 import {
   DISCORD_PERMISSIONS,
@@ -50,7 +50,7 @@ router.get('/discord/validatePermissions', async (req, res) => {
       .send('Require a logged in user to complete this request.');
   }
   try {
-    const sessionDoc = await getSession(userId);
+    const sessionDoc = await getSessionFromUserId(userId);
     if (!sessionDoc) {
       throw new Error(
         `SessionDoc in validatePermissions is null { userId: ${userId} }`
@@ -199,7 +199,7 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
-    const currentSessionModel = await SessionModel.findOne({ accessToken });
+    const currentSessionModel = await getSession(accessToken);
     if (currentSessionModel) {
       if (currentSessionModel.client !== 'discord') {
         return res
@@ -215,8 +215,7 @@ router.get('/discord/callback', async (req, res) => {
       // If so, update their session doc.
       const discordPermissions = DISCORD_PERMISSIONS.join(' ');
       if (currentSessionModel.scope !== discordPermissions) {
-        currentSessionModel.scope = discordPermissions;
-        currentSessionModel.save();
+        currentSessionModel.update({ scope: discordPermissions });
       }
       const isExpired = Date.now() > accessTokenExpiresAt;
       if (isExpired) {
