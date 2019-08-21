@@ -1,11 +1,17 @@
 import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { DeepPartial } from 'utility-types';
 import {
   FilterAutoMongoKeys,
-  Session,
+  OAuth2Client,
   User,
   UserSettings,
 } from '@caravan/buddy-reading-types';
-import { SessionModel, UserModel } from '@caravan/buddy-reading-mongo';
+import {
+  SessionDoc,
+  SessionModel,
+  UserModel,
+} from '@caravan/buddy-reading-mongo';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
@@ -18,7 +24,7 @@ import {
   createReferralActionByDoc,
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
-import { getSession } from '../services/session';
+import { getSessionFromUserId } from '../services/session';
 import { validateSessionPermissions } from '../common/session';
 import {
   DISCORD_PERMISSIONS,
@@ -49,7 +55,7 @@ router.get('/discord/validatePermissions', async (req, res) => {
       .send('Require a logged in user to complete this request.');
   }
   try {
-    const sessionDoc = await getSession(userId);
+    const sessionDoc = await getSessionFromUserId(userId, 'discord');
     if (!sessionDoc) {
       throw new Error(
         `SessionDoc in validatePermissions is null { userId: ${userId} }`
@@ -70,10 +76,10 @@ router.get('/discord/validatePermissions', async (req, res) => {
 
 function convertTokenResponseToModel(
   obj: OAuth2TokenResponseData,
-  client: string,
-  userId: string
+  client: OAuth2Client,
+  userId: mongoose.Types.ObjectId
 ) {
-  const model: FilterAutoMongoKeys<Session> = {
+  const model: DeepPartial<SessionDoc> = {
     accessToken: obj.access_token,
     accessTokenExpiresAt: Date.now() + obj.expires_in * 1000,
     refreshToken: obj.refresh_token,
@@ -198,59 +204,82 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
-    const currentSessionModel = await SessionModel.findOne({ accessToken });
+    const currentSessionModel = await getSessionFromUserId(
+      userDoc.id,
+      'discord'
+    );
+    let saveNewDoc = false;
+
+    const refreshSessionDoc = (newDoc: DeepPartial<SessionDoc>) => {
+      // If there was an existing session doc, delete it, else do nothing
+      const oldDocPromise = currentSessionModel
+        ? currentSessionModel.remove().then(oldDoc => {
+            console.log(
+              `Deleted expired discord session doc ${oldDoc.id} for user ${userDoc.id}`
+            );
+            return oldDoc;
+          })
+        : Promise.resolve<SessionDoc>(null);
+      // Create the new session doc
+      const newDocPromise = SessionModel.create(newDoc).then(newDoc => {
+        console.log(
+          `Created new session doc ${newDoc.id} for user ${userDoc.id}`
+        );
+        return newDoc;
+      });
+      try {
+        return Promise.all([oldDocPromise, newDocPromise]);
+      } catch (err) {
+        console.error(
+          `Failed to delete old session doc or create new session doc while refreshing user ${userDoc.id}`,
+          err
+        );
+        throw err;
+      }
+    };
+
     if (currentSessionModel) {
-      if (currentSessionModel.client !== 'discord') {
+      const {
+        accessTokenExpiresAt,
+        client,
+        refreshToken,
+        scope,
+      } = currentSessionModel;
+      if (client !== 'discord') {
         return res
           .status(401)
-          .send(
-            `Unauthorized: invalid source for session ${currentSessionModel.client}`
-          );
+          .send(`Unauthorized: invalid source for session ${client}`);
       }
-      const accessTokenExpiresAt: number = currentSessionModel.get(
-        'accessTokenExpiresAt'
-      );
       // Check if the user has provided any new Discord permissions.
       // If so, update their session doc.
-      const discordPermissions = DISCORD_PERMISSIONS.join(' ');
-      if (currentSessionModel.scope !== discordPermissions) {
-        currentSessionModel.scope = discordPermissions;
-        currentSessionModel.save();
-      }
       const isExpired = Date.now() > accessTokenExpiresAt;
+      const expectedDiscordPermissions = DISCORD_PERMISSIONS.join(' ');
+
       if (isExpired) {
         // Begin token refresh
         console.log(
           `Refreshing access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
         );
-        const refreshToken: string = currentSessionModel.get('refreshToken');
+        // Update the response data and new token to be later saved
         tokenResponseData = await ReadingDiscordBot.refreshAccessToken(
           refreshToken
         );
         accessToken = tokenResponseData.access_token;
-        const modelInstance = convertTokenResponseToModel(
-          tokenResponseData,
-          'discord',
-          userDoc.id
-        );
-        currentSessionModel.update(modelInstance).exec();
-        console.log(
-          `Updated access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
-        );
       }
-      // else validated
+
+      // Refresh the data if needed
+      saveNewDoc = isExpired || scope !== expectedDiscordPermissions;
     } else {
-      // New user, nice!
-      const modelInstance = convertTokenResponseToModel(
+      // New user
+      saveNewDoc = true;
+    }
+    if (saveNewDoc) {
+      const newSessionDoc = convertTokenResponseToModel(
         tokenResponseData,
         'discord',
-        userDoc.id
+        userDoc._id
       );
-      const sessionModel = new SessionModel(modelInstance);
-      sessionModel.save();
-      console.log(
-        `Created a new session for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
-      );
+      await refreshSessionDoc(newSessionDoc);
     }
   } catch (err) {
     // to check if it fails here

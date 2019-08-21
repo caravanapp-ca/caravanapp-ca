@@ -5,7 +5,6 @@ declare module '@caravan/buddy-reading-types' {
     Base,
     'createdAt' | 'updatedAt' | '__v' | '_id'
   >;
-  // TODO: Improve by nesting the SameKeysAs
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export type SameKeysAs<Base> = { [Key in keyof Base]: any };
 
@@ -74,7 +73,7 @@ declare module '@caravan/buddy-reading-types' {
     refreshToken: string;
     scope: string;
     tokenType: 'Bearer';
-    client: string;
+    client: OAuth2Client;
     userId: string;
   }
 
@@ -310,6 +309,8 @@ declare module '@caravan/buddy-reading-types' {
     | 'goodreads'
     | 'custom'
     | 'unknown';
+
+  export type OAuth2Client = 'discord' | 'discordBot';
 
   export type ChannelSource = 'discord';
 

@@ -1,12 +1,19 @@
+import { DeepPartial } from 'utility-types';
 import {
-  UserSettings,
   FilterAutoMongoKeys,
+  UserSettings,
 } from '@caravan/buddy-reading-types';
-import { UserSettingsModel } from '@caravan/buddy-reading-mongo';
+import {
+  UserSettingsDoc,
+  UserSettingsModel,
+} from '@caravan/buddy-reading-mongo';
 import { DEFAULT_EMAIL_SETTINGS } from '../common/globalConstantsAPI';
 
 export const getUserSettings = (userId: string) => {
-  return UserSettingsModel.findOne({ userId });
+  const userSettingsQuery: DeepPartial<UserSettingsDoc> = {
+    userId,
+  };
+  return UserSettingsModel.findOne(userSettingsQuery);
 };
 
 export const createUserSettings = (
@@ -37,6 +44,7 @@ export const initSettings = async (userId: string) => {
     const res = await newSettingsModel.save();
     return res;
   } catch (err) {
+    console.error(`Failed to save user settings for user ${userId}`, err);
     return undefined;
   }
 };

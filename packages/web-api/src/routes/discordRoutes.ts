@@ -1,9 +1,9 @@
 import express from 'express';
 import { TextChannel } from 'discord.js';
 import { check, validationResult } from 'express-validator';
-import { SessionModel } from '@caravan/buddy-reading-mongo';
 import { ReadingDiscordBot } from '../services/discord';
 import { hasScope } from '../common/discordbot';
+import { getSession } from '../services/session';
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.post(
     }
     const { channelId } = req.params;
     const accessToken: string = req.body.accessToken;
-    const sessionDoc = await SessionModel.findOne({ accessToken });
+    const sessionDoc = await getSession(accessToken);
     if (!sessionDoc) {
       console.warn(`Failed attempt at posting message by user`);
       res.status(401).send('Unauthorized: unknown accessToken.');
