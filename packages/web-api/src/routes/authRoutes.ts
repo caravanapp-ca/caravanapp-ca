@@ -202,7 +202,10 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
-    const currentSessionModel = await getSessionFromUserId(userDoc.id, 'discord');
+    const currentSessionModel = await getSessionFromUserId(
+      userDoc.id,
+      'discord'
+    );
     let saveNewDoc = false;
 
     const refreshSessionDoc = (newDoc: DeepPartial<SessionDoc>) => {
