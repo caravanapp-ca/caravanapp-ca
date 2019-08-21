@@ -1,10 +1,9 @@
-import mongoose from 'mongoose';
-import UserPalettesModel from '../models/userPalettes';
 import {
   PaletteSet,
   UserPalettes,
   FilterAutoMongoKeys,
 } from '@caravan/buddy-reading-types';
+import UserPalettesModel from '../models/userPalettes';
 
 export const getUserPalettes = async (userId: string) => {
   return UserPalettesModel.findOne({ userId });

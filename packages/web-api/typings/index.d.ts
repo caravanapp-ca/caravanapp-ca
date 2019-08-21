@@ -60,9 +60,10 @@ export interface GroupMemberDoc
   userId: MongooseTypes.ObjectId;
 }
 
-export interface SessionDoc extends Document, FilterAutoMongoKeys<Session> {
+export interface SessionDoc extends Document, Omit<Session, '_id' | 'userId'> {
   // Override the type to ensure that it's a string not _id?: any;
   _id: MongooseTypes.ObjectId;
+  userId: MongooseTypes.ObjectId;
 }
 
 export interface ShelfEntryDoc extends Document, Omit<ShelfEntry, '_id'> {

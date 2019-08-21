@@ -9,7 +9,6 @@ import {
   UserQA,
   Services,
   SameKeysAs,
-  UserSearchField,
 } from '@caravan/buddy-reading-types';
 import UserModel from '../models/user';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
