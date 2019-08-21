@@ -217,12 +217,9 @@ router.get('/discord/callback', async (req, res) => {
       }
       // Check if the user has provided any new Discord permissions.
       // If so, update their session doc.
-      const discordPermissions = DISCORD_PERMISSIONS.join(' ');
-      if (scope !== discordPermissions) {
-        currentSessionModel.update({ scope: discordPermissions });
-      }
       const isExpired = Date.now() > accessTokenExpiresAt;
-      if (isExpired) {
+      const expectedDiscordPermissions = DISCORD_PERMISSIONS.join(' ');
+      if (isExpired || scope !== expectedDiscordPermissions) {
         // Begin token refresh
         console.log(
           `Refreshing access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
