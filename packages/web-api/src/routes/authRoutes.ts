@@ -202,7 +202,37 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
-    const currentSessionModel = await getSession(accessToken);
+    const currentSessionModel = await getSessionFromUserId(userDoc.id, 'discord');
+    let saveNewDoc = false;
+
+    const refreshSessionDoc = (newDoc: DeepPartial<SessionDoc>) => {
+      // If there was an existing session doc, delete it, else do nothing
+      const oldDocPromise = currentSessionModel
+        ? currentSessionModel.remove().then(oldDoc => {
+            console.log(
+              `Deleted expired discord session doc ${oldDoc.id} for user ${userDoc.id}`
+            );
+            return oldDoc;
+          })
+        : Promise.resolve<SessionDoc>(null);
+      // Create the new session doc
+      const newDocPromise = SessionModel.create(newDoc).then(newDoc => {
+        console.log(
+          `Created new session doc ${newDoc.id} for user ${userDoc.id}`
+        );
+        return newDoc;
+      });
+      try {
+        return Promise.all([oldDocPromise, newDocPromise]);
+      } catch (err) {
+        console.error(
+          `Failed to delete old session doc or create new session doc while refreshing user ${userDoc.id}`,
+          err
+        );
+        throw err;
+      }
+    };
+
     if (currentSessionModel) {
       const {
         accessTokenExpiresAt,
@@ -219,57 +249,32 @@ router.get('/discord/callback', async (req, res) => {
       // If so, update their session doc.
       const isExpired = Date.now() > accessTokenExpiresAt;
       const expectedDiscordPermissions = DISCORD_PERMISSIONS.join(' ');
-      if (isExpired || scope !== expectedDiscordPermissions) {
+
+      if (isExpired) {
         // Begin token refresh
         console.log(
           `Refreshing access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
         );
+        // Update the response data and new token to be later saved
         tokenResponseData = await ReadingDiscordBot.refreshAccessToken(
           refreshToken
         );
         accessToken = tokenResponseData.access_token;
-        const modelInstance = convertTokenResponseToModel(
-          tokenResponseData,
-          'discord',
-          userDoc._id
-        );
-        const oldDocPromise = currentSessionModel.remove().then(oldDoc => {
-          console.log(
-            `Deleted expired discord session doc ${oldDoc.id} for user ${userDoc.id}`
-          );
-          return oldDoc;
-        });
-        const newDocPromise = SessionModel.create(modelInstance).then(
-          newDoc => {
-            console.log(
-              `Created new session doc ${newDoc.id} for user ${userDoc.id}`
-            );
-            return newDoc;
-          }
-        );
-        try {
-          await Promise.all([oldDocPromise, newDocPromise]);
-        } catch (err) {
-          console.error(
-            `Failed to delete old session doc or create new session doc while refreshing user ${userDoc.id}`,
-            err
-          );
-          throw err;
-        }
       }
-      // else validated
+
+      // Refresh the data if needed
+      saveNewDoc = isExpired || scope !== expectedDiscordPermissions;
     } else {
-      // New user, nice!
-      const modelInstance = convertTokenResponseToModel(
+      // New user
+      saveNewDoc = true;
+    }
+    if (saveNewDoc) {
+      const newSessionDoc = convertTokenResponseToModel(
         tokenResponseData,
         'discord',
         userDoc._id
       );
-      const sessionModel = new SessionModel(modelInstance);
-      sessionModel.save();
-      console.log(
-        `Created a new session for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
-      );
+      await refreshSessionDoc(newSessionDoc);
     }
   } catch (err) {
     // to check if it fails here
