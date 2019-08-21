@@ -6,11 +6,13 @@
   "scripts": {
     "build": "npm run build:clean && tsc",
     "build:clean": "rimraf ./dist",
+    "build:mongo": "cd ../mongo && npm run build",
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
-    "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
-    "dev:watch": "cross-env NODE_ENV=development nodemon --inspect src/index.ts",
+    "dev": "cross-env NODE_ENV=development npm run build:mongo && nodemon src/index.ts",
+    "dev:prebuilt": "cross-env NODE_ENV=development nodemon --inspect src/index.ts",
+    "dev:watch": "cross-env NODE_ENV=development npm run build:mongo && nodemon --inspect src/index.ts",
     "lint": "eslint \"src/**/*\"",
-    "lint:fix": "eslint \"src/**/*.{js,ts}\" --quiet --fix",
+    "lint:fix": "eslint \"src/**/*\" --quiet --fix",
     "test": "jest"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/web-api",
@@ -26,6 +28,8 @@
   },
   "homepage": "https://github.com/quinnturner/buddy-reading-website#README",
   "dependencies": {
+    "@caravan/buddy-reading-mongo": "1.0.0",
+    "@google-cloud/pubsub": "^0.30.3",
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "btoa": "^1.2.1",

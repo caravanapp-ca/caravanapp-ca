@@ -4,8 +4,7 @@ import {
   SameKeysAs,
   Session,
 } from '@caravan/buddy-reading-types';
-import SessionModel from '../models/session';
-import { SessionDoc } from '../../typings';
+import { SessionDoc, SessionModel } from '@caravan/buddy-reading-mongo';
 
 export const getSessionFromUserId = async (
   userId: string,

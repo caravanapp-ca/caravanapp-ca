@@ -10,7 +10,7 @@ import {
   Services,
   SameKeysAs,
 } from '@caravan/buddy-reading-types';
-import UserModel from '../models/user';
+import { UserDoc, UserModel } from '@caravan/buddy-reading-mongo';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import {
   userSlugExists,
@@ -20,7 +20,6 @@ import {
 } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
-import { UserDoc } from '../../typings';
 import { createReferralAction } from '../services/referral';
 import Fuse from 'fuse.js';
 

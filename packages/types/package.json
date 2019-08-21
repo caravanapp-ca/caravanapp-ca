@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "exit 0",
-    "lint": "tsc --noEmit && eslint \"index.d.ts\" --quiet --fix",
+    "lint": "eslint \"index.d.ts\"",
+    "lint:fix": "eslint \"index.d.ts\" --quiet --fix",
     "test": "echo \"Tests are not implemented.\" && exit 0"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/types",
@@ -23,6 +24,10 @@
     "url": "https://github.com/quinnturner/buddy-reading-website/issues"
   },
   "homepage": "https://github.com/quinnturner/buddy-reading-website#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "utility-types": "^3.7.0"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
@@ -32,9 +37,5 @@
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
     "typescript": "^3.5.3"
-  },
-  "dependencies": {
-    "discord.js": "^11.5.1",
-    "utility-types": "^3.7.0"
   }
 }

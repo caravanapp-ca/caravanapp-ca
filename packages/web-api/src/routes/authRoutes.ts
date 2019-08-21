@@ -1,19 +1,22 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { DeepPartial } from 'utility-types';
 import {
   FilterAutoMongoKeys,
   OAuth2Client,
   User,
   UserSettings,
 } from '@caravan/buddy-reading-types';
-import { DeepPartial } from 'utility-types';
+import {
+  SessionDoc,
+  SessionModel,
+  UserModel,
+} from '@caravan/buddy-reading-mongo';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
   ReadingDiscordBot,
 } from '../services/discord';
-import SessionModel from '../models/session';
-import UserModel from '../models/user';
 import { generateSlugIds } from '../common/url';
 import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
 import {
@@ -21,13 +24,12 @@ import {
   createReferralActionByDoc,
 } from '../services/referral';
 import { getUserSettings, createUserSettings } from '../services/userSettings';
-import { getSession, getSessionFromUserId } from '../services/session';
+import { getSessionFromUserId } from '../services/session';
 import { validateSessionPermissions } from '../common/session';
 import {
   DISCORD_PERMISSIONS,
   DEFAULT_EMAIL_SETTINGS,
 } from '../common/globalConstantsAPI';
-import { SessionDoc } from '../../typings';
 
 const router = express.Router();
 

@@ -1,11 +1,14 @@
-import { model, Schema } from 'mongoose';
+import { model, Document, Schema, Types } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
   Genres,
   Genre,
 } from '@caravan/buddy-reading-types';
-import { GenreDoc } from '../../typings';
+
+export interface GenreDoc extends Document, Omit<Genres, '_id'> {
+  _id: Types.ObjectId;
+}
 
 const genreSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<Genre>> = {
   key: { type: String, required: true },
@@ -26,4 +29,4 @@ const genresSchema = new Schema<GenreDoc>(genresSchemaDefinition, {
   timestamps: true,
 });
 
-export default model<GenreDoc>('Genre', genresSchema);
+export const GenreModel = model<GenreDoc>('Genre', genresSchema);

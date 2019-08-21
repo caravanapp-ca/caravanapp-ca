@@ -1,11 +1,15 @@
-import { model, Schema } from 'mongoose';
+import { model, Document, Schema, Types } from 'mongoose';
+import { Omit } from 'utility-types';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
   Badges,
   Badge,
 } from '@caravan/buddy-reading-types';
-import { BadgeDoc } from '../../typings';
+
+export interface BadgeDoc extends Document, Omit<Badges, '_id'> {
+  _id: Types.ObjectId;
+}
 
 const badgeDefinition: SameKeysAs<FilterAutoMongoKeys<Badge>> = {
   key: { type: String, required: true },
@@ -20,4 +24,4 @@ const badgesDefinition: SameKeysAs<FilterAutoMongoKeys<Badges>> = {
 
 const badgesSchema = new Schema(badgesDefinition);
 
-export default model<BadgeDoc>('Badge', badgesSchema);
+export const BadgeModel = model<BadgeDoc>('Badge', badgesSchema);

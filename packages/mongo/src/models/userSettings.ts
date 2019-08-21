@@ -1,11 +1,14 @@
-import { model, Schema, Types } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
   EmailSettings,
   UserSettings,
 } from '@caravan/buddy-reading-types';
-import { UserSettingsDoc } from '../../typings';
+
+export interface UserSettingsDoc extends Document, Omit<UserSettings, '_id'> {
+  _id: Types.ObjectId;
+}
 
 const emailSettingsDefinition: SameKeysAs<EmailSettings> = {
   recs: { type: Boolean, required: true },
@@ -31,7 +34,7 @@ const UserSettingsSchema = new Schema(UserSettingsDefinition, {
   timestamps: true,
 });
 
-export default model<UserSettingsDoc>(
+export const UserSettingsModel = model<UserSettingsDoc>(
   'UserSettings',
   UserSettingsSchema,
   'userSettings'
