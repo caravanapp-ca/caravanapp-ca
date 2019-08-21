@@ -4,7 +4,7 @@ import {
   Post,
   SameKeysAs,
   Services,
-  PostAuthorInfo,
+  PostUserInfo,
 } from '@caravan/buddy-reading-types';
 import PostModel from '../models/post';
 import { isAuthenticated } from '../middleware/auth';
@@ -41,7 +41,8 @@ router.get('/getPostUserInfo/:userId', async (req, res) => {
   const { userId } = req.params;
   const user = await getUser(userId);
   if (user) {
-    const userInfo: PostAuthorInfo = {
+    const userInfo: PostUserInfo = {
+      userId,
       name: user.name
         ? user.name
         : user.urlSlug

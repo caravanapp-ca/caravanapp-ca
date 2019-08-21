@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { makeStyles, Button, Typography } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { Like } from '@caravan/buddy-reading-types';
+import { Like, PostUserInfo } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({
   actionContainer: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 interface PostActionsProps {
   postId: string;
-  likes: string[];
+  likes: PostUserInfo[];
   hasLikedPost: boolean;
   onClickLike: () => void;
 }
@@ -43,6 +43,8 @@ function PostActions(props: PostActionsProps) {
   console.log('Likes in post actions');
   console.log(likes);
 
+  const numLikes = likes.length.toString();
+
   return (
     <div className={classes.actionContainer}>
       <div className={classes.likesContainer}>
@@ -52,6 +54,9 @@ function PostActions(props: PostActionsProps) {
             style={{ fill: hasLikedPost ? '#AF0020' : undefined }}
           />
         </IconButton>
+        <Typography>
+          {postId} has {numLikes} likes
+        </Typography>
       </div>
       <div className={classes.createClubButtonContainer}>
         <Button

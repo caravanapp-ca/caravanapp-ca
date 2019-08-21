@@ -12,13 +12,13 @@ export async function modifyPostLike(
   user: User,
   postId: string,
   alreadyLiked: boolean,
-  likes: Likes | FilterAutoMongoKeys<Likes>
+  likesUserIds: string[]
 ) {
   const res = await axios.post(`${likeRoute}/like/${postId}`, {
     params: {
       user,
       alreadyLiked,
-      likes,
+      likesUserIds,
     },
   });
   return res;

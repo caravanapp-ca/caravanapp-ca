@@ -245,15 +245,17 @@ declare module '@caravan/buddy-reading-types' {
     content: PostContent;
   }
 
-  export interface PostAuthorInfo {
+  export interface PostUserInfo {
+    userId: string;
     name: string;
     urlSlug: string;
     photoUrl: string;
   }
 
-  export interface PostWithAuthorInfo {
+  export interface PostWithAuthorInfoAndLikes {
     post: Post;
-    authorInfo: PostAuthorInfo;
+    authorInfo: PostUserInfo;
+    likes: PostUserInfo[];
   }
 
   export interface ShelfPost {

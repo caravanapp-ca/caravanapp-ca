@@ -5,12 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import {
-  User,
-  Post,
-  PostAuthorInfo,
-  PostWithAuthorInfo,
-} from '@caravan/buddy-reading-types';
+import { User, PostWithAuthorInfoAndLikes } from '@caravan/buddy-reading-types';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import ShelfPostCard from './ShelfPostCard';
 
@@ -97,7 +92,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface PostCardProps {
-  posts: PostWithAuthorInfo[];
+  postsWithAuthorInfoAndLikes: PostWithAuthorInfoAndLikes[];
   currUser: User | null;
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
@@ -110,7 +105,12 @@ const lazyloadOffset = 4;
 
 export default function PostCards(props: PostCardProps) {
   const classes = useStyles();
-  const { posts, currUser, showResultsCount, resultsLoaded } = props;
+  const {
+    postsWithAuthorInfoAndLikes,
+    currUser,
+    showResultsCount,
+    resultsLoaded,
+  } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
@@ -123,12 +123,14 @@ export default function PostCards(props: PostCardProps) {
       <Container className={classes.cardGrid} maxWidth="md">
         {showResultsCount && resultsLoaded && (
           <Typography variant="body2" color="textSecondary" gutterBottom>
-            {`${posts.length} result${posts.length === 1 ? '' : 's'}`}
+            {`${postsWithAuthorInfoAndLikes.length} result${
+              postsWithAuthorInfoAndLikes.length === 1 ? '' : 's'
+            }`}
           </Typography>
         )}
         <Grid container spacing={4}>
-          {posts.map(p => {
-            const { post, authorInfo } = p;
+          {postsWithAuthorInfoAndLikes.map(p => {
+            const { post, authorInfo, likes } = p;
             const { content } = post;
             let postCard = <></>;
             if (authorInfo) {
@@ -139,6 +141,7 @@ export default function PostCards(props: PostCardProps) {
                     <ShelfPostCard
                       postContent={content}
                       postAuthorInfo={authorInfo}
+                      likes={likes}
                       postId={post._id}
                       currUser={currUser}
                       key={post._id}

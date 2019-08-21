@@ -22,8 +22,8 @@ import {
   UserWithInvitableClubs,
   UserSearchField,
   Post,
-  PostWithAuthorInfo,
-  PostAuthorInfo,
+  PostUserInfo,
+  PostWithAuthorInfoAndLikes,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -65,7 +65,11 @@ import UserSearchFilter from '../../components/filters/UserSearchFilter';
 import Composer from '../../components/Composer';
 import ShelfUploadModal from '../../components/post-uploads/ShelfUploadModal';
 import ProgressUpdateUploadModal from '../../components/post-uploads/ProgressUpdateUploadModal';
-import { getAllPosts, getPostUserInfo } from '../../services/post';
+import {
+  getAllPosts,
+  getPostUserInfo,
+  getPostAuthorAndLikesUserInfo,
+} from '../../services/post';
 import PostCards from './PostCards';
 
 interface HomeProps extends RouteComponentProps<{}> {
@@ -160,16 +164,20 @@ export function shuffleUser(user: User) {
   return user;
 }
 
-async function getPostsWithAuthorInfo(posts: Post[]) {
+async function getPostsWithAuthorInfoAndLikes(posts: Post[]) {
   if (posts.length === 0) {
     return undefined;
   } else {
-    const postsWithAuthorInfo: (PostWithAuthorInfo | null)[] = await Promise.all(
+    const postsWithAuthorInfo: (PostWithAuthorInfoAndLikes | null)[] = await Promise.all(
       posts.map(async p => {
-        const authorInfoRes = await getPostUserInfo(p.authorId).then(res => {
-          if (res.status >= 200 && res.status < 300) {
-            const authorInfo: PostAuthorInfo = res.data;
-            return { post: p, authorInfo: authorInfo };
+        const authorInfoRes = await getPostAuthorAndLikesUserInfo(
+          p._id,
+          p.authorId
+        ).then(result => {
+          if (result) {
+            const authorInfo: PostUserInfo = result.authorInfo;
+            const likesUserInfo: PostUserInfo[] = result.likesUserInfo;
+            return { post: p, authorInfo: authorInfo, likes: likesUserInfo };
           } else {
             return null;
           }
@@ -179,7 +187,7 @@ async function getPostsWithAuthorInfo(posts: Post[]) {
     );
     const filteredPostsWithAuthorInfo = postsWithAuthorInfo.filter(
       p => p !== null
-    ) as PostWithAuthorInfo[];
+    ) as PostWithAuthorInfoAndLikes[];
     return filteredPostsWithAuthorInfo;
   }
 }
@@ -196,7 +204,7 @@ export default function Home(props: HomeProps) {
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
   const [postsResult, setPostsResult] = React.useState<
-    Service<PostWithAuthorInfo[]>
+    Service<PostWithAuthorInfoAndLikes[]>
   >({
     status: 'loading',
   });
@@ -406,17 +414,17 @@ export default function Home(props: HomeProps) {
       if (res.status === 200) {
         const allPosts = res.data ? res.data.posts : undefined;
         if (allPosts && allPosts.length > 0) {
-          const postsWithAuthorInfo:
-            | PostWithAuthorInfo[]
-            | undefined = await getPostsWithAuthorInfo(allPosts);
-          if (postsWithAuthorInfo) {
+          const postsWithAuthorInfoAndLikes:
+            | PostWithAuthorInfoAndLikes[]
+            | undefined = await getPostsWithAuthorInfoAndLikes(allPosts);
+          if (postsWithAuthorInfoAndLikes) {
             setShowLoadMorePosts(allPosts.length === pageSize);
             setPostsResult(s => ({
               status: 'loaded',
               payload:
                 s.status === 'loaded'
-                  ? [...s.payload, ...postsWithAuthorInfo]
-                  : postsWithAuthorInfo,
+                  ? [...s.payload, ...postsWithAuthorInfoAndLikes]
+                  : postsWithAuthorInfoAndLikes,
             }));
           }
           setLoadingMorePosts(false);
@@ -1066,7 +1074,7 @@ export default function Home(props: HomeProps) {
               postsResult.payload &&
               postsResult.payload.length > 0 && (
                 <PostCards
-                  posts={postsResult.payload}
+                  postsWithAuthorInfoAndLikes={postsResult.payload}
                   currUser={user}
                   showResultsCount={false}
                   resultsLoaded={postsResult.status === 'loaded'}

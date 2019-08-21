@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   ShelfPost,
-  PostAuthorInfo,
+  PostUserInfo,
   PostContent,
   User,
   Likes,
@@ -107,64 +107,59 @@ const useStyles = makeStyles(theme => ({
 
 interface ShelfPostCardProps {
   postContent: PostContent;
-  postAuthorInfo: PostAuthorInfo;
+  postAuthorInfo: PostUserInfo;
+  likes: PostUserInfo[];
   postId: string;
   currUser: User | null;
 }
 
 export default function ShelfPostCard(props: ShelfPostCardProps) {
   const classes = useStyles();
-  const { postContent, postAuthorInfo, postId, currUser } = props;
+  const { postContent, postAuthorInfo, likes, postId, currUser } = props;
   const shelfPost = postContent as ShelfPost;
 
-  const [postLikes, setPostLikes] = React.useState<
-    Service<Likes> | Service<FilterAutoMongoKeys<Likes>>
-  >({
-    status: 'loading',
-  });
   const [hasLikedPost, setHasLikedPost] = React.useState<boolean>(false);
 
-  useEffect(() => {
-    if (!postId) {
-      return;
-    }
-    (async () => {
-      const response = await getPostLikes(postId);
-      if (response.status >= 200 && response.status < 204) {
-        const { data } = response;
-        const likesObj = data as Likes;
-        setPostLikes({
-          status: 'loaded',
-          payload: likesObj,
-        });
-        if (currUser && currUser._id) {
-          likesObj.likes.map(l => {
-            if (l === currUser._id) {
-              setHasLikedPost(true);
-            }
-          });
-        }
-      } else {
-        const emptyLikesArr: string[] = [];
-        const emptyLikesObj: FilterAutoMongoKeys<Likes> = {
-          likes: emptyLikesArr,
-        };
-        setPostLikes({
-          status: 'loaded',
-          payload: emptyLikesObj,
-        });
-      }
-    })();
-  }, [postId]);
+  // useEffect(() => {
+  //   if (!postId) {
+  //     return;
+  //   }
+  //   (async () => {
+  //     const response = await getPostLikes(postId);
+  //     if (response.status >= 200 && response.status < 204) {
+  //       const { data } = response;
+  //       const likes: string[] = data.likes;
+  //       const likesObj: FilterAutoMongoKeys<Likes> = {
+  //         likes,
+  //       };
+  //       setPostLikes({
+  //         status: 'loaded',
+  //         payload: likesObj,
+  //       });
+  //       if (currUser && currUser._id) {
+  //         likesObj.likes.map(l => {
+  //           if (l === currUser._id) {
+  //             setHasLikedPost(true);
+  //           }
+  //         });
+  //       }
+  //     } else {
+  //       const emptyLikesArr: string[] = [];
+  //       const emptyLikesObj: FilterAutoMongoKeys<Likes> = {
+  //         likes: emptyLikesArr,
+  //       };
+  //       setPostLikes({
+  //         status: 'loaded',
+  //         payload: emptyLikesObj,
+  //       });
+  //     }
+  //   })();
+  // }, [postId]);
 
   async function handleLikeAction() {
-    if (postLikes.status === 'loaded' && currUser) {
-      const res = await modifyPostLike(
-        currUser,
-        postId,
-        hasLikedPost,
-        postLikes.payload
-      );
+    if (currUser) {
+      const likesUserIds: string[] = likes.map(l => l.userId);
+      await modifyPostLike(currUser, postId, hasLikedPost, likesUserIds);
       setHasLikedPost(!hasLikedPost);
     }
   }
@@ -245,11 +240,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         <CardActions className={classes.cardActions}>
           <PostActions
             postId={postId}
-            likes={
-              postLikes.status === 'loaded' && postLikes.payload.likes
-                ? postLikes.payload.likes
-                : []
-            }
+            likes={likes}
             hasLikedPost={hasLikedPost}
             onClickLike={handleLikeAction}
           />

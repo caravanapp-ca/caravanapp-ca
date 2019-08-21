@@ -2,7 +2,7 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { makeStyles, Link } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
-import { PostAuthorInfo } from '@caravan/buddy-reading-types';
+import { PostUserInfo } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({
   heading: {
@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface PostHeaderProps {
-  postAuthorInfo: PostAuthorInfo;
+  postAuthorInfo: PostUserInfo;
   postIcon: string;
   iconColor: string;
 }
