@@ -66,9 +66,8 @@ import Composer from '../../components/Composer';
 import ShelfUploadModal from '../../components/post-uploads/ShelfUploadModal';
 import ProgressUpdateUploadModal from '../../components/post-uploads/ProgressUpdateUploadModal';
 import {
-  getAllPosts,
-  getPostUserInfo,
-  getPostAuthorAndLikesUserInfo,
+  getAllPostsTransformed,
+  getFeedViewerUserInfo,
 } from '../../services/post';
 import PostCards from './PostCards';
 
@@ -164,34 +163,6 @@ export function shuffleUser(user: User) {
   return user;
 }
 
-async function getPostsWithAuthorInfoAndLikes(posts: Post[]) {
-  if (posts.length === 0) {
-    return undefined;
-  } else {
-    const postsWithAuthorInfo: (PostWithAuthorInfoAndLikes | null)[] = await Promise.all(
-      posts.map(async p => {
-        const authorInfoRes = await getPostAuthorAndLikesUserInfo(
-          p._id,
-          p.authorId
-        ).then(result => {
-          if (result) {
-            const authorInfo: PostUserInfo = result.authorInfo;
-            const likesUserInfo: PostUserInfo[] = result.likesUserInfo;
-            return { post: p, authorInfo: authorInfo, likes: likesUserInfo };
-          } else {
-            return null;
-          }
-        });
-        return authorInfoRes;
-      })
-    );
-    const filteredPostsWithAuthorInfo = postsWithAuthorInfo.filter(
-      p => p !== null
-    ) as PostWithAuthorInfoAndLikes[];
-    return filteredPostsWithAuthorInfo;
-  }
-}
-
 export default function Home(props: HomeProps) {
   const classes = useStyles();
   const { user, userLoaded } = props;
@@ -208,6 +179,10 @@ export default function Home(props: HomeProps) {
   >({
     status: 'loading',
   });
+  const [
+    feedViewerUserInfo,
+    setFeedViewerUserInfo,
+  ] = React.useState<PostUserInfo | null>(null);
   const [loadingMoreUsers, setLoadingMoreUsers] = React.useState<boolean>(
     false
   );
@@ -410,24 +385,29 @@ export default function Home(props: HomeProps) {
     const pageSize = 12;
     setLoadingMorePosts(true);
     (async () => {
-      const res = await getAllPosts(afterPostsQuery, pageSize);
+      const res = await getAllPostsTransformed(afterPostsQuery, pageSize);
       if (res.status === 200) {
-        const allPosts = res.data ? res.data.posts : undefined;
-        if (allPosts && allPosts.length > 0) {
-          const postsWithAuthorInfoAndLikes:
-            | PostWithAuthorInfoAndLikes[]
-            | undefined = await getPostsWithAuthorInfoAndLikes(allPosts);
-          if (postsWithAuthorInfoAndLikes) {
-            setShowLoadMorePosts(allPosts.length === pageSize);
-            setPostsResult(s => ({
-              status: 'loaded',
-              payload:
-                s.status === 'loaded'
-                  ? [...s.payload, ...postsWithAuthorInfoAndLikes]
-                  : postsWithAuthorInfoAndLikes,
-            }));
-          }
+        const allPostsWithAuthorInfoAndLikes = res.data
+          ? res.data.posts
+          : undefined;
+        if (allPostsWithAuthorInfoAndLikes) {
+          setShowLoadMorePosts(
+            allPostsWithAuthorInfoAndLikes.length === pageSize
+          );
+          setPostsResult(s => ({
+            status: 'loaded',
+            payload:
+              s.status === 'loaded'
+                ? [...s.payload, ...allPostsWithAuthorInfoAndLikes]
+                : allPostsWithAuthorInfoAndLikes,
+          }));
           setLoadingMorePosts(false);
+        }
+      }
+      if (user) {
+        const feedViewerUserInfoRes = await getFeedViewerUserInfo(user._id);
+        if (feedViewerUserInfoRes.status === 200) {
+          setFeedViewerUserInfo(feedViewerUserInfoRes.data);
         }
       }
     })();
@@ -1075,6 +1055,7 @@ export default function Home(props: HomeProps) {
               postsResult.payload.length > 0 && (
                 <PostCards
                   postsWithAuthorInfoAndLikes={postsResult.payload}
+                  feedViewerUserInfo={feedViewerUserInfo}
                   currUser={user}
                   showResultsCount={false}
                   resultsLoaded={postsResult.status === 'loaded'}

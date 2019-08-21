@@ -548,6 +548,13 @@ declare module '@caravan/buddy-reading-types' {
         content: PostContent;
       }[];
     }
+    export interface GetPostsWithAuthorInfoAndLikes {
+      posts: {
+        post: Post;
+        authorInfo: PostUserInfo;
+        likes: PostUserInfo[];
+      }[];
+    }
   }
 
   export namespace GoogleBooks {

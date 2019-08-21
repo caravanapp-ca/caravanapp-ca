@@ -16,7 +16,7 @@ import {
   UserPalettes,
   UserSettings,
   Post,
-  Like,
+  Likes,
 } from '@caravan/buddy-reading-types';
 import { Document, Types as MongooseTypes } from 'mongoose';
 import { Omit } from 'utility-types';
@@ -86,6 +86,9 @@ export interface PostDoc extends Document, MongoTimestamps, Omit<Post, '_id'> {
   _id: MongooseTypes.ObjectId;
 }
 
-export interface LikesDoc extends Document, MongoTimestamps, Omit<Like, '_id'> {
+export interface LikesDoc
+  extends Document,
+    MongoTimestamps,
+    Omit<Likes, '_id'> {
   _id: MongooseTypes.ObjectId;
 }

@@ -13,12 +13,10 @@ const router = express.Router();
 
 // Like post
 router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
-  const foo = 'bar';
   const { postId } = req.params;
   try {
     const { user, alreadyLiked } = req.body.params;
-    const likes: string[] = req.body.params.likes;
-    console.log('In this bih');
+    const likes: string[] = req.body.params.likesUserIds;
     let modifiedLikes: string[] = [];
     if (alreadyLiked) {
       modifiedLikes = likes.filter(l => l !== user._id);
@@ -33,26 +31,26 @@ router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
       { $set: updatedLikeObj },
       { upsert: true }
     );
-    const existingLikesDoc = await LikesModel.findOne({ _id: postId });
-    if (existingLikesDoc) {
-      const result = await LikesModel.findOneAndUpdate(
-        { _id: postId },
-        updatedLikeObj,
-        { new: true }
-      );
-      return res.status(200).send(result);
-    } else {
-      try {
-        const newLikesObj: FilterAutoMongoKeys<Likes> = {
-          likes: modifiedLikes,
-        };
-        const newLikesObjSaved = await new LikesModel(newLikesObj).save();
-        return res.status(200).send(newLikesObjSaved);
-      } catch (err) {
-        console.log('Failed to modify post likes', err);
-        return next(err);
-      }
-    }
+    // const existingLikesDoc = await LikesModel.findOne({ _id: postId });
+    // if (existingLikesDoc) {
+    //   const result = await LikesModel.findOneAndUpdate(
+    //     { _id: postId },
+    //     updatedLikeObj,
+    //     { new: true }
+    //   );
+    //   return res.status(200).send(result);
+    // } else {
+    //   try {
+    //     const newLikesObj: FilterAutoMongoKeys<Likes> = {
+    //       likes: modifiedLikes,
+    //     };
+    //     const newLikesObjSaved = await new LikesModel(newLikesObj).save();
+    //     return res.status(200).send(newLikesObjSaved);
+    //   } catch (err) {
+    //     console.log('Failed to modify post likes', err);
+    //     return next(err);
+    //   }
+    // }
   } catch (err) {
     console.log('Failed to modify post likes', err);
     return next(err);
@@ -60,7 +58,6 @@ router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
 });
 
 router.get('/likes/:postId', isAuthenticated, async (req, res, next) => {
-  const foo = 'bar';
   const { postId } = req.params;
   try {
     const result = await LikesModel.findById(postId);

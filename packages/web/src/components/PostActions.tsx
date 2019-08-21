@@ -31,19 +31,39 @@ const useStyles = makeStyles(theme => ({
 interface PostActionsProps {
   postId: string;
   likes: PostUserInfo[];
-  hasLikedPost: boolean;
+  currUserId: string;
   onClickLike: () => void;
+  hasLiked: boolean | null;
+  modifiedLikes: PostUserInfo[] | null;
 }
 
 function PostActions(props: PostActionsProps) {
   const classes = useStyles();
 
-  const { postId, likes, hasLikedPost, onClickLike } = props;
+  const {
+    postId,
+    likes,
+    currUserId,
+    onClickLike,
+    hasLiked,
+    modifiedLikes,
+  } = props;
 
   console.log('Likes in post actions');
   console.log(likes);
 
-  const numLikes = likes.length.toString();
+  let likedUserIds: string[] = [];
+  let numLikes: string = '';
+  if (modifiedLikes !== null) {
+    numLikes = modifiedLikes.length.toString();
+    likedUserIds = modifiedLikes.map(l => l.userId);
+  } else {
+    numLikes = likes.length.toString();
+    likedUserIds = likes.map(l => l.userId);
+  }
+
+  const alreadyLikedBoolean =
+    hasLiked !== null ? hasLiked : likedUserIds.includes(currUserId);
 
   return (
     <div className={classes.actionContainer}>
@@ -51,7 +71,9 @@ function PostActions(props: PostActionsProps) {
         <IconButton onClick={() => onClickLike()}>
           <FavoriteIcon
             className={classes.likeButton}
-            style={{ fill: hasLikedPost ? '#AF0020' : undefined }}
+            style={{
+              fill: alreadyLikedBoolean ? '#AF0020' : undefined,
+            }}
           />
         </IconButton>
         <Typography>

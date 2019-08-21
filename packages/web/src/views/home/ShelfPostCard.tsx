@@ -108,6 +108,7 @@ const useStyles = makeStyles(theme => ({
 interface ShelfPostCardProps {
   postContent: PostContent;
   postAuthorInfo: PostUserInfo;
+  feedViewerUserInfo: PostUserInfo | null;
   likes: PostUserInfo[];
   postId: string;
   currUser: User | null;
@@ -115,52 +116,46 @@ interface ShelfPostCardProps {
 
 export default function ShelfPostCard(props: ShelfPostCardProps) {
   const classes = useStyles();
-  const { postContent, postAuthorInfo, likes, postId, currUser } = props;
+  const {
+    postContent,
+    postAuthorInfo,
+    feedViewerUserInfo,
+    likes,
+    postId,
+    currUser,
+  } = props;
   const shelfPost = postContent as ShelfPost;
 
-  const [hasLikedPost, setHasLikedPost] = React.useState<boolean>(false);
+  const [hasLiked, setHasLiked] = React.useState<boolean | null>(null);
 
-  // useEffect(() => {
-  //   if (!postId) {
-  //     return;
-  //   }
-  //   (async () => {
-  //     const response = await getPostLikes(postId);
-  //     if (response.status >= 200 && response.status < 204) {
-  //       const { data } = response;
-  //       const likes: string[] = data.likes;
-  //       const likesObj: FilterAutoMongoKeys<Likes> = {
-  //         likes,
-  //       };
-  //       setPostLikes({
-  //         status: 'loaded',
-  //         payload: likesObj,
-  //       });
-  //       if (currUser && currUser._id) {
-  //         likesObj.likes.map(l => {
-  //           if (l === currUser._id) {
-  //             setHasLikedPost(true);
-  //           }
-  //         });
-  //       }
-  //     } else {
-  //       const emptyLikesArr: string[] = [];
-  //       const emptyLikesObj: FilterAutoMongoKeys<Likes> = {
-  //         likes: emptyLikesArr,
-  //       };
-  //       setPostLikes({
-  //         status: 'loaded',
-  //         payload: emptyLikesObj,
-  //       });
-  //     }
-  //   })();
-  // }, [postId]);
+  const [modifiedLikes, setModifiedLikes] = React.useState<
+    PostUserInfo[] | null
+  >(null);
 
   async function handleLikeAction() {
-    if (currUser) {
+    if (currUser && feedViewerUserInfo !== null) {
       const likesUserIds: string[] = likes.map(l => l.userId);
+      const hasLikedPost = currUser
+        ? likesUserIds.includes(currUser._id)
+        : false;
       await modifyPostLike(currUser, postId, hasLikedPost, likesUserIds);
-      setHasLikedPost(!hasLikedPost);
+      if (hasLikedPost) {
+        if (modifiedLikes !== null) {
+          const updatedLikesArr = modifiedLikes.filter(
+            l => l.userId !== currUser._id
+          );
+          setModifiedLikes(updatedLikesArr);
+        } else {
+          setModifiedLikes(likes.filter(l => l.userId !== currUser._id));
+        }
+      } else {
+        if (modifiedLikes !== null) {
+          setModifiedLikes([...modifiedLikes, feedViewerUserInfo]);
+        } else {
+          setModifiedLikes(likes.filter(l => l.userId !== currUser._id));
+        }
+      }
+      setHasLiked(!hasLikedPost);
     }
   }
 
@@ -241,8 +236,10 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           <PostActions
             postId={postId}
             likes={likes}
-            hasLikedPost={hasLikedPost}
+            currUserId={currUser ? currUser._id : ''}
             onClickLike={handleLikeAction}
+            hasLiked={hasLiked}
+            modifiedLikes={modifiedLikes}
           />
         </CardActions>
       </Card>
