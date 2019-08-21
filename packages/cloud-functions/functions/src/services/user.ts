@@ -19,8 +19,8 @@ export const getUsername = (userDoc?: UserDoc, member?: GuildMember) => {
   const username =
     userDoc && userDoc.name
       ? userDoc.name
-      : member && member.user && member.user.username
-      ? member.user.username
+      : member && member.displayName
+      ? member.displayName
       : undefined;
   return username;
 };
