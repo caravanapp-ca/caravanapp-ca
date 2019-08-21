@@ -1,7 +1,6 @@
 import express from 'express';
 import { TextChannel } from 'discord.js';
 import { check, validationResult } from 'express-validator';
-import SessionModel from '../models/session';
 import { ReadingDiscordBot } from '../services/discord';
 import { hasScope } from '../common/discordbot';
 import { getSession } from '../services/session';

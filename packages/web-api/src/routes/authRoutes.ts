@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import {
   FilterAutoMongoKeys,
+  OAuth2Client,
   Session,
   User,
   UserSettings,
@@ -50,7 +51,7 @@ router.get('/discord/validatePermissions', async (req, res) => {
       .send('Require a logged in user to complete this request.');
   }
   try {
-    const sessionDoc = await getSessionFromUserId(userId);
+    const sessionDoc = await getSessionFromUserId(userId, 'discord');
     if (!sessionDoc) {
       throw new Error(
         `SessionDoc in validatePermissions is null { userId: ${userId} }`
@@ -71,7 +72,7 @@ router.get('/discord/validatePermissions', async (req, res) => {
 
 function convertTokenResponseToModel(
   obj: OAuth2TokenResponseData,
-  client: string,
+  client: OAuth2Client,
   userId: string
 ) {
   const model: FilterAutoMongoKeys<Session> = {
