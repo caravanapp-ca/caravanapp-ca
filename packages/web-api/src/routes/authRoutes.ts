@@ -1,11 +1,12 @@
 import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import {
   FilterAutoMongoKeys,
   OAuth2Client,
-  Session,
   User,
   UserSettings,
 } from '@caravan/buddy-reading-types';
+import { DeepPartial } from 'utility-types';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
@@ -26,6 +27,7 @@ import {
   DISCORD_PERMISSIONS,
   DEFAULT_EMAIL_SETTINGS,
 } from '../common/globalConstantsAPI';
+import { SessionDoc } from '../../typings';
 
 const router = express.Router();
 
@@ -73,9 +75,9 @@ router.get('/discord/validatePermissions', async (req, res) => {
 function convertTokenResponseToModel(
   obj: OAuth2TokenResponseData,
   client: OAuth2Client,
-  userId: string
+  userId: mongoose.Types.ObjectId
 ) {
-  const model: FilterAutoMongoKeys<Session> = {
+  const model: DeepPartial<SessionDoc> = {
     accessToken: obj.access_token,
     accessTokenExpiresAt: Date.now() + obj.expires_in * 1000,
     refreshToken: obj.refresh_token,
@@ -202,20 +204,21 @@ router.get('/discord/callback', async (req, res) => {
   try {
     const currentSessionModel = await getSession(accessToken);
     if (currentSessionModel) {
-      if (currentSessionModel.client !== 'discord') {
+      const {
+        accessTokenExpiresAt,
+        client,
+        refreshToken,
+        scope,
+      } = currentSessionModel;
+      if (client !== 'discord') {
         return res
           .status(401)
-          .send(
-            `Unauthorized: invalid source for session ${currentSessionModel.client}`
-          );
+          .send(`Unauthorized: invalid source for session ${client}`);
       }
-      const accessTokenExpiresAt: number = currentSessionModel.get(
-        'accessTokenExpiresAt'
-      );
       // Check if the user has provided any new Discord permissions.
       // If so, update their session doc.
       const discordPermissions = DISCORD_PERMISSIONS.join(' ');
-      if (currentSessionModel.scope !== discordPermissions) {
+      if (scope !== discordPermissions) {
         currentSessionModel.update({ scope: discordPermissions });
       }
       const isExpired = Date.now() > accessTokenExpiresAt;
@@ -224,7 +227,6 @@ router.get('/discord/callback', async (req, res) => {
         console.log(
           `Refreshing access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
         );
-        const refreshToken: string = currentSessionModel.get('refreshToken');
         tokenResponseData = await ReadingDiscordBot.refreshAccessToken(
           refreshToken
         );
@@ -232,12 +234,31 @@ router.get('/discord/callback', async (req, res) => {
         const modelInstance = convertTokenResponseToModel(
           tokenResponseData,
           'discord',
-          userDoc.id
+          userDoc._id
         );
-        currentSessionModel.update(modelInstance).exec();
-        console.log(
-          `Updated access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
+        const oldDocPromise = currentSessionModel.remove().then(oldDoc => {
+          console.log(
+            `Deleted expired discord session doc ${oldDoc.id} for user ${userDoc.id}`
+          );
+          return oldDoc;
+        });
+        const newDocPromise = SessionModel.create(modelInstance).then(
+          newDoc => {
+            console.log(
+              `Created new session doc ${newDoc.id} for user ${userDoc.id}`
+            );
+            return newDoc;
+          }
         );
+        try {
+          await Promise.all([oldDocPromise, newDocPromise]);
+        } catch (err) {
+          console.error(
+            `Failed to delete old session doc or create new session doc while refreshing user ${userDoc.id}`,
+            err
+          );
+          throw err;
+        }
       }
       // else validated
     } else {
@@ -245,7 +266,7 @@ router.get('/discord/callback', async (req, res) => {
       const modelInstance = convertTokenResponseToModel(
         tokenResponseData,
         'discord',
-        userDoc.id
+        userDoc._id
       );
       const sessionModel = new SessionModel(modelInstance);
       sessionModel.save();
