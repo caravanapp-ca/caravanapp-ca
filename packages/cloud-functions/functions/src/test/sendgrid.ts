@@ -27,7 +27,7 @@ export const testSendGrid = async (req: Request, res: Response) => {
     const [mailResponse] = await sgMail.send(msg);
     return res.status(200).send(mailResponse);
   } catch (err) {
-    const errMsg = `Failed to send email: ${err}`;
+    const errMsg = `Failed to send email. ${err}`;
     console.error(new Error(errMsg));
     return res.status(500).send(errMsg);
   }
