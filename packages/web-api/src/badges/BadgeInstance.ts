@@ -1,5 +1,4 @@
-import { BadgeDoc } from '../../typings';
-import BadgeModel from '../models/badge';
+import { BadgeDoc, BadgeModel } from '@caravan/buddy-reading-mongo';
 
 // Singleton pattern
 export const BadgeDocInstance = (() => {

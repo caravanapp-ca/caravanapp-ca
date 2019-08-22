@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "buddyreading-staging-env",
+  "private_key_id": "171f3cf4e3ee66d5d2c2be7f8068d14b3277d154",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDBUSaos7Kql3JQ\nFGBGRdom/Qsq4DUnTfzqXaU4XHDxWuUKHD27TyVEX89NPY4nhQ9DBj03H5dEMLuT\n7RVgJhbkRMgiAdE+Q1OQSwFklwgReAM5+PNegr0tN4jL2raqpjBpNnCMCmDwbdCk\nc5Bt9z2tP7LbHv9Qdkafni977oUikPpewcw8IBmUOJndgb7hmcIFBsr2PQZcX81d\ntvFsK4MeHMDjOItxOxLP8ge7VtvL7PaC/UF/pcpwZFGUZGAXPEIZIHhkolL9xP7p\nPiAhqLKLsA7ncLfPMl6RTQvuCVYf3lI8c2RadBfv7h1pLGzFE5fL7ilk76K1E5TT\nPN0Lorp1AgMBAAECggEAOFHBFoMLuUFX71aQWci97n/oAfzB34qL9WeE2++qg9Y8\nRf7GSUycidfz2Afn40GTma42pVmRwy8DZuw6PwG5x5T2TVoEMMSCktYXOMv7cMNr\nBTevB0jFfmfgdatpbjvufKh8j3/yj/keQNreJ/tQv6mAHPBh53odxyDZqpxpsxDR\noDHwWwdlt5yvpGZ+GtrvApHfWH24hyz8G1QGSiCzigC9tRJoGnBIi1EdJacMgyN3\nvLRfOtlhmiRzHbeN1t6FglrFX13BU7tSgp3700GyJVMxMRcQ8Lk3BLJIx7yFBjvs\npH0V7yqleEKIuFOTdFLZgUahyZUixyFyNK6e3MlZfQKBgQDxlCDblJ/8usZwyEtE\nDUh1k3fRNJh1ovhBA/EGdQR3W4+LcB+wCNz+lfxmYElSowYd6bekcU91J2dI/hI5\noFNRXtJGn+/W99hOd084OLGuAjn6ixk9xN9CKFyodoaD748iJ7IFwAYKJ/z6Idkd\ntRKL6Q9wFphZy/Fa5ZLixbHi9wKBgQDM23mbWklpRnKxgjfvO8KcpNGui7b5bdtL\n07DYcmZE9nNO7WrRcpRJutsQDkMnAqKq9JROZsFSyMDJpcV6mCg1N79ZQNPH4R/I\nulSBlwVz6tpTG0u3qqSHNM3v1eLkmezeQnQiK3UBC2y06zVHGXdSOSK3Gq5FfPDr\nnDZdtx2G8wKBgQCWFMuw/w3Byht8d8LivUnV2c7nRsCs3JlUculrdIlYyaZNH1Rg\nXbFF7NJIm+sRjrw/GzL+03Jkux0cqNOTv3njpIAIZlZve7yDSvYJXJduHm38rCv7\nRvLYvBCMjE4Xa13F/1lG3zwhVSSCFUM4hITILPttTGxL5TrFmLh/cAiKkwKBgDrv\n/emjLTG7ke3eAAe1EsWMacMk8SyL3abQLbXoG+JFYWFYzv2ZUG5x8uqIn+tOR8yV\nd0GjMIWHumeJaOpfcln1QvkDvKpp64INkZiDAY+bBtsYJE2gK5u2pnUU/SU1378G\nMXFPPWdiiRD4BqkA+6JNS96QL4lQa+PtWnrV3wnfAoGAXeFcHxu8qhuK1nuVpElu\nOpYc11WPbuHdBNySnUiOpZT0fbO6G/U+KIEyR1zWeDSMYau38CnUv3V8YOQLXunF\nbhihE0qZ7Z1xTKtM6K8UL6PGa+C1elAEN60EjJW3kfWTXQDdOZ+09eCK0LLJr0GQ\nMG4NnWZZMwcS0QU0paj9ogE=\n-----END PRIVATE KEY-----\n",
+  "client_email": "local-development-staging@buddyreading-staging-env.iam.gserviceaccount.com",
+  "client_id": "104128666640126692896",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/local-development-staging%40buddyreading-staging-env.iam.gserviceaccount.com"
+}

@@ -1,7 +1,7 @@
 import express from 'express';
 import { Services } from '@caravan/buddy-reading-types';
+import { ProfileQuestionsDoc } from '@caravan/buddy-reading-mongo';
 import { getProfileQuestions } from '../services/profileQuestions';
-import { ProfileQuestionsDoc } from '../../typings';
 
 const router = express.Router();
 

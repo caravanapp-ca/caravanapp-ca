@@ -13,8 +13,16 @@
       "path": "packages/web-api"
     },
     {
+      "name": "MongoDB",
+      "path": "packages/mongo"
+    },
+    {
       "name": "Types",
       "path": "packages/types"
+    },
+    {
+      "name": "Cloud functions",
+      "path": "packages/cloud-functions"
     }
   ],
   "settings": {

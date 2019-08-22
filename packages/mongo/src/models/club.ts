@@ -1,4 +1,5 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
+import { Omit } from 'utility-types';
 import {
   Club,
   ShelfEntry,
@@ -9,9 +10,16 @@ import {
   Discussion,
   ClubShelf,
 } from '@caravan/buddy-reading-types';
-import { Omit } from 'utility-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
-import { ClubDoc } from '../../typings';
+
+export interface ShelfEntryDoc extends Document, Omit<ShelfEntry, '_id'> {
+  _id: Types.ObjectId;
+}
+
+export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
+  _id: Types.ObjectId;
+  shelf: ShelfEntryDoc[];
+}
 
 const genresSchema = new Schema({
   key: String,
@@ -99,4 +107,4 @@ const clubSchema = new Schema<ClubDoc>(definition, {
   timestamps: true,
 });
 
-export default model<ClubDoc>('Club', clubSchema);
+export const ClubModel = model<ClubDoc>('Club', clubSchema);

@@ -1,9 +1,11 @@
 steps:
-  - name: gcr.io/cloud-builders/yarn
+  - name: node:10.15.1
+    entrypoint: yarn
     args: ['install']
   # - name: gcr.io/cloud-builders/yarn
   #   args: ["test"]
-  - name: gcr.io/cloud-builders/yarn
+  - name: node:10.15.1
+    entrypoint: yarn
     args: ['create-env']
     env:
       - 'COOKIE_SESSION_KEY=${_COOKIE_SESSION_KEY}'
@@ -16,7 +18,8 @@ steps:
       - 'GAE_ENV=${_GAE_ENV}'
       - 'MONGO_DB=${_MONGO_DB}'
       - 'PORT=3001'
-  - name: gcr.io/cloud-builders/yarn
+  - name: node:10.15.1
+    entrypoint: yarn
     args: ['build']
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.staging.yaml']

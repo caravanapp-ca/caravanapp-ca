@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import UserModel from '../models/user';
+import { UserModel } from '@caravan/buddy-reading-mongo';
 
 export interface ErrorWithStatus extends Error {
   status?: number;
