@@ -22,7 +22,6 @@
   "main": "dist/index.js",
   "dependencies": {
     "@google-cloud/firestore": "^2.2.6",
-    "@google-cloud/functions-framework": "^1.2.1",
     "@google-cloud/pubsub": "^0.30.3",
     "@sendgrid/mail": "^6.4.0",
     "btoa": "^1.2.1",

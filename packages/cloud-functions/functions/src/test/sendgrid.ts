@@ -1,7 +1,7 @@
 import sgMail from '@sendgrid/mail';
-import { Request, Response } from 'express';
+import { HttpFunction } from '@google-cloud/functions-framework';
 
-export const testSendGrid = async (req: Request, res: Response) => {
+export const testSendGrid: HttpFunction = async (req, res) => {
   console.log('Testing send grid API');
   if (!process.env.FUNCTION_TARGET) {
     // In development
@@ -12,7 +12,7 @@ export const testSendGrid = async (req: Request, res: Response) => {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   } else {
     const errMsg = 'Unable to find SendGrid API Key in environment variables.';
-    console.error(errMsg);
+    console.error(new Error(errMsg));
     return res.status(500).send(errMsg);
   }
   const msg = {
