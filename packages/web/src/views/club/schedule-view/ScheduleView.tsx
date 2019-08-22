@@ -7,10 +7,12 @@ import {
   IconButton,
   Typography,
   Slider,
+  Switch,
   Container,
   TextField,
   Tooltip,
   Button,
+  PropTypes,
 } from '@material-ui/core';
 import {
   usePickerState,
@@ -18,8 +20,14 @@ import {
   MaterialUiPickersDate,
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
-import { DateRange, NotInterested } from '@material-ui/icons';
-import { addDays, isWithinInterval, isSameDay, format } from 'date-fns';
+import { DateRange, NotInterested, Settings } from '@material-ui/icons';
+import {
+  addDays,
+  isWithinInterval,
+  isSameDay,
+  format,
+  differenceInCalendarDays,
+} from 'date-fns';
 import clsx from 'clsx';
 import CalendarLegend from './CalendarLegend';
 import { successTheme, textSecondaryTheme } from '../../../theme';
@@ -28,8 +36,13 @@ import {
   FilterAutoMongoKeys,
   ShelfEntry,
   LoadableMemberStatus,
+  Discussion,
 } from '@caravan/buddy-reading-types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MIN_SCHEDULE_LENGTH_DAYS } from '../../../common/globalConstants';
+import { isAfter, isBefore } from 'date-fns/esm';
+import { types } from '@babel/core';
+import { DomainPropTypes } from '@material-ui/pickers/constants/prop-types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,15 +60,18 @@ const useStyles = makeStyles((theme: Theme) =>
     nonCurrentMonthDay: {
       color: theme.palette.text.disabled,
     },
-    highlightNonCurrentMonthDay: {
-      color: theme.palette.common.white,
-    },
-    discussionNonCurrentMonthDay: {
-      color: theme.palette.text.primary,
-    },
     highlight: {
       background: theme.palette.primary.main,
       color: theme.palette.common.white,
+    },
+    highlightNonCurrentMonthDayWrapper: {
+      background: theme.palette.primary.light,
+    },
+    highlightNonCurrentMonthDayFont: {
+      color: 'rgba(255, 255, 255, .7)',
+    },
+    discussionNonCurrentMonthDay: {
+      color: theme.palette.text.disabled,
     },
     firstHighlight: {
       extend: 'highlight',
@@ -113,6 +129,16 @@ const useStyles = makeStyles((theme: Theme) =>
     calendarContainer: {
       position: 'relative',
     },
+    customCalendarButton: {
+      display: 'block',
+      height: 24,
+      width: 24,
+      boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
+    },
+    selectedCalendarButton: {
+      boxShadow: `0px 2px 8px ${theme.palette.primary.main}`,
+      border: `2px solid ${theme.palette.primary.main}`,
+    },
   })
 );
 
@@ -124,6 +150,9 @@ interface ScheduleViewProps {
     field: 'startDate' | 'duration' | 'discussionFrequency' | 'label',
     newVal: Date | number | string | null,
     index?: number
+  ) => void;
+  onCustomUpdateSchedule: (
+    newSchedule: ClubReadingSchedule | FilterAutoMongoKeys<ClubReadingSchedule>
   ) => void;
   madeScheduleChanges: boolean;
   memberStatus: LoadableMemberStatus;
@@ -146,25 +175,38 @@ export default function ScheduleView(props: ScheduleViewProps) {
     madeScheduleChanges,
     memberStatus,
     onUpdateSchedule,
+    onCustomUpdateSchedule,
     schedule,
     setIsEditing,
   } = props;
   const [discussionLabelsFocused, setDiscussionLabelsFocused] = React.useState<
     boolean[]
   >(schedule ? new Array(schedule.discussions.length).fill(false) : []);
+  const [customModeEnabled, setCustomModeEnabled] = React.useState<boolean>(
+    false
+  );
+  const [customEditField, setCustomEditField] = React.useState<
+    'startDate' | 'endDate' | 'discussionDate'
+  >('startDate');
+  const [
+    currentlySelectedDate,
+    setCurrentlySelectedDate,
+  ] = React.useState<Date | null>(schedule ? schedule.startDate : null);
 
   // Placed this here because I was getting the error:
   // React Hooks must be called in the exact same order in every component render.
+
   const { pickerProps } = usePickerState(
     {
-      value: props.schedule ? props.schedule.startDate : null,
-      onChange: date => handleScheduleChange('startDate', date),
+      value: currentlySelectedDate,
+      onChange: date => onClickCalendar(date),
       autoOk: isEditing ? true : false,
     },
     {
       getDefaultFormat: () => 'MM/dd/yyyy',
     }
   );
+  console.log(pickerProps.date);
 
   if (!schedule && isEditing) {
     initSchedule();
@@ -269,6 +311,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
 
     const isFirstDay = isSameDay(day, startDate);
 
+    //If there is no schedule length return all regularly formatted dates
     if (!duration) {
       const wrapperClassName = clsx({
         [classes.firstOnlyHighlight]: isFirstDay,
@@ -281,10 +324,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
         </div>
       );
     }
-
     const durationInDays = duration * 7;
     const end = addDays(startDate, durationInDays);
-
     const dayIsBetween = isWithinInterval(day, {
       start: addDays(startDate, -1),
       end,
@@ -297,11 +338,14 @@ export default function ScheduleView(props: ScheduleViewProps) {
       [classes.firstHighlight]: isFirstDay,
       [classes.endHighlight]: isLastDay,
       [classes.highlight]: dayIsBetween,
+      [classes.highlightNonCurrentMonthDayWrapper]:
+        !dayInCurrentMonth && dayIsBetween,
     });
 
     const dayClassName = clsx(classes.day, {
       [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
-      [classes.highlightNonCurrentMonthDay]: !dayInCurrentMonth && dayIsBetween,
+      [classes.highlightNonCurrentMonthDayFont]:
+        !dayInCurrentMonth && dayIsBetween,
       [classes.discussionNonCurrentMonthDay]:
         !dayInCurrentMonth && isDiscussionDay,
     });
@@ -359,6 +403,107 @@ export default function ScheduleView(props: ScheduleViewProps) {
     onUpdateSchedule(field, newVal, index);
   };
 
+  const makeValidDiscussionArray = (
+    schedule: ClubReadingSchedule | FilterAutoMongoKeys<ClubReadingSchedule>
+  ) => {
+    const { startDate, duration, discussions } = schedule;
+    if (!startDate || !duration || discussions.length === 0) {
+      return [];
+    }
+    const endDate = addDays(startDate, duration * 7);
+    const newDiscussions = discussions.filter(
+      d => d.date && !isBefore(d.date, startDate) && !isAfter(d.date, endDate)
+    );
+    return newDiscussions;
+  };
+
+  const onClickCalendar = (date: Date | null) => {
+    if (!date) {
+      return;
+    }
+    setCurrentlySelectedDate(date);
+    if (!customModeEnabled) {
+      handleScheduleChange('startDate', date);
+      return;
+    }
+    if (!schedule) {
+      return;
+    }
+
+    const newSchedule = { ...schedule };
+
+    switch (customEditField) {
+      case 'startDate':
+        let oldStartDate = newSchedule.startDate;
+        newSchedule.startDate = date;
+        if (!oldStartDate || !newSchedule.duration) {
+          oldStartDate = date;
+          newSchedule.duration = MIN_SCHEDULE_LENGTH_DAYS / 7;
+        }
+        const endDate = addDays(oldStartDate, newSchedule.duration * 7);
+        if (
+          differenceInCalendarDays(endDate, date) < MIN_SCHEDULE_LENGTH_DAYS
+        ) {
+          newSchedule.duration = MIN_SCHEDULE_LENGTH_DAYS / 7;
+        } else {
+          newSchedule.duration = differenceInCalendarDays(endDate, date) / 7;
+        }
+        newSchedule.discussions = makeValidDiscussionArray(newSchedule);
+        onCustomUpdateSchedule(newSchedule);
+        break;
+      case 'discussionDate':
+        if (
+          !startDate ||
+          !duration ||
+          isBefore(date, startDate) ||
+          isAfter(date, addDays(startDate, duration * 7))
+        ) {
+          break;
+        }
+        const matchingDiscussionIndex = newSchedule.discussions.findIndex(d =>
+          isSameDay(d.date, date)
+        );
+        if (matchingDiscussionIndex === -1) {
+          //Add new discussion
+          const newDiscussion: Discussion = { date, label: '', format: 'text' };
+          const newDiscussionIndex = discussions.findIndex(d =>
+            isAfter(d.date, date)
+          );
+          if (newDiscussionIndex === -1) {
+            newSchedule.discussions.push(newDiscussion);
+          } else {
+            newSchedule.discussions.splice(
+              newDiscussionIndex,
+              0,
+              newDiscussion
+            );
+          }
+        } else {
+          //Remove old discussion
+          newSchedule.discussions.splice(matchingDiscussionIndex, 1);
+        }
+        newSchedule.discussionFrequency = -1;
+        onCustomUpdateSchedule(newSchedule);
+        break;
+      case 'endDate':
+        if (!newSchedule.startDate) {
+          newSchedule.startDate = addDays(date, -MIN_SCHEDULE_LENGTH_DAYS);
+        }
+        let durationInDays = differenceInCalendarDays(
+          date,
+          newSchedule.startDate
+        );
+        if (durationInDays < MIN_SCHEDULE_LENGTH_DAYS) {
+          newSchedule.startDate = addDays(date, -MIN_SCHEDULE_LENGTH_DAYS);
+          durationInDays = MIN_SCHEDULE_LENGTH_DAYS;
+        }
+        newSchedule.duration = durationInDays / 7;
+        newSchedule.discussions = makeValidDiscussionArray(newSchedule);
+        onCustomUpdateSchedule(newSchedule);
+        break;
+    }
+  };
+
   const onBlurFocusDiscussionLabel = (
     action: 'blur' | 'focus',
     index: number
@@ -366,6 +511,18 @@ export default function ScheduleView(props: ScheduleViewProps) {
     let discussionLabelsFocusedNew = [...discussionLabelsFocused];
     discussionLabelsFocusedNew[index] = action === 'blur' ? false : true;
     setDiscussionLabelsFocused(discussionLabelsFocusedNew);
+  };
+
+  //returns an estimation of how long a club will be to the nearest 1/2 week
+  const durationEstimationCalculator = (duration: number) => {
+    let durationText = '';
+    let durationEstimation = Math.round(duration * 2);
+    if (durationEstimation !== duration * 2) {
+      durationText = durationText.concat('~');
+    }
+    durationEstimation /= 2;
+    durationText = durationText.concat(durationEstimation.toString());
+    return durationText;
   };
 
   if (isEditing) {
@@ -397,7 +554,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           >
             {duration
               ? duration > 1
-                ? `Finish in ${duration} weeks`
+                ? `Finish in ${durationEstimationCalculator(duration)} weeks`
                 : 'Finish in 1 week'
               : 'No duration set'}
           </Typography>
@@ -429,9 +586,11 @@ export default function ScheduleView(props: ScheduleViewProps) {
             style={{ fontStyle: 'italic' }}
             gutterBottom
           >
-            {discussionFrequency
+            {discussionFrequency && discussions.length !== 0
               ? discussionFrequency > 1
                 ? `Discuss every ${discussionFrequency} days`
+                : discussionFrequency === -1
+                ? 'Custom'
                 : 'Discuss every day'
               : 'No scheduled discussions'}
           </Typography>
@@ -474,20 +633,77 @@ export default function ScheduleView(props: ScheduleViewProps) {
               style={{
                 width: '100%',
                 display: 'flex',
-                justifyContent: 'flex-end',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
             >
-              <MuiThemeProvider theme={textSecondaryTheme}>
-                <Button
+              <div>
+                <Switch
+                  onChange={() => setCustomModeEnabled(!customModeEnabled)}
+                  value={customModeEnabled}
                   color="primary"
-                  onClick={initSchedule}
-                  style={{ marginTop: 8 }}
+                  inputProps={{ 'aria-label': 'custom mode checkbox' }}
+                />
+                <Typography display="inline">Customize</Typography>
+              </div>
+              {customModeEnabled && (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
                 >
-                  <NotInterested style={{ marginRight: 8 }} />
-                  <Typography variant="button">Clear Schedule</Typography>
-                </Button>
-              </MuiThemeProvider>
+                  <div
+                    className={clsx(
+                      classes.customCalendarButton,
+                      classes.firstHighlight,
+                      {
+                        [classes.selectedCalendarButton]:
+                          customEditField === 'startDate',
+                      }
+                    )}
+                    onClick={() => setCustomEditField('startDate')}
+                  />
+                  <div
+                    className={clsx(
+                      classes.customCalendarButton,
+                      classes.discussionHighlight,
+                      {
+                        [classes.selectedCalendarButton]:
+                          customEditField === 'discussionDate',
+                      }
+                    )}
+                    style={{ margin: `0px ${theme.spacing(2)}px` }}
+                    onClick={() => setCustomEditField('discussionDate')}
+                  />
+
+                  <div
+                    className={clsx(
+                      classes.customCalendarButton,
+                      classes.endHighlight,
+                      {
+                        [classes.selectedCalendarButton]:
+                          customEditField === 'endDate',
+                      }
+                    )}
+                    onClick={() => setCustomEditField('endDate')}
+                  />
+                </div>
+              )}
+              <div>
+                <MuiThemeProvider theme={textSecondaryTheme}>
+                  <Button
+                    color="primary"
+                    onClick={initSchedule}
+                    style={{ marginTop: 8 }}
+                  >
+                    <NotInterested style={{ marginRight: 8 }} />
+                    <Typography variant="button">Clear Schedule</Typography>
+                  </Button>
+                </MuiThemeProvider>
+              </div>
             </div>
           )}
         </div>
@@ -565,7 +781,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           >
             {duration
               ? duration > 1
-                ? `Finish in ${duration} weeks`
+                ? `Finish in ${durationEstimationCalculator(duration)} weeks`
                 : 'Finish in 1 week'
               : 'No duration set.'}
           </Typography>

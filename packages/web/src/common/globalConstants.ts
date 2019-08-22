@@ -21,3 +21,5 @@ export const EMAIL_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<EmailSettings> = {
   recs: 'Recommend new clubs and users to read with',
   updates: 'Keep me posted on Caravan updates',
 };
+
+export const MIN_SCHEDULE_LENGTH_DAYS = 7;

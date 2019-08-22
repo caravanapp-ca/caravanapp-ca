@@ -397,6 +397,9 @@ export default function ClubComponent(props: ClubProps) {
         ...schedule,
         [field]: newVal,
       };
+      if (newSchedule.discussionFrequency === -1) {
+        newSchedule.discussionFrequency = 0;
+      }
       const newDiscussions = generateDiscussions(newSchedule);
       setSchedule({
         ...newSchedule,
@@ -418,6 +421,12 @@ export default function ClubComponent(props: ClubProps) {
         `Illegal params passed to onUpdateSchedule! field: ${field}, newVal: ${newVal}, index: ${index}`
       );
     }
+  };
+
+  const onCustomUpdateSchedule = (
+    newSchedule: ClubReadingSchedule | FilterAutoMongoKeys<ClubReadingSchedule>
+  ) => {
+    setSchedule(newSchedule);
   };
 
   const onSaveClick = async () => {
@@ -592,6 +601,7 @@ export default function ClubComponent(props: ClubProps) {
                   madeScheduleChanges={madeScheduleChanges}
                   memberStatus={memberStatus}
                   onUpdateSchedule={onUpdateSchedule}
+                  onCustomUpdateSchedule={onCustomUpdateSchedule}
                   schedule={schedule}
                   setIsEditing={setIsEditing}
                 />
