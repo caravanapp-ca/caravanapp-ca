@@ -7,14 +7,14 @@ import { PostUserInfo } from '@caravan/buddy-reading-types';
 const useStyles = makeStyles(theme => ({
   heading: {
     display: 'flex',
-    justifyContent: 'space-between',
-  },
-  userHeading: {
-    display: 'flex',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0, 0.07)', //use rgba to bump up opacity
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  },
+  userAvatarContainer: {
     marginLeft: theme.spacing(2),
-    marginTop: theme.spacing(2),
   },
   headerAvatar: {
     width: 60,
@@ -22,16 +22,19 @@ const useStyles = makeStyles(theme => ({
   },
   userTextContainer: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
     marginLeft: theme.spacing(2),
   },
   userNameText: {
     fontWeight: 600,
   },
-  postIconAvatar: {
+  iconContainer: {
     marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
+  },
+  postIconAvatar: {
     width: 48,
     height: 48,
     padding: theme.spacing(1),
@@ -50,7 +53,7 @@ function PostHeader(props: PostHeaderProps) {
 
   return (
     <div className={classes.heading}>
-      <div className={classes.userHeading}>
+      <div className={classes.userAvatarContainer}>
         <Link href={`/user/${postAuthorInfo.urlSlug}`}>
           <Avatar
             alt={postAuthorInfo.name}
@@ -58,23 +61,25 @@ function PostHeader(props: PostHeaderProps) {
             className={classes.headerAvatar}
           />
         </Link>
-        <div className={classes.userTextContainer}>
-          <Link
-            href={`/user/${postAuthorInfo.urlSlug}`}
-            variant="h5"
-            className={classes.userNameText}
-            color="primary"
-          >
-            {postAuthorInfo.name}
-          </Link>
-        </div>
       </div>
-      <Avatar
-        alt={'shelf post'}
-        src={postIcon}
-        className={classes.postIconAvatar}
-        style={{ backgroundColor: iconColor }}
-      />
+      <div className={classes.userTextContainer}>
+        <Link
+          href={`/user/${postAuthorInfo.urlSlug}`}
+          variant="h5"
+          className={classes.userNameText}
+          color="primary"
+        >
+          {postAuthorInfo.name}
+        </Link>
+      </div>
+      <div className={classes.iconContainer}>
+        <Avatar
+          alt={'shelf post'}
+          src={postIcon}
+          className={classes.postIconAvatar}
+          style={{ backgroundColor: iconColor }}
+        />
+      </div>
     </div>
   );
 }

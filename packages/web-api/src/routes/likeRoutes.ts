@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { isAuthenticated } from '../middleware/auth';
 import {
   FilterAutoMongoKeys,
@@ -17,15 +18,26 @@ router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
   try {
     const { user, alreadyLiked } = req.body.params;
     const likes: string[] = req.body.params.likesUserIds;
-    let modifiedLikes: string[] = [];
-    if (alreadyLiked) {
-      modifiedLikes = likes.filter(l => l !== user._id);
-    } else {
-      modifiedLikes = [...modifiedLikes, user._id];
-    }
     const updatedLikeObj: FilterAutoMongoKeys<Likes> = {
-      likes: modifiedLikes,
+      likes,
     };
+    // const session = await mongoose.startSession();
+    // session.startTransaction();
+    // const opts = { session };
+    // const A = await User.findOneAndUpdate(
+    //   { _id: userId },
+    //   { $inc: { wallet: amount } },
+    //   opts
+    // );
+
+    // const B = await Transaction({
+    //   usersId: userId,
+    //   amount: amount,
+    //   type: 'credit',
+    // }).save(opts);
+
+    // await session.commitTransaction();
+    // session.endSession();
     const tryThis = await LikesModel.findOneAndUpdate(
       { _id: postId },
       { $set: updatedLikeObj },

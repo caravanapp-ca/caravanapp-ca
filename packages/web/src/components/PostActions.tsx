@@ -1,9 +1,16 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { makeStyles, Button, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Button,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { Like, PostUserInfo } from '@caravan/buddy-reading-types';
+import PostLikesThumbnails from './PostLikesThumbnails';
 
 const useStyles = makeStyles(theme => ({
   actionContainer: {
@@ -14,7 +21,10 @@ const useStyles = makeStyles(theme => ({
   likesContainer: {
     display: 'flex',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+  },
+  heartIcon: {
+    padding: 4,
   },
   likeButton: {
     height: 30,
@@ -31,54 +41,34 @@ const useStyles = makeStyles(theme => ({
 interface PostActionsProps {
   postId: string;
   likes: PostUserInfo[];
+  hasLiked: boolean | null;
   currUserId: string;
   onClickLike: () => void;
-  hasLiked: boolean | null;
-  modifiedLikes: PostUserInfo[] | null;
 }
 
 function PostActions(props: PostActionsProps) {
   const classes = useStyles();
+  const theme = useTheme();
+  const { postId, likes, currUserId, onClickLike, hasLiked } = props;
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const {
-    postId,
-    likes,
-    currUserId,
-    onClickLike,
-    hasLiked,
-    modifiedLikes,
-  } = props;
-
-  console.log('Likes in post actions');
-  console.log(likes);
-
-  let likedUserIds: string[] = [];
-  let numLikes: string = '';
-  if (modifiedLikes !== null) {
-    numLikes = modifiedLikes.length.toString();
-    likedUserIds = modifiedLikes.map(l => l.userId);
-  } else {
-    numLikes = likes.length.toString();
-    likedUserIds = likes.map(l => l.userId);
-  }
-
-  const alreadyLikedBoolean =
-    hasLiked !== null ? hasLiked : likedUserIds.includes(currUserId);
+  const maxLikeThumbnailsShown = screenSmallerThanSm ? 1 : 3;
 
   return (
     <div className={classes.actionContainer}>
       <div className={classes.likesContainer}>
-        <IconButton onClick={() => onClickLike()}>
+        <IconButton
+          onClick={() => onClickLike()}
+          classes={{ root: classes.heartIcon }}
+        >
           <FavoriteIcon
             className={classes.likeButton}
             style={{
-              fill: alreadyLikedBoolean ? '#AF0020' : undefined,
+              fill: hasLiked ? '#AF0020' : undefined,
             }}
           />
         </IconButton>
-        <Typography>
-          {postId} has {numLikes} likes
-        </Typography>
+        <PostLikesThumbnails likes={likes} maxShown={maxLikeThumbnailsShown} />
       </div>
       <div className={classes.createClubButtonContainer}>
         <Button

@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Mongoose } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
@@ -6,6 +6,7 @@ import {
   Likes,
 } from '@caravan/buddy-reading-types';
 import { LikesDoc } from '../../typings';
+import user from './user';
 
 const likesDefinition: SameKeysAs<FilterAutoMongoKeys<Likes>> = {
   likes: { type: [String], required: true },
