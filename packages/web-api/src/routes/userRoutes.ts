@@ -9,9 +9,8 @@ import {
   UserQA,
   Services,
   SameKeysAs,
-  UserSearchField,
 } from '@caravan/buddy-reading-types';
-import UserModel from '../models/user';
+import { UserDoc, UserModel } from '@caravan/buddy-reading-mongo';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import {
   userSlugExists,
@@ -21,7 +20,6 @@ import {
 } from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
-import { UserDoc } from '../../typings';
 import { createReferralAction } from '../services/referral';
 import Fuse from 'fuse.js';
 
@@ -115,23 +113,48 @@ router.get('/', async (req, res) => {
     .filter(c => c !== null);
   if ((search && search.length) > 0) {
     let fuseSearchKey: string;
+    let fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {};
     switch (userSearchField) {
       case 'bookTitle':
         fuseSearchKey = 'shelf.notStarted.title';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
         break;
       case 'bookAuthor':
         fuseSearchKey = 'shelf.notStarted.author';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
         break;
       case 'username':
       default:
         fuseSearchKey = 'name';
+        fuseOptions = {
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
         break;
     }
-    const fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {
-      // TODO: Typescript doesn't like the use of keys here.
-      // @ts-ignore
-      keys: [{ name: fuseSearchKey, weight: 1 / 1 }],
-    };
     const fuse = new Fuse(filteredUsers, fuseOptions);
     filteredUsers = fuse.search(search);
   }

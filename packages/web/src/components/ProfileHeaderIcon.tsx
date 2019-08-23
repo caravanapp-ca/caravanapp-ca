@@ -10,6 +10,7 @@ import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGro
 import { washedTheme } from '../theme';
 import { logout } from '../services/user';
 import DiscordLoginModal from './DiscordLoginModal';
+import { DISCORD_GUILD_LINK } from '../common/globalConstants';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {
@@ -71,10 +72,7 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
   }
 
   function openChat() {
-    window.open(
-      'https://discordapp.com/channels/592761082523680798/592761082523680806',
-      '_blank'
-    );
+    window.open(DISCORD_GUILD_LINK, '_blank');
   }
 
   return (

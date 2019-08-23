@@ -1,10 +1,19 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
 import {
   FilterAutoMongoKeys,
-  SameKeysAs,
+  MongoTimestamps,
+  ProfileQuestion,
   ProfileQuestions,
+  SameKeysAs,
 } from '@caravan/buddy-reading-types';
-import { ProfileQuestionsDoc } from '../../typings';
+
+export interface ProfileQuestionsDoc
+  extends Document,
+    MongoTimestamps,
+    Omit<ProfileQuestions, '_id' | 'questions'> {
+  _id: Types.ObjectId;
+  questions: (ProfileQuestion & { visible: boolean })[];
+}
 
 const profileQuestionSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<ProfileQuestionsDoc['questions'][0]>
@@ -35,7 +44,7 @@ const profileQuestionsSchema = new Schema<ProfileQuestionsDoc>(
   }
 );
 
-export default model<ProfileQuestionsDoc>(
+export const ProfileQuestionsModel = model<ProfileQuestionsDoc>(
   'ProfileQuestion',
   profileQuestionsSchema,
   'profileQuestions'

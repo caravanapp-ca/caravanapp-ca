@@ -1,9 +1,9 @@
 import express from 'express';
 import { TextChannel } from 'discord.js';
 import { check, validationResult } from 'express-validator';
-import SessionModel from '../models/session';
 import { ReadingDiscordBot } from '../services/discord';
 import { hasScope } from '../common/discordbot';
+import { getSession } from '../services/session';
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.post(
     }
     const { channelId } = req.params;
     const accessToken: string = req.body.accessToken;
-    const sessionDoc = await SessionModel.findOne({ accessToken });
+    const sessionDoc = await getSession(accessToken);
     if (!sessionDoc) {
       console.warn(`Failed attempt at posting message by user`);
       res.status(401).send('Unauthorized: unknown accessToken.');
@@ -67,32 +67,6 @@ router.post(
     const client = ReadingDiscordBot.getInstance();
     const member = await client.fetchUser(userToInviteDiscordId);
     const result = await member.send(messageContent);
-    console.log(`Sent discord bot message ${result.toString()}`);
-    res.status(200).send(`Sent: ${result.toString()}`);
-  }
-);
-
-router.post(
-  '/updateClubShelf/:clubId',
-  check('clubId').isString(),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorArr = errors.array();
-      return res.status(422).json({ errors: errorArr });
-    }
-    const { clubId } = req.params;
-
-    const client = ReadingDiscordBot.getInstance();
-    const yusufsDiscordId = '585146933983707152';
-
-    const member = await client.fetchUser(yusufsDiscordId);
-
-    const clubLink = 'https://caravanapp.ca/clubs/' + clubId;
-
-    const result = await member.send(
-      `A club has updated their shelf. Here is their profile: ${clubLink}.`
-    );
     console.log(`Sent discord bot message ${result.toString()}`);
     res.status(200).send(`Sent: ${result.toString()}`);
   }

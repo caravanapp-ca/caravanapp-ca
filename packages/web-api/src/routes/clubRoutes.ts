@@ -25,9 +25,14 @@ import {
   ActiveFilter,
   ClubShelf,
   SameKeysAs,
+  PubSub,
 } from '@caravan/buddy-reading-types';
-import ClubModel from '../models/club';
-import UserModel from '../models/user';
+import {
+  ClubDoc,
+  ClubModel,
+  UserDoc,
+  UserModel,
+} from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
 import {
   shelfEntryWithHttpsBookUrl,
@@ -37,7 +42,7 @@ import {
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
 import { createReferralAction } from '../services/referral';
-import { ClubDoc, UserDoc, ShelfEntryDoc } from '../../typings';
+import { pubsubClient } from '../common/pubsub';
 import { getBadges } from '../services/badge';
 import {
   VALID_READING_STATES,
@@ -93,21 +98,21 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
   }
-  const guildMembersArr = getCountableMembersInChannel(
+  const guildMembers = getCountableMembersInChannel(
     discordChannel,
     club
   ).array();
-  const guildMemberDiscordIds = guildMembersArr.map(m => m.id);
-  const users = await UserModel.find({
+  const guildMemberDiscordIds = guildMembers.map(m => m.id);
+  const userDocs = await UserModel.find({
     discordId: { $in: guildMemberDiscordIds },
     isBot: { $eq: false },
   });
   // This retrieves badge details.
   const badgeDoc = await getBadges();
-  mutateUserBadges(users, badgeDoc);
-  const guildMembers = guildMembersArr
+  mutateUserBadges(userDocs, badgeDoc);
+  const users = guildMembers
     .map(mem => {
-      const user = users.find(u => u.discordId === mem.id);
+      const user = userDocs.find(u => u.discordId === mem.id);
       if (user) {
         const userObj: User = user.toObject();
         const result: User = {
@@ -131,7 +136,7 @@ async function getChannelMembers(guild: Guild, club: ClubDoc) {
     })
     .filter(g => g !== null)
     .sort((a, b) => a.name.localeCompare(b.name));
-  return guildMembers;
+  return users;
 }
 
 /**
@@ -159,48 +164,6 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   userDocs.forEach(doc => (foundUsers.get(doc.id).userDoc = doc));
   return foundUsers;
 }
-
-/*
-If you see sortShelf and router.put('/convertClubShelves'), delete these functions!!! (Single use scripts for converting club shelves to a new format).
-*/
-
-const sortShelf = (oldShelf: ShelfEntryDoc[]): ClubShelf => {
-  const newShelf: ClubShelf = { current: [], notStarted: [], read: [] };
-  oldShelf.forEach(b => {
-    const book = b.toObject();
-    switch (b.readingState) {
-      case 'notStarted':
-        newShelf.notStarted.push(book);
-        break;
-      case 'read':
-        newShelf.read.push(book);
-        break;
-      case 'current':
-        newShelf.current.push(book);
-        break;
-      default:
-        console.error(`Book ${b._id} has an invalid readingState`);
-    }
-  });
-  return newShelf;
-};
-
-router.put('/convertClubShelves', async (req, res) => {
-  try {
-    ClubModel.find().then(async allClubs => {
-      const promises = allClubs.map(c => {
-        c.newShelf = sortShelf(c.shelf);
-        c.save();
-        return c;
-      });
-      const results = await Promise.all(promises);
-      return res.status(200).send(results);
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(`Error converting all club shelves: ${err}`);
-  }
-});
 
 router.get('/', async (req, res) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
@@ -1241,6 +1204,15 @@ router.put(
           }
         );
         createReferralAction(userId, 'joinClub');
+        const pubsub = pubsubClient.getInstance();
+        const topic: PubSub.Topic = 'club-membership';
+        const message: PubSub.Message.ClubMembershipChange = {
+          userId: userId,
+          clubId: club.id,
+          clubMembership: 'joined',
+        };
+        const buffer = Buffer.from(JSON.stringify(message));
+        pubsub.topic(topic).publish(buffer);
       }
     } else {
       if (isOwner) {
@@ -1258,6 +1230,15 @@ router.put(
           MANAGE_MESSAGES: false,
         }
       );
+      const pubsub = pubsubClient.getInstance();
+      const topic: PubSub.Topic = 'club-membership';
+      const message: PubSub.Message.ClubMembershipChange = {
+        userId: userId,
+        clubId: club.id,
+        clubMembership: 'left',
+      };
+      const buffer = Buffer.from(JSON.stringify(message));
+      pubsub.topic(topic).publish(buffer);
     }
     // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
     await guild.fetchMembers();
