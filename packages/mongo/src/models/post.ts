@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Document, Types } from 'mongoose';
 import {
   FilterAutoMongoKeys,
   SameKeysAs,
@@ -8,9 +8,13 @@ import {
   BookSource,
   ProgressUpdatePost,
   WantToReadAboutPost,
+  MongoTimestamps,
 } from '@caravan/buddy-reading-types';
-import { PostDoc } from '../../typings';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
+
+export interface PostDoc extends Document, MongoTimestamps, Omit<Post, '_id'> {
+  _id: Types.ObjectId;
+}
 
 const genresSchema = new Schema({
   key: String,
@@ -60,7 +64,7 @@ const shelfPostSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfPost>> = {
     type: String,
     required: true,
     validate: {
-      validator: function(v: String) {
+      validator: function(v: string) {
         return v === 'shelf';
       },
       message: function(props: { value: string }) {
@@ -86,7 +90,7 @@ const progressUpdatePostSchemaDefinition: SameKeysAs<
     type: String,
     required: true,
     validate: {
-      validator: function(v: String) {
+      validator: function(v: string) {
         return v === 'progressUpdate';
       },
       message: function(props: { value: string }) {
@@ -117,7 +121,7 @@ const wantToReadAboutSchemaDefinition: SameKeysAs<
     type: String,
     required: true,
     validate: {
-      validator: function(v: String) {
+      validator: function(v: string) {
         return v === 'wantToReadAbout';
       },
       message: function(props: { value: string }) {
@@ -146,4 +150,4 @@ const postSchema = new Schema<PostDoc>(postDefinition, {
   timestamps: true,
 });
 
-export default model<PostDoc>('Post', postSchema);
+export const PostModel = model<PostDoc>('Post', postSchema);

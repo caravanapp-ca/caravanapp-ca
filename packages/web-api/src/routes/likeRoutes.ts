@@ -2,8 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { isAuthenticated } from '../middleware/auth';
 import { FilterAutoMongoKeys, Likes } from '@caravan/buddy-reading-types';
-import LikesModel from '../models/like';
-import { LikesDoc } from '../../typings';
+import { LikesModel, LikesDoc } from '@caravan/buddy-reading-mongo';
 
 const router = express.Router();
 

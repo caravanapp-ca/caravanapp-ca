@@ -89,7 +89,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const [postingShelf, setPostingShelf] = React.useState(false);
 
   const readyToPost =
-    shelf.length > 1 && shelfTitle.length > 1 && shelfGenres.length > 1;
+    shelf.length > 1 && shelfTitle.length > 0 && shelfGenres.length > 0;
 
   useEffect(() => {
     getGenres();

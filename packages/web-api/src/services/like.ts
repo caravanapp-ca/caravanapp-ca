@@ -1,4 +1,4 @@
-import LikesModel from '../models/like';
+import { LikesModel } from '@caravan/buddy-reading-mongo';
 import { FilterAutoMongoKeys, Likes } from '@caravan/buddy-reading-types';
 
 export const getPostLikes = async (postId: string) => {

@@ -7,9 +7,8 @@ import {
   PostUserInfo,
   PostWithAuthorInfoAndLikes,
 } from '@caravan/buddy-reading-types';
-import PostModel from '../models/post';
+import { PostModel, PostDoc } from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
-import { PostDoc } from '../../typings';
 import { getUser } from '../services/user';
 import { getPostLikes, createLikesDoc } from '../services/like';
 import { getPostUserInfo } from '../services/post';
