@@ -2712,6 +2712,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/yaml@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/yaml/-/yaml-1.0.2.tgz#bba080d64714c6ef3eaa023e235dacd2cfa3c938"
+  integrity sha512-rS1VJFjyGKNHk8H97COnPIK+oeLnc0J9G0ES63o/Ky+WlJCeaFGiGCTGhV/GEVKua7ZWIV1JIDopYUwrfvTo7A==
+
 "@types/yargs@^12.0.2", "@types/yargs@^12.0.9":
   version "12.0.12"
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.12.tgz#45dd1d0638e8c8f153e87d296907659296873916"
@@ -14219,6 +14224,13 @@ yallist@^3.0.0, yallist@^3.0.2, yallist@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.3.tgz#b4b049e314be545e3ce802236d6cd22cd91c3de9"
   integrity sha512-S+Zk8DEWE6oKpV+vI3qWkaK+jSbIK86pCwe2IF/xwIpQ8jEuxpw9NyaGjmp9+BoJv5FV2piqCDcoCtStppiq2A==
+
+yaml@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.6.0.tgz#d8a985cfb26086dd73f91c637f6e6bc909fddd3c"
+  integrity sha512-iZfse3lwrJRoSlfs/9KQ9iIXxs9++RvBFVzAqbbBiFT+giYtyanevreF9r61ZTbGMgWQBxAua3FzJiniiJXWWw==
+  dependencies:
+    "@babel/runtime" "^7.4.5"
 
 yargs-parser@10.x, yargs-parser@^10.1.0:
   version "10.1.0"

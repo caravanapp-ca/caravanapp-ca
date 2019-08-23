@@ -1,12 +1,13 @@
 import sgMail from '@sendgrid/mail';
 import { HttpFunction } from '@google-cloud/functions-framework';
+import { loadLocalEnv } from './loadenv';
 
 export const testSendGrid: HttpFunction = async (req, res) => {
   console.log('Testing send grid API');
   if (!process.env.FUNCTION_TARGET) {
     // In development
     console.log('Testing locally');
-    // TODO: Find a way to get .env.staging.yaml vars into process.env
+    loadLocalEnv();
   }
   if (process.env.SENDGRID_API_KEY) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
