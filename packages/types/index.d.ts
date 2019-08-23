@@ -256,6 +256,7 @@ declare module '@caravan/buddy-reading-types' {
     post: Post;
     authorInfo: PostUserInfo;
     likes: PostUserInfo[];
+    numLikes: number;
   }
 
   export interface ShelfPost {
@@ -290,7 +291,9 @@ declare module '@caravan/buddy-reading-types' {
 
   // Key will be the post id
   export interface Likes extends DocumentFields, MongoTimestamps {
+    postId: string;
     likes: string[];
+    numLikes: number;
   }
 
   export interface Like {
@@ -553,6 +556,7 @@ declare module '@caravan/buddy-reading-types' {
         post: Post;
         authorInfo: PostUserInfo;
         likes: PostUserInfo[];
+        numLikes: number;
       }[];
     }
   }

@@ -1,69 +1,47 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { isAuthenticated } from '../middleware/auth';
-import {
-  FilterAutoMongoKeys,
-  Post,
-  Likes,
-  Like,
-} from '@caravan/buddy-reading-types';
+import { FilterAutoMongoKeys, Likes } from '@caravan/buddy-reading-types';
 import LikesModel from '../models/like';
-import post from '../models/post';
+import { LikesDoc } from '../../typings';
 
 const router = express.Router();
 
 // Like post
 router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
   const { postId } = req.params;
+  // TODO right now the Transactions code is commented out -- we need to convert our db to a 'replica set' in order
+  // to use the Transactions feature
+  //const session = await mongoose.startSession();
+  //session.startTransaction();
   try {
-    const { user, alreadyLiked } = req.body.params;
-    const likes: string[] = req.body.params.likesUserIds;
-    const updatedLikeObj: FilterAutoMongoKeys<Likes> = {
-      likes,
-    };
-    // const session = await mongoose.startSession();
-    // session.startTransaction();
-    // const opts = { session };
-    // const A = await User.findOneAndUpdate(
-    //   { _id: userId },
-    //   { $inc: { wallet: amount } },
+    const { userId } = req.session;
+    const { alreadyLiked } = req.body;
+    let result: LikesDoc | undefined;
+    if (alreadyLiked) {
+      result = await LikesModel.findOneAndUpdate(
+        { postId: postId },
+        { $inc: { numLikes: -1 }, $pull: { likes: userId } }
+      );
+    } else {
+      result = await LikesModel.findOneAndUpdate(
+        { postId: postId },
+        { $inc: { numLikes: 1 }, $push: { likes: userId } }
+      );
+    }
+    // const opts = { session, new: true };
+    // const result = await LikesModel.findOneAndUpdate(
+    //   { _id: postId },
+    //   { $set: updatedLikeObj },
     //   opts
     // );
-
-    // const B = await Transaction({
-    //   usersId: userId,
-    //   amount: amount,
-    //   type: 'credit',
-    // }).save(opts);
-
-    // await session.commitTransaction();
-    // session.endSession();
-    const tryThis = await LikesModel.findOneAndUpdate(
-      { _id: postId },
-      { $set: updatedLikeObj },
-      { upsert: true }
-    );
-    // const existingLikesDoc = await LikesModel.findOne({ _id: postId });
-    // if (existingLikesDoc) {
-    //   const result = await LikesModel.findOneAndUpdate(
-    //     { _id: postId },
-    //     updatedLikeObj,
-    //     { new: true }
-    //   );
-    //   return res.status(200).send(result);
-    // } else {
-    //   try {
-    //     const newLikesObj: FilterAutoMongoKeys<Likes> = {
-    //       likes: modifiedLikes,
-    //     };
-    //     const newLikesObjSaved = await new LikesModel(newLikesObj).save();
-    //     return res.status(200).send(newLikesObjSaved);
-    //   } catch (err) {
-    //     console.log('Failed to modify post likes', err);
-    //     return next(err);
-    //   }
-    // }
+    //await session.commitTransaction();
+    //session.endSession();
+    return res.status(200).send(result);
   } catch (err) {
+    // If an error occurred, abort the whole transaction and undo any changes that might have happened
+    //await session.abortTransaction();
+    //session.endSession();
     console.log('Failed to modify post likes', err);
     return next(err);
   }

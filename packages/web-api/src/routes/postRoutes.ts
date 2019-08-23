@@ -11,7 +11,7 @@ import PostModel from '../models/post';
 import { isAuthenticated } from '../middleware/auth';
 import { PostDoc } from '../../typings';
 import { getUser } from '../services/user';
-import { getPostLikes } from '../services/like';
+import { getPostLikes, createLikesDoc } from '../services/like';
 import { getPostUserInfo } from '../services/post';
 
 const router = express.Router();
@@ -31,6 +31,8 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       const result = {
         post: newPost,
       };
+      const newPostId = newPost._id.toHexString();
+      const likesDoc = await createLikesDoc(newPostId);
       return res.status(201).send(result);
     }
   } catch (err) {
@@ -164,10 +166,11 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     filteredPosts.map(async p => {
       let filteredLikesArr: PostUserInfo[] = [];
       const postLikes = await getPostLikes(p._id);
-      if (postLikes && postLikes.length > 0) {
+      const h = postLikes.likes;
+      if (postLikes && postLikes.numLikes > 0) {
         const likesObjArr = await Promise.all(
-          postLikes.map(async luid => {
-            const likeUserInfo = await getPostUserInfo(luid);
+          postLikes.likes.map(async luid => {
+            const likeUserInfo = await getPostUserInfo(luid.toString());
             if (likeUserInfo) {
               return likeUserInfo;
             } else {
@@ -179,7 +182,12 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
       }
       const authorInfo = await getPostUserInfo(p.authorId);
       if (authorInfo) {
-        return { post: p, authorInfo, likes: filteredLikesArr };
+        return {
+          post: p,
+          authorInfo,
+          likes: filteredLikesArr,
+          numLikes: postLikes.numLikes,
+        };
       } else {
         return null;
       }

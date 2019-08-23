@@ -137,10 +137,13 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     likes
   );
 
+  const [likeButtonDisabled, setLikeButtonDisabled] = React.useState<boolean>(
+    false
+  );
+
   useEffect(() => {
     if (shouldExecuteLike && currUser) {
-      const likesUserIds: string[] = modifiedLikes.map(l => l.userId);
-      modifyPostLike(currUser, postId, !hasLiked, likesUserIds);
+      modifyPostLike(postId, !hasLiked);
     }
   }, [hasLiked]);
 
@@ -158,6 +161,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         setModifiedLikes([...modifiedLikes, feedViewerUserInfo]);
       }
       setHasLiked(!hasLiked);
+      setTimeout(() => setLikeButtonDisabled(false), 5000);
     }
   }
 
@@ -241,6 +245,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             hasLiked={hasLiked}
             currUserId={currUser ? currUser._id : ''}
             onClickLike={handleLikeAction}
+            likeButtonDisabled={likeButtonDisabled}
           />
         </CardActions>
       </Card>

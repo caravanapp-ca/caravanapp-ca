@@ -638,7 +638,17 @@ export default function Home(props: HomeProps) {
     }
   };
 
-  function onUploadPost(postType: string) {
+  function onUploadPost(
+    postType: string,
+    postTransformedObj: PostWithAuthorInfoAndLikes
+  ) {
+    setPostsResult(s => ({
+      status: 'loaded',
+      payload:
+        s.status === 'loaded'
+          ? [postTransformedObj, ...s.payload]
+          : [postTransformedObj],
+    }));
     setSnackbarProps({
       ...snackbarProps,
       isOpen: true,
@@ -1067,6 +1077,7 @@ export default function Home(props: HomeProps) {
               handleClose={() => setShowShelfUpload(false)}
               onPostShelf={onUploadPost}
               userId={user ? user._id : null}
+              postAuthorUserInfo={feedViewerUserInfo}
             />
           </>
         )}

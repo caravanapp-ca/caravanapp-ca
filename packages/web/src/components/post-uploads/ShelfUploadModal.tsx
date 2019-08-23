@@ -5,6 +5,9 @@ import {
   ShelfEntry,
   SelectedGenre,
   PostContent,
+  PostWithAuthorInfoAndLikes,
+  Post,
+  PostUserInfo,
 } from '@caravan/buddy-reading-types';
 import {
   Dialog,
@@ -50,8 +53,12 @@ interface ShelfUploadModalProps {
   smallScreen: boolean;
   open: boolean;
   handleClose: () => void;
-  onPostShelf: (postType: string) => void;
+  onPostShelf: (
+    postType: string,
+    postTransformedObj: PostWithAuthorInfoAndLikes
+  ) => void;
   userId: string | null;
+  postAuthorUserInfo: PostUserInfo | null;
 }
 
 const TransitionAction = React.forwardRef<unknown, TransitionProps>(
@@ -62,10 +69,16 @@ const TransitionAction = React.forwardRef<unknown, TransitionProps>(
 
 export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const classes = useStyles();
-  const { smallScreen, open, handleClose, userId, onPostShelf } = props;
+  const {
+    smallScreen,
+    open,
+    handleClose,
+    userId,
+    onPostShelf,
+    postAuthorUserInfo,
+  } = props;
   const [maxWidth] = React.useState<DialogProps['maxWidth']>('lg');
   const [scroll] = React.useState<DialogProps['scroll']>('paper');
-  const [] = React.useState<string | undefined>(undefined);
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
   );
@@ -76,7 +89,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const [postingShelf, setPostingShelf] = React.useState(false);
 
   const readyToPost =
-    shelf.length > 0 && shelfTitle.length > 0 && shelfGenres.length > 0;
+    shelf.length > 1 && shelfTitle.length > 1 && shelfGenres.length > 1;
 
   useEffect(() => {
     getGenres();
@@ -97,7 +110,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   }
 
   async function postShelf() {
-    if (userId) {
+    if (userId && postAuthorUserInfo) {
       const postContent: PostContent = {
         postType: 'shelf',
         shelf,
@@ -109,8 +122,15 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
       const uploadShelfRes = await uploadPost(postContent, userId);
       const { data } = uploadShelfRes;
       if (data) {
+        const postReturned: Post = data.post;
+        const postTransformedObj: PostWithAuthorInfoAndLikes = {
+          post: postReturned,
+          authorInfo: postAuthorUserInfo,
+          likes: [],
+          numLikes: 0,
+        };
         setPostingShelf(false);
-        onPostShelf('shelf');
+        onPostShelf('shelf', postTransformedObj);
         onCloseModal();
       }
     }
@@ -168,11 +188,11 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
         <Container maxWidth="md" className={classes.dialogContent}>
           <div className={classes.sectionContainer}>
             <Typography variant="h6" gutterBottom>
-              Add books *
+              Add books (minimum 2) *
             </Typography>
             <BookSearch
               onSubmitBooks={onSubmitSelectedBooks}
-              maxSelected={9}
+              maxSelected={50}
               secondary="delete"
             />
           </div>

@@ -8,18 +8,9 @@ export async function getPostLikes(postId: string) {
   return res;
 }
 
-export async function modifyPostLike(
-  user: User,
-  postId: string,
-  alreadyLiked: boolean,
-  likesUserIds: string[]
-) {
+export async function modifyPostLike(postId: string, alreadyLiked: boolean) {
   const res = await axios.post(`${likeRoute}/like/${postId}`, {
-    params: {
-      user,
-      alreadyLiked,
-      likesUserIds,
-    },
+    alreadyLiked,
   });
   return res;
 }

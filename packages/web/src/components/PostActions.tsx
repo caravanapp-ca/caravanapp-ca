@@ -44,12 +44,20 @@ interface PostActionsProps {
   hasLiked: boolean | null;
   currUserId: string;
   onClickLike: () => void;
+  likeButtonDisabled: boolean;
 }
 
 function PostActions(props: PostActionsProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { postId, likes, currUserId, onClickLike, hasLiked } = props;
+  const {
+    postId,
+    likes,
+    currUserId,
+    onClickLike,
+    hasLiked,
+    likeButtonDisabled,
+  } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const maxLikeThumbnailsShown = screenSmallerThanSm ? 1 : 3;
@@ -60,6 +68,7 @@ function PostActions(props: PostActionsProps) {
         <IconButton
           onClick={() => onClickLike()}
           classes={{ root: classes.heartIcon }}
+          disabled={likeButtonDisabled}
         >
           <FavoriteIcon
             className={classes.likeButton}
