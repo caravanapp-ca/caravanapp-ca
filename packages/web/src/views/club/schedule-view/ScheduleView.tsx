@@ -434,13 +434,15 @@ export default function ScheduleView(props: ScheduleViewProps) {
 
     switch (customEditField) {
       case 'startDate':
-        let oldStartDate = newSchedule.startDate;
-        newSchedule.startDate = date;
-        if (!oldStartDate || !newSchedule.duration) {
-          oldStartDate = date;
+        if (!newSchedule.startDate || !newSchedule.duration) {
+          newSchedule.startDate = date;
           newSchedule.duration = MIN_SCHEDULE_LENGTH_DAYS / 7;
+          break;
         }
-        const endDate = addDays(oldStartDate, newSchedule.duration * 7);
+        const endDate = addDays(
+          newSchedule.startDate,
+          newSchedule.duration * 7
+        );
         if (
           differenceInCalendarDays(endDate, date) < MIN_SCHEDULE_LENGTH_DAYS
         ) {
@@ -448,6 +450,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
         } else {
           newSchedule.duration = differenceInCalendarDays(endDate, date) / 7;
         }
+        newSchedule.startDate = date;
         newSchedule.discussions = makeValidDiscussionArray(newSchedule);
         onCustomUpdateSchedule(newSchedule);
         break;
@@ -516,11 +519,10 @@ export default function ScheduleView(props: ScheduleViewProps) {
   //returns an estimation of how long a club will be to the nearest 1/2 week
   const durationEstimationCalculator = (duration: number) => {
     let durationText = '';
-    let durationEstimation = Math.round(duration * 2);
-    if (durationEstimation !== duration * 2) {
+    let durationEstimation = Math.round(duration * 2) / 2;
+    if (durationEstimation !== duration) {
       durationText = durationText.concat('~');
     }
-    durationEstimation /= 2;
     durationText = durationText.concat(durationEstimation.toString());
     return durationText;
   };
