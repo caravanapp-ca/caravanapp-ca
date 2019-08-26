@@ -40,7 +40,7 @@ import {
 } from '@caravan/buddy-reading-types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MIN_SCHEDULE_LENGTH_DAYS } from '../../../common/globalConstants';
-import { isAfter, isBefore } from 'date-fns/esm';
+import { isAfter, isBefore } from 'date-fns';
 import { types } from '@babel/core';
 import { DomainPropTypes } from '@material-ui/pickers/constants/prop-types';
 
