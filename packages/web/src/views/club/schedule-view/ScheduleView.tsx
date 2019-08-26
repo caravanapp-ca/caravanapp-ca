@@ -576,7 +576,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
             marks
             min={1}
             max={6}
-            defaultValue={duration || undefined}
+            defaultValue={duration ? Math.round(duration) : undefined}
           />
         </div>
         <div className={classes.sectionContainer}>
@@ -618,7 +618,11 @@ export default function ScheduleView(props: ScheduleViewProps) {
             marks
             min={0}
             max={7}
-            defaultValue={discussionFrequency || undefined}
+            defaultValue={
+              discussionFrequency && discussionFrequency >= 0
+                ? discussionFrequency
+                : undefined
+            }
           />
         </div>
         <div
