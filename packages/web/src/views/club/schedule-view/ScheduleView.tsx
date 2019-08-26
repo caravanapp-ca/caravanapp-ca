@@ -27,6 +27,8 @@ import {
   isSameDay,
   format,
   differenceInCalendarDays,
+  isAfter,
+  isBefore,
 } from 'date-fns';
 import clsx from 'clsx';
 import CalendarLegend from './CalendarLegend';
@@ -40,7 +42,6 @@ import {
 } from '@caravan/buddy-reading-types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MIN_SCHEDULE_LENGTH_DAYS } from '../../../common/globalConstants';
-import { isAfter, isBefore } from 'date-fns';
 import { types } from '@babel/core';
 import { DomainPropTypes } from '@material-ui/pickers/constants/prop-types';
 
@@ -206,7 +207,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
       getDefaultFormat: () => 'MM/dd/yyyy',
     }
   );
-  console.log(pickerProps.date);
 
   if (!schedule && isEditing) {
     initSchedule();
@@ -516,10 +516,10 @@ export default function ScheduleView(props: ScheduleViewProps) {
     setDiscussionLabelsFocused(discussionLabelsFocusedNew);
   };
 
-  //returns an estimation of how long a club will be to the nearest 1/2 week
+  //returns an estimation of the duration of a schedule to the nearest 1/2 week
   const durationEstimationCalculator = (duration: number) => {
     let durationText = '';
-    let durationEstimation = Math.round(duration * 2) / 2;
+    const durationEstimation = Math.round(duration * 2) / 2;
     if (durationEstimation !== duration) {
       durationText = durationText.concat('~');
     }

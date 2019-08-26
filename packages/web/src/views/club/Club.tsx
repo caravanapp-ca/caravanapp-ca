@@ -144,8 +144,8 @@ const openChat = (club: Services.GetClubById, inApp: boolean) => {
 const generateDiscussions = (
   schedule: FilterAutoMongoKeys<ClubReadingSchedule>
 ): Discussion[] => {
-  const { discussionFrequency, discussions, duration, startDate } = schedule;
-  if (discussionFrequency && duration && startDate) {
+  const { discussions, duration, startDate, discussionFrequency } = schedule;
+  if (discussionFrequency && discussionFrequency > 0 && duration && startDate) {
     const durationInDays = duration * 7;
     const readingDays = eachDayOfInterval({
       start: startDate,
@@ -397,9 +397,6 @@ export default function ClubComponent(props: ClubProps) {
         ...schedule,
         [field]: newVal,
       };
-      if (newSchedule.discussionFrequency === -1) {
-        newSchedule.discussionFrequency = 0;
-      }
       const newDiscussions = generateDiscussions(newSchedule);
       setSchedule({
         ...newSchedule,
