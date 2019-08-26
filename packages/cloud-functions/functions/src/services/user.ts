@@ -4,7 +4,7 @@ import { UserDoc, UserModel } from '../workspace/mongo/models/user';
 import { checkObjectIdIsValid } from '../workspace/mongo/common/mongoose';
 
 export const getUserProfileUrl = (urlSlug: string) =>
-  `https://caravanapp.ca/users/${urlSlug}`;
+  `https://caravanapp.ca/user/${urlSlug}`;
 
 export const getUser = (urlSlugOrId: string) => {
   const isObjId = checkObjectIdIsValid(urlSlugOrId);

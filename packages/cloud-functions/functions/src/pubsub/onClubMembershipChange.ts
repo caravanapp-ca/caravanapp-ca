@@ -4,7 +4,7 @@ import { ReadingDiscordBot } from '../discord';
 import { sendDiscordMessage } from '../discordMessenger';
 import { getUser, getUserProfileUrl } from '../services/user';
 import { getClub } from '../services/club';
-import { disconnect, connect } from '../db';
+import { connect } from '../db';
 import { EventData } from '../..';
 
 export const onJoinClub = async (
@@ -41,11 +41,11 @@ export const onJoinClub = async (
       `[eventId: ${eventId}] - Could not find discord channel: ${channelId}`
     );
   }
-  const discordMessage = `<@${discordId}> just joined the club! When asked "${
+  const discordMessage = `<@${discordId}> just joined the club! When asked **"${
     randomQuestion.title
-  }", they answered "${
+  }"**, they answered **"${
     randomQuestion.answer
-  }". More info on their Caravan profile <${getUserProfileUrl(
+  }"**. More info on their Caravan profile <${getUserProfileUrl(
     userDoc.urlSlug
   )}>`;
   if (channel.type === 'text') {
@@ -89,13 +89,23 @@ export const onClubMembershipChange = async (
   );
   const invalidAttributesMessage = `[eventId: ${eventId}] - Invalid attributes: { clubId: ${clubId}, clubMembership: ${clubMembership}, userId: ${userId} }`;
   if (clubId == null || clubMembership == null || userId == null) {
-    throw new Error(invalidAttributesMessage);
+    console.error(invalidAttributesMessage);
+    return;
   }
 
   const client = ReadingDiscordBot.getInstance();
-  const onReadyPromise = new Promise<void>(resolve =>
-    client.on('ready', resolve)
-  );
+  const onReadyPromise = new Promise<void>(resolve => {
+    // If the client is already "ready", resolve.
+    if (client.status === 0) {
+      console.log(`Discord client already ready.`);
+      resolve();
+    } else {
+      client.on('ready', () => {
+        console.log(`Discord client ready.`);
+        resolve();
+      });
+    }
+  });
   await Promise.all([onReadyPromise, connect()]);
 
   switch (clubMembership) {
@@ -106,7 +116,7 @@ export const onClubMembershipChange = async (
       // onLeaveClub(context, clubId, guildId, userDiscordId, userId);
       break;
     default:
-      throw new Error(invalidAttributesMessage);
+      console.error(`Unknown club membership ${invalidAttributesMessage}`);
+      break;
   }
-  await disconnect();
 };

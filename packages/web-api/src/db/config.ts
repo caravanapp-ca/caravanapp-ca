@@ -5,7 +5,10 @@ export const options: ConnectionOptions = {
   reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
   reconnectInterval: 1000,
   poolSize: 10, // Maintain up to 10 socket connections
+  /** @see https://mongoosejs.com/docs/deprecations.html */
   useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
 };
 
 export function connect() {
