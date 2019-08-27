@@ -1,14 +1,14 @@
 import { Document, model, Schema, Types } from 'mongoose';
 import { Omit } from 'utility-types';
 import {
+  BookSource,
   Club,
-  ShelfEntry,
+  ClubReadingSchedule,
+  ClubShelf,
+  Discussion,
   FilterAutoMongoKeys,
   SameKeysAs,
-  BookSource,
-  ClubReadingSchedule,
-  Discussion,
-  ClubShelf,
+  ShelfEntry,
 } from '@caravan/buddy-reading-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
 
@@ -22,11 +22,18 @@ export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
 }
 
 const genresSchema = new Schema({
-  key: String,
   name: String,
+  key: String,
 });
 
 const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
+  author: { type: String },
+  coverImageURL: { type: String },
+  finishedReading: { type: Date },
+  genres: { type: [String], required: true },
+  isbn: { type: String },
+  publishedDate: { type: Date },
+  readingState: { type: String, required: true },
   source: {
     type: String,
     required: true,
@@ -41,15 +48,8 @@ const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
     },
   },
   sourceId: { type: String, required: true, index: true },
-  isbn: { type: String },
-  readingState: { type: String, required: true },
   startedReading: { type: Date },
-  finishedReading: { type: Date },
   title: { type: String, required: true },
-  author: { type: String },
-  publishedDate: { type: Date },
-  coverImageURL: { type: String },
-  genres: { type: [String], required: true },
 };
 
 const shelfSchema = new Schema(shelfSchemaDefinition, {
@@ -68,8 +68,8 @@ const scheduleDiscussionDefinition: SameKeysAs<
   FilterAutoMongoKeys<Discussion>
 > = {
   date: { type: Date, required: true },
-  label: String,
   format: String,
+  label: String,
 };
 
 const scheduleDiscussionSchema = new Schema(scheduleDiscussionDefinition);
@@ -77,30 +77,30 @@ const scheduleDiscussionSchema = new Schema(scheduleDiscussionDefinition);
 const scheduleSchemaDefinition: SameKeysAs<
   FilterAutoMongoKeys<ClubReadingSchedule>
 > = {
-  shelfEntryId: { type: String, required: true },
-  startDate: { type: Date, required: true },
-  duration: { type: Number, required: true },
   discussionFrequency: { type: Number },
   discussions: { type: [scheduleDiscussionSchema], required: true },
+  duration: { type: Number, required: true },
+  shelfEntryId: { type: String, required: true },
+  startDate: { type: Date, required: true },
 };
 
 const scheduleSchema = new Schema(scheduleSchemaDefinition);
 
 const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
-  name: { type: String, required: true },
   bio: { type: String },
-  maxMembers: { type: Number, required: true },
-  vibe: { type: String },
-  readingSpeed: { type: String },
-  genres: { type: [genresSchema], required: true },
-  shelf: { type: [shelfSchema] },
-  newShelf: { type: clubShelfSchema, required: true },
-  schedules: { type: [scheduleSchema], required: true },
-  ownerId: { type: String, required: true },
-  ownerDiscordId: { type: String },
-  channelSource: { type: String, required: true }, // discord always for now
   channelId: { type: String, required: true },
+  channelSource: { type: String, required: true }, // discord always for now
+  genres: { type: [genresSchema], required: true },
+  maxMembers: { type: Number, required: true },
+  name: { type: String, required: true },
+  newShelf: { type: clubShelfSchema, required: true },
+  ownerDiscordId: { type: String },
+  ownerId: { type: String, required: true },
+  readingSpeed: { type: String },
+  schedules: { type: [scheduleSchema], required: true },
+  shelf: { type: [shelfSchema] },
   unlisted: { type: Boolean, required: true },
+  vibe: { type: String },
 };
 
 const clubSchema = new Schema<ClubDoc>(definition, {
