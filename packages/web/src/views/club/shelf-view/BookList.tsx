@@ -81,7 +81,7 @@ export default function BookList(props: BookListProps) {
       return (
         <Radio
           checked={radioValue === b.sourceId}
-          onChange={(e, checked) => onRadioPress(e.target.value)}
+          onChange={(e) => onRadioPress(e.target.value)}
           value={b.sourceId}
           name={`radio-button-${b.title}`}
           color="primary"
@@ -149,7 +149,7 @@ export default function BookList(props: BookListProps) {
             droppableId={id}
             isDropDisabled={disableDrop != null ? disableDrop : undefined}
           >
-            {(provided, snapshot) => (
+            {(provided) => (
               <List
                 dense={false}
                 innerRef={provided.innerRef}
@@ -175,6 +175,7 @@ export default function BookList(props: BookListProps) {
                   switch (tertiary) {
                     case 'buy':
                       tertiaryElement = buyButton(b.amazonLink);
+                      break;
                   }
                   //Generate unique ID for each book to handle duplicates
                   const bookId = b.isbn + index.toString() + id;
@@ -242,6 +243,7 @@ export default function BookList(props: BookListProps) {
             switch (tertiary) {
               case 'buy':
                 tertiaryElement = buyButton(b.amazonLink);
+                break;
             }
             //Generate unique ID for each book to handle duplicates
             const bookId = b.isbn + index.toString() + id;

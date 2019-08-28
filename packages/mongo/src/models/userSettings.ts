@@ -1,22 +1,18 @@
 import { Document, model, Schema, Types } from 'mongoose';
-import {
-  FilterAutoMongoKeys,
-  SameKeysAs,
-  EmailSettings,
-  UserSettings,
-} from '@caravan/buddy-reading-types';
+import { EmailSettings, UserSettings } from '@caravan/buddy-reading-types';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface UserSettingsDoc extends Document, Omit<UserSettings, '_id'> {
   _id: Types.ObjectId;
 }
 
-const emailSettingsDefinition: SameKeysAs<EmailSettings> = {
+const emailSettingsDefinition: MongooseSchema<EmailSettings> = {
   recs: { type: Boolean, required: true },
   reminders: { type: Boolean, required: true },
   updates: { type: Boolean, required: true },
 };
 
-const UserSettingsDefinition: SameKeysAs<FilterAutoMongoKeys<UserSettings>> = {
+const UserSettingsDefinition: MongooseSchema<UserSettings> = {
   userId: { type: Types.ObjectId, required: true },
   emailSettings: {
     type: emailSettingsDefinition,

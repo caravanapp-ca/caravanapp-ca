@@ -11,6 +11,7 @@ import {
   ShelfEntry,
 } from '@caravan/buddy-reading-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface ShelfEntryDoc extends Document, Omit<ShelfEntry, '_id'> {
   _id: Types.ObjectId;
@@ -26,7 +27,8 @@ const genresSchema = new Schema({
   key: String,
 });
 
-const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
+const shelfSchemaDefinition: MongooseSchema<ShelfEntry> = {
+  amazonLink: { type: String },
   author: { type: String },
   coverImageURL: { type: String },
   finishedReading: { type: Date },
@@ -42,9 +44,6 @@ const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
       validator: function(v: BookSource) {
         return ALLOWED_BOOK_SOURCES[v] === true;
       },
-      message: function(props: { value: string }) {
-        `${props.value} is not a valid source.`;
-      },
     },
   },
   sourceId: { type: String, required: true, index: true },
@@ -56,7 +55,7 @@ const shelfSchema = new Schema(shelfSchemaDefinition, {
   timestamps: true,
 });
 
-const clubShelfDefinition: SameKeysAs<FilterAutoMongoKeys<ClubShelf>> = {
+const clubShelfDefinition: MongooseSchema<ClubShelf> = {
   current: { type: [shelfSchema], required: true, default: [] },
   notStarted: { type: [shelfSchema], required: true, default: [] },
   read: { type: [shelfSchema], required: true, default: [] },
@@ -64,9 +63,7 @@ const clubShelfDefinition: SameKeysAs<FilterAutoMongoKeys<ClubShelf>> = {
 
 const clubShelfSchema = new Schema(clubShelfDefinition, { _id: false });
 
-const scheduleDiscussionDefinition: SameKeysAs<
-  FilterAutoMongoKeys<Discussion>
-> = {
+const scheduleDiscussionDefinition: MongooseSchema<Discussion> = {
   date: { type: Date, required: true },
   format: String,
   label: String,
@@ -74,9 +71,7 @@ const scheduleDiscussionDefinition: SameKeysAs<
 
 const scheduleDiscussionSchema = new Schema(scheduleDiscussionDefinition);
 
-const scheduleSchemaDefinition: SameKeysAs<
-  FilterAutoMongoKeys<ClubReadingSchedule>
-> = {
+const scheduleSchemaDefinition: MongooseSchema<ClubReadingSchedule> = {
   discussionFrequency: { type: Number },
   discussions: { type: [scheduleDiscussionSchema], required: true },
   duration: { type: Number, required: true },

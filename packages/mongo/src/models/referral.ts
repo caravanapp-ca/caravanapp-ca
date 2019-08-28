@@ -1,12 +1,11 @@
 import { Document, model, Schema, Types } from 'mongoose';
 import {
-  FilterAutoMongoKeys,
-  SameKeysAs,
-  Referral,
-  UserReferredAction,
-  ReferredUser,
   MongoTimestamps,
+  UserReferredAction,
+  Referral,
+  ReferredUser,
 } from '@caravan/buddy-reading-types';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface ReferralDoc
   extends Document,
@@ -15,9 +14,7 @@ export interface ReferralDoc
   _id: Types.ObjectId;
 }
 
-const userReferredActionSchemaDefinition: SameKeysAs<
-  FilterAutoMongoKeys<UserReferredAction>
-> = {
+const userReferredActionSchemaDefinition: MongooseSchema<UserReferredAction> = {
   action: { type: String, required: true },
   timestamp: { type: Date, required: true },
 };
@@ -29,7 +26,7 @@ const userReferredActionSchema = new Schema(
   }
 );
 
-const userReferredDefinition: SameKeysAs<FilterAutoMongoKeys<ReferredUser>> = {
+const userReferredDefinition: MongooseSchema<ReferredUser> = {
   referredUserId: { type: String, required: true },
   timestamp: { type: Date, required: true },
 };
@@ -38,7 +35,7 @@ const userReferredSchema = new Schema(userReferredDefinition, {
   _id: false,
 });
 
-const referralDefinition: SameKeysAs<FilterAutoMongoKeys<Referral>> = {
+const referralDefinition: MongooseSchema<Referral> = {
   referredUsers: { type: [userReferredSchema], required: true, default: [] },
   // This id will change over time. Initially, when you're not signed up
   userId: { type: String, required: true, unique: true, index: true },
