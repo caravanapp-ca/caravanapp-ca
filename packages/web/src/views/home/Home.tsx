@@ -1049,6 +1049,7 @@ export default function Home(props: HomeProps) {
           <>
             <Container className={classes.usersFilterGrid} maxWidth="md">
               <Composer
+                currUserInfo={feedViewerUserInfo}
                 onClickShelfUpload={() => setShowShelfUpload(true)}
                 onClickProgressUpdateUpload={() =>
                   setShowProgressUpdateUpload(true)

@@ -104,18 +104,6 @@ export default function CreateClub(props: CreateClubProps) {
 
   const centerComponent = <HeaderTitle title="Create a Club" />;
 
-  // const rightComponent = (
-  //   <IconButton
-  //     edge="start"
-  //     color="inherit"
-  //     aria-label="More"
-  //     component={AdapterLink}
-  //     to="/"
-  //   >
-  //     <ThreeDotsIcon />
-  //   </IconButton>
-  // );
-
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
   const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<

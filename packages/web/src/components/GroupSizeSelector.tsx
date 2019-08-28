@@ -60,8 +60,8 @@ export default function GroupSizeSelector(props: GroupSizeSelectorProps) {
           color="textSecondary"
           style={{ fontStyle: 'italic', marginBottom: theme.spacing(1) }}
         >
-          If you require more group members, please contact the Caravan team on
-          Discord.
+          This can be changed at any time. If you require more group members,
+          please contact the Caravan team on Discord.
         </Typography>
       )}
       <FormControl variant="outlined" className={classes.formControl}>
