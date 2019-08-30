@@ -177,9 +177,9 @@ router.get('/', async (req, res) => {
 router.get('/:urlSlugOrId', async (req, res, next) => {
   const { urlSlugOrId } = req.params;
   try {
-    const user = await getUser(urlSlugOrId);
-    if (user) {
-      res.status(200).send(user.toJSON());
+    const userDoc = await getUser(urlSlugOrId);
+    if (userDoc) {
+      res.status(200).send(userDoc.toJSON());
     } else {
       res.sendStatus(400);
     }

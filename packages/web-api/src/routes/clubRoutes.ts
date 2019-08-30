@@ -200,7 +200,7 @@ router.get('/', async (req, res) => {
   }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
-  if (userId) {
+  if (user) {
     const { discordId } = user;
     const channels = getUserChannels(guild, discordId, userInChannelBoolean);
     const channelIds = channels.map(c => c.id);
@@ -346,8 +346,13 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   let user: UserDoc | undefined;
   if (userId) {
     user = await getUser(userId);
-  } else {
-    return res.status(400).send('Require a valid user id to get user clubs');
+  }
+  if (!user) {
+    return res
+      .status(400)
+      .send(
+        `Could not find user while getting user's clubs: { userId: ${userId} }`
+      );
   }
   // Apply necessary filters
   const query: SameKeysAs<Partial<Club>> = {

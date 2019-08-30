@@ -72,6 +72,9 @@ export const getUser = async (urlSlugOrId: string) => {
   } else {
     user = await UserModel.findById(urlSlugOrId);
   }
+  if (!user) {
+    return user;
+  }
   mutateUserDiscordContent(user);
   const badgeDoc = await getBadges();
   if (user.badges.length > 0) {
