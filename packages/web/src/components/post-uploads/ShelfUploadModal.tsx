@@ -77,8 +77,8 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
     onPostShelf,
     postAuthorUserInfo,
   } = props;
-  const [maxWidth] = React.useState<DialogProps['maxWidth']>('lg');
-  const [scroll] = React.useState<DialogProps['scroll']>('paper');
+  const maxWidth = 'lg';
+  const scroll = 'paper';
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
   );
@@ -119,7 +119,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
         description: shelfDescription,
       };
       setPostingShelf(true);
-      const uploadShelfRes = await uploadPost(postContent, userId);
+      const uploadShelfRes = await uploadPost(postContent);
       const { data } = uploadShelfRes;
       if (data) {
         const postReturned: Post = data.post;

@@ -1,8 +1,6 @@
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import {
   makeStyles,
-  Button,
   Typography,
   Avatar,
   Tooltip,
@@ -12,9 +10,7 @@ import {
   ListItemIcon,
   ListItem,
 } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import { Like, PostUserInfo } from '@caravan/buddy-reading-types';
+import { PostUserInfo } from '@caravan/buddy-reading-types';
 import shuffleArr from '../common/shuffleArr';
 
 const useStyles = makeStyles(theme => ({

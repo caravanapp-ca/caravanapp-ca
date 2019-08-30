@@ -24,6 +24,7 @@ import {
   Post,
   PostUserInfo,
   PostWithAuthorInfoAndLikes,
+  PostSearchField,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -69,6 +70,7 @@ import {
   getFeedViewerUserInfo,
 } from '../../services/post';
 import PostCards from './PostCards';
+import PostSearchFilter from '../../components/filters/PostSearchFilter';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -116,7 +118,7 @@ const useStyles = makeStyles(theme => ({
   },
   usersFilterGrid: {
     marginTop: '16px',
-    padding: '0px 8px',
+    padding: '0px 16px',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -201,6 +203,9 @@ export default function Home(props: HomeProps) {
   const [userSearchField, setUserSearchField] = React.useState<UserSearchField>(
     'username'
   );
+  const [postSearchField, setPostSearchField] = React.useState<PostSearchField>(
+    'bookTitle'
+  );
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [afterClubsQuery, setAfterClubsQuery] = React.useState<
     string | undefined
@@ -238,7 +243,7 @@ export default function Home(props: HomeProps) {
     clubMembershipFiltersApplied;
   const [clubsSearch, setClubsSearch] = React.useState<string>('');
   const [usersSearch, setUsersSearch] = React.useState<string>('');
-
+  const [postsSearch, setPostsSearch] = React.useState<string>('');
   const [showShelfUpload, setShowShelfUpload] = React.useState(false);
   const [
     showProgressUpdateUpload,
@@ -451,6 +456,16 @@ export default function Home(props: HomeProps) {
     }
   };
 
+  const handlePostSearchFieldChange = async (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => {
+    const postSearchFieldValue = event.target.value as PostSearchField;
+    setPostSearchField(postSearchFieldValue);
+    if (postsSearch !== '') {
+      await resetLoadMorePosts();
+    }
+  };
+
   function onCloseLoginModal() {
     setLoginModalShown(false);
   }
@@ -637,6 +652,28 @@ export default function Home(props: HomeProps) {
     }
   };
 
+  const resetLoadMorePosts = async () => {
+    await setPostsResult(s => ({
+      ...s,
+      status: 'loading',
+    }));
+    await setAfterPostsQuery(undefined);
+  };
+
+  const onClearPostsSearch = async () => {
+    if (postsSearch !== '') {
+      await resetLoadMorePosts();
+      setPostsSearch('');
+    }
+  };
+
+  const onSearchPostsSubmitted = async (str: string) => {
+    if (str !== postsSearch) {
+      await resetLoadMorePosts();
+      setPostsSearch(str);
+    }
+  };
+
   function onUploadPost(
     postType: string,
     postTransformedObj: PostWithAuthorInfoAndLikes
@@ -750,7 +787,7 @@ export default function Home(props: HomeProps) {
           >
             <Tab label="Join Clubs" />
             <Tab label="Find A Buddy" />
-            <Tab label="Feed" />
+            <Tab label="Find Books" />
           </Tabs>
         </Element>
         {tabValue === 0 && (
@@ -1057,6 +1094,24 @@ export default function Home(props: HomeProps) {
                 onClickWantToReadAboutUpload={() =>
                   setShowWantToReadAboutUpload(true)
                 }
+              />
+              <FilterSearch
+                onClearSearch={onClearPostsSearch}
+                onSearchSubmitted={onSearchPostsSubmitted}
+                searchBoxLabel={
+                  postSearchField === 'bookTitle'
+                    ? 'Search shelves by book title'
+                    : userSearchField === 'bookAuthor'
+                    ? 'Search shelves by book author'
+                    : 'Search shelves by shelf title'
+                }
+                searchBoxLabelSmall={'Search shelves'}
+                searchBoxId={'shelf-search'}
+                loadingMore={loadingMorePosts}
+              />
+              <PostSearchFilter
+                handleChange={handlePostSearchFieldChange}
+                searchField={postSearchField}
               />
             </Container>
             {(postsResult.status === 'loaded' ||

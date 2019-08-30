@@ -14,7 +14,7 @@ export interface LikesDoc
 }
 
 const likesDefinition: SameKeysAs<FilterAutoMongoKeys<Likes>> = {
-  postId: { type: Schema.Types.ObjectId, required: true },
+  postId: { type: Schema.Types.ObjectId, required: true, index: true },
   likes: [{ type: Schema.Types.ObjectId, required: true }],
   numLikes: { type: Number, required: true, default: 0 },
 };

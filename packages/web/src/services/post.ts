@@ -3,15 +3,15 @@ import {
   Services,
   PostContent,
   PostUserInfo,
+  PostSearchField,
 } from '@caravan/buddy-reading-types';
 
-const postRoute = '/api/post';
+const postRoute = '/api/posts';
 
-export async function uploadPost(postContent: PostContent, userId: string) {
+export async function uploadPost(postContent: PostContent) {
   const res = await axios.post<Services.UploadPostResult | null>(postRoute, {
     params: {
       postContent,
-      userId,
     },
   });
   return res;
@@ -19,7 +19,9 @@ export async function uploadPost(postContent: PostContent, userId: string) {
 
 export async function getAllPostsTransformed(
   after?: string,
-  pageSize?: number
+  pageSize?: number,
+  search?: string,
+  postSearchField?: PostSearchField
 ) {
   const res = await axios.get<Services.GetPostsWithAuthorInfoAndLikes>(
     `${postRoute}/withAuthorAndLikesUserInfo`,
@@ -27,6 +29,8 @@ export async function getAllPostsTransformed(
       params: {
         after,
         pageSize,
+        search,
+        postSearchField,
       },
     }
   );

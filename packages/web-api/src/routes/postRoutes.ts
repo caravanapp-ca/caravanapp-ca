@@ -6,6 +6,7 @@ import {
   Services,
   PostUserInfo,
   PostWithAuthorInfoAndLikes,
+  PostContent,
 } from '@caravan/buddy-reading-types';
 import { PostModel, PostDoc } from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
@@ -15,12 +16,17 @@ import { getPostUserInfo } from '../services/post';
 
 const router = express.Router();
 
+function instanceOfPostContent(object: any): object is PostContent {
+  return 'postType' in object;
+}
+
 // Upload post
 router.post('/', isAuthenticated, async (req, res, next) => {
   console.log('Posting');
   try {
-    const { postContent, userId } = req.body.params;
-    if (userId && postContent) {
+    const { postContent } = req.body.params;
+    const { userId } = req.session;
+    if (userId && instanceOfPostContent(postContent)) {
       const postToUpload: FilterAutoMongoKeys<Post> = {
         authorId: userId,
         content: postContent,
@@ -30,8 +36,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       const result = {
         post: newPost,
       };
-      const newPostId = newPost._id.toHexString();
-      const likesDoc = await createLikesDoc(newPostId);
+      await createLikesDoc(newPost.id);
       return res.status(201).send(result);
     }
   } catch (err) {
@@ -75,27 +80,25 @@ router.get('/', async (req, res) => {
     res.sendStatus(404);
     return;
   }
-  let filteredPosts: Services.GetPosts['posts'] = posts
-    .map(postDoc => {
-      const post: Omit<Post, 'createdAt' | 'updatedAt'> & {
-        createdAt: string;
-        updatedAt: string;
-      } = {
-        ...postDoc.toObject(),
-        createdAt:
-          postDoc.createdAt instanceof Date
-            ? postDoc.createdAt.toISOString()
-            : postDoc.createdAt,
-        updatedAt:
-          postDoc.updatedAt instanceof Date
-            ? postDoc.updatedAt.toISOString()
-            : postDoc.updatedAt,
-      };
-      return post;
-    })
-    .filter(p => p !== null);
+  let filteredPosts: Services.GetPosts['posts'] = posts.map(postDoc => {
+    const post: Omit<Post, 'createdAt' | 'updatedAt'> & {
+      createdAt: string;
+      updatedAt: string;
+    } = {
+      ...postDoc.toObject(),
+      createdAt:
+        postDoc.createdAt instanceof Date
+          ? postDoc.createdAt.toISOString()
+          : postDoc.createdAt,
+      updatedAt:
+        postDoc.updatedAt instanceof Date
+          ? postDoc.updatedAt.toISOString()
+          : postDoc.updatedAt,
+    };
+    return post;
+  });
   if (after) {
-    const afterIndex = filteredPosts.findIndex(c => c._id.toString() === after);
+    const afterIndex = filteredPosts.findIndex(c => c._id === after);
     if (afterIndex >= 0) {
       filteredPosts = filteredPosts.slice(afterIndex + 1);
     }
@@ -128,32 +131,31 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
   } catch (err) {
     console.error('Failed to get all posts, ', err);
     res.status(500).send('Failed to get all posts.');
+    return;
   }
   if (!posts) {
     res.sendStatus(404);
     return;
   }
-  let filteredPosts: Services.GetPosts['posts'] = posts
-    .map(postDoc => {
-      const post: Omit<Post, 'createdAt' | 'updatedAt'> & {
-        createdAt: string;
-        updatedAt: string;
-      } = {
-        ...postDoc.toObject(),
-        createdAt:
-          postDoc.createdAt instanceof Date
-            ? postDoc.createdAt.toISOString()
-            : postDoc.createdAt,
-        updatedAt:
-          postDoc.updatedAt instanceof Date
-            ? postDoc.updatedAt.toISOString()
-            : postDoc.updatedAt,
-      };
-      return post;
-    })
-    .filter(p => p !== null);
+  let filteredPosts: Services.GetPosts['posts'] = posts.map(postDoc => {
+    const post: Omit<Post, 'createdAt' | 'updatedAt'> & {
+      createdAt: string;
+      updatedAt: string;
+    } = {
+      ...postDoc.toObject(),
+      createdAt:
+        postDoc.createdAt instanceof Date
+          ? postDoc.createdAt.toISOString()
+          : postDoc.createdAt,
+      updatedAt:
+        postDoc.updatedAt instanceof Date
+          ? postDoc.updatedAt.toISOString()
+          : postDoc.updatedAt,
+    };
+    return post;
+  });
   if (after) {
-    const afterIndex = filteredPosts.findIndex(c => c._id.toString() === after);
+    const afterIndex = filteredPosts.findIndex(c => c._id === after);
     if (afterIndex >= 0) {
       filteredPosts = filteredPosts.slice(afterIndex + 1);
     }
@@ -165,16 +167,13 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     filteredPosts.map(async p => {
       let filteredLikesArr: PostUserInfo[] = [];
       const postLikes = await getPostLikes(p._id);
-      const h = postLikes.likes;
-      if (postLikes && postLikes.numLikes > 0) {
+      let numLikes: number = 0;
+      if (postLikes && postLikes.numLikes && postLikes.numLikes > 0) {
+        numLikes = postLikes.numLikes;
         const likesObjArr = await Promise.all(
           postLikes.likes.map(async luid => {
             const likeUserInfo = await getPostUserInfo(luid.toString());
-            if (likeUserInfo) {
-              return likeUserInfo;
-            } else {
-              return null;
-            }
+            return likeUserInfo || null;
           })
         );
         filteredLikesArr = likesObjArr.filter(l => l !== null);
@@ -185,7 +184,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
           post: p,
           authorInfo,
           likes: filteredLikesArr,
-          numLikes: postLikes.numLikes,
+          numLikes,
         };
       } else {
         return null;

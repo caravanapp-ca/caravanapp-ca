@@ -1,8 +1,5 @@
-import axios from 'axios';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
 import { getUser } from './user';
-
-const postRoute = '/api/post';
 
 export async function getPostUserInfo(userId: string) {
   const user = await getUser(userId);
@@ -19,6 +16,6 @@ export async function getPostUserInfo(userId: string) {
     };
     return userInfo;
   } else {
-    return undefined;
+    return null;
   }
 }

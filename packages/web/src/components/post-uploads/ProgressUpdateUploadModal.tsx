@@ -1,33 +1,21 @@
 import React from 'react';
 import {
-  Services,
-  FilterChip,
   FilterAutoMongoKeys,
   ShelfEntry,
-  ShelfPost,
-  Post,
   ProgressUpdateType,
   PostContent,
 } from '@caravan/buddy-reading-types';
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  useMediaQuery,
   makeStyles,
   AppBar,
   Toolbar,
-  IconButton,
   Typography,
   Slide,
   Container,
   TextField,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import GenreChip from '../../components/GenreChip';
-import theme from '../../theme';
-import { Transition } from 'react-transition-group';
 import { TransitionProps } from 'react-transition-group/Transition';
 import BookSearch from '../../views/books/BookSearch';
 import { uploadPost } from '../../services/post';
@@ -96,7 +84,7 @@ export default function ProgressUpdateUploadModal(
     setProgressUpdateDescription('');
   }
 
-  async function postProgressUpdate() {
+  function postProgressUpdate() {
     if (userId && book) {
       const postContent: PostContent = {
         postType: 'progressUpdate',
@@ -105,7 +93,7 @@ export default function ProgressUpdateUploadModal(
         containsSpoiler: false,
         description: progressUpdateDescription,
       };
-      await uploadPost(postContent, userId);
+      uploadPost(postContent);
     }
   }
 

@@ -1,13 +1,11 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import { isAuthenticated } from '../middleware/auth';
-import { FilterAutoMongoKeys, Likes } from '@caravan/buddy-reading-types';
 import { LikesModel, LikesDoc } from '@caravan/buddy-reading-mongo';
 
 const router = express.Router();
 
 // Like post
-router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
+router.post('/:postId', isAuthenticated, async (req, res, next) => {
   const { postId } = req.params;
   // TODO right now the Transactions code is commented out -- we need to convert our db to a 'replica set' in order
   // to use the Transactions feature
@@ -36,7 +34,7 @@ router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
     // );
     //await session.commitTransaction();
     //session.endSession();
-    return res.status(200).send(result);
+    return res.status(200).send(`Liked: ${!alreadyLiked}`);
   } catch (err) {
     // If an error occurred, abort the whole transaction and undo any changes that might have happened
     //await session.abortTransaction();
@@ -46,7 +44,7 @@ router.post('/like/:postId', isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.get('/likes/:postId', isAuthenticated, async (req, res, next) => {
+router.get('/:postId', async (req, res, next) => {
   const { postId } = req.params;
   try {
     const result = await LikesModel.findById(postId);

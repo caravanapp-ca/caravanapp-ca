@@ -87,8 +87,8 @@ import { pubsubClient } from './common/pubsub';
   app.use('/api/referrals', referralRoutes);
   app.use('/api/userPalettes', userPalettesRoutes);
   app.use('/api/userSettings', userSettingsRoutes);
-  app.use('/api/post', postRoutes);
-  app.use('/api/like', likeRoutes);
+  app.use('/api/posts', postRoutes);
+  app.use('/api/likes', likeRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

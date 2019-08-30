@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, CardActions } from '@material-ui/core';
+import { CardActions } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -9,10 +9,6 @@ import {
   PostUserInfo,
   PostContent,
   User,
-  Likes,
-  Like,
-  FilterAutoMongoKeys,
-  ClubReadingSchedule,
 } from '@caravan/buddy-reading-types';
 import theme from '../../theme';
 import Truncate from 'react-truncate';
@@ -21,7 +17,7 @@ import PostHeader from '../../components/PostHeader';
 import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
 import PostActions from '../../components/PostActions';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
-import { getPostLikes, modifyPostLike } from '../../services/like';
+import { modifyPostLike } from '../../services/like';
 
 const useStyles = makeStyles(theme => ({
   card: {

@@ -1,16 +1,6 @@
 import React from 'react';
-import { UserSearchField, PostUserInfo } from '@caravan/buddy-reading-types';
-import {
-  Select,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Fab,
-  Typography,
-  Avatar,
-  Container,
-} from '@material-ui/core';
-import NavigationIcon from '@material-ui/icons/Navigation';
+import { PostUserInfo } from '@caravan/buddy-reading-types';
+import { Fab, Typography, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import shelfIcon from '../resources/post-icons/shelf_icon.svg';
 
