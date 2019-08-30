@@ -32,6 +32,6 @@ export const getSession = async (accessToken: string) => {
   const sessionQuery: Partial<Session> = {
     accessToken,
   };
-  const session = await SessionModel.findOne({ sessionQuery });
+  const session = await SessionModel.findOne(sessionQuery);
   return session;
 };
