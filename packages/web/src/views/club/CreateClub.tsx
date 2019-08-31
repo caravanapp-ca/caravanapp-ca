@@ -45,6 +45,7 @@ import {
   CLUB_SIZES,
   CLUB_SIZE_NO_LIMIT_LABEL,
 } from '../../common/globalConstants';
+import ClubMembershipEditor from '../../components/ClubMembershipEditor';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -350,30 +351,13 @@ export default function CreateClub(props: CreateClubProps) {
           <Typography variant="subtitle1" className={classes.sectionHeader}>
             Would you like to limit the number of group members?
           </Typography>
-          <div className={classes.centeredColumnContainer}>
-            <div className={classes.twoLabelSwitchContainer}>
-              <Typography>Unlimited</Typography>
-              <Switch
-                checked={limitGroupSize}
-                onChange={() => setLimitGroupSize(!limitGroupSize)}
-                color="primary"
-              />
-              <Typography>Limited</Typography>
-            </div>
-            <GroupSizeSelector
-              onChangeSize={handleGroupSizeChange}
-              selectedSize={
-                !limitGroupSize
-                  ? CLUB_SIZE_NO_LIMIT_LABEL
-                  : selectedGroupSize.toString()
-              }
-              sizes={CLUB_SIZES.map(str => ({
-                label: str,
-                enabled: true,
-              }))}
-              disabled={!limitGroupSize}
-            />
-          </div>
+          <ClubMembershipEditor
+            handleGroupLimitSwitch={() => setLimitGroupSize(!limitGroupSize)}
+            handleGroupSizeChange={handleGroupSizeChange}
+            limitGroupSize={limitGroupSize}
+            numMembers={0}
+            selectedGroupSize={selectedGroupSize}
+          />
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Club, ReadingSpeed, GroupVibe } from '@caravan/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Typography, TextField, Radio, Switch } from '@material-ui/core';
+import { Typography, TextField, Radio } from '@material-ui/core';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import {
   readingSpeedIcons,
@@ -12,13 +12,12 @@ import {
   groupVibeLabels,
 } from '../../../components/group-vibe-avatars-icons-labels';
 import MemberList from './MemberList';
-import GroupSizeSelector from '../../../components/GroupSizeSelector';
 import ClubPrivacySlider from '../../../components/ClubPrivacySlider';
 import {
-  CLUB_SIZES,
   CLUB_SIZE_NO_LIMIT_LABEL,
   CLUB_SIZE_MAX,
 } from '../../../common/globalConstants';
+import ClubMembershipEditor from '../../../components/ClubMembershipEditor';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -278,34 +277,13 @@ export default function GroupView(props: GroupViewProps) {
             </Typography>
           )}
           {members.length <= CLUB_SIZE_MAX && (
-            <div className={classes.centeredColumnContainer}>
-              <div className={classes.twoLabelSwitchContainer}>
-                <Typography>Unlimited</Typography>
-                <Switch
-                  checked={limitGroupSize}
-                  onChange={handleGroupLimitSwitch}
-                  color="primary"
-                />
-                <Typography>Limited</Typography>
-              </div>
-              <GroupSizeSelector
-                onChangeSize={handleGroupSizeChange}
-                selectedSize={
-                  !limitGroupSize
-                    ? CLUB_SIZE_NO_LIMIT_LABEL
-                    : selectedGroupSize.toString()
-                }
-                sizes={CLUB_SIZES.map(str => ({
-                  label: str,
-                  enabled:
-                    str === CLUB_SIZE_NO_LIMIT_LABEL ||
-                    members.length <= parseInt(str)
-                      ? true
-                      : false,
-                }))}
-                disabled={!limitGroupSize}
-              />
-            </div>
+            <ClubMembershipEditor
+              handleGroupLimitSwitch={handleGroupLimitSwitch}
+              handleGroupSizeChange={handleGroupSizeChange}
+              limitGroupSize={limitGroupSize}
+              numMembers={members.length}
+              selectedGroupSize={selectedGroupSize}
+            />
           )}
         </div>
       </div>
