@@ -7,6 +7,10 @@ import { isMobileDevice } from './isMobileDevice';
 
 // Store global constants for the Web project here.
 
+export const CLUB_SIZE_MIN = 2;
+
+export const CLUB_SIZE_MAX = 50;
+
 export const DEFAULT_CLUB_SCHED_DURATION = 3;
 
 export const DEFAULT_CLUB_SCHED_DISC_FREQ = null;

@@ -239,7 +239,6 @@ export default function GroupView(props: GroupViewProps) {
               label: str,
               enabled: members.length <= parseInt(str) ? true : false,
             }))}
-            showContactMessage={true}
           />
         </div>
       </div>
