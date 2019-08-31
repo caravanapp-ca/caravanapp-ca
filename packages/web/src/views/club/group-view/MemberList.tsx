@@ -21,7 +21,7 @@ export default function MemberList(props: MemberListProps) {
   for (let i = 0; i < freeSlots; i++) {
     emptySlots.push(
       <Grid item xs={12} sm={6} key={i}>
-        <FreeGroupSlotListElement key={i} />
+        <FreeGroupSlotListElement />
       </Grid>
     );
   }
