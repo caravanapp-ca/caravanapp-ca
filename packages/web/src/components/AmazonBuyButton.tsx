@@ -5,13 +5,6 @@ export interface AmazonBuyButtonProps {
   link: string | undefined;
 }
 
-const useStyles = makeStyles(theme => ({
-  leftIcon: {
-    color: 'white',
-    marginRight: theme.spacing(1),
-  },
-}));
-
 export default function AmazonBuyButton(props: AmazonBuyButtonProps) {
   // Note: for now we're just linking to the Amazon Books page
   const { link } = props;

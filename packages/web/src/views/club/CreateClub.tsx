@@ -40,7 +40,7 @@ import GenreChip from '../../components/GenreChip';
 import theme from '../../theme';
 import ClubPrivacySlider from '../../components/ClubPrivacySlider';
 import { CLUB_SIZE_NO_LIMIT_LABEL } from '../../common/globalConstants';
-import ClubMembershipEditor from '../../components/ClubMembershipEditor';
+import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -346,7 +346,7 @@ export default function CreateClub(props: CreateClubProps) {
           <Typography variant="subtitle1" className={classes.sectionHeader}>
             Would you like to limit the number of group members?
           </Typography>
-          <ClubMembershipEditor
+          <ClubMemberLimitEditor
             handleGroupLimitSwitch={() => setLimitGroupSize(!limitGroupSize)}
             handleGroupSizeChange={handleGroupSizeChange}
             limitGroupSize={limitGroupSize}

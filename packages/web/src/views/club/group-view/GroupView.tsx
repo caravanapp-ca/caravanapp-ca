@@ -17,7 +17,7 @@ import {
   CLUB_SIZE_NO_LIMIT_LABEL,
   CLUB_SIZE_MAX,
 } from '../../../common/globalConstants';
-import ClubMembershipEditor from '../../../components/ClubMembershipEditor';
+import ClubMemberLimitEditor from '../../../components/ClubMemberLimitEditor';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -277,7 +277,7 @@ export default function GroupView(props: GroupViewProps) {
             </Typography>
           )}
           {members.length <= CLUB_SIZE_MAX && (
-            <ClubMembershipEditor
+            <ClubMemberLimitEditor
               handleGroupLimitSwitch={handleGroupLimitSwitch}
               handleGroupSizeChange={handleGroupSizeChange}
               limitGroupSize={limitGroupSize}

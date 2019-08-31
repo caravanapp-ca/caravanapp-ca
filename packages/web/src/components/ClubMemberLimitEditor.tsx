@@ -23,7 +23,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-interface ClubMembershipEditorProps {
+interface ClubMemberLimitEditorProps {
   handleGroupLimitSwitch: (
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
@@ -40,7 +40,9 @@ interface ClubMembershipEditorProps {
   selectedGroupSize: number;
 }
 
-export default function ClubMembershipEditor(props: ClubMembershipEditorProps) {
+export default function ClubMemberLimitEditor(
+  props: ClubMemberLimitEditorProps
+) {
   const {
     handleGroupLimitSwitch,
     handleGroupSizeChange,
