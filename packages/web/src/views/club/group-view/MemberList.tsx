@@ -20,8 +20,8 @@ export default function MemberList(props: MemberListProps) {
   let emptySlots = [];
   for (let i = 0; i < freeSlots; i++) {
     emptySlots.push(
-      <Grid item xs={12} sm={6}>
-        <FreeGroupSlotListElement key={i} />
+      <Grid item xs={12} sm={6} key={i}>
+        <FreeGroupSlotListElement />
       </Grid>
     );
   }
@@ -36,7 +36,7 @@ export default function MemberList(props: MemberListProps) {
       {members.map(m => {
         const badge = getBadgeToDisplay(m.badges);
         return (
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} key={m._id}>
             <ListElementAvatar
               button={m.urlSlug ? true : undefined}
               link={m.urlSlug ? `/user/${m.urlSlug}` : undefined}
