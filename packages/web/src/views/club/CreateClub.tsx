@@ -355,7 +355,7 @@ export default function CreateClub(props: CreateClubProps) {
             handleGroupLimitSwitch={() => setLimitGroupSize(!limitGroupSize)}
             handleGroupSizeChange={handleGroupSizeChange}
             limitGroupSize={limitGroupSize}
-            numMembers={0}
+            numMembers={1}
             selectedGroupSize={selectedGroupSize}
           />
         </div>

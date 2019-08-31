@@ -321,7 +321,11 @@ export default function GroupView(props: GroupViewProps) {
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
-            Members
+            {`Members: ${members.length}${
+              maxMembers === UNLIMITED_CLUB_MEMBERS_VALUE
+                ? ``
+                : ` (Max ${maxMembers})`
+            }`}
           </Typography>
           <MemberList
             members={members}
