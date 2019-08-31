@@ -17,7 +17,6 @@ import {
   Container,
   IconButton,
   Radio,
-  Switch,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -36,15 +35,11 @@ import {
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
 import HeaderTitle from '../../components/HeaderTitle';
-import GroupSizeSelector from '../../components/GroupSizeSelector';
 import { getAllGenres } from '../../services/genre';
 import GenreChip from '../../components/GenreChip';
 import theme from '../../theme';
 import ClubPrivacySlider from '../../components/ClubPrivacySlider';
-import {
-  CLUB_SIZES,
-  CLUB_SIZE_NO_LIMIT_LABEL,
-} from '../../common/globalConstants';
+import { CLUB_SIZE_NO_LIMIT_LABEL } from '../../common/globalConstants';
 import ClubMembershipEditor from '../../components/ClubMembershipEditor';
 
 const useStyles = makeStyles(theme => ({

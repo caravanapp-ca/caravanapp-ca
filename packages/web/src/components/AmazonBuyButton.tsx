@@ -13,8 +13,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function AmazonBuyButton(props: AmazonBuyButtonProps) {
-  const classes = useStyles();
-
   // Note: for now we're just linking to the Amazon Books page
   const { link } = props;
 
