@@ -7,9 +7,17 @@ import { isMobileDevice } from './isMobileDevice';
 
 // Store global constants for the Web project here.
 
-export const CLUB_SIZE_MIN = 2;
+const CLUB_SIZE_MIN = 2;
 
 export const CLUB_SIZE_MAX = 50;
+
+export const CLUB_SIZE_NO_LIMIT_LABEL = 'None';
+
+export const CLUB_SIZES = [CLUB_SIZE_NO_LIMIT_LABEL];
+
+for (let i = CLUB_SIZE_MIN; i <= CLUB_SIZE_MAX; i++) {
+  CLUB_SIZES.push(i.toString());
+}
 
 export const DEFAULT_CLUB_SCHED_DURATION = 3;
 

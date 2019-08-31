@@ -840,7 +840,7 @@ router.put(
   check(
     'newClub.maxMembers',
     'Max members must be an integer between 2 and 1000 inclusive'
-  ).isInt({ gt: 1, lt: 1001 }),
+  ).isInt({ lt: 1001 }),
   check(
     'newClub.name',
     'Name must be a string between 2 and 150 chars in length'
@@ -879,7 +879,7 @@ router.put(
       );
       return res.status(422).send('Only the club owner may update a club!');
     }
-    if (newClub.maxMembers < newClub.members.length) {
+    if (newClub.maxMembers >= 0 && newClub.maxMembers < newClub.members.length) {
       console.warn(
         `User ${req.user._id} attempted to set max members on club ${clubId} to a value less than its current member count.`
       );
@@ -934,7 +934,7 @@ router.put(
 router.delete('/:clubId', isAuthenticated, async (req, res) => {
   const { user } = req;
   const { clubId } = req.params;
-
+  
   let clubDoc: ClubDoc;
   try {
     clubDoc = await ClubModel.findById(clubId);

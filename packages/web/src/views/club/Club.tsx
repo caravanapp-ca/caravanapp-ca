@@ -120,7 +120,7 @@ const showJoinClub = (
   memberStatus === 'notMember' &&
   club &&
   club.members &&
-  club.maxMembers > club.members.length;
+  (club.maxMembers === -1 || club.maxMembers > club.members.length);
 const showOpenChat = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'owner' || memberStatus === 'member';
 const showUpdateBook = (memberStatus: LoadableMemberStatus) =>

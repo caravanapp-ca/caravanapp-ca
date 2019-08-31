@@ -41,7 +41,10 @@ import { getAllGenres } from '../../services/genre';
 import GenreChip from '../../components/GenreChip';
 import theme from '../../theme';
 import ClubPrivacySlider from '../../components/ClubPrivacySlider';
-import { CLUB_SIZE_MAX, CLUB_SIZE_MIN } from '../../common/globalConstants';
+import {
+  CLUB_SIZES,
+  CLUB_SIZE_NO_LIMIT_LABEL,
+} from '../../common/globalConstants';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -87,11 +90,6 @@ interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
   user: User | null;
 }
 
-const noLimitLabel = 'None';
-let groupSizesStrArr: string[] = [noLimitLabel];
-for (let i = CLUB_SIZE_MIN; i <= CLUB_SIZE_MAX; i++) {
-  groupSizesStrArr.push(i.toString());
-}
 const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 const groupVibes: GroupVibe[] = [
   'chill',
@@ -266,7 +264,7 @@ export default function CreateClub(props: CreateClubProps) {
     }>
   ) => {
     const newVal = e.target.value as string;
-    if (newVal === noLimitLabel) {
+    if (newVal === CLUB_SIZE_NO_LIMIT_LABEL) {
       setLimitGroupSize(false);
     } else {
       setSelectedGroupSize(parseInt(newVal));
@@ -365,9 +363,11 @@ export default function CreateClub(props: CreateClubProps) {
             <GroupSizeSelector
               onChangeSize={handleGroupSizeChange}
               selectedSize={
-                !limitGroupSize ? noLimitLabel : selectedGroupSize.toString()
+                !limitGroupSize
+                  ? CLUB_SIZE_NO_LIMIT_LABEL
+                  : selectedGroupSize.toString()
               }
-              sizes={groupSizesStrArr.map(str => ({
+              sizes={CLUB_SIZES.map(str => ({
                 label: str,
                 enabled: true,
               }))}
