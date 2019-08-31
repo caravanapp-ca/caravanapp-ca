@@ -39,7 +39,10 @@ import { getAllGenres } from '../../services/genre';
 import GenreChip from '../../components/GenreChip';
 import theme from '../../theme';
 import ClubPrivacySlider from '../../components/ClubPrivacySlider';
-import { CLUB_SIZE_NO_LIMIT_LABEL } from '../../common/globalConstants';
+import {
+  CLUB_SIZE_NO_LIMIT_LABEL,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
+} from '../../common/globalConstants';
 import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
 
 const useStyles = makeStyles(theme => ({
@@ -192,7 +195,9 @@ export default function CreateClub(props: CreateClubProps) {
         });
       }
     });
-    const maxMembers = limitGroupSize ? selectedGroupSize : -1;
+    const maxMembers = limitGroupSize
+      ? selectedGroupSize
+      : UNLIMITED_CLUB_MEMBERS_VALUE;
     const clubObj: Services.CreateClubProps = {
       name: selectedGroupName,
       newShelf: initShelf,

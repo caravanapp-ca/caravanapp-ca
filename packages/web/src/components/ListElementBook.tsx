@@ -82,10 +82,10 @@ export default function ListElementBook(props: ListElementBookProps) {
     console.log(isDragging);
     return (
       <Draggable draggableId={id} index={index}>
-        {(provided, snapshot) => (
+        {provided => (
           <ListItem
             // @ts-ignore
-            button={clubId ? true : false}
+            button={!!clubId}
             innerRef={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -148,7 +148,7 @@ export default function ListElementBook(props: ListElementBookProps) {
     return (
       <ListItem
         // @ts-ignore
-        button={clubId ? true : false}
+        button={!!clubId}
       >
         {primary && <ListItemIcon>{primary}</ListItemIcon>}
         <img

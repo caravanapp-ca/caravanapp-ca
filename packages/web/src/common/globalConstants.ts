@@ -19,6 +19,12 @@ for (let i = CLUB_SIZE_MIN; i <= CLUB_SIZE_MAX; i++) {
   CLUB_SIZES.push(i.toString());
 }
 
+// If changing here, please change in globalConstantsAPI in the Web API project as well.
+// Also, consider existing clubs in db which may have this value saved.
+export const UNLIMITED_CLUB_MEMBERS_VALUE = -1;
+
+export const DEFAULT_MEMBER_LIMIT = 24;
+
 export const DEFAULT_CLUB_SCHED_DURATION = 3;
 
 export const DEFAULT_CLUB_SCHED_DISC_FREQ = null;

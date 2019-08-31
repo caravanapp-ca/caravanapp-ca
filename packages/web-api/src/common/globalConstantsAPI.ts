@@ -39,3 +39,7 @@ export const DEFAULT_EMAIL_SETTINGS: EmailSettings = {
   reminders: true,
   updates: true,
 };
+
+// If changing here, please change in globalConstants in the Web project as well.
+// Also, consider existing clubs in db which may have this value saved.
+export const UNLIMITED_CLUB_MEMBERS_VALUE = -1;

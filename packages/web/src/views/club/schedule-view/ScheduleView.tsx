@@ -159,7 +159,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
     {
       value: props.schedule ? props.schedule.startDate : null,
       onChange: date => handleScheduleChange('startDate', date),
-      autoOk: isEditing ? true : false,
+      autoOk: isEditing,
     },
     {
       getDefaultFormat: () => 'MM/dd/yyyy',

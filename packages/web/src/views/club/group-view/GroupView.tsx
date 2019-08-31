@@ -16,6 +16,8 @@ import ClubPrivacySlider from '../../../components/ClubPrivacySlider';
 import {
   CLUB_SIZE_NO_LIMIT_LABEL,
   CLUB_SIZE_MAX,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
+  DEFAULT_MEMBER_LIMIT,
 } from '../../../common/globalConstants';
 import ClubMemberLimitEditor from '../../../components/ClubMemberLimitEditor';
 
@@ -116,14 +118,16 @@ export default function GroupView(props: GroupViewProps) {
     maxMembers > 0
   );
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(
-    maxMembers === -1 ? Math.max(4, members.length) : maxMembers
+    maxMembers === UNLIMITED_CLUB_MEMBERS_VALUE
+      ? Math.max(DEFAULT_MEMBER_LIMIT, members.length)
+      : maxMembers
   );
 
   const handleGroupLimitSwitch = () => {
     if (!limitGroupSize) {
       onEdit('maxMembers', selectedGroupSize);
     } else {
-      onEdit('maxMembers', -1);
+      onEdit('maxMembers', UNLIMITED_CLUB_MEMBERS_VALUE);
     }
     setLimitGroupSize(!limitGroupSize);
   };
@@ -136,7 +140,7 @@ export default function GroupView(props: GroupViewProps) {
   ) => {
     const newVal = e.target.value as string;
     if (newVal === CLUB_SIZE_NO_LIMIT_LABEL) {
-      onEdit('maxMembers', -1);
+      onEdit('maxMembers', UNLIMITED_CLUB_MEMBERS_VALUE);
       setLimitGroupSize(false);
     } else {
       const newValNum = parseInt(newVal);

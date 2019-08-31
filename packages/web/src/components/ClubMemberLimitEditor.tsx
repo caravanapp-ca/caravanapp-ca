@@ -72,9 +72,7 @@ export default function ClubMemberLimitEditor(
         sizes={CLUB_SIZES.map(str => ({
           label: str,
           enabled:
-            str === CLUB_SIZE_NO_LIMIT_LABEL || numMembers <= parseInt(str)
-              ? true
-              : false,
+            str === CLUB_SIZE_NO_LIMIT_LABEL || numMembers <= parseInt(str),
         }))}
         disabled={!limitGroupSize}
       />
