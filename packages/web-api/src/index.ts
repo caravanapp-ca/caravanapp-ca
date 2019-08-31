@@ -72,8 +72,8 @@ import { pubsubClient } from './common/pubsub';
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     })
   );
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json({ limit: '1mb' }));
+  app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
 
   app.use('/api/test', testRoutes);
   app.use('/api/club', clubRoutes);
