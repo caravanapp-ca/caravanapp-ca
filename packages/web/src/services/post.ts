@@ -39,7 +39,7 @@ export async function getAllPostsTransformed(
 
 export async function getFeedViewerUserInfo(userId: string) {
   const res = await axios.get<PostUserInfo | null>(
-    `${postRoute}/getPostUserInfo/${userId}`
+    `${postRoute}/userInfo/${userId}`
   );
   return res;
 }

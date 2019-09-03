@@ -36,7 +36,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       const result = {
         post: newPost,
       };
-      await createLikesDoc(newPost.id);
+      await createLikesDoc(newPost._id.toHexString());
       return res.status(201).send(result);
     }
   } catch (err) {
@@ -46,7 +46,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 });
 
 // Get post author info
-router.get('/getPostUserInfo/:userId', async (req, res) => {
+router.get('/userInfo/:userId', async (req, res) => {
   const { userId } = req.params;
   const postUserInfo = await getPostUserInfo(userId);
   if (postUserInfo) {

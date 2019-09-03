@@ -1,5 +1,4 @@
 import { Omit } from 'utility-types';
-import mongoose from 'mongoose';
 
 declare module '@caravan/buddy-reading-types' {
   export type FilterAutoMongoKeys<Base> = Omit<
@@ -291,7 +290,7 @@ declare module '@caravan/buddy-reading-types' {
 
   // Key will be the post id
   export interface Likes extends DocumentFields, MongoTimestamps {
-    postId: mongoose.Types.ObjectId;
+    postId: string;
     likes: string[];
     numLikes: number;
   }
@@ -419,6 +418,8 @@ declare module '@caravan/buddy-reading-types' {
   export type ReferralDestination = 'home' | 'club';
 
   export type PostType = 'shelf' | 'progressUpdate' | 'wantToReadAbout';
+
+  export type LikeAction = 'like' | 'unlike';
 
   export type PostContent =
     | ShelfPost

@@ -7,8 +7,8 @@ export const getPostLikes = async (postId: string) => {
   return likesDoc || undefined;
 };
 
-export const createLikesDoc = async (postId: mongoose.Types.ObjectId) => {
-  const likesObj: Partial<LikesDoc> = {
+export const createLikesDoc = async (postId: string) => {
+  const likesObj: FilterAutoMongoKeys<Likes> = {
     postId,
     likes: [],
     numLikes: 0,

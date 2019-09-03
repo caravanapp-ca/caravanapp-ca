@@ -139,7 +139,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
 
   useEffect(() => {
     if (shouldExecuteLike && currUser) {
-      modifyPostLike(postId, !hasLiked);
+      modifyPostLike(postId, hasLiked ? 'like' : 'unlike');
     }
   }, [hasLiked]);
 
@@ -209,7 +209,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             component="h2"
             className={classes.shelfDescription}
           >
-            <Truncate lines={2} trimWhitespace={true}>
+            <Truncate lines={3} trimWhitespace={true}>
               {shelfPost.description}
             </Truncate>
           </Typography>

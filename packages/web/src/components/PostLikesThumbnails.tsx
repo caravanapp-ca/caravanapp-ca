@@ -63,7 +63,6 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
     setAnchorEl(event.currentTarget);
   }
 
-  shuffleArr(likes);
   const slicedLikes = likes.slice(0, maxShown);
 
   return (
