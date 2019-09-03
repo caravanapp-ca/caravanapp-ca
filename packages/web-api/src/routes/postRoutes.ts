@@ -13,6 +13,7 @@ import { isAuthenticated } from '../middleware/auth';
 import { getUser } from '../services/user';
 import { getPostLikes, createLikesDoc } from '../services/like';
 import { getPostUserInfo } from '../services/post';
+import Fuse from 'fuse.js';
 
 const router = express.Router();
 
@@ -114,9 +115,9 @@ router.get('/', async (req, res) => {
 
 // Get all posts with author and like users info
 router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
-  const { after, pageSize } = req.query;
+  const { after, pageSize, search, postSearchField } = req.query;
   const query: SameKeysAs<Partial<Post>> = {};
-  if (after) {
+  if ((!search || search.length === 0) && after) {
     query._id = { $lt: after };
   }
   // Calculate number of documents to skip
@@ -124,10 +125,16 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let posts: PostDoc[];
   try {
-    posts = await PostModel.find(query)
-      .limit(limit)
-      .sort({ createdAt: -1 })
-      .exec();
+    if (search && search.length > 0) {
+      posts = await PostModel.find(query)
+        .sort({ createdAt: -1 })
+        .exec();
+    } else {
+      posts = await PostModel.find(query)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec();
+    }
   } catch (err) {
     console.error('Failed to get all posts, ', err);
     res.status(500).send('Failed to get all posts.');
@@ -137,23 +144,76 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     res.sendStatus(404);
     return;
   }
-  let filteredPosts: Services.GetPosts['posts'] = posts.map(postDoc => {
-    const post: Omit<Post, 'createdAt' | 'updatedAt'> & {
-      createdAt: string;
-      updatedAt: string;
-    } = {
-      ...postDoc.toObject(),
-      createdAt:
-        postDoc.createdAt instanceof Date
-          ? postDoc.createdAt.toISOString()
-          : postDoc.createdAt,
-      updatedAt:
-        postDoc.updatedAt instanceof Date
-          ? postDoc.updatedAt.toISOString()
-          : postDoc.updatedAt,
-    };
-    return post;
-  });
+  let filteredPosts: Services.GetPosts['posts'] = posts
+    .map(postDoc => {
+      const post: Omit<Post, 'createdAt' | 'updatedAt'> & {
+        createdAt: string;
+        updatedAt: string;
+      } = {
+        ...postDoc.toObject(),
+        createdAt:
+          postDoc.createdAt instanceof Date
+            ? postDoc.createdAt.toISOString()
+            : postDoc.createdAt,
+        updatedAt:
+          postDoc.updatedAt instanceof Date
+            ? postDoc.updatedAt.toISOString()
+            : postDoc.updatedAt,
+      };
+      if (post.content.postType === 'shelf') {
+        return post;
+      } else {
+        return null;
+      }
+    })
+    .filter(p => p !== null);
+  if ((search && search.length) > 0) {
+    let fuseSearchKey: string;
+    let fuseOptions: Fuse.FuseOptions<Services.GetPosts['posts']> = {};
+    switch (postSearchField) {
+      case 'bookTitle':
+      default:
+        fuseSearchKey = 'content.shelf.title';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+      case 'bookAuthor':
+        fuseSearchKey = 'content.shelf.author';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+      case 'postTitle':
+        fuseSearchKey = 'content.title';
+        fuseOptions = {
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
+    }
+    const fuse = new Fuse(filteredPosts, fuseOptions);
+    filteredPosts = fuse.search(search);
+  }
   if (after) {
     const afterIndex = filteredPosts.findIndex(c => c._id === after);
     if (afterIndex >= 0) {
@@ -170,8 +230,9 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
       let numLikes: number = 0;
       if (postLikes && postLikes.numLikes && postLikes.numLikes > 0) {
         numLikes = postLikes.numLikes;
+        const slicedLikes = postLikes.likes.slice(0, 10);
         const likesObjArr = await Promise.all(
-          postLikes.likes.map(async luid => {
+          slicedLikes.map(async luid => {
             const likeUserInfo = await getPostUserInfo(luid.toString());
             return likeUserInfo || null;
           })
@@ -184,6 +245,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
           post: p,
           authorInfo,
           likes: filteredLikesArr,
+          likeUserIds: postLikes.likes,
           numLikes,
         };
       } else {

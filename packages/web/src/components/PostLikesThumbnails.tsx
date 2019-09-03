@@ -44,12 +44,14 @@ const useStyles = makeStyles(theme => ({
 interface PostLikesThumbnailsProps {
   likes: PostUserInfo[];
   maxShown: number;
+  numLikes: number;
+  likeListLength: number;
 }
 
 function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
   const classes = useStyles();
 
-  const { likes, maxShown } = props;
+  const { likes, maxShown, numLikes, likeListLength } = props;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -101,12 +103,13 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
         MenuListProps={{
           style: {
             paddingTop: 0,
+            paddingBottom: 0,
           },
         }}
       >
         <ListItem style={{ backgroundColor: '#F7F7F7' }}>
           <Typography style={{ fontWeight: 600, color: 'textPrimary' }}>
-            Shelf liked by ({likes.length.toString()})
+            Shelf liked by ({numLikes.toString()})
           </Typography>
         </ListItem>
         {likes.map(l => (
@@ -133,6 +136,13 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
             </Link>
           </MenuItem>
         ))}
+        {numLikes > likeListLength && (
+          <ListItem style={{ backgroundColor: '#F7F7F7' }}>
+            <Typography style={{ fontWeight: 600, color: 'textPrimary' }}>
+              and {numLikes - likeListLength} more
+            </Typography>
+          </ListItem>
+        )}
       </Menu>
     </>
   );

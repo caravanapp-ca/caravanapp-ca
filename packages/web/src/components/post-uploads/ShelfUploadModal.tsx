@@ -127,6 +127,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
           post: postReturned,
           authorInfo: postAuthorUserInfo,
           likes: [],
+          likeUserIds: [],
           numLikes: 0,
         };
         setPostingShelf(false);

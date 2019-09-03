@@ -389,7 +389,12 @@ export default function Home(props: HomeProps) {
     const pageSize = 12;
     setLoadingMorePosts(true);
     (async () => {
-      const res = await getAllPostsTransformed(afterPostsQuery, pageSize);
+      const res = await getAllPostsTransformed(
+        afterPostsQuery,
+        pageSize,
+        postsSearch,
+        postSearchField
+      );
       if (res.status === 200) {
         const allPostsWithAuthorInfoAndLikes = res.data
           ? res.data.posts
@@ -415,7 +420,7 @@ export default function Home(props: HomeProps) {
         }
       }
     })();
-  }, [user, userLoaded, afterPostsQuery]);
+  }, [user, userLoaded, afterPostsQuery, postsSearch, postSearchField]);
 
   // Get genres on mount
   useEffect(() => {
@@ -668,6 +673,8 @@ export default function Home(props: HomeProps) {
   };
 
   const onSearchPostsSubmitted = async (str: string) => {
+    console.log('Searching');
+    console.log(postsSearch);
     if (str !== postsSearch) {
       await resetLoadMorePosts();
       setPostsSearch(str);
@@ -759,6 +766,11 @@ export default function Home(props: HomeProps) {
   let emptyUsersFilterResultMsg = 'Oops...no users turned up!';
   if (usersSearch.length > 0) {
     emptyUsersFilterResultMsg += ' Try other search terms.';
+  }
+
+  let emptyPostsFilterResultMsg = 'Oops...no shelves turned up!';
+  if (postsSearch.length > 0) {
+    emptyPostsFilterResultMsg += ' Try other search terms.';
   }
 
   return (
@@ -1101,7 +1113,7 @@ export default function Home(props: HomeProps) {
                 searchBoxLabel={
                   postSearchField === 'bookTitle'
                     ? 'Search shelves by book title'
-                    : userSearchField === 'bookAuthor'
+                    : postSearchField === 'bookAuthor'
                     ? 'Search shelves by book author'
                     : 'Search shelves by shelf title'
                 }
@@ -1113,6 +1125,46 @@ export default function Home(props: HomeProps) {
                 handleChange={handlePostSearchFieldChange}
                 searchField={postSearchField}
               />
+              {postsResult.status === 'loaded' &&
+                postsResult.payload.length === 0 &&
+                postsSearch.length > 0 && (
+                  <Typography
+                    color="textSecondary"
+                    style={{
+                      textAlign: 'center',
+                      fontStyle: 'italic',
+                      marginTop: theme.spacing(4),
+                      marginBottom: theme.spacing(4),
+                    }}
+                  >
+                    {emptyPostsFilterResultMsg}
+                  </Typography>
+                )}
+              {postsResult.status === 'loaded' &&
+                showLoadMorePosts &&
+                !loadingMorePosts && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <Button
+                      color="primary"
+                      className={classes.button}
+                      variant="outlined"
+                      onClick={() =>
+                        setAfterPostsQuery(
+                          postsResult.payload[postsResult.payload.length - 1]
+                            .post._id
+                        )
+                      }
+                    >
+                      <Typography variant="button">LOAD MORE...</Typography>
+                    </Button>
+                  </div>
+                )}
             </Container>
             {(postsResult.status === 'loaded' ||
               postsResult.status === 'loading') &&

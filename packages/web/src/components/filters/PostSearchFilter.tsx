@@ -47,7 +47,7 @@ export default function PostSearchFilter(props: PostSearchFilterProps) {
         >
           <MenuItem value={'bookTitle'}>By book title</MenuItem>
           <MenuItem value={'bookAuthor'}>By book author</MenuItem>
-          <MenuItem value={'shelfTitle'}>By shelf title</MenuItem>
+          <MenuItem value={'postTitle'}>By shelf title</MenuItem>
         </Select>
       </FormControl>
     </form>

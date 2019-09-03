@@ -255,6 +255,7 @@ declare module '@caravan/buddy-reading-types' {
     post: Post;
     authorInfo: PostUserInfo;
     likes: PostUserInfo[];
+    likeUserIds: string[];
     numLikes: number;
   }
 
@@ -582,6 +583,7 @@ declare module '@caravan/buddy-reading-types' {
         post: Post;
         authorInfo: PostUserInfo;
         likes: PostUserInfo[];
+        likeUserIds: string[];
         numLikes: number;
       }[];
     }

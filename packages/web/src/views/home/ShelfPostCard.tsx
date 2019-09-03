@@ -105,6 +105,8 @@ interface ShelfPostCardProps {
   postAuthorInfo: PostUserInfo;
   feedViewerUserInfo: PostUserInfo | null;
   likes: PostUserInfo[];
+  likeUserIds: string[];
+  numLikes: number;
   postId: string;
   currUser: User | null;
 }
@@ -116,6 +118,8 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     postAuthorInfo,
     feedViewerUserInfo,
     likes,
+    likeUserIds,
+    numLikes,
     postId,
     currUser,
   } = props;
@@ -126,11 +130,15 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
   );
 
   const [hasLiked, setHasLiked] = React.useState<boolean>(
-    currUser ? likes.map(l => l.userId).includes(currUser._id) : false
+    currUser ? likeUserIds.includes(currUser._id) : false
   );
 
   const [modifiedLikes, setModifiedLikes] = React.useState<PostUserInfo[]>(
     likes
+  );
+
+  const [modifiedNumLikes, setModifiedNumLikes] = React.useState<number>(
+    numLikes
   );
 
   const [likeButtonDisabled, setLikeButtonDisabled] = React.useState<boolean>(
@@ -153,8 +161,11 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           l => l.userId !== currUser._id
         );
         setModifiedLikes(updatedLikesArr);
+        setModifiedNumLikes(updatedLikesArr.length);
       } else {
-        setModifiedLikes([...modifiedLikes, feedViewerUserInfo]);
+        const updatedLikesArr = [...modifiedLikes, feedViewerUserInfo];
+        setModifiedLikes(updatedLikesArr);
+        setModifiedNumLikes(updatedLikesArr.length);
       }
       setHasLiked(!hasLiked);
       setTimeout(() => setLikeButtonDisabled(false), 5000);
@@ -239,6 +250,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             postId={postId}
             likes={modifiedLikes}
             hasLiked={hasLiked}
+            numLikes={modifiedNumLikes}
             currUserId={currUser ? currUser._id : ''}
             onClickLike={handleLikeAction}
             likeButtonDisabled={likeButtonDisabled}

@@ -41,6 +41,7 @@ interface PostActionsProps {
   postId: string;
   likes: PostUserInfo[];
   hasLiked: boolean | null;
+  numLikes: number;
   currUserId: string;
   onClickLike: () => void;
   likeButtonDisabled: boolean;
@@ -55,11 +56,14 @@ function PostActions(props: PostActionsProps) {
     currUserId,
     onClickLike,
     hasLiked,
+    numLikes,
     likeButtonDisabled,
   } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const maxLikeThumbnailsShown = screenSmallerThanSm ? 1 : 3;
+
+  const likeListLength = 10;
 
   return (
     <div className={classes.actionContainer}>
@@ -76,7 +80,12 @@ function PostActions(props: PostActionsProps) {
             }}
           />
         </IconButton>
-        <PostLikesThumbnails likes={likes} maxShown={maxLikeThumbnailsShown} />
+        <PostLikesThumbnails
+          likes={likes}
+          numLikes={numLikes}
+          maxShown={maxLikeThumbnailsShown}
+          likeListLength={likeListLength}
+        />
       </div>
       <div className={classes.createClubButtonContainer}>
         <Button
