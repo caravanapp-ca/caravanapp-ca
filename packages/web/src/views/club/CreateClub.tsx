@@ -116,10 +116,14 @@ export default function CreateClub(props: CreateClubProps) {
   const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
   const [selectedBooks, setSelectedBooks] = React.useState<
     FilterAutoMongoKeys<ShelfEntry>[]
-  >([]);
+  >(props.location.state.shelf ? props.location.state.shelf : []);
   const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
     ShelfEntry
-  > | null>(null);
+  > | null>(
+    props.location.state.shelf && props.location.state.shelf.length > 0
+      ? props.location.state.shelf[0]
+      : null
+  );
   const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
     []
   );
@@ -233,6 +237,14 @@ export default function CreateClub(props: CreateClubProps) {
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
+  const { shelf } = props.location.state;
+  let inheritedBooks: FilterAutoMongoKeys<ShelfEntry>[] | undefined;
+  if (shelf && shelf.length > 0) {
+    inheritedBooks = shelf;
+  } else {
+    inheritedBooks = undefined;
+  }
+
   return (
     <>
       <Header leftComponent={leftComponent} centerComponent={centerComponent} />
@@ -273,6 +285,7 @@ export default function CreateClub(props: CreateClubProps) {
             }
             primary={'radio'}
             secondary={'delete'}
+            inheritSearchedBooks={inheritedBooks}
           />
         </div>
         {genres && (
