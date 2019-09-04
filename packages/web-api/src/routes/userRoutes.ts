@@ -47,6 +47,11 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res) => {
+  const startTime = new Date();
+  const log = (label: string) =>
+    //@ts-ignore
+    console.info(`${label}: %dms`, new Date() - startTime);
+  log('start');
   const {
     after,
     pageSize,
@@ -68,6 +73,7 @@ router.get('/', async (req, res) => {
   const size = Number.parseInt(pageSize || 0);
   const limit = Math.min(Math.max(size, 10), 50);
   let users: UserDoc[];
+  log('getting users');
   try {
     if (isSearching) {
       users = await UserModel.find(query);
@@ -82,6 +88,7 @@ router.get('/', async (req, res) => {
     res.status(500).send('Failed to get all users.');
     return;
   }
+  log('got users');
   if (!users) {
     res.sendStatus(404);
     return;
@@ -104,6 +111,7 @@ router.get('/', async (req, res) => {
     };
     return user;
   });
+  log('mutated users');
   if (isSearching) {
     let fuseSearchKey: string;
     let fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {};
@@ -151,19 +159,24 @@ router.get('/', async (req, res) => {
     const fuse = new Fuse(mutatedUsers, fuseOptions);
     mutatedUsers = fuse.search(search);
   }
+  log('finished search');
   if (isSearching && after) {
     const afterIndex = mutatedUsers.findIndex(c => c._id.toString() === after);
     if (afterIndex >= 0) {
       mutatedUsers = mutatedUsers.slice(afterIndex + 1);
     }
   }
+  log('finished search after');
   if (isSearching && mutatedUsers.length > limit) {
     mutatedUsers = mutatedUsers.slice(0, limit);
   }
+  log('finished search limit');
   const result: Services.GetUsers = {
     users: mutatedUsers,
   };
   res.status(200).json(result);
+  log('done');
+  return;
 });
 
 // Get a user
