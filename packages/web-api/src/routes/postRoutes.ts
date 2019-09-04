@@ -1,4 +1,5 @@
 import express from 'express';
+import Fuse from 'fuse.js';
 import {
   FilterAutoMongoKeys,
   Post,
@@ -10,10 +11,8 @@ import {
 } from '@caravan/buddy-reading-types';
 import { PostModel, PostDoc } from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
-import { getUser } from '../services/user';
 import { getPostLikes, createLikesDoc } from '../services/like';
 import { getPostUserInfo } from '../services/post';
-import Fuse from 'fuse.js';
 
 const router = express.Router();
 

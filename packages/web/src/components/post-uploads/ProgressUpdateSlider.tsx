@@ -1,10 +1,8 @@
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/core/Slider';
+import { Grid, TextField, Typography, Slider } from '@material-ui/core';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
-import { Grid, TextField } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
