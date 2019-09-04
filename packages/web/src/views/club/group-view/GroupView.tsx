@@ -134,7 +134,7 @@ export default function GroupView(props: GroupViewProps) {
 
   const handleGroupSizeChange = (
     e: React.ChangeEvent<{
-      name?: string | undefined;
+      name?: string;
       value: unknown;
     }>
   ) => {

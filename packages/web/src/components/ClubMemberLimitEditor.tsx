@@ -30,7 +30,7 @@ interface ClubMemberLimitEditorProps {
   ) => void;
   handleGroupSizeChange: (
     event: React.ChangeEvent<{
-      name?: string | undefined;
+      name?: string;
       value: unknown;
     }>,
     child: React.ReactNode

@@ -260,7 +260,7 @@ export default function CreateClub(props: CreateClubProps) {
 
   const handleGroupSizeChange = (
     e: React.ChangeEvent<{
-      name?: string | undefined;
+      name?: string;
       value: unknown;
     }>
   ) => {

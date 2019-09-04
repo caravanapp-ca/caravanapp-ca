@@ -1,4 +1,4 @@
-import { ReadingState, EmailSettings } from '@caravan/buddy-reading-types';
+import { ReadingState, EmailSettings, UnlimitedClubMembersValue } from '@caravan/buddy-reading-types';
 
 // This function returns the channel ID for #general-chat
 // TODO: This breaks if we have multiple Discord servers.
@@ -42,4 +42,4 @@ export const DEFAULT_EMAIL_SETTINGS: EmailSettings = {
 
 // If changing here, please change in globalConstants in the Web project as well.
 // Also, consider existing clubs in db which may have this value saved.
-export const UNLIMITED_CLUB_MEMBERS_VALUE = -1;
+export const UNLIMITED_CLUB_MEMBERS_VALUE: UnlimitedClubMembersValue = -1;

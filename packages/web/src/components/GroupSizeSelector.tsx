@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface GroupSizeSelectorProps {
   onChangeSize: (
     event: React.ChangeEvent<{
-      name?: string | undefined;
+      name?: string;
       value: unknown;
     }>,
     child: React.ReactNode
