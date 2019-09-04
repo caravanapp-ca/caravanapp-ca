@@ -19,6 +19,7 @@ import {
   Container,
   TextField,
   CircularProgress,
+  useMediaQuery,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import GenreChip from '../../components/GenreChip';
@@ -27,6 +28,7 @@ import BookSearch from '../../views/books/BookSearch';
 import { uploadPost } from '../../services/post';
 import { DialogProps } from '@material-ui/core/Dialog';
 import { getAllGenres } from '../../services/genre';
+import theme from '../../theme';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -50,7 +52,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface ShelfUploadModalProps {
-  smallScreen: boolean;
   open: boolean;
   handleClose: () => void;
   onPostShelf: (
@@ -69,14 +70,7 @@ const TransitionAction = React.forwardRef<unknown, TransitionProps>(
 
 export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const classes = useStyles();
-  const {
-    smallScreen,
-    open,
-    handleClose,
-    userId,
-    onPostShelf,
-    postAuthorUserInfo,
-  } = props;
+  const { open, handleClose, userId, onPostShelf, postAuthorUserInfo } = props;
   const maxWidth = 'lg';
   const scroll = 'paper';
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
@@ -163,11 +157,13 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
     setShelfGenres(selectedGenresNew);
   };
 
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
+
   return (
     <div>
       <Dialog
-        fullScreen={smallScreen}
-        fullWidth={!smallScreen}
+        fullScreen={screenSmallerThanSm}
+        fullWidth={!screenSmallerThanSm}
         maxWidth={maxWidth}
         open={open}
         onClose={onCloseModal}
@@ -211,7 +207,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
                     active={shelfGenres.some(sg => sg.key === g)}
                     clickable={true}
                     onClick={onGenreClick}
-                    small={smallScreen}
+                    small={screenSmallerThanSm}
                   />
                 ))}
               </div>

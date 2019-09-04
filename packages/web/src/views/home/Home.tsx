@@ -1201,7 +1201,6 @@ export default function Home(props: HomeProps) {
                 </div>
               )}
             <ShelfUploadModal
-              smallScreen={screenSmallerThanSm}
               open={showShelfUpload}
               handleClose={() => setShowShelfUpload(false)}
               onPostShelf={onUploadPost}
