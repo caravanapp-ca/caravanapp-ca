@@ -1,12 +1,9 @@
-import {
-  ReferralTiers,
-  ReferralTier,
-} from '@caravan/buddy-reading-types';
+import { ReferralTiers, ReferralTier } from '@caravan/buddy-reading-types';
 
 export const getReferralLink = (
   userId: string | undefined,
   location: 'home' | 'profile' | 'club',
-  clubId?: string | undefined
+  clubId?: string
 ) => {
   if (location) {
     // TODO: add more cases - should we parse URL?
@@ -39,9 +36,7 @@ export const getReferralLink = (
         } else {
           urlClubParam = '?' + clubSourceParam;
         }
-        return `https://${
-          window.location.host
-        }/clubs${clubIdQuery}${urlClubParam}`;
+        return `https://${window.location.host}/clubs${clubIdQuery}${urlClubParam}`;
       default:
         return `https://${window.location.host}`;
     }

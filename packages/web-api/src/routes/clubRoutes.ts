@@ -9,7 +9,7 @@ import {
   PermissionResolvable,
 } from 'discord.js';
 import express from 'express';
-import { check, validationResult } from 'express-validator';
+import { check, validationResult, oneOf } from 'express-validator';
 import Fuse from 'fuse.js';
 import { Omit } from 'utility-types';
 import {
@@ -47,6 +47,7 @@ import { getBadges } from '../services/badge';
 import {
   VALID_READING_STATES,
   MAX_SHELF_SIZE,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
 } from '../common/globalConstantsAPI';
 
 const router = express.Router();
@@ -837,10 +838,13 @@ router.put(
     'newClub.genres',
     'Genres must be an array of {key: string, name: string} elements'
   ).isArray(),
-  check(
-    'newClub.maxMembers',
-    'Max members must be an integer between 2 and 1000 inclusive'
-  ).isInt({ gt: 1, lt: 1001 }),
+  oneOf(
+    [
+      check('newClub.maxMembers').isInt({ min: 2, max: 1000 }),
+      check('newClub.maxMembers').isIn([UNLIMITED_CLUB_MEMBERS_VALUE]),
+    ],
+    `Max members must be an integer between 2 and 1000 inclusive, or ${UNLIMITED_CLUB_MEMBERS_VALUE}`
+  ),
   check(
     'newClub.name',
     'Name must be a string between 2 and 150 chars in length'
@@ -879,7 +883,10 @@ router.put(
       );
       return res.status(422).send('Only the club owner may update a club!');
     }
-    if (newClub.maxMembers < newClub.members.length) {
+    if (
+      newClub.maxMembers >= 0 &&
+      newClub.maxMembers < newClub.members.length
+    ) {
       console.warn(
         `User ${req.user._id} attempted to set max members on club ${clubId} to a value less than its current member count.`
       );
