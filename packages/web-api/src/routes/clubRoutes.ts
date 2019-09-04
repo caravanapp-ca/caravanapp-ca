@@ -182,7 +182,7 @@ router.get('/', async (req, res) => {
   ]);
 
   const query: SameKeysAs<Partial<Club>> = {};
-  if (isSearching && after) {
+  if (!isSearching && after) {
     query._id = { $lt: after };
   }
   let userInChannelBoolean = true;
@@ -219,9 +219,10 @@ router.get('/', async (req, res) => {
     if (isSearching) {
       clubDocs = await ClubModel.find(query).sort({ createdAt: -1 });
     } else {
+      // The +12 is a safety net for clubs that get filtered out
       clubDocs = await ClubModel.find(query)
         .sort({ createdAt: -1 })
-        .limit(limit);
+        .limit(limit + 12);
     }
   } catch (err) {
     console.error('Failed to get clubs.', err);
@@ -242,8 +243,13 @@ router.get('/', async (req, res) => {
   const includesSpotsAvailable = capacityKeys.includes('spotsAvailable');
   const includesFull = capacityKeys.includes('full');
 
+  let validClubCount = 0;
   let filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubDocs
     .map(clubDoc => {
+      // If found enough clubs (due to over-querying), stop looking.
+      if (!isSearching && validClubCount === limit) {
+        return null;
+      }
       const discordChannel: GuildChannel | null = guild.channels.get(
         clubDoc.channelId
       );
@@ -299,6 +305,7 @@ router.get('/', async (req, res) => {
         guildId: guild.id,
         memberCount,
       };
+      validClubCount++;
       return obj;
     })
     .filter(c => c !== null);
@@ -316,15 +323,16 @@ router.get('/', async (req, res) => {
     };
     const fuse = new Fuse(filteredClubsWithMemberCounts, fuseOptions);
     filteredClubsWithMemberCounts = fuse.search(search);
-  }
-  if (after) {
-    const afterIndex = filteredClubsWithMemberCounts.findIndex(
-      c => c._id.toString() === after
-    );
-    if (afterIndex >= 0) {
-      filteredClubsWithMemberCounts = filteredClubsWithMemberCounts.slice(
-        afterIndex + 1
+
+    if (after) {
+      const afterIndex = filteredClubsWithMemberCounts.findIndex(
+        c => c._id.toString() === after
       );
+      if (afterIndex >= 0) {
+        filteredClubsWithMemberCounts = filteredClubsWithMemberCounts.slice(
+          afterIndex + 1
+        );
+      }
     }
   }
   if (filteredClubsWithMemberCounts.length > limit) {
