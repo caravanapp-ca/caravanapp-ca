@@ -379,7 +379,6 @@ export default function Home(props: HomeProps) {
         }
       }
     })();
-    setLoadingMoreUsers(true);
   }, [user, userLoaded, afterUsersQuery, usersSearch, userSearchField]);
 
   useEffect(() => {
@@ -658,11 +657,11 @@ export default function Home(props: HomeProps) {
   };
 
   const resetLoadMorePosts = async () => {
-    await setPostsResult(s => ({
+    setPostsResult(s => ({
       ...s,
       status: 'loading',
     }));
-    await setAfterPostsQuery(undefined);
+    setAfterPostsQuery(undefined);
   };
 
   const onClearPostsSearch = async () => {
@@ -673,8 +672,6 @@ export default function Home(props: HomeProps) {
   };
 
   const onSearchPostsSubmitted = async (str: string) => {
-    console.log('Searching');
-    console.log(postsSearch);
     if (str !== postsSearch) {
       await resetLoadMorePosts();
       setPostsSearch(str);
@@ -923,6 +920,19 @@ export default function Home(props: HomeProps) {
                   </Button>
                 </div>
               )}
+            {clubsTransformedResult.status === 'loaded' &&
+              showLoadMoreClubs &&
+              loadingMoreClubs && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <CircularProgress />
+                </div>
+              )}
             <GenreFilterModal
               allGenres={allGenres}
               filteredGenres={stagingClubsFilter.genres}
@@ -1125,46 +1135,6 @@ export default function Home(props: HomeProps) {
                 handleChange={handlePostSearchFieldChange}
                 searchField={postSearchField}
               />
-              {postsResult.status === 'loaded' &&
-                postsResult.payload.length === 0 &&
-                postsSearch.length > 0 && (
-                  <Typography
-                    color="textSecondary"
-                    style={{
-                      textAlign: 'center',
-                      fontStyle: 'italic',
-                      marginTop: theme.spacing(4),
-                      marginBottom: theme.spacing(4),
-                    }}
-                  >
-                    {emptyPostsFilterResultMsg}
-                  </Typography>
-                )}
-              {postsResult.status === 'loaded' &&
-                showLoadMorePosts &&
-                !loadingMorePosts && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexDirection: 'column',
-                    }}
-                  >
-                    <Button
-                      color="primary"
-                      className={classes.button}
-                      variant="outlined"
-                      onClick={() =>
-                        setAfterPostsQuery(
-                          postsResult.payload[postsResult.payload.length - 1]
-                            .post._id
-                        )
-                      }
-                    >
-                      <Typography variant="button">LOAD MORE...</Typography>
-                    </Button>
-                  </div>
-                )}
             </Container>
             {(postsResult.status === 'loaded' ||
               postsResult.status === 'loading') &&
@@ -1177,6 +1147,59 @@ export default function Home(props: HomeProps) {
                   showResultsCount={false}
                   resultsLoaded={postsResult.status === 'loaded'}
                 />
+              )}
+            {postsResult.status === 'loaded' &&
+              postsResult.payload.length === 0 &&
+              postsSearch.length > 0 && (
+                <Typography
+                  color="textSecondary"
+                  style={{
+                    textAlign: 'center',
+                    fontStyle: 'italic',
+                    marginTop: theme.spacing(4),
+                    marginBottom: theme.spacing(4),
+                  }}
+                >
+                  {emptyPostsFilterResultMsg}
+                </Typography>
+              )}
+            {postsResult.status === 'loaded' &&
+              showLoadMorePosts &&
+              !loadingMorePosts && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Button
+                    color="primary"
+                    className={classes.button}
+                    variant="outlined"
+                    onClick={() =>
+                      setAfterPostsQuery(
+                        postsResult.payload[postsResult.payload.length - 1].post
+                          ._id
+                      )
+                    }
+                  >
+                    <Typography variant="button">LOAD MORE...</Typography>
+                  </Button>
+                </div>
+              )}
+            {postsResult.status === 'loaded' &&
+              showLoadMorePosts &&
+              loadingMorePosts && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <CircularProgress />
+                </div>
               )}
             <ShelfUploadModal
               smallScreen={screenSmallerThanSm}
