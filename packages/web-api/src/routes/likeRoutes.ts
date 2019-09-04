@@ -19,23 +19,23 @@ router.post('/:postId', isAuthenticated, async (req, res, next) => {
     let likeArrResult: LikesDoc | undefined;
     if (action === 'unlike') {
       likeArrResult = await LikesModel.findOneAndUpdate(
-        { postId: postId },
+        { postId },
         { $pull: { likes: userId } }
       );
       if (likeArrResult.likes.includes(userId)) {
         await LikesModel.findOneAndUpdate(
-          { postId: postId },
+          { postId },
           { $inc: { numLikes: -1 } }
         );
       }
     } else if (action === 'like') {
       likeArrResult = await LikesModel.findOneAndUpdate(
-        { postId: postId },
+        { postId },
         { $addToSet: { likes: userId } }
       );
       if (!likeArrResult.likes.includes(userId)) {
         await LikesModel.findOneAndUpdate(
-          { postId: postId },
+          { postId },
           { $inc: { numLikes: 1 } }
         );
       }
