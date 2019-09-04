@@ -104,9 +104,9 @@ interface PostCardProps {
 }
 
 // Make this approximately the height of a standard UserCard
-const placeholderCardHeight = 588;
+const placeholderCardHeight = 424;
 // The number of cards above and below the current to load
-const lazyloadOffset = 4;
+const lazyloadOffset = 8;
 
 export default function PostCards(props: PostCardProps) {
   const classes = useStyles();
