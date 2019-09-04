@@ -12,7 +12,6 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
     paddingTop: 12,
-    paddingHorizontal: 12,
   },
   formControl: {
     margin: theme.spacing(1),
