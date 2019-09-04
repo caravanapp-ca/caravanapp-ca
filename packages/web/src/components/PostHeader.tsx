@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { makeStyles, Link } from '@material-ui/core';
+import { makeStyles, Link, Typography } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
 
@@ -66,10 +66,11 @@ function PostHeader(props: PostHeaderProps) {
         <Link
           href={`/user/${postAuthorInfo.urlSlug}`}
           variant="h5"
-          className={classes.userNameText}
           color="primary"
         >
-          {postAuthorInfo.name}
+          <Typography variant="h6" className={classes.userNameText}>
+            {postAuthorInfo.name}
+          </Typography>
         </Link>
       </div>
       <div className={classes.iconContainer}>
