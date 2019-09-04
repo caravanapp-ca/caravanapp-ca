@@ -54,13 +54,9 @@ router.get('/', async (req, res) => {
     search,
     userSearchField,
   } = req.query;
-  // const { userId } = req.session;
-  // let user: UserDoc | undefined;
-  // if (userId) {
-  //   user = await getUser(userId);
-  // }
+  const isSearching = search && search.length > 0;
   const query: SameKeysAs<Partial<User>> = {};
-  if ((!search || search.length === 0) && after) {
+  if (!isSearching && after) {
     query._id = { $lt: after };
   }
   // Only get users who have finished onboarding
@@ -73,10 +69,8 @@ router.get('/', async (req, res) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let users: UserDoc[];
   try {
-    if (search && search.length > 0) {
-      users = await UserModel.find(query)
-        .sort({ createdAt: -1 })
-        .exec();
+    if (isSearching) {
+      users = await UserModel.find(query);
     } else {
       users = await UserModel.find(query)
         .limit(limit)
@@ -86,32 +80,31 @@ router.get('/', async (req, res) => {
   } catch (err) {
     console.error('Failed to get all users, ', err);
     res.status(500).send('Failed to get all users.');
+    return;
   }
   if (!users) {
     res.sendStatus(404);
     return;
   }
-  let filteredUsers: Services.GetUsers['users'] = users
-    .map(userDocument => {
-      mutateUserDiscordContent(userDocument);
-      const user: Omit<User, 'createdAt' | 'updatedAt'> & {
-        createdAt: string;
-        updatedAt: string;
-      } = {
-        ...userDocument.toObject(),
-        createdAt:
-          userDocument.createdAt instanceof Date
-            ? userDocument.createdAt.toISOString()
-            : userDocument.createdAt,
-        updatedAt:
-          userDocument.updatedAt instanceof Date
-            ? userDocument.updatedAt.toISOString()
-            : userDocument.updatedAt,
-      };
-      return user;
-    })
-    .filter(c => c !== null);
-  if ((search && search.length) > 0) {
+  let mutatedUsers: Services.GetUsers['users'] = users.map(userDocument => {
+    mutateUserDiscordContent(userDocument);
+    const user: Omit<User, 'createdAt' | 'updatedAt'> & {
+      createdAt: string;
+      updatedAt: string;
+    } = {
+      ...userDocument.toObject(),
+      createdAt:
+        userDocument.createdAt instanceof Date
+          ? userDocument.createdAt.toISOString()
+          : userDocument.createdAt,
+      updatedAt:
+        userDocument.updatedAt instanceof Date
+          ? userDocument.updatedAt.toISOString()
+          : userDocument.updatedAt,
+    };
+    return user;
+  });
+  if (isSearching) {
     let fuseSearchKey: string;
     let fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {};
     switch (userSearchField) {
@@ -155,20 +148,20 @@ router.get('/', async (req, res) => {
         };
         break;
     }
-    const fuse = new Fuse(filteredUsers, fuseOptions);
-    filteredUsers = fuse.search(search);
+    const fuse = new Fuse(mutatedUsers, fuseOptions);
+    mutatedUsers = fuse.search(search);
   }
-  if (after) {
-    const afterIndex = filteredUsers.findIndex(c => c._id.toString() === after);
+  if (isSearching && after) {
+    const afterIndex = mutatedUsers.findIndex(c => c._id.toString() === after);
     if (afterIndex >= 0) {
-      filteredUsers = filteredUsers.slice(afterIndex + 1);
+      mutatedUsers = mutatedUsers.slice(afterIndex + 1);
     }
   }
-  if (filteredUsers.length > limit) {
-    filteredUsers = filteredUsers.slice(0, limit);
+  if (isSearching && mutatedUsers.length > limit) {
+    mutatedUsers = mutatedUsers.slice(0, limit);
   }
   const result: Services.GetUsers = {
-    users: filteredUsers,
+    users: mutatedUsers,
   };
   res.status(200).json(result);
 });
