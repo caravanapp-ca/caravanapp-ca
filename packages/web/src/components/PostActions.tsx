@@ -61,7 +61,7 @@ function PostActions(props: PostActionsProps) {
   } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const maxLikeThumbnailsShown = screenSmallerThanSm ? 1 : 3;
+  const maxLikeThumbnailsShown = screenSmallerThanSm ? 2 : 3;
 
   const likeListLength = 10;
 

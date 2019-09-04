@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   thumbnail: {
     width: 30,
     height: 30,
-    marginRight: 4,
+    marginRight: -4,
   },
   thumbnailAvatar: {
     width: 48,
@@ -96,7 +96,7 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
         }}
         PaperProps={{
           style: {
-            maxHeight: 48 * 4.5,
+            maxHeight: 216,
             width: 200,
           },
         }}
@@ -107,7 +107,7 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
           },
         }}
       >
-        <ListItem style={{ backgroundColor: '#F7F7F7' }}>
+        <ListItem style={{ backgroundColor: 'rgba(0, 0, 0, 0.07)' }}>
           <Typography style={{ fontWeight: 600, color: 'textPrimary' }}>
             Shelf liked by ({numLikes.toString()})
           </Typography>
@@ -137,7 +137,7 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
           </MenuItem>
         ))}
         {numLikes > likeListLength && (
-          <ListItem style={{ backgroundColor: '#F7F7F7' }}>
+          <ListItem style={{ backgroundColor: 'rgba(0, 0, 0, 0.07)' }}>
             <Typography style={{ fontWeight: 600, color: 'textPrimary' }}>
               and {numLikes - likeListLength} more
             </Typography>
