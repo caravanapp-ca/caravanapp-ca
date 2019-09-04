@@ -164,7 +164,6 @@ router.get('/', async (req, res) => {
     users: mutatedUsers,
   };
   res.status(200).json(result);
-  return;
 });
 
 // Get a user
