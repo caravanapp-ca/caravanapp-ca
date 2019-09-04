@@ -97,7 +97,6 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
         PaperProps={{
           style: {
             maxHeight: 216,
-            width: 200,
           },
         }}
         MenuListProps={{
