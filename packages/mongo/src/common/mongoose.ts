@@ -8,7 +8,7 @@ export function checkObjectIdIsValid(id: string) {
 }
 
 export type MongooseSchema<DocDefinition> = {
-  [k in keyof Required<FilterAutoMongoKeys<DocDefinition>>]:  //  @ts-ignore no-explicit-any
+  [k in keyof Required<FilterAutoMongoKeys<DocDefinition>>]:  // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | SchemaTypeOpts<any>
     | Schema
     | SchemaType;
