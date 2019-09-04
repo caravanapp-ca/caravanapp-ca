@@ -69,6 +69,13 @@ const isInChannel = (member: GuildMember, club: ClubDoc) =>
   (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
   !member.user.bot;
 
+// This should come from config instead of here
+const prodUncountableIds = [
+  '491769129318088714', // Statbot
+  '592761757764812801', // caravan-admin
+  '592781980026798120', // caravan-clubs-bot
+];
+
 const getCountableMembersInChannel = (
   discordChannel: GuildChannel,
   club: ClubDoc
@@ -167,17 +174,15 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
 
 router.get('/', async (req, res) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
+  const isSearching = !!search;
   const currUserId = req.session.userId;
-  let currUser: UserDoc | undefined;
-  if (currUserId) {
-    currUser = await getUser(currUserId);
-  }
-  let user: UserDoc | undefined;
-  if (userId) {
-    user = await getUser(userId);
-  }
+  const [currUser, user] = await Promise.all([
+    currUserId ? await getUser(currUserId) : undefined,
+    userId ? await getUser(userId) : undefined,
+  ]);
+
   const query: SameKeysAs<Partial<Club>> = {};
-  if ((!search || search.length === 0) && after) {
+  if (isSearching && after) {
     query._id = { $lt: after };
   }
   let userInChannelBoolean = true;
@@ -211,22 +216,16 @@ router.get('/', async (req, res) => {
   const limit = Math.min(Math.max(size, 10), 50);
   let clubDocs: ClubDoc[];
   try {
-    // if (
-    //   (search && search.length > 0) ||
-    //   (filterObj && filterObj.capacity.length > 0)
-    // ) {
-    clubDocs = await ClubModel.find(query)
-      .sort({ createdAt: -1 })
-      .exec();
-    // } else {
-    //   clubs = await ClubModel.find(query)
-    //     .limit(limit)
-    //     .sort({ createdAt: -1 })
-    //     .exec();
-    // }
+    if (isSearching) {
+      clubDocs = await ClubModel.find(query).sort({ createdAt: -1 });
+    } else {
+      clubDocs = await ClubModel.find(query)
+        .sort({ createdAt: -1 })
+        .limit(limit);
+    }
   } catch (err) {
-    console.error('Failed to get all clubs, ', err);
-    return res.status(500).send(`Failed to get all clubs: ${err}`);
+    console.error('Failed to get clubs.', err);
+    return res.status(500).send(`Failed to get clubs.`);
   }
   if (!clubDocs) {
     return res.sendStatus(404);
@@ -235,14 +234,19 @@ router.get('/', async (req, res) => {
   // Create a map of users found in the guild and attach the user doc
   const foundUsers = await getClubOwnerMap(guild, clubDocs);
 
+  const capacityKeys =
+    (filterObj &&
+      Array.isArray(filterObj.capacity) &&
+      filterObj.capacity.map(c => c.key)) ||
+    [];
+  const includesSpotsAvailable = capacityKeys.includes('spotsAvailable');
+  const includesFull = capacityKeys.includes('full');
+
   let filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubDocs
     .map(clubDoc => {
       const discordChannel: GuildChannel | null = guild.channels.get(
         clubDoc.channelId
       );
-      const foundUser = foundUsers.get(clubDoc.ownerId);
-      const ownerName =
-        getUsername(foundUser.userDoc, foundUser.member) || 'caravan-admin';
       // If there's no Discord channel for this club, filter it out
       if (!discordChannel) {
         return null;
@@ -255,25 +259,26 @@ router.get('/', async (req, res) => {
       ) {
         return null;
       }
-      const countableMembers = getCountableMembersInChannel(
-        discordChannel,
-        clubDoc
-      );
-      const memberCount = countableMembers.size;
-      if (filterObj && filterObj.capacity.length > 0) {
-        let capacityKeys = filterObj.capacity.map(c => c.key);
-        if (
-          capacityKeys.includes('spotsAvailable') &&
-          memberCount >= clubDoc.maxMembers
-        ) {
-          return null;
-        } else if (
-          capacityKeys.includes('full') &&
-          memberCount < clubDoc.maxMembers
-        ) {
-          return null;
-        }
+      // For speed purposes, we can guarantee that in prod environments there are always
+      // 3 less members than what are shown due to bots and the admin. In testing,
+      // quinn's account and matt's account are admins so we need to perform the full countable
+      // members check. Well, we don't need to, but it's OK for now.
+      const memberCount =
+        process.env.GAE_ENV === 'production'
+          ? (discordChannel as TextChannel).members.size -
+            prodUncountableIds.length
+          : getCountableMembersInChannel(discordChannel, clubDoc).size;
+      if (
+        (includesSpotsAvailable && memberCount >= clubDoc.maxMembers) ||
+        (includesFull && memberCount < clubDoc.maxMembers)
+      ) {
+        return null;
       }
+
+      const foundUser = foundUsers.get(clubDoc.ownerId);
+      const ownerName =
+        getUsername(foundUser.userDoc, foundUser.member) || 'caravan-admin';
+
       const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
         createdAt: string;
         updatedAt: string;
@@ -297,7 +302,7 @@ router.get('/', async (req, res) => {
       return obj;
     })
     .filter(c => c !== null);
-  if ((search && search.length) > 0) {
+  if (isSearching) {
     const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
       // TODO: Typescript doesn't like the use of keys here.
       // @ts-ignore
