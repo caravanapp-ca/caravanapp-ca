@@ -41,11 +41,11 @@ export const onJoinClub = async (
       `[eventId: ${eventId}] - Could not find discord channel: ${channelId}`
     );
   }
-  const discordMessage = `<@${discordId}> just joined the club! When asked "${
+  const discordMessage = `<@${discordId}> just joined the club! When asked **"${
     randomQuestion.title
-  }", they answered "${
+  }"**, they answered **"${
     randomQuestion.answer
-  }". More info on their Caravan profile <${getUserProfileUrl(
+  }"**. More info on their Caravan profile <${getUserProfileUrl(
     userDoc.urlSlug
   )}>`;
   if (channel.type === 'text') {

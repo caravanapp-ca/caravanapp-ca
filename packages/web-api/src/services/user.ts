@@ -14,11 +14,11 @@ export const mutateUserDiscordContent = (userDoc: UserDoc) => {
   }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
-  const guildMember = guild.members.find(m => m.id === userDoc.discordId);
+  const guildMember = guild.members.get(userDoc.discordId);
   if (guildMember) {
     const { user } = guildMember;
-    userDoc.name = userDoc.name || user.username;
-    userDoc.discordUsername = user.username;
+    userDoc.name = userDoc.name || guildMember.displayName;
+    userDoc.discordUsername = guildMember.displayName;
     userDoc.photoUrl =
       userDoc.photoUrl || user.avatarURL || user.defaultAvatarURL;
   }
@@ -71,6 +71,9 @@ export const getUser = async (urlSlugOrId: string) => {
     user = await UserModel.findOne({ urlSlug: urlSlugOrId });
   } else {
     user = await UserModel.findById(urlSlugOrId);
+  }
+  if (!user) {
+    return user;
   }
   mutateUserDiscordContent(user);
   const badgeDoc = await getBadges();

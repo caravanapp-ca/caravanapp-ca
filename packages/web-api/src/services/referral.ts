@@ -70,7 +70,7 @@ export async function createReferralActionByDoc(
   referralDoc: ReferralDoc,
   action: ReferralAction
 ) {
-  if (!referralDoc.referredAndNotJoined) {
+  if (!referralDoc || !referralDoc.referredAndNotJoined) {
     return;
   }
   const date = new Date();

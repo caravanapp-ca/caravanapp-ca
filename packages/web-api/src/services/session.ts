@@ -7,12 +7,11 @@ import {
 import { SessionDoc, SessionModel } from '@caravan/buddy-reading-mongo';
 
 export const getSessionFromUserId = async (
-  userId: string,
+  userId: mongoose.Types.ObjectId,
   client: OAuth2Client
 ) => {
-  const userObjectId = mongoose.Types.ObjectId(userId);
   const sessionQuery: Partial<SessionDoc> = {
-    userId: userObjectId,
+    userId,
     client,
   };
   const sessionSort: SameKeysAs<Partial<SessionDoc>> = {
@@ -32,6 +31,6 @@ export const getSession = async (accessToken: string) => {
   const sessionQuery: Partial<Session> = {
     accessToken,
   };
-  const session = await SessionModel.findOne({ sessionQuery });
+  const session = await SessionModel.findOne(sessionQuery);
   return session;
 };

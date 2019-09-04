@@ -125,8 +125,8 @@ const ReadingDiscordBot = (() => {
 })();
 
 export const giveDiscordRole = async (userId: string, role: string) => {
-  const user = await getUser(userId);
-  if (!user) {
+  const userDoc = await getUser(userId);
+  if (!userDoc) {
     console.error(
       `Attempted to give user ${userId} a Discord role, but could not find them in db.`
     );
@@ -134,7 +134,7 @@ export const giveDiscordRole = async (userId: string, role: string) => {
   }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
-  const guildMember = guild.members.get(user.discordId);
+  const guildMember = guild.members.get(userDoc.discordId);
   if (!guildMember) {
     console.error(`Did not find user ${userId} in the Discord guild`);
     return;

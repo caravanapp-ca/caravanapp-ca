@@ -79,13 +79,12 @@ export default function ListElementBook(props: ListElementBookProps) {
   // If you're making changes to the render here you will need to replicate them in both the draggable and regular cases.
   // TODO: Make this cleaner.
   if (draggable) {
-    console.log(isDragging);
     return (
       <Draggable draggableId={id} index={index}>
-        {(provided, snapshot) => (
+        {provided => (
           <ListItem
             // @ts-ignore
-            button={clubId ? true : false}
+            button={!!clubId}
             innerRef={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -148,7 +147,7 @@ export default function ListElementBook(props: ListElementBookProps) {
     return (
       <ListItem
         // @ts-ignore
-        button={clubId ? true : false}
+        button={!!clubId}
       >
         {primary && <ListItemIcon>{primary}</ListItemIcon>}
         <img

@@ -10,18 +10,21 @@ import {
   SelectedGenre,
   UninitClubShelfType,
 } from '@caravan/buddy-reading-types';
+import {
+  useMediaQuery,
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  Radio,
+  TextField,
+  Typography,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Radio from '@material-ui/core/Radio';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
+import { createClub } from '../../services/club';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
-import { createClub } from '../../services/club';
 import BookSearch from '../books/BookSearch';
 import {
   readingSpeedIcons,
@@ -32,12 +35,15 @@ import {
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
 import HeaderTitle from '../../components/HeaderTitle';
-import GroupSizeSelector from '../../components/GroupSizeSelector';
 import { getAllGenres } from '../../services/genre';
 import GenreChip from '../../components/GenreChip';
-import { useMediaQuery } from '@material-ui/core';
 import theme from '../../theme';
 import ClubPrivacySlider from '../../components/ClubPrivacySlider';
+import {
+  CLUB_SIZE_NO_LIMIT_LABEL,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
+} from '../../common/globalConstants';
+import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -62,6 +68,17 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
+  centeredColumnContainer: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  twoLabelSwitchContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 }));
 
 interface CreateClubRouteParams {
@@ -72,12 +89,6 @@ interface CreateClubProps extends RouteComponentProps<CreateClubRouteParams> {
   user: User | null;
 }
 
-const groupSizeMin = 2;
-const groupSizeMax = 32;
-let groupSizesStrArr: string[] = [];
-for (let i = groupSizeMin; i <= groupSizeMax; i++) {
-  groupSizesStrArr.push(i.toString());
-}
 const readingSpeeds: ReadingSpeed[] = ['fast', 'moderate', 'slow'];
 const groupVibes: GroupVibe[] = [
   'chill',
@@ -105,6 +116,7 @@ export default function CreateClub(props: CreateClubProps) {
   const centerComponent = <HeaderTitle title="Create a Club" />;
 
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
+  const [limitGroupSize, setLimitGroupSize] = React.useState<boolean>(false);
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
   const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<
     ReadingSpeed
@@ -175,11 +187,14 @@ export default function CreateClub(props: CreateClubProps) {
         });
       }
     });
+    const maxMembers = limitGroupSize
+      ? selectedGroupSize
+      : UNLIMITED_CLUB_MEMBERS_VALUE;
     const clubObj: Services.CreateClubProps = {
       name: selectedGroupName,
       newShelf: initShelf,
       bio: selectedGroupBio,
-      maxMembers: selectedGroupSize,
+      maxMembers,
       vibe: selectedGroupVibe,
       genres: selectedGenres,
       readingSpeed: selectedGroupSpeed,
@@ -233,6 +248,20 @@ export default function CreateClub(props: CreateClubProps) {
       return false;
     }
     return true;
+  };
+
+  const handleGroupSizeChange = (
+    e: React.ChangeEvent<{
+      name?: string;
+      value: unknown;
+    }>
+  ) => {
+    const newVal = e.target.value as string;
+    if (newVal === CLUB_SIZE_NO_LIMIT_LABEL) {
+      setLimitGroupSize(false);
+    } else {
+      setSelectedGroupSize(parseInt(newVal));
+    }
   };
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -321,18 +350,14 @@ export default function CreateClub(props: CreateClubProps) {
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
-            How many club members do you want?
+            Would you like to limit the number of group members?
           </Typography>
-          <GroupSizeSelector
-            onChangeSize={e =>
-              setSelectedGroupSize(parseInt(e.target.value as string))
-            }
-            selectedSize={selectedGroupSize.toString()}
-            sizes={groupSizesStrArr.map(str => ({
-              label: str,
-              enabled: true,
-            }))}
-            showContactMessage={true}
+          <ClubMemberLimitEditor
+            handleGroupLimitSwitch={() => setLimitGroupSize(!limitGroupSize)}
+            handleGroupSizeChange={handleGroupSizeChange}
+            limitGroupSize={limitGroupSize}
+            numMembers={1}
+            selectedGroupSize={selectedGroupSize}
           />
         </div>
         <div className={classes.sectionContainer}>

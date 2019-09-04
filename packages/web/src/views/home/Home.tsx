@@ -28,7 +28,7 @@ import {
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
-import { washedTheme } from '../../theme';
+import theme, { washedTheme } from '../../theme';
 import { getAllClubs, getUserClubsWithMembers } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import logo from '../../resources/logo.svg';
@@ -164,6 +164,24 @@ export function shuffleUser(user: User) {
   return user;
 }
 
+const centerComponent = (
+  <>
+    {window.innerWidth < theme.breakpoints.values.sm ? (
+      <img
+        src={logo}
+        alt="Caravan logo"
+        style={{ height: 48, objectFit: 'contain' }}
+      />
+    ) : (
+      <img
+        src={textLogo}
+        alt="Caravan logo"
+        style={{ height: 20, objectFit: 'contain' }}
+      />
+    )}
+  </>
+);
+
 export default function Home(props: HomeProps) {
   const classes = useStyles();
   const { user, userLoaded } = props;
@@ -255,7 +273,6 @@ export default function Home(props: HomeProps) {
   ] = React.useState(false);
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
@@ -700,24 +717,6 @@ export default function Home(props: HomeProps) {
   const onSeeClubsClick = () => {
     scroller.scrollTo('tabs', { smooth: true });
   };
-
-  const centerComponent = (
-    <>
-      {screenSmallerThanSm ? (
-        <img
-          src={logo}
-          alt="Caravan logo"
-          style={{ height: 48, objectFit: 'contain' }}
-        />
-      ) : (
-        <img
-          src={textLogo}
-          alt="Caravan logo"
-          style={{ height: 20, objectFit: 'contain' }}
-        />
-      )}
-    </>
-  );
 
   const rightComponent = (
     <>

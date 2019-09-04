@@ -434,6 +434,8 @@ declare module '@caravan/buddy-reading-types' {
     | 'first-timers'
     | 'nerdy';
 
+  export type UnlimitedClubMembersValue = -1;
+
   // Don't use this... I did what I do had to do - Matt C.
   export interface ClubWUninitSchedules
     extends Omit<Services.GetClubById, 'schedules'> {

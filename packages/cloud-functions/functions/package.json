@@ -8,8 +8,11 @@
     "build": "tsc",
     "tsc": "tsc",
     "test": "echo \"Tests are not implemented.\" && exit 0",
+    "start": "functions-framework",
     "deploy:prod:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --project=buddyreading --runtime nodejs10 --env-vars-file .env.production.yaml --trigger-topic club-membership",
     "deploy:staging:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --project=buddyreading-staging-env --runtime nodejs10 --env-vars-file .env.staging.yaml --trigger-topic club-membership",
+    "deploy:prod:testSendGrid": "gcloud functions deploy testSendGrid --project=buddyreading --runtime nodejs10 --env-vars-file .env.production.yaml --trigger-http",
+    "deploy:staging:testSendGrid": "gcloud functions deploy testSendGrid --project=buddyreading-staging-env --runtime nodejs10 --env-vars-file .env.staging.yaml --trigger-http",
     "dev": "functions-framework --target=onClubMembershipChange"
   },
   "engines": {
@@ -20,9 +23,12 @@
   "dependencies": {
     "@google-cloud/firestore": "^2.2.6",
     "@google-cloud/pubsub": "^0.30.3",
+    "@sendgrid/mail": "^6.4.0",
+    "@types/yaml": "^1.0.2",
     "btoa": "^1.2.1",
     "discord.js": "^11.5.1",
-    "mongoose": "^5.6.9"
+    "mongoose": "^5.6.9",
+    "yaml": "^1.6.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.2.1",

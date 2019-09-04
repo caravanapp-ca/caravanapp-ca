@@ -1,15 +1,12 @@
 import { model, Schema, Types, Document } from 'mongoose';
-import {
-  FilterAutoMongoKeys,
-  SameKeysAs,
-  UserPalettes,
-} from '@caravan/buddy-reading-types';
+import { UserPalettes } from '@caravan/buddy-reading-types';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface UserPalettesDoc extends Document, Omit<UserPalettes, '_id'> {
   _id: Types.ObjectId;
 }
 
-const userPalettesDefinition: SameKeysAs<FilterAutoMongoKeys<UserPalettes>> = {
+const userPalettesDefinition: MongooseSchema<UserPalettes> = {
   userId: { type: String, required: true },
   hasSets: { type: [String] },
   hasIndividuals: { type: [String] },
