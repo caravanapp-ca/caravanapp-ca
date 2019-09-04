@@ -61,25 +61,10 @@ const useStyles = makeStyles(theme => ({
     height: '96px',
     width: '100%',
   },
-  userTextContainer: {
-    position: 'absolute',
-    width: '60%',
-    bottom: 16,
-    left: 16,
-  },
   userNameText: {
     fontWeight: 600,
   },
   userWebsiteText: {},
-  userAvatarContainer: {
-    position: 'absolute',
-    top: 40,
-    right: 16,
-    zIndex: 1,
-    borderRadius: '50%',
-    padding: 4,
-    backgroundColor: '#FFFFFF',
-  },
   fieldTitleText: {
     marginTop: theme.spacing(3),
   },
