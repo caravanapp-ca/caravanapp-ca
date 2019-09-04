@@ -47,11 +47,6 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res) => {
-  const startTime = new Date();
-  const log = (label: string) =>
-    //@ts-ignore
-    console.info(`${label}: %dms`, new Date() - startTime);
-  log('start');
   const {
     after,
     pageSize,
@@ -73,7 +68,6 @@ router.get('/', async (req, res) => {
   const size = Number.parseInt(pageSize || 0);
   const limit = Math.min(Math.max(size, 10), 50);
   let users: UserDoc[];
-  log('getting users');
   try {
     if (isSearching) {
       users = await UserModel.find(query);
@@ -88,7 +82,6 @@ router.get('/', async (req, res) => {
     res.status(500).send('Failed to get all users.');
     return;
   }
-  log('got users');
   if (!users) {
     res.sendStatus(404);
     return;
@@ -140,18 +133,15 @@ router.get('/', async (req, res) => {
     const fuse = new Fuse(users, fuseOptions);
     users = fuse.search(search);
   }
-  log('finished search');
   if (isSearching && after) {
     const afterIndex = users.findIndex(c => c._id.toString() === after);
     if (afterIndex >= 0) {
       users = users.slice(afterIndex + 1);
     }
   }
-  log('finished search after');
   if (isSearching && users.length > limit) {
     users = users.slice(0, limit);
   }
-  log('finished search limit');
   let mutatedUsers: Services.GetUsers['users'] = users.map(userDocument => {
     mutateUserDiscordContent(userDocument);
     const user: Omit<User, 'createdAt' | 'updatedAt'> & {
@@ -170,12 +160,10 @@ router.get('/', async (req, res) => {
     };
     return user;
   });
-  log('mutated users');
   const result: Services.GetUsers = {
     users: mutatedUsers,
   };
   res.status(200).json(result);
-  log('done');
   return;
 });
 
