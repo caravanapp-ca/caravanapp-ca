@@ -191,23 +191,19 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           )}
           <Typography
             gutterBottom
-            variant="h5"
-            component="h2"
+            variant="h6"
+            component="h5"
             className={classes.shelfTitle}
           >
-            <Truncate lines={2} trimWhitespace={true}>
-              {shelfPost.title}
-            </Truncate>
+            {shelfPost.title}
           </Typography>
           <Typography
             gutterBottom
-            variant="subtitle1"
+            variant="subtitle2"
             component="h2"
             className={classes.shelfDescription}
           >
-            <Truncate lines={3} trimWhitespace={true}>
-              {shelfPost.description}
-            </Truncate>
+            {shelfPost.description}
           </Typography>
           {shelfGenres.length > 0 && (
             <div className={classes.genresInCommon}>
@@ -232,13 +228,12 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         </CardContent>
         <CardActions className={classes.cardActions}>
           <PostActions
-            postId={postId}
             likes={modifiedLikes}
             hasLiked={hasLiked}
             numLikes={modifiedNumLikes}
-            currUserId={currUser ? currUser._id : ''}
             onClickLike={handleLikeAction}
             likeButtonDisabled={likeButtonDisabled}
+            shelf={shelfPost.shelf}
           />
         </CardActions>
       </Card>
