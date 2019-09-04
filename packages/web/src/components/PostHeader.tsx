@@ -17,8 +17,8 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2),
   },
   headerAvatar: {
-    width: 60,
-    height: 60,
+    width: 45,
+    height: 45,
   },
   userTextContainer: {
     display: 'flex',
@@ -35,8 +35,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2),
   },
   postIconAvatar: {
-    width: 48,
-    height: 48,
+    width: 42,
+    height: 42,
     padding: theme.spacing(1),
   },
 }));

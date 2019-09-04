@@ -7,8 +7,8 @@ import 'slick-carousel/slick/slick-theme.css';
 import { theme } from '../theme';
 import ReactResizeDetector from 'react-resize-detector';
 
-const bookCoverHeight = 96;
-const bookCoverWidth = 60;
+const bookCoverHeight = 72;
+const bookCoverWidth = 45;
 const bookCoverMarginRight = theme.spacing(2);
 
 const useStyles = makeStyles(theme =>

@@ -122,7 +122,7 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
                 />
               </ListItemIcon>
             </Link>
-            <Link href={`/user/${l.urlSlug}`}>
+            <Link href={`/user/${l.urlSlug}`} underline="none">
               <Typography
                 className={classes.likedByNameText}
                 color="textPrimary"

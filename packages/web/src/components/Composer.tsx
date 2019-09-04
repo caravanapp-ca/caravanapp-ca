@@ -13,8 +13,8 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
   headerAvatar: {
-    width: 60,
-    height: 60,
+    width: 48,
+    height: 48,
   },
   fab: {
     margin: theme.spacing(1),
