@@ -774,7 +774,6 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       type: 'text',
       name: body.name,
       nsfw: body.nsfw || false,
-      userLimit: body.maxMembers,
       permissionOverwrites: channelCreationOverwrites,
       topic: body.bio,
     };
