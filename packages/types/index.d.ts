@@ -296,12 +296,6 @@ declare module '@caravan/buddy-reading-types' {
     numLikes: number;
   }
 
-  export interface Like {
-    userId: string;
-    userPhotoUrl: string;
-    username: string;
-  }
-
   export interface FilterChip {
     type: FilterChipType;
     name: string;
