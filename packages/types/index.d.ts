@@ -32,22 +32,27 @@ declare module '@caravan/buddy-reading-types' {
     discussions: Discussion[];
   }
 
+  export interface ClubBotSettings {
+    intros: boolean;
+  }
+
   export interface Club extends DocumentFields, MongoTimestamps {
+    bio?: string;
+    botSettings: ClubBotSettings;
+    channelId: string;
+    channelSource: ChannelSource;
+    genres: SelectedGenre[];
+    maxMembers: number;
+    members: User[];
     name: string;
+    newShelf: ClubShelf;
     ownerId: string;
     ownerDiscordId?: string;
-    shelf?: ShelfEntry[];
-    newShelf: ClubShelf;
-    schedules: ClubReadingSchedule[];
-    bio?: string;
-    members: User[];
-    maxMembers: number;
-    vibe?: GroupVibe;
     readingSpeed?: ReadingSpeed;
-    genres: SelectedGenre[];
-    channelSource: ChannelSource;
-    channelId: string;
+    schedules: ClubReadingSchedule[];
+    shelf?: ShelfEntry[];
     unlisted: boolean;
+    vibe?: GroupVibe;
   }
 
   // This format of the Club has the current book, schedule, and owner extracted for quicker access.
@@ -394,46 +399,48 @@ declare module '@caravan/buddy-reading-types' {
     export interface GetClubs {
       clubs: {
         _id: string;
-        name: string;
-        ownerId: string;
-        ownerName: string;
-        guildId: string;
-        shelf?: ShelfEntry[];
-        newShelf: ClubShelf;
-        schedules: ClubReadingSchedule[];
         bio?: string;
+        botSettings: ClubBotSettings;
+        channelId: string;
+        channelSource?: ChannelSource;
+        createdAt: string;
+        genres: SelectedGenre[];
+        guildId: string;
         maxMembers: number;
         memberCount: number;
-        vibe?: GroupVibe;
+        name: string;
+        newShelf: ClubShelf;
+        ownerId: string;
+        ownerName: string;
         readingSpeed?: ReadingSpeed;
-        genres: SelectedGenre[];
-        channelSource?: ChannelSource;
-        channelId: string;
-        createdAt: string;
-        updatedAt: string;
+        schedules: ClubReadingSchedule[];
+        shelf?: ShelfEntry[];
         unlisted: boolean;
+        updatedAt: string;
+        vibe?: GroupVibe;
       }[];
     }
     export interface GetClubById {
       _id: string;
-      name: string;
-      ownerId: string;
-      ownerDiscordId: string;
-      shelf?: ShelfEntry[];
-      newShelf: ClubShelf;
-      schedules: ClubReadingSchedule[];
       bio: string;
-      members: User[];
-      maxMembers: number;
-      vibe: GroupVibe;
-      readingSpeed: ReadingSpeed;
+      botSettings: ClubBotSettings;
+      channelId: string;
+      channelSource: ChannelSource;
+      createdAt: string;
       genres: SelectedGenre[];
       guildId: string;
-      channelSource: ChannelSource;
-      channelId: string;
-      createdAt: string;
-      updatedAt: string;
+      maxMembers: number;
+      members: User[];
+      name: string;
+      newShelf: ClubShelf;
+      ownerDiscordId: string;
+      ownerId: string;
+      readingSpeed: ReadingSpeed;
+      schedules: ClubReadingSchedule[];
+      shelf?: ShelfEntry[];
       unlisted: boolean;
+      updatedAt: string;
+      vibe: GroupVibe;
     }
     export interface CreateClubProps {
       name: string;
