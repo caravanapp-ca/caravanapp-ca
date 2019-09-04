@@ -93,25 +93,6 @@ router.get('/', async (req, res) => {
     res.sendStatus(404);
     return;
   }
-  let mutatedUsers: Services.GetUsers['users'] = users.map(userDocument => {
-    mutateUserDiscordContent(userDocument);
-    const user: Omit<User, 'createdAt' | 'updatedAt'> & {
-      createdAt: string;
-      updatedAt: string;
-    } = {
-      ...userDocument.toObject(),
-      createdAt:
-        userDocument.createdAt instanceof Date
-          ? userDocument.createdAt.toISOString()
-          : userDocument.createdAt,
-      updatedAt:
-        userDocument.updatedAt instanceof Date
-          ? userDocument.updatedAt.toISOString()
-          : userDocument.updatedAt,
-    };
-    return user;
-  });
-  log('mutated users');
   if (isSearching) {
     let fuseSearchKey: string;
     let fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {};
@@ -156,21 +137,40 @@ router.get('/', async (req, res) => {
         };
         break;
     }
-    const fuse = new Fuse(mutatedUsers, fuseOptions);
-    mutatedUsers = fuse.search(search);
+    const fuse = new Fuse(users, fuseOptions);
+    users = fuse.search(search);
   }
   log('finished search');
   if (isSearching && after) {
-    const afterIndex = mutatedUsers.findIndex(c => c._id.toString() === after);
+    const afterIndex = users.findIndex(c => c._id.toString() === after);
     if (afterIndex >= 0) {
-      mutatedUsers = mutatedUsers.slice(afterIndex + 1);
+      users = users.slice(afterIndex + 1);
     }
   }
   log('finished search after');
-  if (isSearching && mutatedUsers.length > limit) {
-    mutatedUsers = mutatedUsers.slice(0, limit);
+  if (isSearching && users.length > limit) {
+    users = users.slice(0, limit);
   }
   log('finished search limit');
+  let mutatedUsers: Services.GetUsers['users'] = users.map(userDocument => {
+    mutateUserDiscordContent(userDocument);
+    const user: Omit<User, 'createdAt' | 'updatedAt'> & {
+      createdAt: string;
+      updatedAt: string;
+    } = {
+      ...userDocument.toObject(),
+      createdAt:
+        userDocument.createdAt instanceof Date
+          ? userDocument.createdAt.toISOString()
+          : userDocument.createdAt,
+      updatedAt:
+        userDocument.updatedAt instanceof Date
+          ? userDocument.updatedAt.toISOString()
+          : userDocument.updatedAt,
+    };
+    return user;
+  });
+  log('mutated users');
   const result: Services.GetUsers = {
     users: mutatedUsers,
   };
