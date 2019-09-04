@@ -21,12 +21,14 @@ export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
   shelf: ShelfEntryDoc[];
 }
 
-const genresSchema = new Schema({
+export const genresSchema = new Schema({
   key: String,
   name: String,
 });
 
-const shelfSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
+export const shelfSchemaDefinition: SameKeysAs<
+  FilterAutoMongoKeys<ShelfEntry>
+> = {
   source: {
     type: String,
     required: true,

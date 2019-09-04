@@ -11,15 +11,11 @@ import {
   MongoTimestamps,
 } from '@caravan/buddy-reading-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
+import { shelfSchemaDefinition, genresSchema } from './club';
 
 export interface PostDoc extends Document, MongoTimestamps, Omit<Post, '_id'> {
   _id: Types.ObjectId;
 }
-
-const genresSchema = new Schema({
-  key: String,
-  name: String,
-});
 
 const interestsSchema = new Schema({
   key: {
@@ -32,32 +28,6 @@ const interestsSchema = new Schema({
   },
   imageUrl: String,
 });
-
-const shelfSchema: SameKeysAs<FilterAutoMongoKeys<ShelfEntry>> = {
-  source: {
-    type: String,
-    required: true,
-    index: true,
-    validate: {
-      validator: function(v: BookSource) {
-        return ALLOWED_BOOK_SOURCES[v] === true;
-      },
-      message: function(props: { value: string }) {
-        `${props.value} is not a valid source.`;
-      },
-    },
-  },
-  sourceId: { type: String, required: true, index: true },
-  isbn: { type: String },
-  readingState: { type: String, required: true },
-  startedReading: { type: Date },
-  finishedReading: { type: Date },
-  title: { type: String, required: true },
-  author: { type: String },
-  publishedDate: { type: Date },
-  coverImageURL: { type: String },
-  genres: { type: [String], required: true },
-};
 
 const shelfPostSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfPost>> = {
   postType: {
@@ -72,7 +42,7 @@ const shelfPostSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfPost>> = {
       },
     },
   },
-  shelf: { type: [shelfSchema], required: true },
+  shelf: { type: [shelfSchemaDefinition], required: true },
   title: { type: String, required: true },
   description: { type: String },
   genres: { type: [genresSchema] },
@@ -98,7 +68,7 @@ const progressUpdatePostSchemaDefinition: SameKeysAs<
       },
     },
   },
-  book: { type: shelfSchema, required: true },
+  book: { type: shelfSchemaDefinition, required: true },
   progressUpdateType: {
     type: String,
     required: true,
