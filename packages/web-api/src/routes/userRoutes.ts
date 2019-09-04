@@ -134,7 +134,7 @@ router.get('/', async (req, res) => {
     users = fuse.search(search);
   }
   if (isSearching && after) {
-    const afterIndex = users.findIndex(c => c._id.toString() === after);
+    const afterIndex = users.findIndex(c => c.id === after);
     if (afterIndex >= 0) {
       users = users.slice(afterIndex + 1);
     }
