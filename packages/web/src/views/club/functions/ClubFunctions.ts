@@ -78,7 +78,11 @@ export function getShelfFromGoogleBooks(
             : undefined,
         coverImageURL:
           'imageLinks' in book.volumeInfo
-            ? (book.volumeInfo.imageLinks.smallThumbnail ? book.volumeInfo.imageLinks.smallThumbnail : book.volumeInfo.imageLinks.thumbnail ? book.volumeInfo.imageLinks.thumbnail : require('../../../resources/generic-book-cover.jpg'))
+            ? book.volumeInfo.imageLinks.smallThumbnail
+              ? book.volumeInfo.imageLinks.smallThumbnail
+              : book.volumeInfo.imageLinks.thumbnail
+              ? book.volumeInfo.imageLinks.thumbnail
+              : require('../../../resources/generic-book-cover.jpg')
             : require('../../../resources/generic-book-cover.jpg'),
       };
       return res;
