@@ -23,6 +23,7 @@ import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAva
 import PlaceholderCard from '../../components/PlaceholderCard';
 import theme, { washedTheme, successTheme } from '../../theme';
 import clsx from 'clsx';
+import { UNLIMITED_CLUB_MEMBERS_VALUE } from '../../common/globalConstants';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -316,7 +317,12 @@ export default function ClubCards(props: ClubCardsProps) {
                                 variant="body2"
                                 className={classes.attributeLabel}
                               >
-                                {`${club.memberCount} (Max ${club.maxMembers})`}
+                                {`${club.memberCount} ${
+                                  club.maxMembers ===
+                                  UNLIMITED_CLUB_MEMBERS_VALUE
+                                    ? ``
+                                    : `(Max ${club.maxMembers})`
+                                }`}
                               </Typography>
                             </div>
                           </div>

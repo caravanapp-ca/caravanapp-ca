@@ -62,6 +62,7 @@ import { getAllGenres } from '../../services/genre';
 import {
   DEFAULT_CLUB_SCHED_DURATION,
   DEFAULT_CLUB_SCHED_DISC_FREQ,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
 } from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -120,7 +121,8 @@ const showJoinClub = (
   memberStatus === 'notMember' &&
   club &&
   club.members &&
-  club.maxMembers > club.members.length;
+  (club.maxMembers === UNLIMITED_CLUB_MEMBERS_VALUE ||
+    club.maxMembers > club.members.length);
 const showOpenChat = (memberStatus: LoadableMemberStatus) =>
   memberStatus === 'owner' || memberStatus === 'member';
 const showUpdateBook = (memberStatus: LoadableMemberStatus) =>

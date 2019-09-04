@@ -12,8 +12,14 @@ import {
   groupVibeLabels,
 } from '../../../components/group-vibe-avatars-icons-labels';
 import MemberList from './MemberList';
-import GroupSizeSelector from '../../../components/GroupSizeSelector';
 import ClubPrivacySlider from '../../../components/ClubPrivacySlider';
+import {
+  CLUB_SIZE_NO_LIMIT_LABEL,
+  CLUB_SIZE_MAX,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
+  DEFAULT_MEMBER_LIMIT,
+} from '../../../common/globalConstants';
+import ClubMemberLimitEditor from '../../../components/ClubMemberLimitEditor';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,6 +39,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formControl: {
       margin: theme.spacing(3),
+    },
+    centeredColumnContainer: {
+      display: 'flex',
+      width: '100%',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    twoLabelSwitchContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
     },
   })
 );
@@ -54,13 +71,6 @@ const groupVibes: GroupVibe[] = [
   'nerdy',
   'power',
 ];
-
-const groupSizeMin = 2;
-const groupSizeMax = 32;
-let groupSizesStrArr: string[] = [];
-for (let i = groupSizeMin; i <= groupSizeMax; i++) {
-  groupSizesStrArr.push(i.toString());
-}
 
 // TODO: Move these min/max declarations somewhere more global
 const nameMin = 2;
@@ -104,6 +114,40 @@ export default function GroupView(props: GroupViewProps) {
       name: false,
     }
   );
+  const [limitGroupSize, setLimitGroupSize] = React.useState<boolean>(
+    maxMembers > 0
+  );
+  const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(
+    maxMembers === UNLIMITED_CLUB_MEMBERS_VALUE
+      ? Math.max(DEFAULT_MEMBER_LIMIT, members.length)
+      : maxMembers
+  );
+
+  const handleGroupLimitSwitch = () => {
+    if (!limitGroupSize) {
+      onEdit('maxMembers', selectedGroupSize);
+    } else {
+      onEdit('maxMembers', UNLIMITED_CLUB_MEMBERS_VALUE);
+    }
+    setLimitGroupSize(!limitGroupSize);
+  };
+
+  const handleGroupSizeChange = (
+    e: React.ChangeEvent<{
+      name?: string;
+      value: unknown;
+    }>
+  ) => {
+    const newVal = e.target.value as string;
+    if (newVal === CLUB_SIZE_NO_LIMIT_LABEL) {
+      onEdit('maxMembers', UNLIMITED_CLUB_MEMBERS_VALUE);
+      setLimitGroupSize(false);
+    } else {
+      const newValNum = parseInt(newVal);
+      onEdit('maxMembers', newValNum);
+      setSelectedGroupSize(newValNum);
+    }
+  };
 
   let readingSpeedString;
   let readingSpeedAvatar;
@@ -230,17 +274,21 @@ export default function GroupView(props: GroupViewProps) {
           <Typography variant={'h6'} className={classes.sectionLabel}>
             Members
           </Typography>
-          <GroupSizeSelector
-            onChangeSize={e =>
-              onEdit('maxMembers', parseInt(e.target.value as string))
-            }
-            selectedSize={maxMembers.toString()}
-            sizes={groupSizesStrArr.map(str => ({
-              label: str,
-              enabled: members.length <= parseInt(str) ? true : false,
-            }))}
-            showContactMessage={true}
-          />
+          {members.length > CLUB_SIZE_MAX && (
+            <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
+              This club is now too large to impose a member limit. Contact the
+              Caravan team if you require a custom limit.
+            </Typography>
+          )}
+          {members.length <= CLUB_SIZE_MAX && (
+            <ClubMemberLimitEditor
+              handleGroupLimitSwitch={handleGroupLimitSwitch}
+              handleGroupSizeChange={handleGroupSizeChange}
+              limitGroupSize={limitGroupSize}
+              numMembers={members.length}
+              selectedGroupSize={selectedGroupSize}
+            />
+          )}
         </div>
       </div>
     );
@@ -273,7 +321,11 @@ export default function GroupView(props: GroupViewProps) {
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant={'h6'} className={classes.sectionLabel}>
-            Members
+            {`Members: ${members.length}${
+              maxMembers === UNLIMITED_CLUB_MEMBERS_VALUE
+                ? ``
+                : ` (Max ${maxMembers})`
+            }`}
           </Typography>
           <MemberList
             members={members}
