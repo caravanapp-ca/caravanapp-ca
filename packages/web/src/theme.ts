@@ -117,6 +117,21 @@ export const whiteTheme = responsiveFontSizes(
   })
 );
 
+export const shelfPostTheme = responsiveFontSizes(
+  createMuiTheme({
+    ...themeObj,
+    palette: {
+      ...themeObj.palette,
+      primary: {
+        main: '#64B5F6',
+      },
+      secondary: {
+        main: themeObj.palette.primary.main,
+      },
+    },
+  })
+);
+
 export const palettes: PaletteObject[] = [
   // COLOUR BACKGROUNDS
   // White
@@ -226,7 +241,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-pla.svg',
-    mobileAlignment: 'left',    
+    mobileAlignment: 'left',
   },
   // Nature - OUTTA
   {
@@ -236,7 +251,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-out.svg',
-    mobileAlignment: 'left',    
+    mobileAlignment: 'left',
   },
   // QUOTE BACKGROUNDS
   // Quote - Read Love Repeat
@@ -257,7 +272,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-los.svg',
-    mobileAlignment: 'left',    
+    mobileAlignment: 'left',
   },
   // Quote - Hot Coffee
   {
@@ -267,7 +282,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-hot.svg',
-    mobileAlignment: 'left',    
+    mobileAlignment: 'left',
   },
   // Quote - Treasure
   {
@@ -287,7 +302,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-per.svg',
-    mobileAlignment: 'left',    
+    mobileAlignment: 'left',
   },
   // Quote - TOG
   {
@@ -297,7 +312,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'white',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-tog.svg',
-    mobileAlignment: 'left',    
+    mobileAlignment: 'left',
   },
   // Quote - Maybe
   {
@@ -307,7 +322,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-may.svg',
-    mobileAlignment: 'left',    
+    mobileAlignment: 'left',
   },
   // Quote - Somewhere
   {
@@ -317,7 +332,7 @@ export const palettes: PaletteObject[] = [
     textColor: 'primary',
     bgImage:
       'https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/quo-som.svg',
-    mobileAlignment: 'left',        
+    mobileAlignment: 'left',
   },
 ];
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
 import { Fab, Typography, Avatar } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import shelfIcon from '../resources/post-icons/shelf_icon.svg';
+import { shelfPostTheme } from '../theme';
 
 const useStyles = makeStyles(theme => ({
   postTypes: {
@@ -17,7 +18,6 @@ const useStyles = makeStyles(theme => ({
   },
   fab: {
     margin: theme.spacing(1),
-    backgroundColor: '#64B5F6',
   },
   postIconAvatar: {
     width: 48,
@@ -52,24 +52,27 @@ export default function Composer(props: ComposerProps) {
           className={classes.headerAvatar}
         />
       )}
-      <Fab
-        variant="extended"
-        aria-label="delete"
-        className={classes.fab}
-        onClick={onClickShelfUpload}
-      >
-        <Typography
-          variant="subtitle2"
-          style={{ fontWeight: 600, color: 'white' }}
+      <MuiThemeProvider theme={shelfPostTheme}>
+        <Fab
+          variant="extended"
+          aria-label="upload-shelf"
+          className={classes.fab}
+          onClick={onClickShelfUpload}
+          color="primary"
         >
-          Upload Shelf
-        </Typography>
-        <img
-          src={shelfIcon}
-          alt="Upload shelf"
-          className={classes.postIconAvatar}
-        />
-      </Fab>
+          <Typography
+            variant="button"
+            style={{ fontWeight: 600, color: 'white' }}
+          >
+            Upload Shelf
+          </Typography>
+          <img
+            src={shelfIcon}
+            alt="Upload shelf"
+            className={classes.postIconAvatar}
+          />
+        </Fab>
+      </MuiThemeProvider>
     </div>
   );
 }
