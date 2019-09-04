@@ -1,14 +1,20 @@
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   makeStyles,
   Button,
   Typography,
   useMediaQuery,
   useTheme,
+  Link,
 } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { PostUserInfo } from '@caravan/buddy-reading-types';
+import {
+  PostUserInfo,
+  FilterAutoMongoKeys,
+  ShelfEntry,
+} from '@caravan/buddy-reading-types';
 import PostLikesThumbnails from './PostLikesThumbnails';
 
 const useStyles = makeStyles(theme => ({
@@ -38,26 +44,24 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface PostActionsProps {
-  postId: string;
   likes: PostUserInfo[];
   hasLiked: boolean | null;
   numLikes: number;
-  currUserId: string;
   onClickLike: () => void;
   likeButtonDisabled: boolean;
+  shelf: FilterAutoMongoKeys<ShelfEntry>[];
 }
 
 function PostActions(props: PostActionsProps) {
   const classes = useStyles();
   const theme = useTheme();
   const {
-    postId,
     likes,
-    currUserId,
     onClickLike,
     hasLiked,
     numLikes,
     likeButtonDisabled,
+    shelf,
   } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -88,13 +92,19 @@ function PostActions(props: PostActionsProps) {
         />
       </div>
       <div className={classes.createClubButtonContainer}>
-        <Button
-          className={classes.createClubButton}
-          variant="contained"
-          color="primary"
+        <Link
+          component={RouterLink}
+          to={{ pathname: '/clubs/create', state: { shelf: shelf } }}
+          underline="none"
         >
-          <Typography variant="subtitle1">Create club from shelf</Typography>
-        </Button>
+          <Button
+            className={classes.createClubButton}
+            variant="contained"
+            color="primary"
+          >
+            <Typography variant="subtitle2">Create club from shelf</Typography>
+          </Button>
+        </Link>
       </div>
     </div>
   );
