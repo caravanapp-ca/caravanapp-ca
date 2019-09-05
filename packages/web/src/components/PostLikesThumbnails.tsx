@@ -11,7 +11,6 @@ import {
   ListItem,
 } from '@material-ui/core';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
-import shuffleArr from '../common/shuffleArr';
 
 const useStyles = makeStyles(theme => ({
   likeThumbnails: {
