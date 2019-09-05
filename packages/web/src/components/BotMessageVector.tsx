@@ -61,7 +61,6 @@ export default function BotMessageVector(props: BotMessageVectorProps) {
       </div>
       <div className={classes.textContainer}>
         <Typography className={classes.messageText}>{message}</Typography>
-        {/* <img src={chatBubbleSrc} className={classes.chatBubbleImg} /> */}
       </div>
     </div>
   );
