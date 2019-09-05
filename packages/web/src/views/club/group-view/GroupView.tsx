@@ -33,7 +33,7 @@ import CheckboxSettingsEditor from '../../../components/CheckboxSettingsEditor';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     sectionContainer: {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(4),
     },
     subSectionContainer: {
       marginTop: theme.spacing(2),
