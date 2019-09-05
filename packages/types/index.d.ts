@@ -249,6 +249,7 @@ declare module '@caravan/buddy-reading-types' {
     name: string;
     urlSlug: string;
     photoUrl: string;
+    discordId: string;
   }
 
   export interface PostWithAuthorInfoAndLikes {
@@ -519,6 +520,8 @@ declare module '@caravan/buddy-reading-types' {
       readingSpeed: string;
       channelSource: ChannelSource;
       unlisted: boolean;
+      usersToInviteDiscordIds: string[];
+      currUser: User | null;
     }
     export interface CreateClubResult {
       club: Club;
