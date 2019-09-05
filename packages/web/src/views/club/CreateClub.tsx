@@ -458,7 +458,8 @@ export default function CreateClub(props: CreateClubProps) {
               label="What bot services would you like to enable?"
               onChange={handleBotSettingsChange}
               options={CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS}
-              showSelectAllButtons={true}
+              // TODO: Set this to true once we have more than one option.
+              showSelectAllButtons={false}
               value={selectedBotSettings}
             />
           </div>

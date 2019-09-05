@@ -18,11 +18,17 @@ import {
 import clsx from 'clsx';
 import { getMySettings, updateMySettings } from '../../services/userSettings';
 import UserEmailField from '../../components/UserEmailField';
-import UserEmailSettings from './UserEmailSettings';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import CustomSnackbar, { CustomSnackbarProps } from '../../components/CustomSnackbar';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
+import CheckboxSettingsEditor from '../../components/CheckboxSettingsEditor';
+import {
+  DEFAULT_EMAIL_SETTINGS,
+  EMAIL_SETTINGS_KEYS_DESCRIPTIONS,
+} from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,7 +89,7 @@ export default function Settings(props: SettingsProps) {
   };
 
   const rightComponent = <ProfileHeaderIcon user={user} />;
-  const leftComponent =
+  const leftComponent = (
     <IconButton
       edge="start"
       color="inherit"
@@ -92,7 +98,7 @@ export default function Settings(props: SettingsProps) {
     >
       <ArrowBackIos />
     </IconButton>
-  ;
+  );
 
   useEffect(() => {
     if (user) {
@@ -125,7 +131,7 @@ export default function Settings(props: SettingsProps) {
       throw new Error('Attempted to save user settings that were undefined.');
     }
     const res = await updateMySettings(settings);
-    if(res.status === 200){
+    if (res.status === 200) {
       setMadeChanges(false);
       setSnackbarProps({
         ...snackbarProps,
@@ -143,7 +149,7 @@ export default function Settings(props: SettingsProps) {
     }
   };
 
-  function onSnackbarClose(){
+  function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
@@ -162,9 +168,12 @@ export default function Settings(props: SettingsProps) {
           value={settings ? settings.email : undefined}
           onChange={(newVal, valid) => onChangeSettings('email', newVal, valid)}
         />
-        <UserEmailSettings
-          value={settings ? settings.emailSettings : undefined}
+        <CheckboxSettingsEditor<EmailSettings>
+          label="I would like to receive emails that"
           onChange={newVal => onChangeSettings('emailSettings', newVal)}
+          options={EMAIL_SETTINGS_KEYS_DESCRIPTIONS}
+          showSelectAllButtons={true}
+          value={settings ? settings.emailSettings : DEFAULT_EMAIL_SETTINGS}
         />
         <div
           className={clsx(classes.sectionContainer, classes.buttonsContainer)}

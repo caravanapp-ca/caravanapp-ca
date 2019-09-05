@@ -1,5 +1,10 @@
 import React from 'react';
-import { Club, ReadingSpeed, GroupVibe } from '@caravan/buddy-reading-types';
+import {
+  Club,
+  ReadingSpeed,
+  GroupVibe,
+  ClubBotSettings,
+} from '@caravan/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, TextField, Radio } from '@material-ui/core';
 import ListElementAvatar from '../../../components/ListElementAvatar';
@@ -18,13 +23,20 @@ import {
   CLUB_SIZE_MAX,
   UNLIMITED_CLUB_MEMBERS_VALUE,
   DEFAULT_MEMBER_LIMIT,
+  CARAVAN_BOT_NAME,
+  CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS,
 } from '../../../common/globalConstants';
 import ClubMemberLimitEditor from '../../../components/ClubMemberLimitEditor';
+import BotMessageVector from '../../../components/BotMessageVector';
+import CheckboxSettingsEditor from '../../../components/CheckboxSettingsEditor';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     sectionContainer: {
       marginTop: theme.spacing(3),
+    },
+    subSectionContainer: {
+      marginTop: theme.spacing(2),
     },
     sectionLabel: {
       marginBottom: theme.spacing(1),
@@ -58,8 +70,15 @@ interface GroupViewProps {
   club: Club;
   isEditing: boolean;
   onEdit: (
-    field: 'bio' | 'maxMembers' | 'name' | 'readingSpeed' | 'unlisted' | 'vibe',
-    newValue: string | number | boolean
+    field:
+      | 'bio'
+      | 'botSettings'
+      | 'maxMembers'
+      | 'name'
+      | 'readingSpeed'
+      | 'unlisted'
+      | 'vibe',
+    newValue: boolean | number | string | ClubBotSettings
   ) => void;
 }
 
@@ -101,6 +120,7 @@ export default function GroupView(props: GroupViewProps) {
   const { isEditing, onEdit } = props;
   const {
     bio,
+    botSettings,
     maxMembers,
     members,
     name,
@@ -147,6 +167,10 @@ export default function GroupView(props: GroupViewProps) {
       onEdit('maxMembers', newValNum);
       setSelectedGroupSize(newValNum);
     }
+  };
+
+  const handleBotSettingsChange = (newVal: ClubBotSettings) => {
+    onEdit('botSettings', newVal);
   };
 
   let readingSpeedString;
@@ -289,6 +313,24 @@ export default function GroupView(props: GroupViewProps) {
               selectedGroupSize={selectedGroupSize}
             />
           )}
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography variant={'h6'} className={classes.sectionLabel}>
+            Bot
+          </Typography>
+          <BotMessageVector
+            message={`Hi! I'm ${CARAVAN_BOT_NAME}. I can help make running your club easier! Let me know what you'd like me to do below.`}
+          />
+          <div className={classes.subSectionContainer}>
+            <CheckboxSettingsEditor<ClubBotSettings>
+              label="What bot services would you like to enable?"
+              onChange={handleBotSettingsChange}
+              options={CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS}
+              // TODO: Set this to true once we have more than one option.
+              showSelectAllButtons={false}
+              value={botSettings}
+            />
+          </div>
         </div>
       </div>
     );

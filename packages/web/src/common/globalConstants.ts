@@ -43,6 +43,12 @@ export const EMAIL_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<EmailSettings> = {
   updates: 'Keep me posted on Caravan updates',
 };
 
+export const DEFAULT_EMAIL_SETTINGS: EmailSettings = {
+  recs: true,
+  reminders: true,
+  updates: true,
+};
+
 export const DISCORD_GUILD_LINK =
   process.env.NODE_ENV === 'production'
     ? isMobileDevice()
