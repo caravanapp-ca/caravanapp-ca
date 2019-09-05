@@ -130,8 +130,22 @@ export default function CreateClub(props: CreateClubProps) {
   const [selectedGroupVibe, setSelectedGroupVibe] = React.useState<GroupVibe>(
     'chill'
   );
-  const [selectedGroupName, setSelectedGroupName] = React.useState('');
-  const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
+  const [selectedGroupName, setSelectedGroupName] = React.useState(
+    props.location.state &&
+      props.location.state.shelfName &&
+      props.location.state.shelfName.length < 40
+      ? `The "${props.location.state.shelfName}" club`
+      : ''
+  );
+  const [selectedGroupBio, setSelectedGroupBio] = React.useState(
+    props.location.state &&
+      props.location.state.shelfAuthorName &&
+      props.location.state.shelfName
+      ? `Come join me as we read books from the "${
+          props.location.state.shelfName
+        }" shelf created by ${props.location.state.shelfAuthorName}!`
+      : ''
+  );
   const [selectedBooks, setSelectedBooks] = React.useState<
     FilterAutoMongoKeys<ShelfEntry>[]
   >(
@@ -149,7 +163,9 @@ export default function CreateClub(props: CreateClubProps) {
       : null
   );
   const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
-    []
+    props.location.state && props.location.state.shelfGenres
+      ? props.location.state.shelfGenres
+      : []
   );
   const [unlistedClub, setUnlistedClub] = React.useState(false);
   const [sendInvites, setSendInvites] = React.useState(true);
@@ -326,6 +342,7 @@ export default function CreateClub(props: CreateClubProps) {
             variant="outlined"
             fullWidth
             inputProps={{ maxLength: 50 }}
+            value={selectedGroupName}
             onChange={(
               e: React.ChangeEvent<
                 HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -404,8 +421,8 @@ export default function CreateClub(props: CreateClubProps) {
         {inheritedBooks && numLikesVal && likesArr && likeListLengthVal && (
           <div className={classes.sectionContainer}>
             <Typography variant="subtitle1" className={classes.sectionHeader}>
-              {numLikesString} liked the shelf from which you're creating this
-              club. Should we send them an invite link to join?
+              {numLikesString} liked this shelf. Should we send them an invite
+              to join?
             </Typography>
             <SendClubInvitesSlider
               onChange={(sendInvitesValue: boolean) =>
@@ -498,6 +515,7 @@ export default function CreateClub(props: CreateClubProps) {
             fullWidth
             rows="4"
             variant="outlined"
+            value={selectedGroupBio}
             inputProps={{ maxLength: 300 }}
             helperText="300 character limit"
             onChange={(

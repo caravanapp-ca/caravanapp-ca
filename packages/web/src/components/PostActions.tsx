@@ -14,6 +14,7 @@ import {
   PostUserInfo,
   FilterAutoMongoKeys,
   ShelfEntry,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import PostLikesThumbnails from './PostLikesThumbnails';
 import CreateClubFromShelfInviteList from './CreateClubFromShelfInviteList';
@@ -51,6 +52,9 @@ interface PostActionsProps {
   onClickLike: () => void;
   likeButtonDisabled: boolean;
   shelf: FilterAutoMongoKeys<ShelfEntry>[];
+  shelfName: string;
+  shelfGenres: SelectedGenre[];
+  shelfAuthorName: string;
   userId: string;
 }
 
@@ -64,6 +68,9 @@ function PostActions(props: PostActionsProps) {
     numLikes,
     likeButtonDisabled,
     shelf,
+    shelfName,
+    shelfGenres,
+    shelfAuthorName,
     userId,
   } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -104,6 +111,9 @@ function PostActions(props: PostActionsProps) {
               numLikes: hasLiked ? numLikes - 1 : numLikes,
               likes: hasLiked ? likes.filter(l => l.userId !== userId) : likes,
               likeListLength,
+              shelfName,
+              shelfGenres,
+              shelfAuthorName,
             },
           }}
           underline="none"
