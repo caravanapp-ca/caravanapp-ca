@@ -86,7 +86,7 @@ const botSettingsDefinition: MongooseSchema<ClubBotSettings> = {
   intros: { type: Boolean, required: true, default: true },
 };
 
-const botSettingsSchema = new Schema(botSettingsDefinition);
+const botSettingsSchema = new Schema(botSettingsDefinition, { _id: false });
 
 const clubDefinition: MongooseSchema<Omit<Club, 'members'>> = {
   bio: { type: String },

@@ -848,6 +848,10 @@ router.put(
     .isString()
     .isLength({ max: 300 }),
   check(
+    'newClub.botSettings',
+    'Club must have bot settings specified.'
+  ).exists(),
+  check(
     'newClub.genres',
     'Genres must be an array of {key: string, name: string} elements'
   ).isArray(),
@@ -890,7 +894,7 @@ router.put(
     const clubId = req.params.id;
     const newClub: Services.GetClubById = req.body.newClub;
     // TODO: The user can still cheat this. Need to first get the existing club by id and check against that.
-    if (req.user._id.toHexString() !== newClub.ownerId) {
+    if (req.user.id !== newClub.ownerId) {
       console.warn(
         `User ${req.user._id} attempted to edit club ${clubId} without valid permission.`
       );
@@ -913,6 +917,7 @@ router.put(
     const updateObj: Pick<
       FilterAutoMongoKeys<Club>,
       | 'bio'
+      | 'botSettings'
       | 'genres'
       | 'maxMembers'
       | 'name'
@@ -922,6 +927,7 @@ router.put(
       | 'vibe'
     > = {
       bio: newClub.bio,
+      botSettings: newClub.botSettings,
       genres: newClub.genres,
       maxMembers: newClub.maxMembers,
       name: newClub.name,
