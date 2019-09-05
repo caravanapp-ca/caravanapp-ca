@@ -81,7 +81,7 @@ const scheduleSchemaDefinition: MongooseSchema<ClubReadingSchedule> = {
 const scheduleSchema = new Schema(scheduleSchemaDefinition);
 
 const botSettingsDefinition: MongooseSchema<ClubBotSettings> = {
-  intros: { type: Boolean, required: true, default: true },
+  intros: { type: Boolean, required: true },
 };
 
 const botSettingsSchema = new Schema(botSettingsDefinition, { _id: false });

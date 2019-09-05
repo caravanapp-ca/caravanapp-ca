@@ -28,7 +28,7 @@ export const onJoinClub = async (
   );
   const { discordId, questions } = userDoc;
   const { channelId, botSettings } = clubDoc;
-  if (!botSettings.intros) {
+  if (botSettings.intros === false) {
     return undefined;
   }
   const client = ReadingDiscordBot.getInstance();
