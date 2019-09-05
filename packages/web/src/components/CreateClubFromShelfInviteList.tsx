@@ -29,6 +29,8 @@ const useStyles = makeStyles(theme => ({
   },
   likedByMenuItem: {
     display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   menuItemTop: {
     paddingTop: 0,
