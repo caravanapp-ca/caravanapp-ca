@@ -6,8 +6,6 @@ import {
   ClubReadingSchedule,
   ClubShelf,
   Discussion,
-  FilterAutoMongoKeys,
-  SameKeysAs,
   ShelfEntry,
   ClubBotSettings,
 } from '@caravan/buddy-reading-types';
