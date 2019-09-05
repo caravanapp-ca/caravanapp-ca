@@ -9,6 +9,7 @@ import {
   FilterAutoMongoKeys,
   SelectedGenre,
   UninitClubShelfType,
+  ClubBotSettings,
 } from '@caravan/buddy-reading-types';
 import {
   useMediaQuery,
@@ -42,8 +43,13 @@ import ClubPrivacySlider from '../../components/ClubPrivacySlider';
 import {
   CLUB_SIZE_NO_LIMIT_LABEL,
   UNLIMITED_CLUB_MEMBERS_VALUE,
+  CARAVAN_BOT_NAME,
+  DEFAULT_CLUB_BOT_SETTINGS,
+  CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS,
 } from '../../common/globalConstants';
 import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
+import BotMessageVector from '../../components/BotMessageVector';
+import CheckboxSettingsEditor from '../../components/CheckboxSettingsEditor';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -62,6 +68,9 @@ const useStyles = makeStyles(theme => ({
   },
   sectionHeader: {
     marginBottom: theme.spacing(1),
+  },
+  subSectionContainer: {
+    marginTop: theme.spacing(2),
   },
   genresContainer: {
     display: 'flex',
@@ -115,18 +124,6 @@ export default function CreateClub(props: CreateClubProps) {
 
   const centerComponent = <HeaderTitle title="Create a Club" />;
 
-  // const rightComponent = (
-  //   <IconButton
-  //     edge="start"
-  //     color="inherit"
-  //     aria-label="More"
-  //     component={AdapterLink}
-  //     to="/"
-  //   >
-  //     <ThreeDotsIcon />
-  //   </IconButton>
-  // );
-
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [limitGroupSize, setLimitGroupSize] = React.useState<boolean>(false);
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
@@ -153,6 +150,9 @@ export default function CreateClub(props: CreateClubProps) {
     createdClub,
     setCreatedClub,
   ] = React.useState<Services.CreateClubResult | null>(null);
+  const [selectedBotSettings, setSelectedBotSettings] = React.useState<
+    ClubBotSettings
+  >(DEFAULT_CLUB_BOT_SETTINGS);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[],
@@ -199,15 +199,16 @@ export default function CreateClub(props: CreateClubProps) {
       ? selectedGroupSize
       : UNLIMITED_CLUB_MEMBERS_VALUE;
     const clubObj: Services.CreateClubProps = {
+      bio: selectedGroupBio,
+      botSettings: selectedBotSettings,
+      channelSource: 'discord',
+      genres: selectedGenres,
+      maxMembers,
       name: selectedGroupName,
       newShelf: initShelf,
-      bio: selectedGroupBio,
-      maxMembers,
-      vibe: selectedGroupVibe,
-      genres: selectedGenres,
       readingSpeed: selectedGroupSpeed,
-      channelSource: 'discord',
       unlisted: unlistedClub,
+      vibe: selectedGroupVibe,
     };
     setCreatingClub(true);
     const createdClubRes = await createClub(clubObj);
@@ -270,6 +271,10 @@ export default function CreateClub(props: CreateClubProps) {
     } else {
       setSelectedGroupSize(parseInt(newVal));
     }
+  };
+
+  const handleBotSettingsChange = (newVal: ClubBotSettings) => {
+    setSelectedBotSettings(newVal);
   };
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -443,6 +448,20 @@ export default function CreateClub(props: CreateClubProps) {
               >
             ) => setSelectedGroupBio(e.target.value)}
           />
+        </div>
+        <div className={classes.sectionContainer}>
+          <BotMessageVector
+            message={`Hi! I'm ${CARAVAN_BOT_NAME}. I can help make running your club easier! Let me know what you'd like me to do below.`}
+          />
+          <div className={classes.subSectionContainer}>
+            <CheckboxSettingsEditor<ClubBotSettings>
+              label="What bot services would you like to enable?"
+              onChange={handleBotSettingsChange}
+              options={CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS}
+              showSelectAllButtons={true}
+              value={selectedBotSettings}
+            />
+          </div>
         </div>
         <div className={classes.sectionContainer}>
           <div

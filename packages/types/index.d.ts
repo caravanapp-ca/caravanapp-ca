@@ -34,6 +34,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface ClubBotSettings {
     intros: boolean;
+    // Type signature for indexing
+    [key: string]: boolean;
   }
 
   export interface Club extends DocumentFields, MongoTimestamps {
@@ -443,15 +445,16 @@ declare module '@caravan/buddy-reading-types' {
       vibe: GroupVibe;
     }
     export interface CreateClubProps {
+      bio: string;
+      botSettings: ClubBotSettings;
+      channelSource: ChannelSource;
+      genres: SelectedGenre[];
+      maxMembers: number;
       name: string;
       newShelf?: UninitClubShelfType;
-      bio: string;
-      maxMembers: number;
-      vibe: string;
-      genres: SelectedGenre[];
       readingSpeed: string;
-      channelSource: ChannelSource;
       unlisted: boolean;
+      vibe: string;
     }
     export interface CreateClubResult {
       club: Club;

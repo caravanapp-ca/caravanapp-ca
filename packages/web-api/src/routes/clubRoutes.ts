@@ -792,17 +792,18 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     );
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
-      name: body.name,
       bio: body.bio,
-      maxMembers: body.maxMembers,
-      readingSpeed: body.readingSpeed,
-      genres: body.genres,
-      newShelf: validShelf,
-      schedules: body.schedules,
-      ownerId: userId,
-      ownerDiscordId: req.user.discordId,
-      channelSource: body.channelSource,
+      botSettings: body.botSettings,
       channelId: channel.id,
+      channelSource: body.channelSource,
+      genres: body.genres,
+      maxMembers: body.maxMembers,
+      name: body.name,
+      newShelf: validShelf,
+      ownerDiscordId: req.user.discordId,
+      ownerId: userId,
+      readingSpeed: body.readingSpeed,
+      schedules: body.schedules,
       unlisted: body.unlisted,
       vibe: body.vibe,
     };
