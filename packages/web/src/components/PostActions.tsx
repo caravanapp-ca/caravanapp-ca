@@ -47,6 +47,7 @@ const useStyles = makeStyles(theme => ({
 
 interface PostActionsProps {
   likes: PostUserInfo[];
+  likeUserIds: string[];
   hasLiked: boolean | null;
   numLikes: number;
   onClickLike: () => void;
@@ -63,6 +64,7 @@ function PostActions(props: PostActionsProps) {
   const theme = useTheme();
   const {
     likes,
+    likeUserIds,
     onClickLike,
     hasLiked,
     numLikes,
@@ -110,6 +112,9 @@ function PostActions(props: PostActionsProps) {
               shelf: shelf,
               numLikes: hasLiked ? numLikes - 1 : numLikes,
               likes: hasLiked ? likes.filter(l => l.userId !== userId) : likes,
+              likeUserIds: hasLiked
+                ? likeUserIds.filter(l => l !== userId)
+                : likeUserIds,
               likeListLength,
               shelfName,
               shelfGenres,

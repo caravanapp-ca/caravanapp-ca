@@ -24,7 +24,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
-import { createClub } from '../../services/club';
+import { createClub, sendInvitesToClubFromShelf } from '../../services/club';
 import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import BookSearch from '../books/BookSearch';
@@ -220,9 +220,6 @@ export default function CreateClub(props: CreateClubProps) {
     const maxMembers = limitGroupSize
       ? selectedGroupSize
       : UNLIMITED_CLUB_MEMBERS_VALUE;
-    const usersToInviteDiscordIds = likesArr
-      ? likesArr.map(l => l.discordId)
-      : [];
     const clubObj: Services.CreateClubProps = {
       name: selectedGroupName,
       newShelf: initShelf,
@@ -234,7 +231,7 @@ export default function CreateClub(props: CreateClubProps) {
       channelSource: 'discord',
       unlisted: unlistedClub,
       currUser: user,
-      usersToInviteDiscordIds,
+      usersToInviteIds: likeUserIdsArr ? likeUserIdsArr : [],
     };
     setCreatingClub(true);
     const createdClubRes = await createClub(clubObj);
@@ -242,6 +239,7 @@ export default function CreateClub(props: CreateClubProps) {
     if (data) {
       setCreatedClub(data);
     }
+    sendInvitesToClubFromShelf(createdClubRes, clubObj);
   }
 
   const getGenres = async () => {
@@ -305,10 +303,17 @@ export default function CreateClub(props: CreateClubProps) {
   let numLikesString: string = '';
   let numLikesVal: number | undefined;
   let likesArr: PostUserInfo[] | undefined;
+  let likeUserIdsArr: string[] | undefined;
   let likeListLengthVal: number | undefined;
 
   if (props.location && props.location.state) {
-    const { shelf, numLikes, likes, likeListLength } = props.location.state;
+    const {
+      shelf,
+      numLikes,
+      likes,
+      likeUserIds,
+      likeListLength,
+    } = props.location.state;
     if (shelf && shelf.length > 0) {
       inheritedBooks = shelf;
     } else {
@@ -327,6 +332,7 @@ export default function CreateClub(props: CreateClubProps) {
       numLikesString = 'Caravaners';
     }
     likesArr = likes || undefined;
+    likeUserIdsArr = likeUserIds || undefined;
     likeListLengthVal = likeListLength || undefined;
   }
 

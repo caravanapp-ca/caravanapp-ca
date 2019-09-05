@@ -229,6 +229,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         <CardActions className={classes.cardActions}>
           <PostActions
             likes={modifiedLikes}
+            likeUserIds={likeUserIds}
             hasLiked={hasLiked}
             numLikes={modifiedNumLikes}
             onClickLike={handleLikeAction}

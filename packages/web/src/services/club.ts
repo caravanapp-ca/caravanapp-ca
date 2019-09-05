@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {
   Services,
   ShelfEntry,
@@ -13,6 +13,7 @@ import {
   getRandomInviteMessage,
   getRandomInviteMessageFromShelf,
 } from '../common/getRandomInviteMessage';
+import { getUser } from './user';
 
 const clubRoute = '/api/club';
 const discordRoute = '/api/discord';
@@ -137,30 +138,41 @@ export async function createClub(props: Services.CreateClubProps) {
     clubRoute,
     body
   );
+  return res;
+}
+
+export async function sendInvitesToClubFromShelf(
+  res: AxiosResponse<Services.CreateClubResult | null>,
+  props: Services.CreateClubProps
+) {
   if (
     res.status >= 200 &&
     res.status < 300 &&
     props.currUser &&
-    props.usersToInviteDiscordIds &&
-    props.usersToInviteDiscordIds.length > 0
+    props.usersToInviteIds &&
+    props.usersToInviteIds.length > 0
   ) {
-    props.usersToInviteDiscordIds.map(userDiscordId => {
-      if (
-        props.currUser !== null &&
-        res.data &&
-        res.data.club &&
-        res.data.club._id
-      ) {
-        inviteToClubFromShelf(
-          props.currUser,
-          userDiscordId,
-          props.name,
-          res.data.club._id
-        );
-      }
-    });
+    if (
+      props.currUser !== null &&
+      res.data &&
+      res.data.club &&
+      res.data.club._id
+    ) {
+      props.usersToInviteIds.map(async userId => {
+        const user = await getUser(userId);
+        if (user && user.discordId) {
+          inviteToClubFromShelf(
+            //@ts-ignore
+            props.currUser,
+            user.discordId,
+            props.name,
+            //@ts-ignore
+            res.data.club._id
+          );
+        }
+      });
+    }
   }
-  return res;
 }
 
 export async function modifyClub(
