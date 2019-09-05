@@ -22,8 +22,8 @@ export default function SendClubInvitesSlider(
   const { sendInvites, onChange } = props;
 
   let labelText = sendInvites
-    ? 'Automatically send invites'
-    : "Don't send invites";
+    ? 'Everyone who liked the shelf will be sent an invite link'
+    : 'No invites will be sent';
 
   return (
     <div
