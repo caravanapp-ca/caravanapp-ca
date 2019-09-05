@@ -341,7 +341,7 @@ export default function UserCards(props: UserCardProps) {
                             <InviteToClubMenu
                               clubsToInviteTo={u.invitableClubs}
                               loggedInUser={currUser}
-                              userToInvite={u}
+                              userToInvite={u.user}
                             />
                           </div>
                         )}
