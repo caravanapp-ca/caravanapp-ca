@@ -793,9 +793,9 @@ export default function Home(props: HomeProps) {
             variant={screenSmallerThanMd ? 'fullWidth' : undefined}
             centered={!screenSmallerThanMd}
           >
-            <Tab label="Join Clubs" />
-            <Tab label="Find A Buddy" />
-            <Tab label="Find Books" />
+            <Tab label="Join Clubs" style={{ fontSize: '13px' }} />
+            <Tab label="Find A Buddy" style={{ fontSize: '13px' }} />
+            <Tab label="Find Books" style={{ fontSize: '13px' }} />
           </Tabs>
         </Element>
         {tabValue === 0 && (
