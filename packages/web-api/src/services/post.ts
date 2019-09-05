@@ -13,6 +13,7 @@ export async function getPostUserInfo(userId: string) {
         : 'Caravan User',
       urlSlug: user.urlSlug,
       photoUrl: user.photoUrl,
+      discordId: user.discordId,
     };
     return userInfo;
   } else {
