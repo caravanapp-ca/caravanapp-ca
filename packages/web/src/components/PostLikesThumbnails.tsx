@@ -25,8 +25,15 @@ const useStyles = makeStyles(theme => ({
     width: 48,
     height: 48,
   },
+  profileText: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   likedByMenuItem: {
     display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   menuItemTop: {
     paddingTop: 0,
