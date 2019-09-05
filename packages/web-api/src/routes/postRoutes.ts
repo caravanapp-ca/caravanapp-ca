@@ -226,7 +226,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     filteredPosts.map(async p => {
       let filteredLikesArr: PostUserInfo[] = [];
       const postLikes = await getPostLikes(p._id);
-      let numLikes: number = 0;
+      let numLikes = 0;
       if (postLikes && postLikes.numLikes && postLikes.numLikes > 0) {
         numLikes = postLikes.numLikes;
         const slicedLikes = postLikes.likes.slice(0, 10);
