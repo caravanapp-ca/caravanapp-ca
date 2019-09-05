@@ -9,7 +9,10 @@ import {
   UserWithInvitableClubs,
   User,
 } from '@caravan/buddy-reading-types';
-import { getRandomInviteMessage } from '../common/getRandomInviteMessage';
+import {
+  getRandomInviteMessage,
+  getRandomInviteMessageFromShelf,
+} from '../common/getRandomInviteMessage';
 
 const clubRoute = '/api/club';
 const discordRoute = '/api/discord';
@@ -134,6 +137,29 @@ export async function createClub(props: Services.CreateClubProps) {
     clubRoute,
     body
   );
+  if (
+    res.status >= 200 &&
+    res.status < 300 &&
+    props.currUser &&
+    props.usersToInviteDiscordIds &&
+    props.usersToInviteDiscordIds.length > 0
+  ) {
+    props.usersToInviteDiscordIds.map(userDiscordId => {
+      if (
+        props.currUser !== null &&
+        res.data &&
+        res.data.club &&
+        res.data.club._id
+      ) {
+        inviteToClubFromShelf(
+          props.currUser,
+          userDiscordId,
+          props.name,
+          res.data.club._id
+        );
+      }
+    });
+  }
   return res;
 }
 
@@ -149,7 +175,7 @@ export async function modifyClub(
 
 export async function inviteToClub(
   currentUser: User,
-  userToInvite: UserWithInvitableClubs,
+  userToInviteDiscordId: string,
   clubName: string,
   clubId: string
 ) {
@@ -159,7 +185,27 @@ export async function inviteToClub(
     clubId
   );
   const res = await axios.post(
-    `${discordRoute}/members/${userToInvite.user.discordId}/messages`,
+    `${discordRoute}/members/${userToInviteDiscordId}/messages`,
+    {
+      messageContent,
+    }
+  );
+  return res;
+}
+
+export async function inviteToClubFromShelf(
+  currentUser: User,
+  userToInviteDiscordId: string,
+  clubName: string,
+  clubId: string
+) {
+  const messageContent = getRandomInviteMessageFromShelf(
+    currentUser.name || currentUser.urlSlug || 'A Caravan user',
+    clubName,
+    clubId
+  );
+  const res = await axios.post(
+    `${discordRoute}/members/${userToInviteDiscordId}/messages`,
     {
       messageContent,
     }
