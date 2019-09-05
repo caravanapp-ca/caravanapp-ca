@@ -520,7 +520,7 @@ declare module '@caravan/buddy-reading-types' {
       readingSpeed: string;
       channelSource: ChannelSource;
       unlisted: boolean;
-      usersToInviteDiscordIds: string[];
+      usersToInviteIds: string[];
       currUser: User | null;
     }
     export interface CreateClubResult {
