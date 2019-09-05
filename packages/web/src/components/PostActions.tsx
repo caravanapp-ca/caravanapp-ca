@@ -51,6 +51,7 @@ interface PostActionsProps {
   onClickLike: () => void;
   likeButtonDisabled: boolean;
   shelf: FilterAutoMongoKeys<ShelfEntry>[];
+  userId: string;
 }
 
 function PostActions(props: PostActionsProps) {
@@ -63,6 +64,7 @@ function PostActions(props: PostActionsProps) {
     numLikes,
     likeButtonDisabled,
     shelf,
+    userId,
   } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -99,8 +101,8 @@ function PostActions(props: PostActionsProps) {
             pathname: '/clubs/create',
             state: {
               shelf: shelf,
-              numLikes,
-              likes,
+              numLikes: hasLiked ? numLikes - 1 : numLikes,
+              likes: hasLiked ? likes.filter(l => l.userId !== userId) : likes,
               likeListLength,
             },
           }}

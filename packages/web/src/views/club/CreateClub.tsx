@@ -9,6 +9,7 @@ import {
   FilterAutoMongoKeys,
   SelectedGenre,
   UninitClubShelfType,
+  PostUserInfo,
 } from '@caravan/buddy-reading-types';
 import {
   useMediaQuery,
@@ -104,6 +105,8 @@ const groupVibes: GroupVibe[] = [
 export default function CreateClub(props: CreateClubProps) {
   const classes = useStyles();
 
+  const { user } = props;
+
   const leftComponent = (
     <IconButton
       edge="start"
@@ -131,11 +134,17 @@ export default function CreateClub(props: CreateClubProps) {
   const [selectedGroupBio, setSelectedGroupBio] = React.useState('');
   const [selectedBooks, setSelectedBooks] = React.useState<
     FilterAutoMongoKeys<ShelfEntry>[]
-  >(props.location.state.shelf ? props.location.state.shelf : []);
+  >(
+    props.location.state && props.location.state.shelf
+      ? props.location.state.shelf
+      : []
+  );
   const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
     ShelfEntry
   > | null>(
-    props.location.state.shelf && props.location.state.shelf.length > 0
+    props.location.state &&
+      props.location.state.shelf &&
+      props.location.state.shelf.length > 0
       ? props.location.state.shelf[0]
       : null
   );
@@ -195,6 +204,9 @@ export default function CreateClub(props: CreateClubProps) {
     const maxMembers = limitGroupSize
       ? selectedGroupSize
       : UNLIMITED_CLUB_MEMBERS_VALUE;
+    const usersToInviteDiscordIds = likesArr
+      ? likesArr.map(l => l.discordId)
+      : [];
     const clubObj: Services.CreateClubProps = {
       name: selectedGroupName,
       newShelf: initShelf,
@@ -205,6 +217,8 @@ export default function CreateClub(props: CreateClubProps) {
       readingSpeed: selectedGroupSpeed,
       channelSource: 'discord',
       unlisted: unlistedClub,
+      currUser: user,
+      usersToInviteDiscordIds,
     };
     setCreatingClub(true);
     const createdClubRes = await createClub(clubObj);
@@ -271,25 +285,33 @@ export default function CreateClub(props: CreateClubProps) {
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const { shelf, numLikes, likes, likeListLength } = props.location.state;
   let inheritedBooks: FilterAutoMongoKeys<ShelfEntry>[] | undefined;
-  if (shelf && shelf.length > 0) {
-    inheritedBooks = shelf;
-  } else {
-    inheritedBooks = undefined;
-  }
+  let numLikesString: string = '';
+  let numLikesVal: number | undefined;
+  let likesArr: PostUserInfo[] | undefined;
+  let likeListLengthVal: number | undefined;
 
-  let numLikesString: string;
-  if (numLikes && numLikes > 0) {
-    if (numLikes === 0) {
-      numLikesString = '';
-    } else if (numLikes === 1) {
-      numLikesString = '1 person';
+  if (props.location && props.location.state) {
+    const { shelf, numLikes, likes, likeListLength } = props.location.state;
+    if (shelf && shelf.length > 0) {
+      inheritedBooks = shelf;
     } else {
-      numLikesString = `${numLikes} people`;
+      inheritedBooks = undefined;
     }
-  } else {
-    numLikesString = 'Caravaners';
+    if (numLikes && numLikes > 0) {
+      numLikesVal = numLikes;
+      if (numLikes === 0) {
+        numLikesString = '';
+      } else if (numLikes === 1) {
+        numLikesString = '1 person';
+      } else {
+        numLikesString = `${numLikes} people`;
+      }
+    } else {
+      numLikesString = 'Caravaners';
+    }
+    likesArr = likes || undefined;
+    likeListLengthVal = likeListLength || undefined;
   }
 
   return (
@@ -365,16 +387,6 @@ export default function CreateClub(props: CreateClubProps) {
             }
             unlisted={unlistedClub}
           />
-          {likes && numLikes && likeListLength && (
-            <Link onClick={() => setShowInviteList(true)}>Vie</Link>
-          )}
-          {likes && numLikes && likeListLength && showInviteList && (
-            <CreateClubFromShelfInviteList
-              likes={likes}
-              numLikes={numLikes}
-              likeListLength={likeListLength}
-            />
-          )}
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
@@ -388,18 +400,28 @@ export default function CreateClub(props: CreateClubProps) {
             selectedGroupSize={selectedGroupSize}
           />
         </div>
-        <div className={classes.sectionContainer}>
-          <Typography variant="subtitle1" className={classes.sectionHeader}>
-            {numLikesString} liked the shelf from which you're creating your
-            club. Should we send them invites to join your club?
-          </Typography>
-          <SendClubInvitesSlider
-            onChange={(sendInvitesValue: boolean) =>
-              setSendInvites(sendInvitesValue)
-            }
-            sendInvites={sendInvites}
-          />
-        </div>
+
+        {inheritedBooks && numLikesVal && likesArr && likeListLengthVal && (
+          <div className={classes.sectionContainer}>
+            <Typography variant="subtitle1" className={classes.sectionHeader}>
+              {numLikesString} liked the shelf from which you're creating this
+              club. Should we send them an invite link to join?
+            </Typography>
+            <SendClubInvitesSlider
+              onChange={(sendInvitesValue: boolean) =>
+                setSendInvites(sendInvitesValue)
+              }
+              sendInvites={sendInvites}
+            />
+            {sendInvites && (
+              <CreateClubFromShelfInviteList
+                likes={likesArr}
+                numLikes={numLikesVal}
+                likeListLength={likeListLengthVal}
+              />
+            )}
+          </div>
+        )}
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
             How fast do you want the group to read?

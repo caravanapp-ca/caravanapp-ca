@@ -234,6 +234,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             onClickLike={handleLikeAction}
             likeButtonDisabled={likeButtonDisabled}
             shelf={shelfPost.shelf}
+            userId={currUser ? currUser._id : ''}
           />
         </CardActions>
       </Card>

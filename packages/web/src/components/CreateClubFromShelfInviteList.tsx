@@ -12,8 +12,11 @@ import {
 import { PostUserInfo } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({
-  likeThumbnails: {
+  viewInvitesText: {
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   thumbnail: {
     width: 30,
@@ -66,9 +69,11 @@ export default function CreateClubFromShelfInviteList(
 
   return (
     <>
-      <div className={classes.likeThumbnails} onClick={showLikesMenu}>
-        <Typography>See people to invite</Typography>
-      </div>
+      <Link onClick={showLikesMenu}>
+        <div className={classes.viewInvitesText} onClick={showLikesMenu}>
+          <Typography>View Invite List</Typography>
+        </div>
+      </Link>
       <Menu
         open={showLikesMenuOpen}
         anchorEl={anchorEl}

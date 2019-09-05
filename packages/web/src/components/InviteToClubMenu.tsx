@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface InviteToClubMenuProps {
   clubsToInviteTo: ClubWithMemberIds[];
   loggedInUser: User | null;
-  userToInvite: UserWithInvitableClubs;
+  userToInvite: User;
 }
 
 export function InviteToClubMenu(props: InviteToClubMenuProps) {
@@ -87,7 +87,7 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
     if (loggedInUser) {
       const res = await inviteToClub(
         loggedInUser,
-        userToInvite,
+        userToInvite.discordId,
         club.name,
         club._id
       );
