@@ -16,6 +16,7 @@ import {
   ShelfEntry,
 } from '@caravan/buddy-reading-types';
 import PostLikesThumbnails from './PostLikesThumbnails';
+import CreateClubFromShelfInviteList from './CreateClubFromShelfInviteList';
 
 const useStyles = makeStyles(theme => ({
   actionContainer: {
@@ -65,7 +66,7 @@ function PostActions(props: PostActionsProps) {
   } = props;
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const maxLikeThumbnailsShown = screenSmallerThanSm ? 2 : 3;
+  const maxLikeThumbnailsShown = screenSmallerThanSm ? 2 : 5;
 
   const likeListLength = 10;
 
@@ -94,7 +95,15 @@ function PostActions(props: PostActionsProps) {
       <div className={classes.createClubButtonContainer}>
         <Link
           component={RouterLink}
-          to={{ pathname: '/clubs/create', state: { shelf: shelf } }}
+          to={{
+            pathname: '/clubs/create',
+            state: {
+              shelf: shelf,
+              numLikes,
+              likes,
+              likeListLength,
+            },
+          }}
           underline="none"
         >
           <Button

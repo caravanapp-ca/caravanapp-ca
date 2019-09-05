@@ -19,6 +19,7 @@ import {
   Radio,
   TextField,
   Typography,
+  Link,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
@@ -44,6 +45,8 @@ import {
   UNLIMITED_CLUB_MEMBERS_VALUE,
 } from '../../common/globalConstants';
 import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
+import SendClubInvitesSlider from '../../components/SendClubInvitesSlider';
+import CreateClubFromShelfInviteList from '../../components/CreateClubFromShelfInviteList';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -140,6 +143,8 @@ export default function CreateClub(props: CreateClubProps) {
     []
   );
   const [unlistedClub, setUnlistedClub] = React.useState(false);
+  const [sendInvites, setSendInvites] = React.useState(true);
+  const [showInviteList, setShowInviteList] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
     createdClub,
@@ -266,12 +271,25 @@ export default function CreateClub(props: CreateClubProps) {
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const { shelf } = props.location.state;
+  const { shelf, numLikes, likes, likeListLength } = props.location.state;
   let inheritedBooks: FilterAutoMongoKeys<ShelfEntry>[] | undefined;
   if (shelf && shelf.length > 0) {
     inheritedBooks = shelf;
   } else {
     inheritedBooks = undefined;
+  }
+
+  let numLikesString: string;
+  if (numLikes && numLikes > 0) {
+    if (numLikes === 0) {
+      numLikesString = '';
+    } else if (numLikes === 1) {
+      numLikesString = '1 person';
+    } else {
+      numLikesString = `${numLikes} people`;
+    }
+  } else {
+    numLikesString = 'Caravaners';
   }
 
   return (
@@ -347,6 +365,16 @@ export default function CreateClub(props: CreateClubProps) {
             }
             unlisted={unlistedClub}
           />
+          {likes && numLikes && likeListLength && (
+            <Link onClick={() => setShowInviteList(true)}>Vie</Link>
+          )}
+          {likes && numLikes && likeListLength && showInviteList && (
+            <CreateClubFromShelfInviteList
+              likes={likes}
+              numLikes={numLikes}
+              likeListLength={likeListLength}
+            />
+          )}
         </div>
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
@@ -358,6 +386,18 @@ export default function CreateClub(props: CreateClubProps) {
             limitGroupSize={limitGroupSize}
             numMembers={1}
             selectedGroupSize={selectedGroupSize}
+          />
+        </div>
+        <div className={classes.sectionContainer}>
+          <Typography variant="subtitle1" className={classes.sectionHeader}>
+            {numLikesString} liked the shelf from which you're creating your
+            club. Should we send them invites to join your club?
+          </Typography>
+          <SendClubInvitesSlider
+            onChange={(sendInvitesValue: boolean) =>
+              setSendInvites(sendInvitesValue)
+            }
+            sendInvites={sendInvites}
           />
         </div>
         <div className={classes.sectionContainer}>
