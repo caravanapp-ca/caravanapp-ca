@@ -774,7 +774,6 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       type: 'text',
       name: body.name,
       nsfw: body.nsfw || false,
-      userLimit: body.maxMembers,
       permissionOverwrites: channelCreationOverwrites,
       topic: body.bio,
     };
@@ -1204,7 +1203,10 @@ router.put(
       if (memberInChannel) {
         // already a member
         return res.status(401).send("You're already a member of the club!");
-      } else if (size >= club.maxMembers) {
+      } else if (
+        club.maxMembers !== UNLIMITED_CLUB_MEMBERS_VALUE &&
+        size >= club.maxMembers
+      ) {
         res
           .status(401)
           .send(

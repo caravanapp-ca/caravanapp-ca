@@ -238,7 +238,6 @@ export default function BookSearch(props: BookSearchProps) {
                   getShelfFromGoogleBooks(searchResults.items) as ShelfEntry[]
                 }
                 secondary="add"
-                tertiary="buy"
                 droppable={false}
                 onAdd={onAddBook}
                 footerElement={
