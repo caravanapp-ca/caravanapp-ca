@@ -24,18 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       flex: 1,
       borderRadius: 8,
+      padding: 8,
       border: `1px solid ${theme.palette.text.hint}`,
     },
     botAvatarImg: {
       objectFit: 'contain',
-    },
-    chatBubbleImg: {
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-    },
-    messageText: {
-      padding: 8,
     },
   })
 );
@@ -60,7 +53,7 @@ export default function BotMessageVector(props: BotMessageVectorProps) {
         />
       </div>
       <div className={classes.textContainer}>
-        <Typography className={classes.messageText}>{message}</Typography>
+        <Typography>{message}</Typography>
       </div>
     </div>
   );
