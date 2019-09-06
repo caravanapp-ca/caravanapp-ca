@@ -396,6 +396,7 @@ export default function Home(props: HomeProps) {
         }
       }
     })();
+    setLoadingMoreUsers(true);
   }, [user, userLoaded, afterUsersQuery, usersSearch, userSearchField]);
 
   useEffect(() => {
@@ -436,6 +437,7 @@ export default function Home(props: HomeProps) {
         }
       }
     })();
+    setLoadingMorePosts(true);
   }, [user, userLoaded, afterPostsQuery, postsSearch, postSearchField]);
 
   // Get genres on mount
@@ -472,9 +474,7 @@ export default function Home(props: HomeProps) {
   ) => {
     const userSearchFieldValue = event.target.value as UserSearchField;
     setUserSearchField(userSearchFieldValue);
-    if (usersSearch !== '') {
-      await resetLoadMoreUsers();
-    }
+    await resetLoadMoreUsers();
   };
 
   const handlePostSearchFieldChange = async (
@@ -482,9 +482,7 @@ export default function Home(props: HomeProps) {
   ) => {
     const postSearchFieldValue = event.target.value as PostSearchField;
     setPostSearchField(postSearchFieldValue);
-    if (postsSearch !== '') {
-      await resetLoadMorePosts();
-    }
+    await resetLoadMorePosts();
   };
 
   function onCloseLoginModal() {
