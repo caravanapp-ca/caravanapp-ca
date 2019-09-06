@@ -34,8 +34,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export interface ClubBotSettings {
     intros: boolean;
-    // Type signature for indexing
-    [key: string]: boolean;
+    // Index signature for iterating
+    [key: string]: any;
   }
 
   export interface Club extends DocumentFields, MongoTimestamps {
@@ -278,7 +278,7 @@ declare module '@caravan/buddy-reading-types' {
     reminders: boolean;
     recs: boolean;
     updates: boolean;
-    // Type signature for indexing
+    // Index signature for iterating
     [key: string]: boolean;
   }
 
