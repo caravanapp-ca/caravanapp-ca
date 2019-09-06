@@ -13,15 +13,16 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
   headerAvatar: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
   },
   fab: {
     margin: theme.spacing(1),
+    height: 40,
   },
   postIconAvatar: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
     padding: theme.spacing(1),
   },
 }));
@@ -61,10 +62,10 @@ export default function Composer(props: ComposerProps) {
           color="primary"
         >
           <Typography
-            variant="button"
+            variant="subtitle2"
             style={{ fontWeight: 600, color: 'white' }}
           >
-            Upload Shelf
+            Create Shelf
           </Typography>
           <img
             src={shelfIcon}
