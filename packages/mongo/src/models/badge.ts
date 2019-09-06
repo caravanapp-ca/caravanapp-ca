@@ -1,23 +1,19 @@
 import { model, Document, Schema, Types } from 'mongoose';
 import { Omit } from 'utility-types';
-import {
-  FilterAutoMongoKeys,
-  SameKeysAs,
-  Badges,
-  Badge,
-} from '@caravan/buddy-reading-types';
+import { Badge, Badges } from '@caravan/buddy-reading-types';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface BadgeDoc extends Document, Omit<Badges, '_id'> {
   _id: Types.ObjectId;
 }
 
-const badgeDefinition: SameKeysAs<FilterAutoMongoKeys<Badge>> = {
+const badgeDefinition: MongooseSchema<Badge> = {
   key: { type: String, required: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
 };
 
-const badgesDefinition: SameKeysAs<FilterAutoMongoKeys<Badges>> = {
+const badgesDefinition: MongooseSchema<Badges> = {
   badgeKeys: { type: [String], required: true },
   badges: { type: { key: badgeDefinition }, required: true },
 };

@@ -80,7 +80,7 @@ export default function BookList(props: BookListProps) {
       return (
         <Radio
           checked={radioValue === b.sourceId}
-          onChange={(e, checked) => onRadioPress(e.target.value)}
+          onChange={e => onRadioPress(e.target.value)}
           value={b.sourceId}
           name={`radio-button-${b.title}`}
           color="primary"
@@ -133,7 +133,11 @@ export default function BookList(props: BookListProps) {
   }
 
   function buyButton(link: string | undefined): JSX.Element {
-    return <AmazonBuyButton link={link} />;
+    if (link) {
+      return <AmazonBuyButton link={link} />;
+    } else {
+      return <></>;
+    }
   }
 
   // If you're making changes to the render here you will need to replicate them in both the droppable and regular cases.
@@ -148,7 +152,7 @@ export default function BookList(props: BookListProps) {
             droppableId={id}
             isDropDisabled={disableDrop != null ? disableDrop : undefined}
           >
-            {(provided, snapshot) => (
+            {provided => (
               <List
                 dense={false}
                 innerRef={provided.innerRef}
@@ -174,6 +178,7 @@ export default function BookList(props: BookListProps) {
                   switch (tertiary) {
                     case 'buy':
                       tertiaryElement = buyButton(b.amazonLink);
+                      break;
                   }
                   //Generate unique ID for each book to handle duplicates
                   const bookId = b.isbn + index.toString() + id;
@@ -241,6 +246,7 @@ export default function BookList(props: BookListProps) {
             switch (tertiary) {
               case 'buy':
                 tertiaryElement = buyButton(b.amazonLink);
+                break;
             }
             //Generate unique ID for each book to handle duplicates
             const bookId = b.isbn + index.toString() + id;

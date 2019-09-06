@@ -2,10 +2,29 @@ import {
   PaletteSet,
   SameKeysAs,
   EmailSettings,
+  UnlimitedClubMembersValue,
 } from '@caravan/buddy-reading-types';
 import { isMobileDevice } from './isMobileDevice';
 
 // Store global constants for the Web project here.
+
+const CLUB_SIZE_MIN = 2;
+
+export const CLUB_SIZE_MAX = 50;
+
+export const CLUB_SIZE_NO_LIMIT_LABEL = 'None';
+
+export const CLUB_SIZES = [CLUB_SIZE_NO_LIMIT_LABEL];
+
+for (let i = CLUB_SIZE_MIN; i <= CLUB_SIZE_MAX; i++) {
+  CLUB_SIZES.push(i.toString());
+}
+
+// If changing here, please change in globalConstantsAPI in the Web API project as well.
+// Also, consider existing clubs in db which may have this value saved.
+export const UNLIMITED_CLUB_MEMBERS_VALUE: UnlimitedClubMembersValue = -1;
+
+export const DEFAULT_MEMBER_LIMIT = 24;
 
 export const DEFAULT_CLUB_SCHED_DURATION = 3;
 

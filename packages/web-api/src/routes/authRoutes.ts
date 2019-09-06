@@ -48,14 +48,15 @@ router.get('/discord/login', (req, res) => {
 });
 
 router.get('/discord/validatePermissions', async (req, res) => {
-  const { userId } = req.session;
+  const userId: string | undefined = req.session.userId;
   if (!userId) {
     return res
       .status(400)
       .send('Require a logged in user to complete this request.');
   }
+  const userObjectId = new mongoose.Types.ObjectId(userId);
   try {
-    const sessionDoc = await getSessionFromUserId(userId, 'discord');
+    const sessionDoc = await getSessionFromUserId(userObjectId, 'discord');
     if (!sessionDoc) {
       throw new Error(
         `SessionDoc in validatePermissions is null { userId: ${userId} }`
@@ -205,7 +206,7 @@ router.get('/discord/callback', async (req, res) => {
 
   try {
     const currentSessionModel = await getSessionFromUserId(
-      userDoc.id,
+      userDoc._id,
       'discord'
     );
     let saveNewDoc = false;

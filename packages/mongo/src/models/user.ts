@@ -1,28 +1,27 @@
 import { Document, model, Schema, Types } from 'mongoose';
 import {
+  BookSource,
+  PaletteObject,
   User,
-  FilterAutoMongoKeys,
-  SameKeysAs,
+  UserBadge,
   UserQA,
   UserShelfEntry,
-  BookSource,
-  UserBadge,
-  PaletteObject,
 } from '@caravan/buddy-reading-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface UserDoc extends Document, Omit<User, '_id'> {
   _id: Types.ObjectId;
 }
 
-const selectedGenreDefinition: SameKeysAs<User['selectedGenres'][0]> = {
+const selectedGenreDefinition: MongooseSchema<User['selectedGenres'][0]> = {
   key: { type: String, required: true },
   name: { type: String, required: true },
 };
 
 const selectedGenreSchema = new Schema(selectedGenreDefinition, { _id: false });
 
-const questionsDefinition: SameKeysAs<UserQA> = {
+const questionsDefinition: MongooseSchema<UserQA> = {
   id: { type: String, required: true },
   title: { type: String, required: true },
   answer: { type: String, required: true },
@@ -32,9 +31,7 @@ const questionsDefinition: SameKeysAs<UserQA> = {
 
 const questionsSchema = new Schema(questionsDefinition, { _id: false });
 
-const userShelfEntryDefinition: SameKeysAs<
-  FilterAutoMongoKeys<UserShelfEntry>
-> = {
+const userShelfEntryDefinition: MongooseSchema<UserShelfEntry> = {
   source: {
     type: String,
     required: true,
@@ -42,9 +39,6 @@ const userShelfEntryDefinition: SameKeysAs<
     validate: {
       validator: function(v: BookSource) {
         return ALLOWED_BOOK_SOURCES[v] === true;
-      },
-      message: function(props: { value: string }) {
-        `${props.value} is not a valid source.`;
       },
     },
   },
@@ -63,11 +57,12 @@ const userShelfEntryDefinition: SameKeysAs<
   club: { type: Object },
   // Can't have readingState as current; too lazy to validate at this level
   readingState: { type: String, required: true },
+  amazonLink: { type: String },
 };
 
 const userShelfEntrySchema = new Schema(userShelfEntryDefinition);
 
-const mapUserShelfDefinition = {
+const mapUserShelfDefinition: MongooseSchema<Omit<User['shelf'], 'current'>> = {
   notStarted: { type: [userShelfEntrySchema], required: true },
   read: { type: [userShelfEntrySchema], required: true },
 };
@@ -76,7 +71,7 @@ const mapUserShelfSchema = new Schema(mapUserShelfDefinition, {
   _id: false,
 });
 
-const paletteDefinition: FilterAutoMongoKeys<SameKeysAs<PaletteObject>> = {
+const paletteDefinition: MongooseSchema<PaletteObject> = {
   id: { type: String, required: true },
   key: { type: String, required: true },
   textColor: { type: String, required: true },
@@ -90,7 +85,7 @@ const paletteSchema = new Schema(paletteDefinition, {
   timestamps: true,
 });
 
-const userBadgeDefinition: FilterAutoMongoKeys<SameKeysAs<UserBadge>> = {
+const userBadgeDefinition: MongooseSchema<UserBadge> = {
   key: { type: String, required: true },
   name: { type: String, required: true },
   awardedOn: { type: Date, required: true },
@@ -99,9 +94,7 @@ const userBadgeDefinition: FilterAutoMongoKeys<SameKeysAs<UserBadge>> = {
 
 const userBadgeSchema = new Schema(userBadgeDefinition);
 
-const userDefinition: SameKeysAs<
-  Omit<FilterAutoMongoKeys<User>, 'discordUsername'>
-> = {
+const userDefinition: MongooseSchema<Omit<User, 'discordUsername'>> = {
   bio: { type: String },
   discordId: { type: String, required: true, unique: true, index: true },
   goodreadsUrl: { type: String },

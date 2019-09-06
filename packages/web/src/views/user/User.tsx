@@ -600,7 +600,7 @@ export default function UserView(props: UserViewProps) {
         leftComponent={leftComponent}
         centerComponent={scrolled > 64 ? centerComponent : undefined}
         rightComponent={rightComponentFn()}
-        showBorder={scrolled > 1 ? true : false}
+        showBorder={scrolled > 1}
         userTheme={userTheme}
         userDarkTheme={userDarkTheme}
       />

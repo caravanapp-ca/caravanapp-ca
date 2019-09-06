@@ -200,8 +200,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
   const { pickerProps } = usePickerState(
     {
       value: currentlySelectedDate,
-      onChange: date => onClickCalendar(date),
-      autoOk: isEditing ? true : false,
+      onChange: date => handleScheduleChange('startDate', date),
+      autoOk: isEditing,
     },
     {
       getDefaultFormat: () => 'MM/dd/yyyy',

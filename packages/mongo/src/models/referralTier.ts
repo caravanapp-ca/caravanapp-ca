@@ -1,16 +1,12 @@
 import { Document, model, Schema, Types } from 'mongoose';
-import {
-  FilterAutoMongoKeys,
-  SameKeysAs,
-  ReferralTier,
-  ReferralTiers,
-} from '@caravan/buddy-reading-types';
+import { ReferralTier, ReferralTiers } from '@caravan/buddy-reading-types';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface ReferralTierDoc extends Document, Omit<ReferralTiers, '_id'> {
   _id: Types.ObjectId;
 }
 
-const referralTierDefinition: SameKeysAs<FilterAutoMongoKeys<ReferralTier>> = {
+const referralTierDefinition: MongooseSchema<ReferralTier> = {
   tierNumber: { type: Number, required: true },
   referralCount: { type: Number, required: true },
   title: { type: String, required: true },
@@ -19,9 +15,7 @@ const referralTierDefinition: SameKeysAs<FilterAutoMongoKeys<ReferralTier>> = {
   discordRole: { type: String },
 };
 
-const referralTiersDefinition: SameKeysAs<
-  FilterAutoMongoKeys<ReferralTiers>
-> = {
+const referralTiersDefinition: MongooseSchema<ReferralTiers> = {
   tiers: { type: [referralTierDefinition], required: true },
 };
 

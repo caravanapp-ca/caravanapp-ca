@@ -1,17 +1,14 @@
 import { Document, model, Schema, Types } from 'mongoose';
 import { Omit } from 'utility-types';
-import {
-  FilterAutoMongoKeys,
-  SameKeysAs,
-  Session,
-} from '@caravan/buddy-reading-types';
+import { Session } from '@caravan/buddy-reading-types';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface SessionDoc extends Document, Omit<Session, '_id' | 'userId'> {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
 }
 
-const definition: SameKeysAs<FilterAutoMongoKeys<Session>> = {
+const definition: MongooseSchema<Session> = {
   accessToken: { type: String, required: true },
   accessTokenExpiresAt: { type: Number, required: true },
   refreshToken: { type: String, required: true },
