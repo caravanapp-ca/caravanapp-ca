@@ -200,7 +200,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
   const { pickerProps } = usePickerState(
     {
       value: currentlySelectedDate,
-      onChange: date => handleScheduleChange('startDate', date),
+      onChange: date => onClickCalendar(date),
       autoOk: isEditing,
     },
     {
@@ -684,7 +684,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
                     style={{ margin: `0px ${theme.spacing(2)}px` }}
                     onClick={() => setCustomEditField('discussionDate')}
                   />
-
                   <div
                     className={clsx(
                       classes.customCalendarButton,
