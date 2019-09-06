@@ -31,6 +31,9 @@ import { getAllGenres } from '../../services/genre';
 import theme from '../../theme';
 
 const useStyles = makeStyles(theme => ({
+  modal: {
+    overflow: 'scroll',
+  },
   appBar: {
     position: 'relative',
   },
@@ -170,6 +173,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
         // @ts-ignore
         TransitionComponent={TransitionAction}
         scroll={scroll}
+        className={classes.modal}
       >
         <AppBar className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
