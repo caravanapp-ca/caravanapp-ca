@@ -12,7 +12,6 @@ import {
   TextField,
   Tooltip,
   Button,
-  PropTypes,
 } from '@material-ui/core';
 import {
   usePickerState,
@@ -20,7 +19,7 @@ import {
   MaterialUiPickersDate,
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
-import { DateRange, NotInterested, Settings } from '@material-ui/icons';
+import { DateRange, NotInterested } from '@material-ui/icons';
 import {
   addDays,
   isWithinInterval,
@@ -43,14 +42,11 @@ import {
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {
   MIN_SCHEDULE_LENGTH_DAYS,
-  MAX_SCHEDULE_LENGTH_DAYS,
   MIN_SCHEDULE_LENGTH_WEEKS,
   MAX_SCHEDULE_LENGTH_WEEKS,
   MIN_DISCUSSION_FREQ_DAYS,
   MAX_DISCUSSION_FREQ_DAYS,
 } from '../../../common/globalConstants';
-import { types } from '@babel/core';
-import { DomainPropTypes } from '@material-ui/pickers/constants/prop-types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
