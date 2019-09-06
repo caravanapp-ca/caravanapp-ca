@@ -11,6 +11,7 @@ import {
   Discussion,
   SelectedGenre,
   ClubWUninitSchedules,
+  ClubBotSettings,
 } from '@caravan/buddy-reading-types';
 import {
   Paper,
@@ -359,8 +360,15 @@ export default function ClubComponent(props: ClubProps) {
   }
 
   const onEdit = (
-    field: 'bio' | 'maxMembers' | 'name' | 'readingSpeed' | 'unlisted' | 'vibe',
-    newValue: string | number | boolean
+    field:
+      | 'bio'
+      | 'botSettings'
+      | 'maxMembers'
+      | 'name'
+      | 'readingSpeed'
+      | 'unlisted'
+      | 'vibe',
+    newValue: string | number | boolean | ClubBotSettings
   ) => {
     if (!club) {
       return;
