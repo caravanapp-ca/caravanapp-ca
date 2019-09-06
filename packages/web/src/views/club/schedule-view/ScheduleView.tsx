@@ -48,6 +48,7 @@ import {
   MIN_DISCUSSION_FREQ_DAYS,
   MAX_DISCUSSION_FREQ_DAYS,
   DAYS_IN_WEEK,
+  CUSTOM_DISCUSSION_FREQ_VALUE,
 } from '../../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -520,8 +521,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           //Remove old discussion
           newSchedule.discussions.splice(matchingDiscussionIndex, 1);
         }
-        // discussionFrequency === -1 indicates a custom discussion schedule
-        newSchedule.discussionFrequency = -1;
+        newSchedule.discussionFrequency = CUSTOM_DISCUSSION_FREQ_VALUE;
         onCustomUpdateSchedule(newSchedule);
         break;
       case 'endDate':
@@ -544,7 +544,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
         throw new Error(
           `Invalid value for customEditField: ${customEditField}`
         );
-        break;
     }
   };
 
@@ -620,7 +619,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
             {discussionFrequency && discussions.length !== 0
               ? discussionFrequency > 1
                 ? `Discuss every ${discussionFrequency} days`
-                : discussionFrequency === -1
+                : discussionFrequency === CUSTOM_DISCUSSION_FREQ_VALUE
                 ? 'Custom'
                 : 'Discuss every day'
               : 'No scheduled discussions'}
@@ -670,7 +669,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
                   onChange={() => setCustomModeEnabled(!customModeEnabled)}
                   value={customModeEnabled}
                   color="primary"
-                  inputProps={{ 'aria-label': 'custom mode checkbox' }}
+                  inputProps={{ 'aria-label': 'custom mode switch' }}
                 />
                 <Typography display="inline">Customize</Typography>
               </div>

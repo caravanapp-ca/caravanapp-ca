@@ -42,6 +42,8 @@ export const EMAIL_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<EmailSettings> = {
   updates: 'Keep me posted on Caravan updates',
 };
 
+export const CUSTOM_DISCUSSION_FREQ_VALUE = -1;
+
 export const DAYS_IN_WEEK = 7;
 
 export const MIN_SCHEDULE_LENGTH_WEEKS = 1;
