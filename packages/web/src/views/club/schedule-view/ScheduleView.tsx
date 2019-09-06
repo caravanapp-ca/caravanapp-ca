@@ -41,7 +41,14 @@ import {
   Discussion,
 } from '@caravan/buddy-reading-types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { MIN_SCHEDULE_LENGTH_DAYS } from '../../../common/globalConstants';
+import {
+  MIN_SCHEDULE_LENGTH_DAYS,
+  MAX_SCHEDULE_LENGTH_DAYS,
+  MIN_SCHEDULE_LENGTH_WEEKS,
+  MAX_SCHEDULE_LENGTH_WEEKS,
+  MIN_DISCUSSION_FREQ_DAYS,
+  MAX_DISCUSSION_FREQ_DAYS,
+} from '../../../common/globalConstants';
 import { types } from '@babel/core';
 import { DomainPropTypes } from '@material-ui/pickers/constants/prop-types';
 
@@ -163,6 +170,17 @@ interface ScheduleViewProps {
     | null;
   setIsEditing: (isEditing: boolean) => void;
 }
+
+//returns an estimation of the duration of a schedule to the nearest 1/2 week
+const durationEstimationCalculator = (duration: number) => {
+  let durationText = '';
+  const durationEstimation = Math.round(duration * 2) / 2;
+  if (durationEstimation !== duration) {
+    durationText = durationText.concat('~');
+  }
+  durationText = durationText.concat(durationEstimation.toString());
+  return durationText;
+};
 
 const discussionLabelMax = 50;
 
@@ -427,7 +445,12 @@ export default function ScheduleView(props: ScheduleViewProps) {
       return;
     }
     if (!schedule) {
-      return;
+      if (customEditField === 'startDate') {
+        handleScheduleChange('startDate', date);
+        return;
+      } else {
+        return;
+      }
     }
 
     const newSchedule = { ...schedule };
@@ -436,7 +459,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
       case 'startDate':
         if (!newSchedule.startDate || !newSchedule.duration) {
           newSchedule.startDate = date;
-          newSchedule.duration = MIN_SCHEDULE_LENGTH_DAYS / 7;
+          newSchedule.duration = MIN_SCHEDULE_LENGTH_WEEKS;
           break;
         }
         const endDate = addDays(
@@ -446,7 +469,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
         if (
           differenceInCalendarDays(endDate, date) < MIN_SCHEDULE_LENGTH_DAYS
         ) {
-          newSchedule.duration = MIN_SCHEDULE_LENGTH_DAYS / 7;
+          newSchedule.duration = MIN_SCHEDULE_LENGTH_WEEKS;
         } else {
           newSchedule.duration = differenceInCalendarDays(endDate, date) / 7;
         }
@@ -516,17 +539,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
     setDiscussionLabelsFocused(discussionLabelsFocusedNew);
   };
 
-  //returns an estimation of the duration of a schedule to the nearest 1/2 week
-  const durationEstimationCalculator = (duration: number) => {
-    let durationText = '';
-    const durationEstimation = Math.round(duration * 2) / 2;
-    if (durationEstimation !== duration) {
-      durationText = durationText.concat('~');
-    }
-    durationText = durationText.concat(durationEstimation.toString());
-    return durationText;
-  };
-
   if (isEditing) {
     return (
       <Container maxWidth="sm">
@@ -536,9 +548,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           </Typography>
         </div>
         <div className={classes.sectionContainer}>
-          <Typography id="discussion-freq-slider-label" variant="h6">
-            Start Date
-          </Typography>
+          <Typography variant="h6">Start Date</Typography>
           <Typography color="textSecondary" style={{ fontStyle: 'italic' }}>
             {startDate
               ? format(startDate, 'PPP')
@@ -546,9 +556,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           </Typography>
         </div>
         <div className={classes.sectionContainer}>
-          <Typography id="discussion-freq-slider-label" variant="h6">
-            Duration
-          </Typography>
+          <Typography variant="h6">Duration</Typography>
           <Typography
             color="textSecondary"
             style={{ fontStyle: 'italic' }}
@@ -564,7 +572,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
             getAriaValueText={duration =>
               duration ? duration.toString() : 'none'
             }
-            aria-labelledby="discussion-freq-slider"
+            aria-labelledby="duration-slider"
             valueLabelDisplay="auto"
             onChange={(event, value) =>
               handleScheduleChange(
@@ -574,15 +582,13 @@ export default function ScheduleView(props: ScheduleViewProps) {
             }
             step={1}
             marks
-            min={1}
-            max={6}
-            defaultValue={duration ? Math.round(duration) : undefined}
+            min={Math.round(MIN_SCHEDULE_LENGTH_WEEKS)}
+            max={Math.round(MAX_SCHEDULE_LENGTH_WEEKS)}
+            value={duration ? Math.round(duration) : undefined}
           />
         </div>
         <div className={classes.sectionContainer}>
-          <Typography id="discussion-freq-slider-label" variant="h6">
-            Discussion Frequency
-          </Typography>
+          <Typography variant="h6">Discussion Frequency</Typography>
           <Typography
             color="textSecondary"
             style={{ fontStyle: 'italic' }}
@@ -616,12 +622,12 @@ export default function ScheduleView(props: ScheduleViewProps) {
             }
             step={1}
             marks
-            min={0}
-            max={7}
-            defaultValue={
+            min={MIN_DISCUSSION_FREQ_DAYS}
+            max={MAX_DISCUSSION_FREQ_DAYS}
+            value={
               discussionFrequency && discussionFrequency >= 0
                 ? discussionFrequency
-                : undefined
+                : 0
             }
           />
         </div>
