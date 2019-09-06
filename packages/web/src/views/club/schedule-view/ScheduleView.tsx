@@ -46,6 +46,7 @@ import {
   MAX_SCHEDULE_LENGTH_WEEKS,
   MIN_DISCUSSION_FREQ_DAYS,
   MAX_DISCUSSION_FREQ_DAYS,
+  DAYS_IN_WEEK,
 } from '../../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -143,6 +144,14 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: `0px 2px 8px ${theme.palette.primary.main}`,
       border: `2px solid ${theme.palette.primary.main}`,
     },
+    calendarActionsContainer: {
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+    },
   })
 );
 
@@ -201,7 +210,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
     false
   );
   const [customEditField, setCustomEditField] = React.useState<
-    'startDate' | 'endDate' | 'discussionDate'
+    ClubScheduleEvent
   >('startDate');
   const [
     currentlySelectedDate,
@@ -325,7 +334,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
 
     const isFirstDay = isSameDay(day, startDate);
 
-    //If there is no schedule length return all regularly formatted dates
+    //If startDate is defined but no duration, return a circled start date.
     if (!duration) {
       const wrapperClassName = clsx({
         [classes.firstOnlyHighlight]: isFirstDay,
@@ -338,7 +347,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
         </div>
       );
     }
-    const durationInDays = duration * 7;
+    const durationInDays = duration * DAYS_IN_WEEK;
     const end = addDays(startDate, durationInDays);
     const dayIsBetween = isWithinInterval(day, {
       start: addDays(startDate, -1),
@@ -424,7 +433,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
     if (!startDate || !duration || discussions.length === 0) {
       return [];
     }
-    const endDate = addDays(startDate, duration * 7);
+    const endDate = addDays(startDate, duration * DAYS_IN_WEEK);
     const newDiscussions = discussions.filter(
       d => d.date && !isBefore(d.date, startDate) && !isAfter(d.date, endDate)
     );
@@ -460,14 +469,15 @@ export default function ScheduleView(props: ScheduleViewProps) {
         }
         const endDate = addDays(
           newSchedule.startDate,
-          newSchedule.duration * 7
+          newSchedule.duration * DAYS_IN_WEEK
         );
         if (
           differenceInCalendarDays(endDate, date) < MIN_SCHEDULE_LENGTH_DAYS
         ) {
           newSchedule.duration = MIN_SCHEDULE_LENGTH_WEEKS;
         } else {
-          newSchedule.duration = differenceInCalendarDays(endDate, date) / 7;
+          newSchedule.duration =
+            differenceInCalendarDays(endDate, date) / DAYS_IN_WEEK;
         }
         newSchedule.startDate = date;
         newSchedule.discussions = makeValidDiscussionArray(newSchedule);
@@ -478,7 +488,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           !startDate ||
           !duration ||
           isBefore(date, startDate) ||
-          isAfter(date, addDays(startDate, duration * 7))
+          isAfter(date, addDays(startDate, duration * DAYS_IN_WEEK))
         ) {
           break;
         }
@@ -519,7 +529,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           newSchedule.startDate = addDays(date, -MIN_SCHEDULE_LENGTH_DAYS);
           durationInDays = MIN_SCHEDULE_LENGTH_DAYS;
         }
-        newSchedule.duration = durationInDays / 7;
+        newSchedule.duration = durationInDays / DAYS_IN_WEEK;
         newSchedule.discussions = makeValidDiscussionArray(newSchedule);
         onCustomUpdateSchedule(newSchedule);
         break;
@@ -637,16 +647,14 @@ export default function ScheduleView(props: ScheduleViewProps) {
             </div>
           </Paper>
           {madeScheduleChanges && (
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <div>
+            <div className={classes.calendarActionsContainer}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
                 <Switch
                   onChange={() => setCustomModeEnabled(!customModeEnabled)}
                   value={customModeEnabled}

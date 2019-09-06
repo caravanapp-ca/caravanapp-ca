@@ -42,11 +42,15 @@ export const EMAIL_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<EmailSettings> = {
   updates: 'Keep me posted on Caravan updates',
 };
 
+export const DAYS_IN_WEEK = 7;
+
 export const MIN_SCHEDULE_LENGTH_WEEKS = 1;
-export const MIN_SCHEDULE_LENGTH_DAYS = MIN_SCHEDULE_LENGTH_WEEKS * 7;
+export const MIN_SCHEDULE_LENGTH_DAYS =
+  MIN_SCHEDULE_LENGTH_WEEKS * DAYS_IN_WEEK;
 
 export const MAX_SCHEDULE_LENGTH_WEEKS = 6;
-export const MAX_SCHEDULE_LENGTH_DAYS = MAX_SCHEDULE_LENGTH_WEEKS * 7;
+export const MAX_SCHEDULE_LENGTH_DAYS =
+  MAX_SCHEDULE_LENGTH_WEEKS * DAYS_IN_WEEK;
 
 export const MIN_DISCUSSION_FREQ_DAYS = 0;
 export const MAX_DISCUSSION_FREQ_DAYS = 7;
