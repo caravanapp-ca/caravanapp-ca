@@ -38,6 +38,7 @@ import {
   ShelfEntry,
   LoadableMemberStatus,
   Discussion,
+  ClubScheduleEvent,
 } from '@caravan/buddy-reading-types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {
@@ -152,6 +153,11 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       flexWrap: 'wrap',
     },
+    alignStuffInARowContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
   })
 );
 
@@ -177,7 +183,7 @@ interface ScheduleViewProps {
 }
 
 //returns an estimation of the duration of a schedule to the nearest 1/2 week
-const durationEstimationCalculator = (duration: number) => {
+const approximateDuration = (duration: number) => {
   let durationText = '';
   const durationEstimation = Math.round(duration * 2) / 2;
   if (durationEstimation !== duration) {
@@ -514,6 +520,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           //Remove old discussion
           newSchedule.discussions.splice(matchingDiscussionIndex, 1);
         }
+        // discussionFrequency === -1 indicates a custom discussion schedule
         newSchedule.discussionFrequency = -1;
         onCustomUpdateSchedule(newSchedule);
         break;
@@ -533,6 +540,11 @@ export default function ScheduleView(props: ScheduleViewProps) {
         newSchedule.discussions = makeValidDiscussionArray(newSchedule);
         onCustomUpdateSchedule(newSchedule);
         break;
+      default:
+        throw new Error(
+          `Invalid value for customEditField: ${customEditField}`
+        );
+        break;
     }
   };
 
@@ -543,6 +555,11 @@ export default function ScheduleView(props: ScheduleViewProps) {
     let discussionLabelsFocusedNew = [...discussionLabelsFocused];
     discussionLabelsFocusedNew[index] = action === 'blur' ? false : true;
     setDiscussionLabelsFocused(discussionLabelsFocusedNew);
+  };
+
+  const handleClearSchedule = () => {
+    setCurrentlySelectedDate(null);
+    initSchedule();
   };
 
   if (isEditing) {
@@ -570,7 +587,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           >
             {duration
               ? duration > 1
-                ? `Finish in ${durationEstimationCalculator(duration)} weeks`
+                ? `Finish in ${approximateDuration(duration)} weeks`
                 : 'Finish in 1 week'
               : 'No duration set'}
           </Typography>
@@ -588,8 +605,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
             }
             step={1}
             marks
-            min={Math.round(MIN_SCHEDULE_LENGTH_WEEKS)}
-            max={Math.round(MAX_SCHEDULE_LENGTH_WEEKS)}
+            min={MIN_SCHEDULE_LENGTH_WEEKS}
+            max={MAX_SCHEDULE_LENGTH_WEEKS}
             value={duration ? Math.round(duration) : undefined}
           />
         </div>
@@ -648,13 +665,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           </Paper>
           {madeScheduleChanges && (
             <div className={classes.calendarActionsContainer}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
+              <div className={classes.alignStuffInARowContainer}>
                 <Switch
                   onChange={() => setCustomModeEnabled(!customModeEnabled)}
                   value={customModeEnabled}
@@ -664,13 +675,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
                 <Typography display="inline">Customize</Typography>
               </div>
               {customModeEnabled && (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
+                <div className={classes.alignStuffInARowContainer}>
                   <div
                     className={clsx(
                       classes.customCalendarButton,
@@ -711,7 +716,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
                 <MuiThemeProvider theme={textSecondaryTheme}>
                   <Button
                     color="primary"
-                    onClick={initSchedule}
+                    onClick={handleClearSchedule}
                     style={{ marginTop: 8 }}
                   >
                     <NotInterested style={{ marginRight: 8 }} />
@@ -796,7 +801,7 @@ export default function ScheduleView(props: ScheduleViewProps) {
           >
             {duration
               ? duration > 1
-                ? `Finish in ${durationEstimationCalculator(duration)} weeks`
+                ? `Finish in ${approximateDuration(duration)} weeks`
                 : 'Finish in 1 week'
               : 'No duration set.'}
           </Typography>
