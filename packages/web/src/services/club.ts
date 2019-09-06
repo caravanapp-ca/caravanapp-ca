@@ -112,7 +112,7 @@ export async function deleteClub(clubId: string) {
 export async function updateShelf(
   clubId: string,
   newShelf: {
-    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
+    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[];
   }
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/shelf`, {
@@ -121,19 +121,7 @@ export async function updateShelf(
   return res;
 }
 
-export async function createClub(props: Services.CreateClubProps) {
-  const body = {
-    name: props.name,
-    newShelf: props.newShelf,
-    bio: props.bio,
-    maxMembers: props.maxMembers,
-    vibe: props.vibe,
-    genres: props.genres,
-    readingSpeed: props.readingSpeed,
-    unlisted: props.unlisted,
-    channelSource: props.channelSource,
-  };
-
+export async function createClub(body: Services.CreateClubProps) {
   const res = await axios.post<Services.CreateClubResult | null>(
     clubRoute,
     body

@@ -10,6 +10,7 @@ import {
   SelectedGenre,
   UninitClubShelfType,
   PostUserInfo,
+  ClubBotSettings,
 } from '@caravan/buddy-reading-types';
 import {
   useMediaQuery,
@@ -44,10 +45,15 @@ import ClubPrivacySlider from '../../components/ClubPrivacySlider';
 import {
   CLUB_SIZE_NO_LIMIT_LABEL,
   UNLIMITED_CLUB_MEMBERS_VALUE,
+  CARAVAN_BOT_NAME,
+  DEFAULT_CLUB_BOT_SETTINGS,
+  CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS,
 } from '../../common/globalConstants';
 import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
 import SendClubInvitesSlider from '../../components/SendClubInvitesSlider';
 import CreateClubFromShelfInviteList from '../../components/CreateClubFromShelfInviteList';
+import BotMessageVector from '../../components/BotMessageVector';
+import CheckboxSettingsEditor from '../../components/CheckboxSettingsEditor';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -66,6 +72,9 @@ const useStyles = makeStyles(theme => ({
   },
   sectionHeader: {
     marginBottom: theme.spacing(1),
+  },
+  subSectionContainer: {
+    marginTop: theme.spacing(2),
   },
   genresContainer: {
     display: 'flex',
@@ -141,9 +150,7 @@ export default function CreateClub(props: CreateClubProps) {
     props.location.state &&
       props.location.state.shelfAuthorName &&
       props.location.state.shelfName
-      ? `Come join me as we read books from the "${
-          props.location.state.shelfName
-        }" shelf created by ${props.location.state.shelfAuthorName}!`
+      ? `Come join me as we read books from the "${props.location.state.shelfName}" shelf created by ${props.location.state.shelfAuthorName}!`
       : ''
   );
   const [selectedBooks, setSelectedBooks] = React.useState<
@@ -175,6 +182,9 @@ export default function CreateClub(props: CreateClubProps) {
     createdClub,
     setCreatedClub,
   ] = React.useState<Services.CreateClubResult | null>(null);
+  const [selectedBotSettings, setSelectedBotSettings] = React.useState<
+    ClubBotSettings
+  >(DEFAULT_CLUB_BOT_SETTINGS);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[],
@@ -221,17 +231,18 @@ export default function CreateClub(props: CreateClubProps) {
       ? selectedGroupSize
       : UNLIMITED_CLUB_MEMBERS_VALUE;
     const clubObj: Services.CreateClubProps = {
+      bio: selectedGroupBio,
+      botSettings: selectedBotSettings,
+      channelSource: 'discord',
+      genres: selectedGenres,
+      maxMembers,
       name: selectedGroupName,
       newShelf: initShelf,
-      bio: selectedGroupBio,
-      maxMembers,
-      vibe: selectedGroupVibe,
-      genres: selectedGenres,
       readingSpeed: selectedGroupSpeed,
-      channelSource: 'discord',
       unlisted: unlistedClub,
       currUser: user,
       usersToInviteIds: likeUserIdsArr ? likeUserIdsArr : [],
+      vibe: selectedGroupVibe,
     };
     setCreatingClub(true);
     const createdClubRes = await createClub(clubObj);
@@ -295,6 +306,10 @@ export default function CreateClub(props: CreateClubProps) {
     } else {
       setSelectedGroupSize(parseInt(newVal));
     }
+  };
+
+  const handleBotSettingsChange = (newVal: ClubBotSettings) => {
+    setSelectedBotSettings(newVal);
   };
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
@@ -530,6 +545,21 @@ export default function CreateClub(props: CreateClubProps) {
               >
             ) => setSelectedGroupBio(e.target.value)}
           />
+        </div>
+        <div className={classes.sectionContainer}>
+          <BotMessageVector
+            message={`Hi! I'm ${CARAVAN_BOT_NAME}. I can help make running your club easier! Let me know what you'd like me to do below.`}
+          />
+          <div className={classes.subSectionContainer}>
+            <CheckboxSettingsEditor<ClubBotSettings>
+              label="What bot services would you like to enable?"
+              onChange={handleBotSettingsChange}
+              options={CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS}
+              // TODO: Set this to true once we have more than one option.
+              showSelectAllButtons={false}
+              value={selectedBotSettings}
+            />
+          </div>
         </div>
         <div className={classes.sectionContainer}>
           <div

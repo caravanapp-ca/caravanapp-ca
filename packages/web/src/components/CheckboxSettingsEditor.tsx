@@ -3,16 +3,15 @@ import { makeStyles } from '@material-ui/styles';
 import {
   Theme,
   createStyles,
+  FormControlLabel,
+  Checkbox,
   FormControl,
   FormLabel,
   FormGroup,
-  FormControlLabel,
-  Checkbox,
   Button,
   Typography,
 } from '@material-ui/core';
-import { EmailSettings } from '@caravan/buddy-reading-types';
-import { EMAIL_SETTINGS_KEYS_DESCRIPTIONS } from '../../common/globalConstants';
+import { SameKeysAs } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,13 +29,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface UserEmailSettingsProps {
-  value?: EmailSettings;
-  onChange: (newVal: EmailSettings) => void;
+interface CheckboxSettingsEditorProps<T> {
+  label: string;
+  onChange: (newVal: T) => void;
+  options: SameKeysAs<T>;
+  showSelectAllButtons?: boolean;
+  value: T;
 }
 
-export default function UserEmailSettings(props: UserEmailSettingsProps) {
-  const { value, onChange } = props;
+export default function CheckboxSettingsEditor<T>(
+  props: CheckboxSettingsEditorProps<T>
+) {
+  const { label, onChange, options, showSelectAllButtons, value } = props;
   const classes = useStyles();
 
   const handleChange = (key: string, newSet: boolean) => {
@@ -52,27 +56,27 @@ export default function UserEmailSettings(props: UserEmailSettingsProps) {
 
   const changeAll = (newSet: boolean) => {
     const newVal: any = {};
-    for (const key in EMAIL_SETTINGS_KEYS_DESCRIPTIONS) {
-      if (EMAIL_SETTINGS_KEYS_DESCRIPTIONS.hasOwnProperty(key)) {
+    for (const key in options) {
+      if (options.hasOwnProperty(key)) {
         newVal[key] = newSet;
       }
     }
-    const newValTyped = newVal as EmailSettings;
+    const newValTyped = newVal as T;
     onChange(newValTyped);
   };
 
   let numChecked = 0;
   let numKeys = 0;
-
+  const valueAny = value as any;
   const formControls: JSX.Element[] = [];
-  for (const key in EMAIL_SETTINGS_KEYS_DESCRIPTIONS) {
-    if (EMAIL_SETTINGS_KEYS_DESCRIPTIONS.hasOwnProperty(key)) {
-      const description: string = EMAIL_SETTINGS_KEYS_DESCRIPTIONS[key];
+  for (const key in options) {
+    if (options.hasOwnProperty(key)) {
+      const description: string = options[key];
       let checked = true;
       numKeys += 1;
-      if (value && value.hasOwnProperty(key)) {
-        checked = value[key];
-      } else if (value && !value.hasOwnProperty(key)) {
+      if (valueAny && valueAny.hasOwnProperty(key)) {
+        checked = valueAny[key];
+      } else if (valueAny && !valueAny.hasOwnProperty(key)) {
         addPropertyToSettings(key);
       }
       if (checked) {
@@ -97,29 +101,29 @@ export default function UserEmailSettings(props: UserEmailSettingsProps) {
   return (
     <div className={classes.root}>
       <FormControl component="fieldset">
-        <FormLabel component="legend">
-          I would like to receive emails that
-        </FormLabel>
+        <FormLabel component="legend">{label}</FormLabel>
         <FormGroup>{formControls}</FormGroup>
       </FormControl>
-      <div className={classes.buttonsContainer}>
-        <Button
-          onClick={() => changeAll(false)}
-          disabled={numChecked === 0}
-          color="primary"
-          className={classes.button}
-        >
-          <Typography variant="button">CLEAR ALL</Typography>
-        </Button>
-        <Button
-          onClick={() => changeAll(true)}
-          disabled={numChecked === numKeys}
-          color="primary"
-          className={classes.button}
-        >
-          <Typography variant="button">SELECT ALL</Typography>
-        </Button>
-      </div>
+      {showSelectAllButtons && (
+        <div className={classes.buttonsContainer}>
+          <Button
+            onClick={() => changeAll(false)}
+            disabled={numChecked === 0}
+            color="primary"
+            className={classes.button}
+          >
+            <Typography variant="button">CLEAR ALL</Typography>
+          </Button>
+          <Button
+            onClick={() => changeAll(true)}
+            disabled={numChecked === numKeys}
+            color="primary"
+            className={classes.button}
+          >
+            <Typography variant="button">SELECT ALL</Typography>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
