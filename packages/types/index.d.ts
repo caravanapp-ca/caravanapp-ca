@@ -35,6 +35,7 @@ declare module '@caravan/buddy-reading-types' {
   export interface ClubBotSettings {
     intros: boolean;
     // Index signature for iterating
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   }
 
