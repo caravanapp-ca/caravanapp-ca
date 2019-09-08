@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Backdrop, { BackdropProps } from '@material-ui/core/Backdrop';
 import {
   Services,
   FilterAutoMongoKeys,
@@ -70,6 +71,16 @@ const TransitionAction = React.forwardRef<unknown, TransitionProps>(
     return <Slide direction="up" ref={ref} {...props} />;
   }
 );
+
+export class BackDropIOSWorkaround extends React.PureComponent<BackdropProps> {
+  protected onTouchMove(event: React.TouchEvent<HTMLDivElement>): void {
+    event.preventDefault();
+  }
+
+  public render(): JSX.Element {
+    return <Backdrop {...this.props} onTouchMove={this.onTouchMove} />;
+  }
+}
 
 export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const classes = useStyles();
@@ -167,6 +178,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
       <Dialog
         fullScreen={screenSmallerThanSm}
         fullWidth={!screenSmallerThanSm}
+        BackdropComponent={BackDropIOSWorkaround}
         maxWidth={maxWidth}
         open={open}
         onClose={onCloseModal}
