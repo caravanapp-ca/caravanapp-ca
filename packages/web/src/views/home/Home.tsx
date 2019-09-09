@@ -280,11 +280,6 @@ export default function Home(props: HomeProps) {
   const [usersSearch, setUsersSearch] = React.useState<string>('');
   const [postsSearch, setPostsSearch] = React.useState<string>('');
   const [showShelfUpload, setShowShelfUpload] = React.useState(false);
-  const [showShelfUpload2, setShowShelfUpload2] = React.useState(false);
-  const postTabContainerRef = React.useRef<HTMLDivElement>(null);
-  let postTabContainerElement: Element | HTMLElement | null = null;
-  const postCardsRef = React.useRef<HTMLDivElement>(null);
-  let postCardsElement: Element | HTMLElement | null = null;
   const [
     showProgressUpdateUpload,
     setShowProgressUpdateUpload,
@@ -701,56 +696,12 @@ export default function Home(props: HomeProps) {
     await setAfterPostsQuery(undefined);
   };
 
-  function onClickShelfUpload(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
+  function onClickShelfUpload() {
     setShowShelfUpload(true);
-  }
-
-  function onClickShelfUpload2(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    setShowShelfUpload2(true);
-    if (postTabContainerRef.current) {
-      //@ts-ignore
-      postTabContainerElement = ReactDOM.findDOMNode(
-        postTabContainerRef.current
-      );
-      if (
-        postTabContainerElement !== null &&
-        instanceOfValidElement(postTabContainerElement)
-      ) {
-        enableBodyScroll(postTabContainerElement);
-      }
-    }
-    if (postCardsRef.current) {
-      //@ts-ignore
-      postCardsElement = ReactDOM.findDOMNode(postCardsRef.current);
-      if (
-        postCardsElement !== null &&
-        instanceOfValidElement(postCardsElement)
-      ) {
-        enableBodyScroll(postCardsElement);
-      }
-    }
   }
 
   function closeShelfUploadModal() {
     setShowShelfUpload(false);
-  }
-
-  function closeShelfUploadModal2() {
-    setShowShelfUpload2(false);
-    //@ts-ignore
-    if (
-      postTabContainerElement !== null &&
-      instanceOfValidElement(postTabContainerElement)
-    ) {
-      disableBodyScroll(postTabContainerElement);
-    }
-    if (postCardsElement !== null && instanceOfValidElement(postCardsElement)) {
-      disableBodyScroll(postCardsElement);
-    }
   }
 
   const onClearPostsSearch = async () => {
@@ -1177,24 +1128,10 @@ export default function Home(props: HomeProps) {
         )}
         {tabValue === 2 && (
           <>
-            <Container
-              className={classes.usersFilterGrid}
-              maxWidth="md"
-              ref={postTabContainerRef}
-            >
+            <Container className={classes.usersFilterGrid} maxWidth="md">
               <Composer
                 currUserInfo={feedViewerUserInfo}
                 onClickShelfUpload={onClickShelfUpload}
-                onClickProgressUpdateUpload={() =>
-                  setShowProgressUpdateUpload(true)
-                }
-                onClickWantToReadAboutUpload={() =>
-                  setShowWantToReadAboutUpload(true)
-                }
-              />
-              <Composer
-                currUserInfo={feedViewerUserInfo}
-                onClickShelfUpload={onClickShelfUpload2}
                 onClickProgressUpdateUpload={() =>
                   setShowProgressUpdateUpload(true)
                 }
@@ -1231,7 +1168,6 @@ export default function Home(props: HomeProps) {
                   currUser={user}
                   showResultsCount={false}
                   resultsLoaded={postsResult.status === 'loaded'}
-                  ref={postCardsRef}
                 />
               )}
             {postsResult.status === 'loaded' &&
@@ -1290,13 +1226,6 @@ export default function Home(props: HomeProps) {
             <ShelfUploadModal
               open={showShelfUpload}
               handleClose={closeShelfUploadModal}
-              onPostShelf={onUploadPost}
-              userId={user ? user._id : null}
-              postAuthorUserInfo={feedViewerUserInfo}
-            />
-            <ShelfUploadModalTwo
-              open={showShelfUpload2}
-              handleClose={closeShelfUploadModal2}
               onPostShelf={onUploadPost}
               userId={user ? user._id : null}
               postAuthorUserInfo={feedViewerUserInfo}
