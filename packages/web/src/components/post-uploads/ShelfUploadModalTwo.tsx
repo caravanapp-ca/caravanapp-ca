@@ -41,6 +41,8 @@ const useStyles = makeStyles(theme => ({
   modal: {
     overflow: 'scroll',
     'webkit-overflow-scrolling': 'touch',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
   appBar: {
     position: 'relative',
