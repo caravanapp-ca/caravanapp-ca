@@ -89,6 +89,16 @@ export class BackDropIOSWorkaround extends React.PureComponent<BackdropProps> {
   }
 }
 
+function instanceOfValidElement(object: any) {
+  if (object instanceof Element) {
+    return true;
+  } else if (object instanceof HTMLElement) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   const classes = useStyles();
   const { open, handleClose, userId, onPostShelf, postAuthorUserInfo } = props;
@@ -106,17 +116,26 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   const readyToPost =
     shelf.length > 1 && shelfTitle.length > 0 && shelfGenres.length > 0;
 
-  const targetRef = React.createRef();
-  let targetElement: null | Element | HTMLElement = null;
+  const targetRef = React.useRef<HTMLDivElement>(null);
+  let targetElement: HTMLElement | Element | null = null;
 
   useEffect(() => {
     getGenres();
-    //@ts-ignore
-    targetElement = ReactDOM.findDOMNode(targetRef.current);
-    if (targetElement !== null) {
-      disableBodyScroll(targetElement);
-    }
   }, []);
+
+  useEffect(() => {
+    console.log('Open?');
+    console.log(open);
+    if (targetRef.current && open) {
+      //@ts-ignore
+      targetElement = ReactDOM.findDOMNode(targetRef.current);
+      if (targetElement !== null && instanceOfValidElement(targetElement)) {
+        console.log('Disabling');
+        clearAllBodyScrollLocks();
+        disableBodyScroll(targetElement);
+      }
+    }
+  }, [open]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
@@ -125,7 +144,8 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   }
 
   function onCloseModal() {
-    if (targetElement !== null) {
+    if (targetElement !== null && instanceOfValidElement(targetElement)) {
+      console.log('Enabling');
       enableBodyScroll(targetElement);
     }
     handleClose();
@@ -192,7 +212,7 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
-    <div>
+    <div ref={targetRef}>
       <Dialog
         fullScreen={screenSmallerThanSm}
         fullWidth={!screenSmallerThanSm}

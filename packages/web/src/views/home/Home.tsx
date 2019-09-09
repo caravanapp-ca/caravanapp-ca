@@ -687,6 +687,12 @@ export default function Home(props: HomeProps) {
     setShowShelfUpload(true);
   }
 
+  function onClickShelfUpload2(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    setShowShelfUpload(true);
+  }
+
   const onClearPostsSearch = async () => {
     if (postsSearch !== '') {
       await resetLoadMorePosts();
@@ -1124,7 +1130,7 @@ export default function Home(props: HomeProps) {
               />
               <Composer
                 currUserInfo={feedViewerUserInfo}
-                onClickShelfUpload={() => setShowShelfUpload2(true)}
+                onClickShelfUpload={onClickShelfUpload2}
                 onClickProgressUpdateUpload={() =>
                   setShowProgressUpdateUpload(true)
                 }
