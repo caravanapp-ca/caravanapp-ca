@@ -101,6 +101,12 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
 
   useEffect(() => {
     getGenres();
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    }
+    return function cleanup() {
+      document.body.style.overflow = 'unset';
+    };
   }, []);
 
   function onSubmitSelectedBooks(
