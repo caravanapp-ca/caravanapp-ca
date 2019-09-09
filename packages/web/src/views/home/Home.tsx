@@ -742,7 +742,7 @@ export default function Home(props: HomeProps) {
         postTabContainerElement !== null &&
         instanceOfValidElement(postTabContainerElement)
       ) {
-        disableBodyScroll(postTabContainerElement);
+        enableBodyScroll(postTabContainerElement);
       }
     }
     if (postCardsRef.current) {
@@ -752,7 +752,7 @@ export default function Home(props: HomeProps) {
         postCardsElement !== null &&
         instanceOfValidElement(postCardsElement)
       ) {
-        disableBodyScroll(postCardsElement);
+        enableBodyScroll(postCardsElement);
       }
     }
   }
@@ -778,10 +778,10 @@ export default function Home(props: HomeProps) {
       postTabContainerElement !== null &&
       instanceOfValidElement(postTabContainerElement)
     ) {
-      enableBodyScroll(postTabContainerElement);
+      disableBodyScroll(postTabContainerElement);
     }
     if (postCardsElement !== null && instanceOfValidElement(postCardsElement)) {
-      enableBodyScroll(postCardsElement);
+      disableBodyScroll(postCardsElement);
     }
   }
 
