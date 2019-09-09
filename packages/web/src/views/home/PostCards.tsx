@@ -101,6 +101,7 @@ interface PostCardProps {
   currUser: User | null;
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
+  ref: React.RefObject<HTMLDivElement>;
 }
 
 // Make this approximately the height of a standard UserCard
@@ -116,6 +117,7 @@ export default function PostCards(props: PostCardProps) {
     currUser,
     showResultsCount,
     resultsLoaded,
+    ref,
   } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
@@ -125,7 +127,7 @@ export default function PostCards(props: PostCardProps) {
   };
 
   return (
-    <main>
+    <main ref={ref}>
       <Container className={classes.cardGrid} maxWidth="md">
         {showResultsCount && resultsLoaded && (
           <Typography variant="body2" color="textSecondary" gutterBottom>

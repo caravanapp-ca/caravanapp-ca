@@ -123,15 +123,15 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
     getGenres();
   }, []);
 
-  useEffect(() => {
-    if (targetRef.current && open) {
-      //@ts-ignore
-      targetElement = ReactDOM.findDOMNode(targetRef.current);
-      if (targetElement !== null && instanceOfValidElement(targetElement)) {
-        enableBodyScroll(targetElement);
-      }
-    }
-  }, [open]);
+  // useEffect(() => {
+  //   if (targetRef.current && open) {
+  //     //@ts-ignore
+  //     targetElement = ReactDOM.findDOMNode(targetRef.current);
+  //     if (targetElement !== null && instanceOfValidElement(targetElement)) {
+  //       enableBodyScroll(targetElement);
+  //     }
+  //   }
+  // }, [open]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
@@ -204,7 +204,7 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
-    <div>
+    <div ref={targetRef}>
       <Dialog
         fullScreen={screenSmallerThanSm}
         fullWidth={!screenSmallerThanSm}

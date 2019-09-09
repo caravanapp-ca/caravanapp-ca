@@ -281,6 +281,8 @@ export default function Home(props: HomeProps) {
   const [postsSearch, setPostsSearch] = React.useState<string>('');
   const [showShelfUpload, setShowShelfUpload] = React.useState(false);
   const [showShelfUpload2, setShowShelfUpload2] = React.useState(false);
+  const postTabContainerRef = React.useRef<HTMLDivElement>(null);
+  let postTabContainerElement: Element | HTMLElement | null = null;
   const postCardsRef = React.useRef<HTMLDivElement>(null);
   let postCardsElement: Element | HTMLElement | null = null;
   const [
@@ -703,6 +705,18 @@ export default function Home(props: HomeProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     setShowShelfUpload(true);
+    if (postTabContainerRef.current) {
+      //@ts-ignore
+      postTabContainerElement = ReactDOM.findDOMNode(
+        postTabContainerRef.current
+      );
+      if (
+        postTabContainerElement !== null &&
+        instanceOfValidElement(postTabContainerElement)
+      ) {
+        disableBodyScroll(postTabContainerElement);
+      }
+    }
     if (postCardsRef.current) {
       //@ts-ignore
       postCardsElement = ReactDOM.findDOMNode(postCardsRef.current);
@@ -719,6 +733,18 @@ export default function Home(props: HomeProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     setShowShelfUpload2(true);
+    if (postTabContainerRef.current) {
+      //@ts-ignore
+      postTabContainerElement = ReactDOM.findDOMNode(
+        postTabContainerRef.current
+      );
+      if (
+        postTabContainerElement !== null &&
+        instanceOfValidElement(postTabContainerElement)
+      ) {
+        disableBodyScroll(postTabContainerElement);
+      }
+    }
     if (postCardsRef.current) {
       //@ts-ignore
       postCardsElement = ReactDOM.findDOMNode(postCardsRef.current);
@@ -734,18 +760,28 @@ export default function Home(props: HomeProps) {
   function closeShelfUploadModal() {
     setShowShelfUpload(false);
     //@ts-ignore
+    if (
+      postTabContainerElement !== null &&
+      instanceOfValidElement(postTabContainerElement)
+    ) {
+      enableBodyScroll(postTabContainerElement);
+    }
     if (postCardsElement !== null && instanceOfValidElement(postCardsElement)) {
-      clearAllBodyScrollLocks();
-      disableBodyScroll(postCardsElement);
+      enableBodyScroll(postCardsElement);
     }
   }
 
   function closeShelfUploadModal2() {
     setShowShelfUpload2(false);
     //@ts-ignore
+    if (
+      postTabContainerElement !== null &&
+      instanceOfValidElement(postTabContainerElement)
+    ) {
+      enableBodyScroll(postTabContainerElement);
+    }
     if (postCardsElement !== null && instanceOfValidElement(postCardsElement)) {
-      clearAllBodyScrollLocks();
-      disableBodyScroll(postCardsElement);
+      enableBodyScroll(postCardsElement);
     }
   }
 
@@ -1172,8 +1208,12 @@ export default function Home(props: HomeProps) {
           </>
         )}
         {tabValue === 2 && (
-          <div ref={postCardsRef}>
-            <Container className={classes.usersFilterGrid} maxWidth="md">
+          <>
+            <Container
+              className={classes.usersFilterGrid}
+              maxWidth="md"
+              ref={postTabContainerRef}
+            >
               <Composer
                 currUserInfo={feedViewerUserInfo}
                 onClickShelfUpload={onClickShelfUpload}
@@ -1223,6 +1263,7 @@ export default function Home(props: HomeProps) {
                   currUser={user}
                   showResultsCount={false}
                   resultsLoaded={postsResult.status === 'loaded'}
+                  ref={postCardsRef}
                 />
               )}
             {postsResult.status === 'loaded' &&
@@ -1292,7 +1333,7 @@ export default function Home(props: HomeProps) {
               userId={user ? user._id : null}
               postAuthorUserInfo={feedViewerUserInfo}
             />
-          </div>
+          </>
         )}
       </main>
       <DiscordLoginModal
