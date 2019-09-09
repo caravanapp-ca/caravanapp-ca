@@ -690,7 +690,7 @@ export default function Home(props: HomeProps) {
   function onClickShelfUpload2(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
-    setShowShelfUpload(true);
+    setShowShelfUpload2(true);
   }
 
   const onClearPostsSearch = async () => {

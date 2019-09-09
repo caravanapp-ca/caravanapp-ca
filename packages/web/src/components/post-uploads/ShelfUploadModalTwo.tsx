@@ -124,13 +124,10 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   }, []);
 
   useEffect(() => {
-    console.log('Open?');
-    console.log(open);
     if (targetRef.current && open) {
       //@ts-ignore
       targetElement = ReactDOM.findDOMNode(targetRef.current);
       if (targetElement !== null && instanceOfValidElement(targetElement)) {
-        console.log('Disabling');
         clearAllBodyScrollLocks();
         disableBodyScroll(targetElement);
       }
@@ -145,7 +142,6 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
 
   function onCloseModal() {
     if (targetElement !== null && instanceOfValidElement(targetElement)) {
-      console.log('Enabling');
       enableBodyScroll(targetElement);
     }
     handleClose();
