@@ -703,6 +703,16 @@ export default function Home(props: HomeProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     setShowShelfUpload(true);
+    if (postCardsRef.current) {
+      //@ts-ignore
+      postCardsElement = ReactDOM.findDOMNode(postCardsRef.current);
+      if (
+        postCardsElement !== null &&
+        instanceOfValidElement(postCardsElement)
+      ) {
+        disableBodyScroll(postCardsElement);
+      }
+    }
   }
 
   function onClickShelfUpload2(
@@ -716,13 +726,21 @@ export default function Home(props: HomeProps) {
         postCardsElement !== null &&
         instanceOfValidElement(postCardsElement)
       ) {
-        clearAllBodyScrollLocks();
         disableBodyScroll(postCardsElement);
       }
     }
   }
 
   function closeShelfUploadModal() {
+    setShowShelfUpload(false);
+    //@ts-ignore
+    if (postCardsElement !== null && instanceOfValidElement(postCardsElement)) {
+      clearAllBodyScrollLocks();
+      disableBodyScroll(postCardsElement);
+    }
+  }
+
+  function closeShelfUploadModal2() {
     setShowShelfUpload2(false);
     //@ts-ignore
     if (postCardsElement !== null && instanceOfValidElement(postCardsElement)) {
@@ -1262,14 +1280,14 @@ export default function Home(props: HomeProps) {
               )}
             <ShelfUploadModal
               open={showShelfUpload}
-              handleClose={() => setShowShelfUpload(false)}
+              handleClose={closeShelfUploadModal}
               onPostShelf={onUploadPost}
               userId={user ? user._id : null}
               postAuthorUserInfo={feedViewerUserInfo}
             />
             <ShelfUploadModalTwo
               open={showShelfUpload2}
-              handleClose={closeShelfUploadModal}
+              handleClose={closeShelfUploadModal2}
               onPostShelf={onUploadPost}
               userId={user ? user._id : null}
               postAuthorUserInfo={feedViewerUserInfo}

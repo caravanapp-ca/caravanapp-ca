@@ -116,9 +116,22 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   const readyToPost =
     shelf.length > 1 && shelfTitle.length > 0 && shelfGenres.length > 0;
 
+  const targetRef = React.useRef<HTMLDivElement>(null);
+  let targetElement: HTMLElement | Element | null = null;
+
   useEffect(() => {
     getGenres();
   }, []);
+
+  useEffect(() => {
+    if (targetRef.current && open) {
+      //@ts-ignore
+      targetElement = ReactDOM.findDOMNode(targetRef.current);
+      if (targetElement !== null && instanceOfValidElement(targetElement)) {
+        enableBodyScroll(targetElement);
+      }
+    }
+  }, [open]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]

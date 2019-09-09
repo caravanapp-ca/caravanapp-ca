@@ -128,8 +128,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
       //@ts-ignore
       targetElement = ReactDOM.findDOMNode(targetRef.current);
       if (targetElement !== null && instanceOfValidElement(targetElement)) {
-        clearAllBodyScrollLocks();
-        disableBodyScroll(targetElement);
+        enableBodyScroll(targetElement);
       }
     }
   }, [open]);
@@ -142,7 +141,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
 
   function onCloseModal() {
     if (targetElement !== null && instanceOfValidElement(targetElement)) {
-      enableBodyScroll(targetElement);
+      disableBodyScroll(targetElement);
     }
     handleClose();
     setShelfGenres([]);
