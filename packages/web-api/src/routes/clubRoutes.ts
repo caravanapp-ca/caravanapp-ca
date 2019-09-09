@@ -38,6 +38,11 @@ import {
   shelfEntryWithHttpsBookUrl,
   getClubUrl,
   getDefaultClubTopic,
+  getUserClubRecommendations,
+  getUserChannels,
+  getCountableMembersInChannel,
+  getMemberCount,
+  transformToGetClubs,
 } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
@@ -64,41 +69,6 @@ const getValidShelfFromNewShelf = (newShelf: ClubShelf) => {
     }
   });
   return validShelf;
-};
-
-const isInChannel = (member: GuildMember, club: ClubDoc) =>
-  (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
-  !member.user.bot;
-
-// This should come from config instead of here
-const prodUncountableIds = [
-  '491769129318088714', // Statbot
-  '592761757764812801', // caravan-admin
-  '592781980026798120', // caravan-clubs-bot
-];
-
-const getCountableMembersInChannel = (
-  discordChannel: GuildChannel,
-  club: ClubDoc
-) =>
-  (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
-    isInChannel(m, club)
-  );
-
-const getUserChannels = (
-  guild: Guild,
-  discordId: string,
-  inChannels: boolean
-) => {
-  const channels = guild.channels.filter(c => {
-    if (c.type === 'text' || c.type === 'voice') {
-      const inThisChannel = !!(c as TextChannel).members.get(discordId);
-      return inChannels === inThisChannel;
-    } else {
-      return false;
-    }
-  });
-  return channels;
 };
 
 async function getChannelMembers(guild: Guild, club: ClubDoc) {
@@ -173,6 +143,26 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   return foundUsers;
 }
 
+router.get('/userRecommendations', async (req, res) => {
+  const { userId, limit } = req.query;
+  const maxRecommendations = 50;
+  const minRecommendations = 1;
+  const defaultRecommendations = 4;
+  const limitToUse = limit
+    ? Math.max(
+        Math.min(parseInt(limit), maxRecommendations),
+        minRecommendations
+      )
+    : defaultRecommendations;
+  const recommendedClubs = await getUserClubRecommendations(userId, limitToUse);
+  if (recommendedClubs.length === 0) {
+    res.status(404).send(`Found no recommended clubs for user ${userId}`);
+    return;
+  }
+  const transformedClubs = await transformToGetClubs(recommendedClubs);
+  res.status(200).send(transformedClubs);
+});
+
 router.get('/', async (req, res) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
   const isSearching = !!search;
@@ -181,8 +171,10 @@ router.get('/', async (req, res) => {
     currUserId ? await getUser(currUserId) : undefined,
     userId ? await getUser(userId) : undefined,
   ]);
-
   const query: SameKeysAs<Partial<Club>> = {};
+  const sort: SameKeysAs<Partial<Club>> = {
+    createdAt: -1,
+  };
   if (!isSearching && after) {
     query._id = { $lt: after };
   }
@@ -214,15 +206,15 @@ router.get('/', async (req, res) => {
   }
   // Calculate number of documents to skip
   const size = Number.parseInt(pageSize || 0);
-  const limit = Math.min(Math.max(size, 10), 50);
+  const limit = Math.min(Math.max(size, 1), 50);
   let clubDocs: ClubDoc[];
   try {
     if (isSearching) {
-      clubDocs = await ClubModel.find(query).sort({ createdAt: -1 });
+      clubDocs = await ClubModel.find(query).sort(sort);
     } else {
       // The +12 is a safety net for clubs that get filtered out
       clubDocs = await ClubModel.find(query)
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .limit(limit + 12);
     }
   } catch (err) {
@@ -266,15 +258,7 @@ router.get('/', async (req, res) => {
       ) {
         return null;
       }
-      // For speed purposes, we can guarantee that in prod environments there are always
-      // 3 less members than what are shown due to bots and the admin. In testing,
-      // quinn's account and matt's account are admins so we need to perform the full countable
-      // members check. Well, we don't need to, but it's OK for now.
-      const memberCount =
-        process.env.GAE_ENV === 'production'
-          ? (discordChannel as TextChannel).members.size -
-            prodUncountableIds.length
-          : getCountableMembersInChannel(discordChannel, clubDoc).size;
+      const memberCount = getMemberCount(discordChannel, clubDoc);
       if (
         (includesSpotsAvailable && memberCount >= clubDoc.maxMembers) ||
         (includesFull && memberCount < clubDoc.maxMembers)

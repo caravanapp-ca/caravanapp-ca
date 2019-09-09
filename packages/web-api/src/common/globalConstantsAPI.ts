@@ -47,3 +47,10 @@ export const DEFAULT_EMAIL_SETTINGS: EmailSettings = {
 // If changing here, please change in globalConstants in the Web project as well.
 // Also, consider existing clubs in db which may have this value saved.
 export const UNLIMITED_CLUB_MEMBERS_VALUE: UnlimitedClubMembersValue = -1;
+
+// This should come from config instead of here
+export const PROD_UNCOUNTABLE_IDS = [
+  '491769129318088714', // Statbot
+  '592761757764812801', // caravan-admin
+  '592781980026798120', // caravan-clubs-bot
+];
