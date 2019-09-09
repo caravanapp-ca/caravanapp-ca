@@ -35,6 +35,7 @@ import getUtmSourceValue from './common/getUtmSourceValue';
 import { validateDiscordPermissions } from './services/auth';
 import { getDiscordAuthUrl } from './common/auth';
 import Settings from './views/settings/Settings';
+import RecommendedClubs from './views/recommend/RecommendedClubs';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -202,6 +203,16 @@ export function App(props: AppProps) {
                   path="/clubs/:id"
                   render={props =>
                     forceOnboard(user, <Club {...props} user={user} />)
+                  }
+                />
+                <Route
+                  exact
+                  path="/clubs/recommend"
+                  render={props =>
+                    forceOnboard(
+                      user,
+                      <RecommendedClubs {...props} user={user} />
+                    )
                   }
                 />
                 <Route

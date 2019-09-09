@@ -24,7 +24,6 @@ import { getAllProfileQuestions } from '../../services/profile';
 import { updateUserProfile } from '../../services/user';
 import HeaderTitle from '../../components/HeaderTitle';
 import DownloadDiscordDialog from '../../components/DownloadDiscordDialog';
-
 interface OnboardingRouteParams {
   id: string;
 }
@@ -35,53 +34,21 @@ interface OnboardingProps extends RouteComponentProps<OnboardingRouteParams> {
 
 type SubmissionState = 'notSubmitted' | 'submitted' | 'success' | 'failure';
 
-const centerComponentReadingPreferences = (
-  <HeaderTitle title="Reading Preferences" />
-);
-
-const centerComponentAboutYou = <HeaderTitle title="About You" />;
-
-const centerComponentSelectPrompt = <HeaderTitle title="Select a Prompt" />;
-
-const centerComponentAnswerQuestion = <HeaderTitle title="Write Answer" />;
-
-const centerComponentAddBooks = <HeaderTitle title="Shelf" />;
+const headerTitle = (label: string) => <HeaderTitle title={label} />;
 
 export default function Onboarding(props: OnboardingProps) {
-  const leftComponentAboutYou = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Back"
-      onClick={() => setCurrentPage(1)}
-    >
-      <BackIcon />
-    </IconButton>
-  );
-
-  const leftComponentSelectPrompt = (
-    <IconButton
-      edge="start"
-      color="inherit"
-      aria-label="Back"
-      onClick={() => setCurrentPage(2)}
-    >
-      <BackIcon />
-    </IconButton>
-  );
-
   const leftComponentAnswerQuestion = (
     <Button color="primary" onClick={onCancelAnswer}>
       <Typography style={{ fontWeight: 600 }}>Cancel</Typography>
     </Button>
   );
 
-  const leftComponentAddBooks = (
+  const backButton = (
     <IconButton
       edge="start"
       color="inherit"
       aria-label="Back"
-      onClick={() => setCurrentPage(2)}
+      onClick={() => setCurrentPage(currentPage - 1)}
     >
       <BackIcon />
     </IconButton>
@@ -163,7 +130,7 @@ export default function Onboarding(props: OnboardingProps) {
       case 'success':
         // Not history replace since have to reload the user object,
         // which isn't done using history.replace
-        window.location.replace('/clubs');
+        window.location.replace('/recommend');
         break;
       case 'failure':
         // TODO: handle errors for onboarding submission
@@ -322,7 +289,7 @@ export default function Onboarding(props: OnboardingProps) {
     <>
       {currentPage === 1 && (
         <>
-          <Header centerComponent={centerComponentReadingPreferences} />
+          <Header centerComponent={headerTitle('Reading Preferences')} />
           <ReadingPreferences
             continuing={false}
             onContinue={continueToQuestionsPage}
@@ -337,8 +304,8 @@ export default function Onboarding(props: OnboardingProps) {
       {currentPage === 2 && profileQuestions && (
         <>
           <Header
-            centerComponent={centerComponentAboutYou}
-            leftComponent={leftComponentAboutYou}
+            centerComponent={headerTitle('About You')}
+            leftComponent={backButton}
           />
           <AboutYou
             continuing={false}
@@ -354,8 +321,8 @@ export default function Onboarding(props: OnboardingProps) {
       {currentPage === 3 && profileQuestions && (
         <>
           <Header
-            centerComponent={centerComponentSelectPrompt}
-            leftComponent={leftComponentSelectPrompt}
+            centerComponent={headerTitle('Select a Prompt')}
+            leftComponent={backButton}
           />
           <ProfileQuestionsCarousel
             questions={unansweredProfileQuestions}
@@ -368,7 +335,7 @@ export default function Onboarding(props: OnboardingProps) {
         questionBeingAnsweredText && (
           <>
             <Header
-              centerComponent={centerComponentAnswerQuestion}
+              centerComponent={headerTitle('Write Answer')}
               leftComponent={leftComponentAnswerQuestion}
               rightComponent={rightComponentAnswerQuestion}
             />
@@ -382,8 +349,8 @@ export default function Onboarding(props: OnboardingProps) {
       {currentPage === 5 && (
         <>
           <Header
-            centerComponent={centerComponentAddBooks}
-            leftComponent={leftComponentAddBooks}
+            centerComponent={headerTitle('To be Read')}
+            leftComponent={backButton}
           />
           <SelectBooks
             onContinue={continueFromSelectBooks}
