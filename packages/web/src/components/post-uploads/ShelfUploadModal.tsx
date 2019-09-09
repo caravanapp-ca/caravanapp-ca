@@ -89,7 +89,17 @@ export class BackDropIOSWorkaround extends React.PureComponent<BackdropProps> {
   }
 }
 
-export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
+function instanceOfValidElement(object: any) {
+  if (object instanceof Element) {
+    return true;
+  } else if (object instanceof HTMLElement) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const classes = useStyles();
   const { open, handleClose, userId, onPostShelf, postAuthorUserInfo } = props;
   const maxWidth = 'lg';
@@ -106,20 +116,23 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   const readyToPost =
     shelf.length > 1 && shelfTitle.length > 0 && shelfGenres.length > 0;
 
-  const targetRef = React.createRef();
-  let targetElement: null | Element | HTMLElement = null;
+  const targetRef = React.useRef<HTMLDivElement>(null);
+  let targetElement: HTMLElement | Element | null = null;
 
   useEffect(() => {
     getGenres();
-    //@ts-ignore
-    targetElement = ReactDOM.findDOMNode(targetRef.current);
-    if (targetElement !== null) {
-      disableBodyScroll(targetElement);
-    }
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    }
   }, []);
+
+  useEffect(() => {
+    if (targetRef.current && open) {
+      //@ts-ignore
+      targetElement = ReactDOM.findDOMNode(targetRef.current);
+      if (targetElement !== null && instanceOfValidElement(targetElement)) {
+        clearAllBodyScrollLocks();
+        disableBodyScroll(targetElement);
+      }
+    }
+  }, [open]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
@@ -128,10 +141,9 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   }
 
   function onCloseModal() {
-    if (targetElement !== null) {
+    if (targetElement !== null && instanceOfValidElement(targetElement)) {
       enableBodyScroll(targetElement);
     }
-    document.body.style.overflow = 'unset';
     handleClose();
     setShelfGenres([]);
     setShelf([]);
@@ -196,7 +208,7 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
-    <div>
+    <div ref={targetRef}>
       <Dialog
         fullScreen={screenSmallerThanSm}
         fullWidth={!screenSmallerThanSm}

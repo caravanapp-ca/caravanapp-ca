@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Element, scroller } from 'react-scroll';
+import { Element as ScrollElement, scroller } from 'react-scroll';
+import ReactDOM from 'react-dom';
+import {
+  disableBodyScroll,
+  enableBodyScroll,
+  clearAllBodyScrollLocks,
+} from 'body-scroll-lock';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -165,6 +171,16 @@ export function shuffleUser(user: User) {
   return user;
 }
 
+function instanceOfValidElement(object: any) {
+  if (object instanceof HTMLElement) {
+    return true;
+  } else if (object instanceof Element) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const centerComponent = (
   <>
     {window.innerWidth < theme.breakpoints.values.sm ? (
@@ -265,6 +281,8 @@ export default function Home(props: HomeProps) {
   const [postsSearch, setPostsSearch] = React.useState<string>('');
   const [showShelfUpload, setShowShelfUpload] = React.useState(false);
   const [showShelfUpload2, setShowShelfUpload2] = React.useState(false);
+  const postCardsRef = React.useRef<HTMLDivElement>(null);
+  let postCardsElement: Element | HTMLElement | null = null;
   const [
     showProgressUpdateUpload,
     setShowProgressUpdateUpload,
@@ -691,6 +709,26 @@ export default function Home(props: HomeProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     setShowShelfUpload2(true);
+    if (postCardsRef.current) {
+      //@ts-ignore
+      postCardsElement = ReactDOM.findDOMNode(postCardsRef.current);
+      if (
+        postCardsElement !== null &&
+        instanceOfValidElement(postCardsElement)
+      ) {
+        clearAllBodyScrollLocks();
+        disableBodyScroll(postCardsElement);
+      }
+    }
+  }
+
+  function closeShelfUploadModal() {
+    setShowShelfUpload2(false);
+    //@ts-ignore
+    if (postCardsElement !== null && instanceOfValidElement(postCardsElement)) {
+      clearAllBodyScrollLocks();
+      disableBodyScroll(postCardsElement);
+    }
   }
 
   const onClearPostsSearch = async () => {
@@ -796,7 +834,7 @@ export default function Home(props: HomeProps) {
             onSeeClubsClick={onSeeClubsClick}
           />
         )}
-        <Element name="tabs">
+        <ScrollElement name="tabs">
           <Tabs
             value={tabValue}
             onChange={handleTabChange}
@@ -809,7 +847,7 @@ export default function Home(props: HomeProps) {
             <Tab label="Find A Buddy" style={{ fontSize: '13px' }} />
             <Tab label="Find Books" style={{ fontSize: '13px' }} />
           </Tabs>
-        </Element>
+        </ScrollElement>
         {tabValue === 0 && (
           <>
             <Container className={classes.clubsFilterGrid} maxWidth="md">
@@ -1116,7 +1154,7 @@ export default function Home(props: HomeProps) {
           </>
         )}
         {tabValue === 2 && (
-          <>
+          <div ref={postCardsRef}>
             <Container className={classes.usersFilterGrid} maxWidth="md">
               <Composer
                 currUserInfo={feedViewerUserInfo}
@@ -1231,12 +1269,12 @@ export default function Home(props: HomeProps) {
             />
             <ShelfUploadModalTwo
               open={showShelfUpload2}
-              handleClose={() => setShowShelfUpload2(false)}
+              handleClose={closeShelfUploadModal}
               onPostShelf={onUploadPost}
               userId={user ? user._id : null}
               postAuthorUserInfo={feedViewerUserInfo}
             />
-          </>
+          </div>
         )}
       </main>
       <DiscordLoginModal
