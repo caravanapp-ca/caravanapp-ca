@@ -6,9 +6,8 @@ import {
   ClubReadingSchedule,
   ClubShelf,
   Discussion,
-  FilterAutoMongoKeys,
-  SameKeysAs,
   ShelfEntry,
+  ClubBotSettings,
 } from '@caravan/buddy-reading-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
 import { MongooseSchema } from '../common/mongoose';
@@ -81,8 +80,15 @@ const scheduleSchemaDefinition: MongooseSchema<ClubReadingSchedule> = {
 
 const scheduleSchema = new Schema(scheduleSchemaDefinition);
 
-const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
+const botSettingsDefinition: MongooseSchema<ClubBotSettings> = {
+  intros: { type: Boolean, required: true },
+};
+
+const botSettingsSchema = new Schema(botSettingsDefinition, { _id: false });
+
+const clubDefinition: MongooseSchema<Omit<Club, 'members'>> = {
   bio: { type: String },
+  botSettings: { type: botSettingsSchema, required: true },
   channelId: { type: String, required: true },
   channelSource: { type: String, required: true }, // discord always for now
   genres: { type: [genresSchema], required: true },
@@ -98,7 +104,7 @@ const definition: Omit<SameKeysAs<FilterAutoMongoKeys<Club>>, 'members'> = {
   vibe: { type: String },
 };
 
-const clubSchema = new Schema<ClubDoc>(definition, {
+const clubSchema = new Schema<ClubDoc>(clubDefinition, {
   timestamps: true,
 });
 

@@ -3,6 +3,7 @@ import {
   SameKeysAs,
   EmailSettings,
   UnlimitedClubMembersValue,
+  ClubBotSettings,
 } from '@caravan/buddy-reading-types';
 import { isMobileDevice } from './isMobileDevice';
 
@@ -57,6 +58,12 @@ export const MAX_SCHEDULE_LENGTH_DAYS =
 export const MIN_DISCUSSION_FREQ_DAYS = 0;
 export const MAX_DISCUSSION_FREQ_DAYS = 7;
 
+export const DEFAULT_EMAIL_SETTINGS: EmailSettings = {
+  recs: true,
+  reminders: true,
+  updates: true,
+};
+
 export const DISCORD_GUILD_LINK =
   process.env.NODE_ENV === 'production'
     ? isMobileDevice()
@@ -65,3 +72,15 @@ export const DISCORD_GUILD_LINK =
     : isMobileDevice()
     ? 'https://discord.gg/EhnJHz3'
     : 'https://discordapp.com/channels/589194387968491530/589194387968491532';
+
+export const CARAVAN_BOT_NAME = 'caravan-clubs-bot';
+
+export const CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<
+  ClubBotSettings
+> = {
+  intros: 'Introduce new members in chat when they join the club',
+};
+
+export const DEFAULT_CLUB_BOT_SETTINGS: ClubBotSettings = {
+  intros: true,
+};

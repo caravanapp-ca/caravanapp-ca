@@ -791,17 +791,18 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     );
 
     const clubModelBody: Omit<FilterAutoMongoKeys<Club>, 'members'> = {
-      name: body.name,
       bio: body.bio,
-      maxMembers: body.maxMembers,
-      readingSpeed: body.readingSpeed,
-      genres: body.genres,
-      newShelf: validShelf,
-      schedules: body.schedules,
-      ownerId: userId,
-      ownerDiscordId: req.user.discordId,
-      channelSource: body.channelSource,
+      botSettings: body.botSettings,
       channelId: channel.id,
+      channelSource: body.channelSource,
+      genres: body.genres,
+      maxMembers: body.maxMembers,
+      name: body.name,
+      newShelf: validShelf,
+      ownerDiscordId: req.user.discordId,
+      ownerId: userId,
+      readingSpeed: body.readingSpeed,
+      schedules: body.schedules,
       unlisted: body.unlisted,
       vibe: body.vibe,
     };
@@ -847,6 +848,10 @@ router.put(
     .isString()
     .isLength({ max: 300 }),
   check(
+    'newClub.botSettings',
+    'Club must have bot settings specified.'
+  ).exists(),
+  check(
     'newClub.genres',
     'Genres must be an array of {key: string, name: string} elements'
   ).isArray(),
@@ -889,7 +894,7 @@ router.put(
     const clubId = req.params.id;
     const newClub: Services.GetClubById = req.body.newClub;
     // TODO: The user can still cheat this. Need to first get the existing club by id and check against that.
-    if (req.user._id.toHexString() !== newClub.ownerId) {
+    if (req.user.id !== newClub.ownerId) {
       console.warn(
         `User ${req.user._id} attempted to edit club ${clubId} without valid permission.`
       );
@@ -912,6 +917,7 @@ router.put(
     const updateObj: Pick<
       FilterAutoMongoKeys<Club>,
       | 'bio'
+      | 'botSettings'
       | 'genres'
       | 'maxMembers'
       | 'name'
@@ -921,6 +927,7 @@ router.put(
       | 'vibe'
     > = {
       bio: newClub.bio,
+      botSettings: newClub.botSettings,
       genres: newClub.genres,
       maxMembers: newClub.maxMembers,
       name: newClub.name,

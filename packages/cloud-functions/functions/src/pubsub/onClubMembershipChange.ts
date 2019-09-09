@@ -27,7 +27,10 @@ export const onJoinClub = async (
     `[eventId: ${eventId}] - Fetched club ${clubId} and user ${userId}`
   );
   const { discordId, questions } = userDoc;
-  const { channelId } = clubDoc;
+  const { channelId, botSettings } = clubDoc;
+  if (botSettings.intros === false) {
+    return undefined;
+  }
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
   if (!guild) {
