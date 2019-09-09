@@ -41,8 +41,6 @@ const useStyles = makeStyles(theme => ({
   modal: {
     overflow: 'scroll',
     'webkit-overflow-scrolling': 'touch',
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
   },
   appBar: {
     position: 'relative',
@@ -293,6 +291,7 @@ export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
                 display: 'flex',
                 width: '100%',
                 justifyContent: 'flex-end',
+                marginBottom: theme.spacing(6),
               }}
             >
               {!postingShelf && (

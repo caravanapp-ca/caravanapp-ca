@@ -1,4 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, RefObject } from 'react';
+import ReactDOM from 'react-dom';
+import {
+  disableBodyScroll,
+  enableBodyScroll,
+  clearAllBodyScrollLocks,
+} from 'body-scroll-lock';
 import Backdrop, { BackdropProps } from '@material-ui/core/Backdrop';
 import {
   Services,
@@ -34,8 +40,7 @@ import theme from '../../theme';
 const useStyles = makeStyles(theme => ({
   modal: {
     overflow: 'scroll',
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
+    'webkit-overflow-scrolling': 'touch',
   },
   appBar: {
     position: 'relative',
@@ -84,7 +89,7 @@ export class BackDropIOSWorkaround extends React.PureComponent<BackdropProps> {
   }
 }
 
-export default function ShelfUploadModal(props: ShelfUploadModalProps) {
+export default function ShelfUploadModalTwo(props: ShelfUploadModalProps) {
   const classes = useStyles();
   const { open, handleClose, userId, onPostShelf, postAuthorUserInfo } = props;
   const maxWidth = 'lg';
@@ -101,14 +106,19 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const readyToPost =
     shelf.length > 1 && shelfTitle.length > 0 && shelfGenres.length > 0;
 
+  const targetRef = React.createRef();
+  let targetElement: null | Element | HTMLElement = null;
+
   useEffect(() => {
     getGenres();
+    //@ts-ignore
+    targetElement = ReactDOM.findDOMNode(targetRef.current);
+    if (targetElement !== null) {
+      disableBodyScroll(targetElement);
+    }
     if (open) {
       document.body.style.overflow = 'hidden';
     }
-    return function cleanup() {
-      document.body.style.overflow = 'unset';
-    };
   }, []);
 
   function onSubmitSelectedBooks(
@@ -118,6 +128,10 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   }
 
   function onCloseModal() {
+    if (targetElement !== null) {
+      enableBodyScroll(targetElement);
+    }
+    document.body.style.overflow = 'unset';
     handleClose();
     setShelfGenres([]);
     setShelf([]);
@@ -281,7 +295,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
                 display: 'flex',
                 width: '100%',
                 justifyContent: 'flex-end',
-                marginBottom: theme.spacing(5),
+                marginBottom: theme.spacing(6),
               }}
             >
               {!postingShelf && (
