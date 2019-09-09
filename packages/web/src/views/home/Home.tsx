@@ -474,7 +474,7 @@ export default function Home(props: HomeProps) {
   ) => {
     const userSearchFieldValue = event.target.value as UserSearchField;
     setUserSearchField(userSearchFieldValue);
-    await resetLoadMoreUsers();
+    resetLoadMoreUsers();
   };
 
   const handlePostSearchFieldChange = async (
@@ -672,12 +672,18 @@ export default function Home(props: HomeProps) {
   };
 
   const resetLoadMorePosts = async () => {
-    setPostsResult(s => ({
+    await setPostsResult(s => ({
       ...s,
       status: 'loading',
     }));
-    setAfterPostsQuery(undefined);
+    await setAfterPostsQuery(undefined);
   };
+
+  function onClickShelfUpload(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    setShowShelfUpload(true);
+  }
 
   const onClearPostsSearch = async () => {
     if (postsSearch !== '') {
@@ -1106,7 +1112,7 @@ export default function Home(props: HomeProps) {
             <Container className={classes.usersFilterGrid} maxWidth="md">
               <Composer
                 currUserInfo={feedViewerUserInfo}
-                onClickShelfUpload={() => setShowShelfUpload(true)}
+                onClickShelfUpload={onClickShelfUpload}
                 onClickProgressUpdateUpload={() =>
                   setShowProgressUpdateUpload(true)
                 }

@@ -10,18 +10,18 @@ const useStyles = makeStyles(() =>
   })
 );
 
-interface SendClubInvitesSliderProps {
+interface SendClubInvitesSwitchProps {
   sendInvites: boolean;
   onChange: (unlistedValue: boolean) => void;
 }
 
-export default function SendClubInvitesSlider(
-  props: SendClubInvitesSliderProps
+export default function SendClubInvitesSwitch(
+  props: SendClubInvitesSwitchProps
 ) {
   const classes = useStyles();
   const { sendInvites, onChange } = props;
 
-  let labelText = sendInvites
+  const labelText = sendInvites
     ? 'Everyone who liked the shelf will be sent an invite link'
     : 'No invites will be sent';
 

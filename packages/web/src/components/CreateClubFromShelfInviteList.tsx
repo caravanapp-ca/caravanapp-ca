@@ -18,11 +18,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  thumbnail: {
-    width: 30,
-    height: 30,
-    marginRight: -4,
-  },
   thumbnailAvatar: {
     width: 48,
     height: 48,

@@ -50,7 +50,7 @@ import {
   CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS,
 } from '../../common/globalConstants';
 import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
-import SendClubInvitesSlider from '../../components/SendClubInvitesSlider';
+import SendClubInvitesSwitch from '../../components/SendClubInvitesSwitch';
 import CreateClubFromShelfInviteList from '../../components/CreateClubFromShelfInviteList';
 import BotMessageVector from '../../components/BotMessageVector';
 import CheckboxSettingsEditor from '../../components/CheckboxSettingsEditor';
@@ -448,7 +448,7 @@ export default function CreateClub(props: CreateClubProps) {
               {numLikesString} liked this shelf. Should we send them an invite
               to join?
             </Typography>
-            <SendClubInvitesSlider
+            <SendClubInvitesSwitch
               onChange={(sendInvitesValue: boolean) =>
                 setSendInvites(sendInvitesValue)
               }

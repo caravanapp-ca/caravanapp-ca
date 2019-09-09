@@ -17,7 +17,6 @@ import {
   SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import PostLikesThumbnails from './PostLikesThumbnails';
-import CreateClubFromShelfInviteList from './CreateClubFromShelfInviteList';
 
 const useStyles = makeStyles(theme => ({
   actionContainer: {

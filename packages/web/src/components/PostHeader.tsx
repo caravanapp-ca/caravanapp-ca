@@ -17,8 +17,8 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2),
   },
   headerAvatar: {
-    width: 45,
-    height: 45,
+    width: 48,
+    height: 48,
   },
   userTextContainer: {
     display: 'flex',

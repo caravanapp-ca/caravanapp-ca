@@ -112,7 +112,7 @@ export async function deleteClub(clubId: string) {
 export async function updateShelf(
   clubId: string,
   newShelf: {
-    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[];
+    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
   }
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/shelf`, {
@@ -137,29 +137,28 @@ export async function sendInvitesToClubFromShelf(
     res.status >= 200 &&
     res.status < 300 &&
     props.currUser &&
+    props.currUser !== null &&
     props.usersToInviteIds &&
-    props.usersToInviteIds.length > 0
+    props.usersToInviteIds.length > 0 &&
+    res.data &&
+    res.data.club &&
+    res.data.club._id
   ) {
-    if (
-      props.currUser !== null &&
-      res.data &&
-      res.data.club &&
-      res.data.club._id
-    ) {
-      props.usersToInviteIds.map(async userId => {
-        const user = await getUser(userId);
-        if (user && user.discordId) {
-          inviteToClubFromShelf(
-            //@ts-ignore
-            props.currUser,
-            user.discordId,
-            props.name,
-            //@ts-ignore
-            res.data.club._id
-          );
-        }
-      });
-    }
+    props.usersToInviteIds.map(async userId => {
+      const user = await getUser(userId);
+      if (user && user.discordId) {
+        // ts-ignore here because it  doesn't recognize that res.data.club_id and props.currUser can't be null due to
+        // the if statement above
+        inviteToClubFromShelf(
+          //@ts-ignore
+          props.currUser,
+          user.discordId,
+          props.name,
+          //@ts-ignore
+          res.data.club._id
+        );
+      }
+    });
   }
 }
 
