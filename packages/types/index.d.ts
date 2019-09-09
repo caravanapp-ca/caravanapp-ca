@@ -527,7 +527,7 @@ declare module '@caravan/buddy-reading-types' {
       maxMembers: number;
       name: string;
       newShelf?: UninitClubShelfType;
-      readingSpeed: string;
+      readingSpeed: ReadingSpeed;
       unlisted: boolean;
       usersToInviteIds: string[];
       currUser: User | null;
