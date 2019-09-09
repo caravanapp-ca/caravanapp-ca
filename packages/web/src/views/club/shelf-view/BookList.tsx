@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
     },
     errorContainer: {
-      //backgroundColor: theme.palette.error.light,
       boxShadow: `0px 2px 8px ${theme.palette.error.main}`,
     },
   })

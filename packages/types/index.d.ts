@@ -18,6 +18,8 @@ declare module '@caravan/buddy-reading-types' {
     updatedAt: Date | string;
   }
 
+  export type ClubScheduleEvent = 'startDate' | 'endDate' | 'discussionDate';
+
   export interface Discussion {
     date: Date;
     label: string;
