@@ -29,7 +29,9 @@ const useStyles = makeStyles(theme => ({
 
 interface ComposerProps {
   currUserInfo: PostUserInfo | null;
-  onClickShelfUpload: () => void;
+  onClickShelfUpload: (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
   onClickProgressUpdateUpload: () => void;
   onClickWantToReadAboutUpload: () => void;
 }

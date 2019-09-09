@@ -71,6 +71,7 @@ import {
 } from '../../services/post';
 import PostCards from './PostCards';
 import PostSearchFilter from '../../components/filters/PostSearchFilter';
+import ShelfUploadModalTwo from '../../components/post-uploads/ShelfUploadModalTwo';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -263,6 +264,7 @@ export default function Home(props: HomeProps) {
   const [usersSearch, setUsersSearch] = React.useState<string>('');
   const [postsSearch, setPostsSearch] = React.useState<string>('');
   const [showShelfUpload, setShowShelfUpload] = React.useState(false);
+  const [showShelfUpload2, setShowShelfUpload2] = React.useState(false);
   const [
     showProgressUpdateUpload,
     setShowProgressUpdateUpload,
@@ -1120,6 +1122,16 @@ export default function Home(props: HomeProps) {
                   setShowWantToReadAboutUpload(true)
                 }
               />
+              <Composer
+                currUserInfo={feedViewerUserInfo}
+                onClickShelfUpload={() => setShowShelfUpload2(true)}
+                onClickProgressUpdateUpload={() =>
+                  setShowProgressUpdateUpload(true)
+                }
+                onClickWantToReadAboutUpload={() =>
+                  setShowWantToReadAboutUpload(true)
+                }
+              />
               <FilterSearch
                 onClearSearch={onClearPostsSearch}
                 onSearchSubmitted={onSearchPostsSubmitted}
@@ -1207,6 +1219,13 @@ export default function Home(props: HomeProps) {
             <ShelfUploadModal
               open={showShelfUpload}
               handleClose={() => setShowShelfUpload(false)}
+              onPostShelf={onUploadPost}
+              userId={user ? user._id : null}
+              postAuthorUserInfo={feedViewerUserInfo}
+            />
+            <ShelfUploadModalTwo
+              open={showShelfUpload2}
+              handleClose={() => setShowShelfUpload2(false)}
               onPostShelf={onUploadPost}
               userId={user ? user._id : null}
               postAuthorUserInfo={feedViewerUserInfo}
