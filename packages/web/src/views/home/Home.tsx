@@ -705,28 +705,6 @@ export default function Home(props: HomeProps) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     setShowShelfUpload(true);
-    if (postTabContainerRef.current) {
-      //@ts-ignore
-      postTabContainerElement = ReactDOM.findDOMNode(
-        postTabContainerRef.current
-      );
-      if (
-        postTabContainerElement !== null &&
-        instanceOfValidElement(postTabContainerElement)
-      ) {
-        disableBodyScroll(postTabContainerElement);
-      }
-    }
-    if (postCardsRef.current) {
-      //@ts-ignore
-      postCardsElement = ReactDOM.findDOMNode(postCardsRef.current);
-      if (
-        postCardsElement !== null &&
-        instanceOfValidElement(postCardsElement)
-      ) {
-        disableBodyScroll(postCardsElement);
-      }
-    }
   }
 
   function onClickShelfUpload2(
@@ -759,16 +737,6 @@ export default function Home(props: HomeProps) {
 
   function closeShelfUploadModal() {
     setShowShelfUpload(false);
-    //@ts-ignore
-    if (
-      postTabContainerElement !== null &&
-      instanceOfValidElement(postTabContainerElement)
-    ) {
-      enableBodyScroll(postTabContainerElement);
-    }
-    if (postCardsElement !== null && instanceOfValidElement(postCardsElement)) {
-      enableBodyScroll(postCardsElement);
-    }
   }
 
   function closeShelfUploadModal2() {

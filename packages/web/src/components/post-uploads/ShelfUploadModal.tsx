@@ -116,22 +116,9 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const readyToPost =
     shelf.length > 1 && shelfTitle.length > 0 && shelfGenres.length > 0;
 
-  const targetRef = React.useRef<HTMLDivElement>(null);
-  let targetElement: HTMLElement | Element | null = null;
-
   useEffect(() => {
     getGenres();
   }, []);
-
-  useEffect(() => {
-    if (targetRef.current && open) {
-      //@ts-ignore
-      targetElement = ReactDOM.findDOMNode(targetRef.current);
-      if (targetElement !== null && instanceOfValidElement(targetElement)) {
-        enableBodyScroll(targetElement);
-      }
-    }
-  }, [open]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
@@ -140,9 +127,6 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   }
 
   function onCloseModal() {
-    if (targetElement !== null && instanceOfValidElement(targetElement)) {
-      disableBodyScroll(targetElement);
-    }
     handleClose();
     setShelfGenres([]);
     setShelf([]);
@@ -207,7 +191,7 @@ export default function ShelfUploadModal(props: ShelfUploadModalProps) {
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
-    <div ref={targetRef}>
+    <div>
       <Dialog
         fullScreen={screenSmallerThanSm}
         fullWidth={!screenSmallerThanSm}
