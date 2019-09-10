@@ -144,17 +144,22 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
 }
 
 router.get('/userRecommendations', async (req, res) => {
-  const { userId, limit } = req.query;
+  const { userId, pageSize, clubsReceivedIds } = req.query;
   const maxRecommendations = 50;
   const minRecommendations = 1;
   const defaultRecommendations = 4;
-  const limitToUse = limit
+  const limitToUse = pageSize
     ? Math.max(
-        Math.min(parseInt(limit), maxRecommendations),
+        Math.min(parseInt(pageSize), maxRecommendations),
         minRecommendations
       )
     : defaultRecommendations;
-  const recommendedClubs = await getUserClubRecommendations(userId, limitToUse);
+  const clubsReceivedIdsArr: string[] = clubsReceivedIds ? clubsReceivedIds.split(',') : [];
+  const recommendedClubs = await getUserClubRecommendations(
+    userId,
+    limitToUse,
+    clubsReceivedIdsArr
+  );
   if (recommendedClubs.length === 0) {
     res.status(404).send(`Found no recommended clubs for user ${userId}`);
     return;

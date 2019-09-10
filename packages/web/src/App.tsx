@@ -166,6 +166,16 @@ export function App(props: AppProps) {
                 />
                 <Route
                   exact
+                  path="/clubs/recommend"
+                  render={props =>
+                    forceOnboard(
+                      user,
+                      <RecommendedClubs {...props} user={user} />
+                    )
+                  }
+                />
+                <Route
+                  exact
                   path="/onboarding"
                   render={props =>
                     forceOutOfOnboard(
@@ -203,16 +213,6 @@ export function App(props: AppProps) {
                   path="/clubs/:id"
                   render={props =>
                     forceOnboard(user, <Club {...props} user={user} />)
-                  }
-                />
-                <Route
-                  exact
-                  path="/clubs/recommend"
-                  render={props =>
-                    forceOnboard(
-                      user,
-                      <RecommendedClubs {...props} user={user} />
-                    )
                   }
                 />
                 <Route

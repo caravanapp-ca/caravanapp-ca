@@ -2,6 +2,7 @@ import {
   ReadingState,
   EmailSettings,
   UnlimitedClubMembersValue,
+  ClubRecommendationKey,
 } from '@caravan/buddy-reading-types';
 
 // This function returns the channel ID for #general-chat

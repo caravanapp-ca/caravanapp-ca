@@ -33,6 +33,27 @@ export async function getAllClubs(
   return res;
 }
 
+export async function getUserClubRecommendations(
+  userId: string,
+  pageSize?: number,
+  clubsReceivedIds?: string[]
+) {
+  const clubsReceivedIdsStr = clubsReceivedIds
+    ? clubsReceivedIds.join()
+    : undefined;
+  const res = await axios.get<Services.GetClubs['clubs']>(
+    `${clubRoute}/userRecommendations`,
+    {
+      params: {
+        userId,
+        pageSize,
+        clubsReceivedIds: clubsReceivedIdsStr,
+      },
+    }
+  );
+  return res;
+}
+
 export async function getClub(clubId: string) {
   const res = await axios.get<Services.GetClubById | null>(
     `${clubRoute}/${clubId}`

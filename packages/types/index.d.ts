@@ -297,6 +297,12 @@ declare module '@caravan/buddy-reading-types' {
     hasIndividuals?: string[];
   }
 
+  export type ClubRecommendationKey =
+    | 'currReadTBR'
+    | 'tBRMatch'
+    | 'genreMatch'
+    | 'new';
+
   export type EditableUserField =
     | 'bio'
     | 'goodreadsUrl'

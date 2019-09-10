@@ -101,7 +101,7 @@ function ElevationScroll(props: ScrollProps) {
   });
 }
 
-export default function ButtonAppBar(props: HeaderProps) {
+export default function Header(props: HeaderProps) {
   const classes = useStyles();
   const theme = useTheme();
   const {

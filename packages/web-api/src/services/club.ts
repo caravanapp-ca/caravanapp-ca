@@ -29,7 +29,8 @@ const knownHttpsRedirects = ['http://books.google.com/books/'];
 // Else, recommend clubs for the current user
 export const getUserClubRecommendations = async (
   userId: string,
-  limit: number
+  limit: number,
+  clubsReceivedIds?: string[]
 ): Promise<ClubDoc[]> => {
   const user = await getUser(userId);
   if (!user) {
@@ -41,7 +42,7 @@ export const getUserClubRecommendations = async (
   const userTBRSourceIds = user.shelf.notStarted.map(tbr => tbr.sourceId);
   const userGenreKeys = user.selectedGenres.map(sg => sg.key);
   const globalQuery: SameKeysAs<Partial<ClubDoc>> = {
-    _id: { $nin: recommendedClubIds },
+    _id: { $nin: [...clubsReceivedIds, ...recommendedClubIds] },
     unlisted: false,
   };
   const client = ReadingDiscordBot.getInstance();
