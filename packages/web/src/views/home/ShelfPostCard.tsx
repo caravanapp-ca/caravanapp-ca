@@ -238,7 +238,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             shelfName={shelfPost.title}
             shelfGenres={shelfPost.genres ? shelfPost.genres : []}
             shelfAuthorName={postAuthorInfo.name}
-            userId={currUser ? currUser._id : ''}
+            userId={currUser ? currUser._id : undefined}
           />
         </CardActions>
       </Card>

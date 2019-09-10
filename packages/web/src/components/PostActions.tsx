@@ -17,6 +17,7 @@ import {
   SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import PostLikesThumbnails from './PostLikesThumbnails';
+import DiscordLoginModal from './DiscordLoginModal';
 
 const useStyles = makeStyles(theme => ({
   actionContainer: {
@@ -55,7 +56,7 @@ interface PostActionsProps {
   shelfName: string;
   shelfGenres: SelectedGenre[];
   shelfAuthorName: string;
-  userId: string;
+  userId: string | undefined;
 }
 
 function PostActions(props: PostActionsProps) {
@@ -74,17 +75,32 @@ function PostActions(props: PostActionsProps) {
     shelfAuthorName,
     userId,
   } = props;
+
+  const [loginModalShown, setLoginModalShown] = React.useState(false);
+
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const maxLikeThumbnailsShown = screenSmallerThanSm ? 2 : 5;
 
   const likeListLength = 10;
 
+  function onCloseLoginModal() {
+    setLoginModalShown(false);
+  }
+
+  function handleLike() {
+    if (userId) {
+      onClickLike();
+    } else {
+      setLoginModalShown(true);
+    }
+  }
+
   return (
     <div className={classes.actionContainer}>
       <div className={classes.likesContainer}>
         <IconButton
-          onClick={() => onClickLike()}
+          onClick={handleLike}
           classes={{ root: classes.heartIcon }}
           disabled={likeButtonDisabled}
         >
@@ -103,34 +119,54 @@ function PostActions(props: PostActionsProps) {
         />
       </div>
       <div className={classes.createClubButtonContainer}>
-        <Link
-          component={RouterLink}
-          to={{
-            pathname: '/clubs/create',
-            state: {
-              shelf: shelf,
-              numLikes: hasLiked ? numLikes - 1 : numLikes,
-              likes: hasLiked ? likes.filter(l => l.userId !== userId) : likes,
-              likeUserIds: hasLiked
-                ? likeUserIds.filter(l => l !== userId)
-                : likeUserIds,
-              likeListLength,
-              shelfName,
-              shelfGenres,
-              shelfAuthorName,
-            },
-          }}
-          underline="none"
-        >
+        {userId && (
+          <Link
+            component={RouterLink}
+            to={{
+              pathname: '/clubs/create',
+              state: {
+                shelf: shelf,
+                numLikes: hasLiked ? numLikes - 1 : numLikes,
+                likes: hasLiked
+                  ? likes.filter(l => l.userId !== userId)
+                  : likes,
+                likeUserIds: hasLiked
+                  ? likeUserIds.filter(l => l !== userId)
+                  : likeUserIds,
+                likeListLength,
+                shelfName,
+                shelfGenres,
+                shelfAuthorName,
+              },
+            }}
+            underline="none"
+          >
+            <Button
+              className={classes.createClubButton}
+              variant="contained"
+              color="primary"
+            >
+              <Typography variant="subtitle2">
+                Create club from shelf
+              </Typography>
+            </Button>
+          </Link>
+        )}
+        {!userId && (
           <Button
             className={classes.createClubButton}
             variant="contained"
             color="primary"
+            onClick={() => setLoginModalShown(true)}
           >
             <Typography variant="subtitle2">Create club from shelf</Typography>
           </Button>
-        </Link>
+        )}
       </div>
+      <DiscordLoginModal
+        onCloseLoginDialog={onCloseLoginModal}
+        open={loginModalShown}
+      />
     </div>
   );
 }
