@@ -1,12 +1,6 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Element as ScrollElement, scroller } from 'react-scroll';
-import ReactDOM from 'react-dom';
-import {
-  disableBodyScroll,
-  enableBodyScroll,
-  clearAllBodyScrollLocks,
-} from 'body-scroll-lock';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -69,15 +63,12 @@ import CustomSnackbar, {
 } from '../../components/CustomSnackbar';
 import UserSearchFilter from '../../components/filters/UserSearchFilter';
 import Composer from '../../components/Composer';
-import ShelfUploadModal from '../../components/post-uploads/ShelfUploadModal';
-import ProgressUpdateUploadModal from '../../components/post-uploads/ProgressUpdateUploadModal';
 import {
   getAllPostsTransformed,
   getFeedViewerUserInfo,
 } from '../../services/post';
 import PostCards from './PostCards';
 import PostSearchFilter from '../../components/filters/PostSearchFilter';
-import ShelfUploadModalTwo from '../../components/post-uploads/ShelfUploadModalTwo';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -234,7 +225,14 @@ export default function Home(props: HomeProps) {
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-  const [tabValue, setTabValue] = React.useState(0);
+  const allowedTabs = [0, 1, 2];
+  const [tabValue, setTabValue] = React.useState(
+    props.location.state &&
+      props.location.state.tab &&
+      allowedTabs.includes(props.location.state.tab)
+      ? props.location.state.tab
+      : 0
+  );
   const [userSearchField, setUserSearchField] = React.useState<UserSearchField>(
     'username'
   );
@@ -279,15 +277,6 @@ export default function Home(props: HomeProps) {
   const [clubsSearch, setClubsSearch] = React.useState<string>('');
   const [usersSearch, setUsersSearch] = React.useState<string>('');
   const [postsSearch, setPostsSearch] = React.useState<string>('');
-  const [showShelfUpload, setShowShelfUpload] = React.useState(false);
-  const [
-    showProgressUpdateUpload,
-    setShowProgressUpdateUpload,
-  ] = React.useState(false);
-  const [
-    showWantToReadAboutUpload,
-    setShowWantToReadAboutUpload,
-  ] = React.useState(false);
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -696,14 +685,6 @@ export default function Home(props: HomeProps) {
     await setAfterPostsQuery(undefined);
   };
 
-  function onClickShelfUpload() {
-    setShowShelfUpload(true);
-  }
-
-  function closeShelfUploadModal() {
-    setShowShelfUpload(false);
-  }
-
   const onClearPostsSearch = async () => {
     if (postsSearch !== '') {
       await resetLoadMorePosts();
@@ -717,25 +698,6 @@ export default function Home(props: HomeProps) {
       setPostsSearch(str);
     }
   };
-
-  function onUploadPost(
-    postType: string,
-    postTransformedObj: PostWithAuthorInfoAndLikes
-  ) {
-    setPostsResult(s => ({
-      status: 'loaded',
-      payload:
-        s.status === 'loaded'
-          ? [postTransformedObj, ...s.payload]
-          : [postTransformedObj],
-    }));
-    setSnackbarProps({
-      ...snackbarProps,
-      isOpen: true,
-      variant: 'success',
-      message: `Successfully uploaded ${postType}!`,
-    });
-  }
 
   const onSeeClubsClick = () => {
     scroller.scrollTo('tabs', { smooth: true });
@@ -1129,16 +1091,7 @@ export default function Home(props: HomeProps) {
         {tabValue === 2 && (
           <>
             <Container className={classes.usersFilterGrid} maxWidth="md">
-              <Composer
-                currUserInfo={feedViewerUserInfo}
-                onClickShelfUpload={onClickShelfUpload}
-                onClickProgressUpdateUpload={() =>
-                  setShowProgressUpdateUpload(true)
-                }
-                onClickWantToReadAboutUpload={() =>
-                  setShowWantToReadAboutUpload(true)
-                }
-              />
+              <Composer currUserInfo={user ? feedViewerUserInfo : null} />
               <FilterSearch
                 onClearSearch={onClearPostsSearch}
                 onSearchSubmitted={onSearchPostsSubmitted}
@@ -1166,7 +1119,7 @@ export default function Home(props: HomeProps) {
                   postsWithAuthorInfoAndLikes={postsResult.payload}
                   feedViewerUserInfo={feedViewerUserInfo}
                   currUser={user}
-                  showResultsCount={false}
+                  showResultsCount={postsSearch.length > 0}
                   resultsLoaded={postsResult.status === 'loaded'}
                 />
               )}
@@ -1223,13 +1176,6 @@ export default function Home(props: HomeProps) {
                   <CircularProgress />
                 </div>
               )}
-            <ShelfUploadModal
-              open={showShelfUpload}
-              handleClose={closeShelfUploadModal}
-              onPostShelf={onUploadPost}
-              userId={user ? user._id : null}
-              postAuthorUserInfo={feedViewerUserInfo}
-            />
           </>
         )}
       </main>
