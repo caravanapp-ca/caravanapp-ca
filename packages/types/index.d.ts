@@ -18,6 +18,8 @@ declare module '@caravan/buddy-reading-types' {
     updatedAt: Date | string;
   }
 
+  export type ClubScheduleEvent = 'startDate' | 'endDate' | 'discussionDate';
+
   export interface Discussion {
     date: Date;
     label: string;
@@ -35,6 +37,7 @@ declare module '@caravan/buddy-reading-types' {
   export interface ClubBotSettings {
     intros: boolean;
     // Index signature for iterating
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   }
 
