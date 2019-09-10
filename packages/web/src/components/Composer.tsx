@@ -1,9 +1,13 @@
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
-import { Fab, Typography, Avatar } from '@material-ui/core';
+import { Fab, Typography, Avatar, Link, IconButton } from '@material-ui/core';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import shelfIcon from '../resources/post-icons/shelf_icon.svg';
 import { shelfPostTheme } from '../theme';
+import { washedTheme } from '../theme';
+import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
+import DiscordLoginModal from './DiscordLoginModal';
 
 const useStyles = makeStyles(theme => ({
   postTypes: {
@@ -15,6 +19,9 @@ const useStyles = makeStyles(theme => ({
   headerAvatar: {
     width: 40,
     height: 40,
+  },
+  loggedOutAvatar: {
+    backgroundColor: washedTheme.palette.primary.main,
   },
   fab: {
     margin: theme.spacing(1),
@@ -29,22 +36,18 @@ const useStyles = makeStyles(theme => ({
 
 interface ComposerProps {
   currUserInfo: PostUserInfo | null;
-  onClickShelfUpload: (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => void;
-  onClickProgressUpdateUpload: () => void;
-  onClickWantToReadAboutUpload: () => void;
 }
 
 export default function Composer(props: ComposerProps) {
   const classes = useStyles();
 
-  const {
-    currUserInfo,
-    onClickShelfUpload,
-    onClickProgressUpdateUpload,
-    onClickWantToReadAboutUpload,
-  } = props;
+  const { currUserInfo } = props;
+
+  const [loginModalShown, setLoginModalShown] = React.useState(false);
+
+  function onCloseLoginModal() {
+    setLoginModalShown(false);
+  }
 
   return (
     <div className={classes.postTypes}>
@@ -55,27 +58,60 @@ export default function Composer(props: ComposerProps) {
           className={classes.headerAvatar}
         />
       )}
+      {!currUserInfo && (
+        <IconButton className={classes.loggedOutAvatar}>
+          <GenericGroupMemberIcon color="primary" />
+        </IconButton>
+      )}
       <MuiThemeProvider theme={shelfPostTheme}>
-        <Fab
-          variant="extended"
-          aria-label="upload-shelf"
-          className={classes.fab}
-          onClick={onClickShelfUpload}
-          color="primary"
-        >
-          <Typography
-            variant="subtitle2"
-            style={{ fontWeight: 600, color: 'white' }}
+        {currUserInfo && (
+          <Link component={RouterLink} to="post/create" underline="none">
+            <Fab
+              variant="extended"
+              aria-label="upload-shelf"
+              className={classes.fab}
+              color="primary"
+            >
+              <Typography
+                variant="subtitle2"
+                style={{ fontWeight: 600, color: 'white' }}
+              >
+                Create Shelf
+              </Typography>
+              <img
+                src={shelfIcon}
+                alt="Upload shelf"
+                className={classes.postIconAvatar}
+              />
+            </Fab>
+          </Link>
+        )}
+        {!currUserInfo && (
+          <Fab
+            variant="extended"
+            aria-label="upload-shelf"
+            className={classes.fab}
+            color="primary"
+            onClick={() => setLoginModalShown(true)}
           >
-            Create Shelf
-          </Typography>
-          <img
-            src={shelfIcon}
-            alt="Upload shelf"
-            className={classes.postIconAvatar}
-          />
-        </Fab>
+            <Typography
+              variant="subtitle2"
+              style={{ fontWeight: 600, color: 'white' }}
+            >
+              Create Shelf
+            </Typography>
+            <img
+              src={shelfIcon}
+              alt="Upload shelf"
+              className={classes.postIconAvatar}
+            />
+          </Fab>
+        )}
       </MuiThemeProvider>
+      <DiscordLoginModal
+        onCloseLoginDialog={onCloseLoginModal}
+        open={loginModalShown}
+      />
     </div>
   );
 }
