@@ -1,6 +1,6 @@
 import { ClubRecommendationKey } from '@caravan/buddy-reading-types';
 
-export const getClubRecoDesc = (
+export const getClubRecommendationDescription = (
   key: ClubRecommendationKey,
   bookTitles?: string[],
   genres?: string[]

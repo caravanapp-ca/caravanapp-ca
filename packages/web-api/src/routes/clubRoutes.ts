@@ -164,8 +164,7 @@ router.get('/userRecommendations', async (req, res) => {
     res.status(404).send(`Found no recommended clubs for user ${userId}`);
     return;
   }
-  const transformedClubs = await transformToGetClubs(recommendedClubs);
-  res.status(200).send(transformedClubs);
+  res.status(200).send(recommendedClubs);
 });
 
 router.get('/', async (req, res) => {

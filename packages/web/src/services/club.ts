@@ -8,6 +8,7 @@ import {
   ClubWUninitSchedules,
   UserWithInvitableClubs,
   User,
+  ClubWithRecommendation,
 } from '@caravan/buddy-reading-types';
 import { getRandomInviteMessage } from '../common/getRandomInviteMessage';
 
@@ -41,7 +42,7 @@ export async function getUserClubRecommendations(
   const clubsReceivedIdsStr = clubsReceivedIds
     ? clubsReceivedIds.join()
     : undefined;
-  const res = await axios.get<Services.GetClubs['clubs']>(
+  const res = await axios.get<ClubWithRecommendation[]>(
     `${clubRoute}/userRecommendations`,
     {
       params: {

@@ -1,4 +1,5 @@
 import { Omit } from 'utility-types';
+import { CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS } from '../web/src/common/globalConstants';
 
 declare module '@caravan/buddy-reading-types' {
   export type FilterAutoMongoKeys<Base> = Omit<
@@ -60,10 +61,11 @@ declare module '@caravan/buddy-reading-types' {
     vibe?: GroupVibe;
   }
 
-  // This format of the Club has the current book, schedule, and owner extracted for quicker access.
+  // This format of the Club has the current schedule extracted for quicker access, and a reason for recommendation, if any.
   export interface ClubTransformed {
     club: Services.GetClubs['clubs'][0];
-    schedule: ClubReadingSchedule | null;
+    schedule?: ClubReadingSchedule | null;
+    recommendation?: ClubRecommendation;
   }
 
   export interface ClubWithMemberIds {
@@ -302,6 +304,16 @@ declare module '@caravan/buddy-reading-types' {
     | 'tBRMatch'
     | 'genreMatch'
     | 'new';
+
+  export interface ClubRecommendation {
+    key: ClubRecommendationKey;
+    description: string;
+  }
+
+  export interface ClubWithRecommendation {
+    club: Services.GetClubs['clubs'][0];
+    recommendation: ClubRecommendation;
+  }
 
   export type EditableUserField =
     | 'bio'

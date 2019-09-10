@@ -3,12 +3,17 @@ import {
   Services,
   SameKeysAs,
   Club,
+  ClubWithRecommendation,
+  ClubRecommendationKey,
 } from '@caravan/buddy-reading-types';
 import { getUser, getUsername } from './user';
 import { ClubDoc, ClubModel } from '@caravan/buddy-reading-mongo';
 import { Types } from 'mongoose';
 import { ReadingDiscordBot } from './discord';
-import { PROD_UNCOUNTABLE_IDS } from '../common/globalConstantsAPI';
+import {
+  PROD_UNCOUNTABLE_IDS,
+  CLUB_RECOMMENDATION_KEYS,
+} from '../common/globalConstantsAPI';
 import {
   Guild,
   TextChannel,
@@ -16,6 +21,7 @@ import {
   GuildMember,
   VoiceChannel,
 } from 'discord.js';
+import { getClubRecommendationDescription } from '../common/club';
 
 const knownHttpsRedirects = ['http://books.google.com/books/'];
 
@@ -31,18 +37,20 @@ export const getUserClubRecommendations = async (
   userId: string,
   limit: number,
   clubsReceivedIds?: string[]
-): Promise<ClubDoc[]> => {
+): Promise<ClubWithRecommendation[]> => {
   const user = await getUser(userId);
   if (!user) {
     console.error(`Unable to find user ${userId}`);
     return [];
   }
-  let recommendedClubDocs: ClubDoc[] = [];
+  let recommendedClubs: ClubWithRecommendation[] = [];
   let recommendedClubIds: Types.ObjectId[] = [];
   const userTBRSourceIds = user.shelf.notStarted.map(tbr => tbr.sourceId);
   const userGenreKeys = user.selectedGenres.map(sg => sg.key);
   const globalQuery: SameKeysAs<Partial<ClubDoc>> = {
-    _id: { $nin: [...clubsReceivedIds, ...recommendedClubIds] },
+    _id: {
+      $nin: [...clubsReceivedIds, ...recommendedClubIds],
+    },
     unlisted: false,
   };
   const client = ReadingDiscordBot.getInstance();
@@ -50,41 +58,66 @@ export const getUserClubRecommendations = async (
   const { discordId } = user;
   const channels = getUserChannels(guild, discordId, true);
   const channelIds = channels.map(c => c.id);
-  globalQuery.channelId = { $nin: channelIds };
+  globalQuery.channelId = {
+    $nin: channelIds,
+  };
+  // Queries and sorts must correspond with the order of CLUB_RECOMMENDATION_KEYS
+  // See globalConstantsAPI.ts
   const queries: any[] = [
     {
-      'newShelf.current.sourceId': { $in: userTBRSourceIds },
+      'newShelf.current.sourceId': {
+        $in: userTBRSourceIds,
+      },
     },
     {
-      'newShelf.notStarted.sourceId': { $in: userTBRSourceIds },
+      'newShelf.notStarted.sourceId': {
+        $in: userTBRSourceIds,
+      },
     },
     {
-      'genres.key': { $in: userGenreKeys },
+      'genres.key': {
+        $in: userGenreKeys,
+      },
     },
     {},
   ];
+  // These are all the same for now, but leaving as an array structure for flexibility in the future.
   const sorts: SameKeysAs<Partial<ClubDoc>>[] = [
     { createdAt: -1 },
     { createdAt: -1 },
     { createdAt: -1 },
     { createdAt: -1 },
   ];
-  const numSteps = 4;
+  const numSteps = CLUB_RECOMMENDATION_KEYS.length;
   let stepNum = 0;
-  while (recommendedClubDocs.length < limit && stepNum < numSteps) {
-    const query = { ...globalQuery, ...queries[stepNum] };
+  while (recommendedClubs.length < limit && stepNum < numSteps) {
+    const query = {
+      ...globalQuery,
+      ...queries[stepNum],
+    };
     const sort = sorts[stepNum];
-    const recs = await ClubModel.find(query)
+    const clubDocs = await ClubModel.find(query)
       .sort(sort)
-      .limit(limit - recommendedClubDocs.length)
+      .limit(limit - recommendedClubs.length)
       .exec();
-    const clubsToAdd = recs.slice(0, limit - recommendedClubDocs.length);
-    recommendedClubDocs = recommendedClubDocs.concat(clubsToAdd);
-    const clubsToAddIds = clubsToAdd.map(c => c._id);
-    recommendedClubIds = recommendedClubIds.concat(clubsToAddIds);
+    if(clubDocs.length > 0){
+      const transformedClubs = await transformToGetClubs(clubDocs);
+      const recs: ClubWithRecommendation[] = transformedClubs.map(club => ({
+        club,
+        recommendation: {
+          key: CLUB_RECOMMENDATION_KEYS[stepNum],
+          description: getClubRecommendationDescription(
+            CLUB_RECOMMENDATION_KEYS[stepNum]
+          ),
+        },
+      }));
+      recommendedClubs = recommendedClubs.concat(recs);
+      const clubsToAddIds = clubDocs.map(c => c._id);
+      recommendedClubIds = recommendedClubIds.concat(clubsToAddIds);
+    }
     stepNum++;
   }
-  return recommendedClubDocs;
+  return recommendedClubs;
 };
 
 // Transforms type ClubDoc[] into type Services.GetClubs['clubs']

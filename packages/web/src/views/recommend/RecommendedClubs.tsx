@@ -16,7 +16,6 @@ import { getUserClubRecommendations } from '../../services/club';
 import ClubCards from '../home/ClubCards';
 import { transformClub } from '../club/functions/ClubFunctions';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import ClubShareButtons from '../../components/ClubShareButtons';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,27 +55,29 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   const loadMoreEnabled = clubs.length % pageSize === 0;
   const rightComponent = <ProfileHeaderIcon user={user} />;
 
-  const getRecommendations = async (userId: string) => {
-    setLoadStatus('loading');
-    const res = await getUserClubRecommendations(
-      userId,
-      pageSize,
-      clubsReceivedIds
-    );
-    if (res.status === 404) {
-      setClubs([]);
-    } else if (res.status === 200) {
-      setClubs([...clubs, ...res.data.map(c => transformClub(c))]);
-    } else {
-      setClubs([]);
-      // TODO: Show snackbar indicating we had trouble finding your clubs
-    }
-    setLoadStatus('loaded');
-  };
-
-  // Things to do on mount.
   useEffect(() => {
     if (user) {
+      const getRecommendations = async (userId: string) => {
+        setLoadStatus('loading');
+        const res = await getUserClubRecommendations(
+          userId,
+          pageSize,
+          clubsReceivedIds
+        );
+        if (res.status === 404) {
+          setClubs([]);
+        } else if (res.status === 200) {
+          setClubs(clubs => [
+            ...clubs,
+            ...res.data.map(c => transformClub(c.club, c.recommendation)),
+          ]);
+        } else {
+          // This is an error condition.
+          setClubs([]);
+          // TODO: Show snackbar indicating we had trouble finding your clubs
+        }
+        setLoadStatus('loaded');
+      };
       getRecommendations(user._id);
     }
   }, [user, clubsReceivedIds]);
@@ -95,11 +96,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
       />
       <Container className={classes.root} maxWidth="md">
         {loadStatus === 'loading' && clubs.length === 0 && (
-          <>
-            <Typography>
-              Hold on while we get your recommendations...
-            </Typography>
-          </>
+          <Typography>Hold on while we get your recommendations...</Typography>
         )}
         {(loadStatus === 'loaded' || loadStatus === 'loading') &&
           clubs.length > 0 && (

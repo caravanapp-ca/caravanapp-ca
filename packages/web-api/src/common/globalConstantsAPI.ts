@@ -55,3 +55,11 @@ export const PROD_UNCOUNTABLE_IDS = [
   '592761757764812801', // caravan-admin
   '592781980026798120', // caravan-clubs-bot
 ];
+
+// In order of priority
+export const CLUB_RECOMMENDATION_KEYS: ClubRecommendationKey[] = [
+  'currReadTBR',
+  'tBRMatch',
+  'genreMatch',
+  'new',
+];
