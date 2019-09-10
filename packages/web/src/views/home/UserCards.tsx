@@ -10,10 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import {
-  User,
-  UserWithInvitableClubs,
-} from '@caravan/buddy-reading-types';
+import { User, UserWithInvitableClubs } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
@@ -121,7 +118,12 @@ const lazyloadOffset = 4;
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
-  const { usersWithInvitableClubs, currUser, showResultsCount, resultsLoaded } = props;
+  const {
+    usersWithInvitableClubs,
+    currUser,
+    showResultsCount,
+    resultsLoaded,
+  } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');
@@ -139,7 +141,7 @@ export default function UserCards(props: UserCardProps) {
   return (
     <main>
       <Container className={classes.cardGrid} maxWidth="md">
-      {showResultsCount && resultsLoaded && (
+        {showResultsCount && resultsLoaded && (
           <Typography variant="body2" color="textSecondary" gutterBottom>
             {`${usersWithInvitableClubs.length} result${
               usersWithInvitableClubs.length === 1 ? '' : 's'
@@ -339,7 +341,7 @@ export default function UserCards(props: UserCardProps) {
                             <InviteToClubMenu
                               clubsToInviteTo={u.invitableClubs}
                               loggedInUser={currUser}
-                              userToInvite={u}
+                              userToInvite={u.user}
                             />
                           </div>
                         )}

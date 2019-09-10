@@ -12,6 +12,8 @@ export { SessionDoc, SessionModel } from './models/session';
 export { UserDoc, UserModel } from './models/user';
 export { UserPalettesDoc, UserPalettesModel } from './models/userPalettes';
 export { UserSettingsDoc, UserSettingsModel } from './models/userSettings';
+export { LikesDoc, LikesModel } from './models/like';
+export { PostDoc, PostModel } from './models/post';
 
 // Export common functions
 export { checkObjectIdIsValid } from './common/mongoose';

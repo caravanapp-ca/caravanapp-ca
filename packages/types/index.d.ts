@@ -249,6 +249,64 @@ declare module '@caravan/buddy-reading-types' {
     referrals: Referral[];
   }
 
+  export interface Post extends DocumentFields, MongoTimestamps {
+    authorId: string;
+    content: PostContent;
+  }
+
+  export interface PostUserInfo {
+    userId: string;
+    name: string;
+    urlSlug: string;
+    photoUrl: string;
+    discordId: string;
+  }
+
+  export interface PostWithAuthorInfoAndLikes {
+    post: Post;
+    authorInfo: PostUserInfo;
+    likes: PostUserInfo[];
+    likeUserIds: string[];
+    numLikes: number;
+  }
+
+  export interface ShelfPost {
+    postType: 'shelf';
+    shelf: FilterAutoMongoKeys<ShelfEntry>[];
+    title: string;
+    description?: string;
+    genres?: SelectedGenre[];
+    interests?: Interest[];
+  }
+
+  export interface ProgressUpdatePost {
+    postType: 'progressUpdate';
+    book: FilterAutoMongoKeys<ShelfEntry>;
+    progressUpdateType: ProgressUpdateType;
+    containsSpoiler: boolean;
+    description: string;
+  }
+
+  export interface WantToReadAboutPost {
+    postType: 'wantToReadAbout';
+    genres?: SelectedGenre[];
+    interests?: Interest[];
+    description: string;
+  }
+
+  export interface Interest {
+    key: string;
+    name: string;
+    imageUrl?: string;
+  }
+
+  // Key will be the post id
+  export interface Likes extends DocumentFields, MongoTimestamps {
+    postId: string;
+    likes: string[];
+    numLikes: number;
+  }
+
   export interface FilterChip {
     type: FilterChipType;
     name: string;
@@ -344,6 +402,8 @@ declare module '@caravan/buddy-reading-types' {
 
   export type UserSearchField = 'bookTitle' | 'bookAuthor' | 'username';
 
+  export type PostSearchField = 'bookTitle' | 'bookAuthor' | 'postTitle';
+
   export type ReferralAction =
     | 'click'
     | 'login'
@@ -362,6 +422,21 @@ declare module '@caravan/buddy-reading-types' {
     | 'cpc';
 
   export type ReferralDestination = 'home' | 'club';
+
+  export type PostType = 'shelf' | 'progressUpdate' | 'wantToReadAbout';
+
+  export type LikeAction = 'like' | 'unlike';
+
+  export type PostContent =
+    | ShelfPost
+    | ProgressUpdatePost
+    | WantToReadAboutPost;
+
+  export type ProgressUpdateType =
+    | 'starting'
+    | 'chapterUpdate'
+    | 'plotUpdate'
+    | 'finished';
 
   export type GroupVibe =
     | 'chill'
@@ -455,14 +530,19 @@ declare module '@caravan/buddy-reading-types' {
       maxMembers: number;
       name: string;
       newShelf?: UninitClubShelfType;
-      readingSpeed: string;
+      readingSpeed: ReadingSpeed;
       unlisted: boolean;
+      usersToInviteIds: string[];
+      currUser: User | null;
       vibe: string;
     }
     export interface CreateClubResult {
       club: Club;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       discord: any;
+    }
+    export interface UploadPostResult {
+      post: Post;
     }
     export interface GetGenres extends Omit<Genres, '_id'> {}
     export interface ReadingPreferencesResult {
@@ -499,6 +579,24 @@ declare module '@caravan/buddy-reading-types' {
         badges: UserBadge[];
         createdAt: string;
         updatedAt: string;
+      }[];
+    }
+    export interface GetPosts {
+      posts: {
+        _id: string;
+        createdAt: string;
+        updatedAt: string;
+        authorId: string;
+        content: PostContent;
+      }[];
+    }
+    export interface GetPostsWithAuthorInfoAndLikes {
+      posts: {
+        post: Post;
+        authorInfo: PostUserInfo;
+        likes: PostUserInfo[];
+        likeUserIds: string[];
+        numLikes: number;
       }[];
     }
   }

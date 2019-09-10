@@ -122,8 +122,9 @@ router.get('/', async (req, res) => {
         break;
       case 'username':
       default:
-        fuseSearchKey = 'name';
+        fuseSearchKey = 'urlSlug';
         fuseOptions = {
+          caseSensitive: false,
           // TODO: Typescript doesn't like the use of keys here.
           // @ts-ignore
           keys: [fuseSearchKey],

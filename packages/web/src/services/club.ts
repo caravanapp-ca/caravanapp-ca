@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {
   Services,
   ShelfEntry,
@@ -9,7 +9,11 @@ import {
   UserWithInvitableClubs,
   User,
 } from '@caravan/buddy-reading-types';
-import { getRandomInviteMessage } from '../common/getRandomInviteMessage';
+import {
+  getRandomInviteMessage,
+  getRandomInviteMessageFromShelf,
+} from '../common/getRandomInviteMessage';
+import { getUser } from './user';
 
 const clubRoute = '/api/club';
 const discordRoute = '/api/discord';
@@ -108,7 +112,7 @@ export async function deleteClub(clubId: string) {
 export async function updateShelf(
   clubId: string,
   newShelf: {
-    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[];
+    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
   }
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/shelf`, {
@@ -125,6 +129,39 @@ export async function createClub(body: Services.CreateClubProps) {
   return res;
 }
 
+export async function sendInvitesToClubFromShelf(
+  res: AxiosResponse<Services.CreateClubResult | null>,
+  props: Services.CreateClubProps
+) {
+  if (
+    res.status >= 200 &&
+    res.status < 300 &&
+    props.currUser &&
+    props.currUser !== null &&
+    props.usersToInviteIds &&
+    props.usersToInviteIds.length > 0 &&
+    res.data &&
+    res.data.club &&
+    res.data.club._id
+  ) {
+    props.usersToInviteIds.map(async userId => {
+      const user = await getUser(userId);
+      if (user && user.discordId) {
+        // ts-ignore here because it  doesn't recognize that res.data.club_id and props.currUser can't be null due to
+        // the if statement above
+        inviteToClubFromShelf(
+          //@ts-ignore
+          props.currUser,
+          user.discordId,
+          props.name,
+          //@ts-ignore
+          res.data.club._id
+        );
+      }
+    });
+  }
+}
+
 export async function modifyClub(
   newClub: Services.GetClubById | ClubWUninitSchedules
 ) {
@@ -137,7 +174,7 @@ export async function modifyClub(
 
 export async function inviteToClub(
   currentUser: User,
-  userToInvite: UserWithInvitableClubs,
+  userToInviteDiscordId: string,
   clubName: string,
   clubId: string
 ) {
@@ -147,7 +184,27 @@ export async function inviteToClub(
     clubId
   );
   const res = await axios.post(
-    `${discordRoute}/members/${userToInvite.user.discordId}/messages`,
+    `${discordRoute}/members/${userToInviteDiscordId}/messages`,
+    {
+      messageContent,
+    }
+  );
+  return res;
+}
+
+export async function inviteToClubFromShelf(
+  currentUser: User,
+  userToInviteDiscordId: string,
+  clubName: string,
+  clubId: string
+) {
+  const messageContent = getRandomInviteMessageFromShelf(
+    currentUser.name || currentUser.urlSlug || 'A Caravan user',
+    clubName,
+    clubId
+  );
+  const res = await axios.post(
+    `${discordRoute}/members/${userToInviteDiscordId}/messages`,
     {
       messageContent,
     }
