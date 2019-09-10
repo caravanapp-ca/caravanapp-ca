@@ -458,6 +458,10 @@ export default function Home(props: HomeProps) {
     getGenres();
   }, []);
 
+  useEffect(() => {
+    props.history.replace({ state: { tab: tabValue } });
+  }, [tabValue]);
+
   function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
   }

@@ -121,8 +121,7 @@ export default function CreateClub(props: CreateClubProps) {
       edge="start"
       color="inherit"
       aria-label="Back"
-      component={AdapterLink}
-      to="/"
+      onClick={backButtonAction}
     >
       <BackIcon />
     </IconButton>
@@ -178,7 +177,6 @@ export default function CreateClub(props: CreateClubProps) {
   );
   const [unlistedClub, setUnlistedClub] = React.useState(false);
   const [sendInvites, setSendInvites] = React.useState(true);
-  const [showInviteList, setShowInviteList] = React.useState(false);
   const [creatingClub, setCreatingClub] = React.useState(false);
   const [
     createdClub,
@@ -254,6 +252,14 @@ export default function CreateClub(props: CreateClubProps) {
       setCreatedClub(data);
     }
     sendInvitesToClubFromShelf(createdClubRes, clubObj);
+  }
+
+  function backButtonAction() {
+    if (props.history.length > 2) {
+      props.history.goBack();
+    } else {
+      props.history.replace('/');
+    }
   }
 
   const getGenres = async () => {
