@@ -21,12 +21,12 @@ export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
   shelf: ShelfEntryDoc[];
 }
 
-const genresSchema = new Schema({
-  name: String,
+export const genresSchema = new Schema({
   key: String,
+  name: String,
 });
 
-const shelfSchemaDefinition: MongooseSchema<ShelfEntry> = {
+export const shelfSchemaDefinition: MongooseSchema<ShelfEntry> = {
   amazonLink: { type: String },
   author: { type: String },
   coverImageURL: { type: String },

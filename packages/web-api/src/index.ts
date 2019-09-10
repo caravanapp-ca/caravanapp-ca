@@ -16,6 +16,8 @@ import discordRoutes from './routes/discordRoutes';
 import referralRoutes from './routes/referralRoutes';
 import userPalettesRoutes from './routes/userPalettesRoutes';
 import userSettingsRoutes from './routes/userSettingsRoutes';
+import postRoutes from './routes/postRoutes';
+import likeRoutes from './routes/likeRoutes';
 
 import {
   connect as connectToDb,
@@ -85,6 +87,8 @@ import { pubsubClient } from './common/pubsub';
   app.use('/api/referrals', referralRoutes);
   app.use('/api/userPalettes', userPalettesRoutes);
   app.use('/api/userSettings', userSettingsRoutes);
+  app.use('/api/posts', postRoutes);
+  app.use('/api/likes', likeRoutes);
 
   if (env === 'production') {
     app.use(express.static(path.join(__dirname, '../../web/build')));

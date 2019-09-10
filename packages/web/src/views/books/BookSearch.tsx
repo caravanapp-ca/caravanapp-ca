@@ -108,6 +108,7 @@ export default function BookSearch(props: BookSearchProps) {
 
   useEffect(() => {
     if (inheritSearchedBooks) {
+      setBookToRead(inheritSearchedBooks[0]);
       setSelectedBooks(inheritSearchedBooks);
     }
   }, [inheritSearchedBooks]);

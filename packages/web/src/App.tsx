@@ -36,6 +36,7 @@ import { validateDiscordPermissions } from './services/auth';
 import { getDiscordAuthUrl } from './common/auth';
 import Settings from './views/settings/Settings';
 import RecommendedClubs from './views/recommend/RecommendedClubs';
+import CreateShelf from './components/post-uploads/CreateShelf';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -172,6 +173,13 @@ export function App(props: AppProps) {
                       user,
                       <RecommendedClubs {...props} user={user} />
                     )
+                  }
+                />
+                <Route
+                  exact
+                  path="/post/create"
+                  render={props =>
+                    forceOnboard(user, <CreateShelf {...props} user={user} />)
                   }
                 />
                 <Route

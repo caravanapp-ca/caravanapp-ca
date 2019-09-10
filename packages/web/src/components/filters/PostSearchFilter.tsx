@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserSearchField } from '@caravan/buddy-reading-types';
+import { PostSearchField } from '@caravan/buddy-reading-types';
 import { Select, FormControl, InputLabel, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -12,7 +12,6 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
     paddingTop: 12,
-    paddingHorizontal: 12,
   },
   formControl: {
     margin: theme.spacing(1),
@@ -20,14 +19,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface UserSearchFilterProps {
+interface PostSearchFilterProps {
   handleChange: (
     event: React.ChangeEvent<{ name?: string; value: unknown }>
   ) => void;
-  searchField: UserSearchField;
+  searchField: PostSearchField;
 }
 
-export default function UserSearchFilter(props: UserSearchFilterProps) {
+export default function PostSearchFilter(props: PostSearchFilterProps) {
   const classes = useStyles();
 
   const { handleChange, searchField } = props;
@@ -35,23 +34,19 @@ export default function UserSearchFilter(props: UserSearchFilterProps) {
   return (
     <form className={classes.root} autoComplete="off">
       <FormControl className={classes.formControl}>
-        <InputLabel htmlFor="user-search-simple">Find readers</InputLabel>
+        <InputLabel htmlFor="post-search-simple">Find shelves</InputLabel>
         <Select
           value={searchField}
           onChange={handleChange}
           inputProps={{
-            name: 'user-search',
-            id: 'user-search-simple',
+            name: 'post-search',
+            id: 'post-search-simple',
           }}
           disableUnderline
         >
-          <MenuItem value={'username'}>By user name</MenuItem>
-          <MenuItem value={'bookTitle'}>
-            By title of book on their shelf
-          </MenuItem>
-          <MenuItem value={'bookAuthor'}>
-            By author of book on their shelf
-          </MenuItem>
+          <MenuItem value={'bookTitle'}>By book title</MenuItem>
+          <MenuItem value={'bookAuthor'}>By book author</MenuItem>
+          <MenuItem value={'postTitle'}>By shelf title</MenuItem>
         </Select>
       </FormControl>
     </form>

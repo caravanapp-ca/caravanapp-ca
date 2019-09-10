@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Element, scroller } from 'react-scroll';
+import { Element as ScrollElement, scroller } from 'react-scroll';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,6 +21,10 @@ import {
   ClubWithMemberIds,
   UserWithInvitableClubs,
   UserSearchField,
+  Post,
+  PostUserInfo,
+  PostWithAuthorInfoAndLikes,
+  PostSearchField,
 } from '@caravan/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
@@ -58,6 +62,13 @@ import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
 import UserSearchFilter from '../../components/filters/UserSearchFilter';
+import Composer from '../../components/Composer';
+import {
+  getAllPostsTransformed,
+  getFeedViewerUserInfo,
+} from '../../services/post';
+import PostCards from './PostCards';
+import PostSearchFilter from '../../components/filters/PostSearchFilter';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
@@ -85,12 +96,6 @@ const useStyles = makeStyles(theme => ({
   heroButtons: {
     marginTop: theme.spacing(4),
   },
-  tabs: {
-    position: 'relative',
-    zIndex: 1,
-    flexGrow: 1,
-    backgroundColor: '#FFFFFF',
-  },
   bottomAuthButton: {
     display: 'flex',
     justifyContent: 'center',
@@ -111,7 +116,7 @@ const useStyles = makeStyles(theme => ({
   },
   usersFilterGrid: {
     marginTop: '16px',
-    padding: '0px 8px',
+    padding: '0px 16px',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -157,6 +162,16 @@ export function shuffleUser(user: User) {
   return user;
 }
 
+function instanceOfValidElement(object: any) {
+  if (object instanceof HTMLElement) {
+    return true;
+  } else if (object instanceof Element) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const centerComponent = (
   <>
     {window.innerWidth < theme.breakpoints.values.sm ? (
@@ -186,25 +201,57 @@ export default function Home(props: HomeProps) {
   const [usersResult, setUsersResult] = React.useState<
     Service<UserWithInvitableClubs[]>
   >({ status: 'loading' });
+  const [postsResult, setPostsResult] = React.useState<
+    Service<PostWithAuthorInfoAndLikes[]>
+  >({
+    status: 'loading',
+  });
+  const [
+    feedViewerUserInfo,
+    setFeedViewerUserInfo,
+  ] = React.useState<PostUserInfo | null>(null);
   const [loadingMoreUsers, setLoadingMoreUsers] = React.useState<boolean>(
     false
   );
   const [loadingMoreClubs, setLoadingMoreClubs] = React.useState<boolean>(
     false
   );
+  const [loadingMorePosts, setLoadingMorePosts] = React.useState<boolean>(
+    false
+  );
+  const [currUsersClubs, setCurrUsersClubs] = React.useState<
+    Services.GetClubById[]
+  >([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
-  const [tabValue, setTabValue] = React.useState(0);
+  const allowedTabs = [0, 1, 2];
+  const [tabValue, setTabValue] = React.useState(
+    props.location.state &&
+      props.location.state.tab &&
+      allowedTabs.includes(props.location.state.tab)
+      ? props.location.state.tab
+      : 0
+  );
   const [userSearchField, setUserSearchField] = React.useState<UserSearchField>(
     'username'
+  );
+  const [postSearchField, setPostSearchField] = React.useState<PostSearchField>(
+    'bookTitle'
   );
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [afterClubsQuery, setAfterClubsQuery] = React.useState<
     string | undefined
   >(undefined);
+  const [afterUsersQuery, setAfterUsersQuery] = React.useState<
+    string | undefined
+  >(undefined);
+  const [afterPostsQuery, setAfterPostsQuery] = React.useState<
+    string | undefined
+  >(undefined);
   const [showLoadMoreClubs, setShowLoadMoreClubs] = React.useState(false);
   const [showLoadMoreUsers, setShowLoadMoreUsers] = React.useState(false);
+  const [showLoadMorePosts, setShowLoadMorePosts] = React.useState(false);
   const [allGenres, setAllGenres] = React.useState<Services.GetGenres | null>(
     null
   );
@@ -218,9 +265,6 @@ export default function Home(props: HomeProps) {
   const [activeClubsFilter, setActiveClubsFilter] = React.useState<
     ActiveFilter
   >(defaultActiveFilter);
-  const [afterUsersQuery, setAfterUsersQuery] = React.useState<
-    string | undefined
-  >(undefined);
   const clubGenreFiltersApplied = activeClubsFilter.genres.length > 0;
   const clubSpeedFiltersApplied = activeClubsFilter.speed.length > 0;
   const clubCapacityFiltersApplied = activeClubsFilter.capacity.length > 0;
@@ -232,6 +276,7 @@ export default function Home(props: HomeProps) {
     clubMembershipFiltersApplied;
   const [clubsSearch, setClubsSearch] = React.useState<string>('');
   const [usersSearch, setUsersSearch] = React.useState<string>('');
+  const [postsSearch, setPostsSearch] = React.useState<string>('');
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -317,16 +362,18 @@ export default function Home(props: HomeProps) {
             {
               genres: [],
               speed: [],
-              capacity: [
-                { key: 'spotsAvailable', name: 'Available', type: 'capacity' },
-              ],
+              capacity: [],
               membership: [
                 { key: 'myClubs', name: 'My clubs', type: 'membership' },
               ],
             }
           );
           if (currUserClubsRes.status === 200) {
-            currUserClubsWithMembers = currUserClubsRes.data.map(c => {
+            setCurrUsersClubs(currUserClubsRes.data);
+            const clubsWithOpenSpots = currUserClubsRes.data.filter(
+              c => c.members.length < c.maxMembers
+            );
+            currUserClubsWithMembers = clubsWithOpenSpots.map(c => {
               const memberIds = c.members.map(m => m._id);
               return { club: c, memberIds };
             });
@@ -358,6 +405,47 @@ export default function Home(props: HomeProps) {
     setLoadingMoreUsers(true);
   }, [user, userLoaded, afterUsersQuery, usersSearch, userSearchField]);
 
+  useEffect(() => {
+    if (!userLoaded) {
+      return;
+    }
+    const pageSize = 12;
+    setLoadingMorePosts(true);
+    (async () => {
+      const res = await getAllPostsTransformed(
+        afterPostsQuery,
+        pageSize,
+        postsSearch,
+        postSearchField
+      );
+      if (res.status === 200) {
+        const allPostsWithAuthorInfoAndLikes = res.data
+          ? res.data.posts
+          : undefined;
+        if (allPostsWithAuthorInfoAndLikes) {
+          setShowLoadMorePosts(
+            allPostsWithAuthorInfoAndLikes.length === pageSize
+          );
+          setPostsResult(s => ({
+            status: 'loaded',
+            payload:
+              s.status === 'loaded'
+                ? [...s.payload, ...allPostsWithAuthorInfoAndLikes]
+                : allPostsWithAuthorInfoAndLikes,
+          }));
+          setLoadingMorePosts(false);
+        }
+      }
+      if (user) {
+        const feedViewerUserInfoRes = await getFeedViewerUserInfo(user._id);
+        if (feedViewerUserInfoRes.status === 200) {
+          setFeedViewerUserInfo(feedViewerUserInfoRes.data);
+        }
+      }
+    })();
+    setLoadingMorePosts(true);
+  }, [user, userLoaded, afterPostsQuery, postsSearch, postSearchField]);
+
   // Get genres on mount
   useEffect(() => {
     const getGenres = async () => {
@@ -369,6 +457,10 @@ export default function Home(props: HomeProps) {
     };
     getGenres();
   }, []);
+
+  useEffect(() => {
+    props.history.replace({ state: { tab: tabValue } });
+  }, [tabValue]);
 
   function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
@@ -392,9 +484,15 @@ export default function Home(props: HomeProps) {
   ) => {
     const userSearchFieldValue = event.target.value as UserSearchField;
     setUserSearchField(userSearchFieldValue);
-    if (usersSearch !== '') {
-      await resetLoadMoreUsers();
-    }
+    resetLoadMoreUsers();
+  };
+
+  const handlePostSearchFieldChange = async (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => {
+    const postSearchFieldValue = event.target.value as PostSearchField;
+    setPostSearchField(postSearchFieldValue);
+    await resetLoadMorePosts();
   };
 
   function onCloseLoginModal() {
@@ -583,6 +681,28 @@ export default function Home(props: HomeProps) {
     }
   };
 
+  const resetLoadMorePosts = async () => {
+    await setPostsResult(s => ({
+      ...s,
+      status: 'loading',
+    }));
+    await setAfterPostsQuery(undefined);
+  };
+
+  const onClearPostsSearch = async () => {
+    if (postsSearch !== '') {
+      await resetLoadMorePosts();
+      setPostsSearch('');
+    }
+  };
+
+  const onSearchPostsSubmitted = async (str: string) => {
+    if (str !== postsSearch) {
+      await resetLoadMorePosts();
+      setPostsSearch(str);
+    }
+  };
+
   const onSeeClubsClick = () => {
     scroller.scrollTo('tabs', { smooth: true });
   };
@@ -633,6 +753,11 @@ export default function Home(props: HomeProps) {
     emptyUsersFilterResultMsg += ' Try other search terms.';
   }
 
+  let emptyPostsFilterResultMsg = 'Oops...no shelves turned up!';
+  if (postsSearch.length > 0) {
+    emptyPostsFilterResultMsg += ' Try other search terms.';
+  }
+
   return (
     <>
       <Header
@@ -648,7 +773,7 @@ export default function Home(props: HomeProps) {
             onSeeClubsClick={onSeeClubsClick}
           />
         )}
-        <Element name="tabs">
+        <ScrollElement name="tabs">
           <Tabs
             value={tabValue}
             onChange={handleTabChange}
@@ -657,10 +782,11 @@ export default function Home(props: HomeProps) {
             variant={screenSmallerThanMd ? 'fullWidth' : undefined}
             centered={!screenSmallerThanMd}
           >
-            <Tab label="Join Clubs" />
-            <Tab label="Find A Buddy" />
+            <Tab label="Join Clubs" style={{ fontSize: '13px' }} />
+            <Tab label="Find A Buddy" style={{ fontSize: '13px' }} />
+            <Tab label="Find Books" style={{ fontSize: '13px' }} />
           </Tabs>
-        </Element>
+        </ScrollElement>
         {tabValue === 0 && (
           <>
             <Container className={classes.clubsFilterGrid} maxWidth="md">
@@ -780,6 +906,19 @@ export default function Home(props: HomeProps) {
                   >
                     <Typography variant="button">LOAD MORE...</Typography>
                   </Button>
+                </div>
+              )}
+            {clubsTransformedResult.status === 'loaded' &&
+              showLoadMoreClubs &&
+              loadingMoreClubs && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <CircularProgress />
                 </div>
               )}
             <GenreFilterModal
@@ -941,6 +1080,96 @@ export default function Home(props: HomeProps) {
             {usersResult.status === 'loaded' &&
               showLoadMoreUsers &&
               loadingMoreUsers && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <CircularProgress />
+                </div>
+              )}
+          </>
+        )}
+        {tabValue === 2 && (
+          <>
+            <Container className={classes.usersFilterGrid} maxWidth="md">
+              <Composer currUserInfo={user ? feedViewerUserInfo : null} />
+              <FilterSearch
+                onClearSearch={onClearPostsSearch}
+                onSearchSubmitted={onSearchPostsSubmitted}
+                searchBoxLabel={
+                  postSearchField === 'bookTitle'
+                    ? 'Search shelves by book title'
+                    : postSearchField === 'bookAuthor'
+                    ? 'Search shelves by book author'
+                    : 'Search shelves by shelf title'
+                }
+                searchBoxLabelSmall={'Search shelves'}
+                searchBoxId={'shelf-search'}
+                loadingMore={loadingMorePosts}
+              />
+              <PostSearchFilter
+                handleChange={handlePostSearchFieldChange}
+                searchField={postSearchField}
+              />
+            </Container>
+            {(postsResult.status === 'loaded' ||
+              postsResult.status === 'loading') &&
+              postsResult.payload &&
+              postsResult.payload.length > 0 && (
+                <PostCards
+                  postsWithAuthorInfoAndLikes={postsResult.payload}
+                  feedViewerUserInfo={feedViewerUserInfo}
+                  currUser={user}
+                  showResultsCount={postsSearch.length > 0}
+                  resultsLoaded={postsResult.status === 'loaded'}
+                />
+              )}
+            {postsResult.status === 'loaded' &&
+              postsResult.payload.length === 0 &&
+              postsSearch.length > 0 && (
+                <Typography
+                  color="textSecondary"
+                  style={{
+                    textAlign: 'center',
+                    fontStyle: 'italic',
+                    marginTop: theme.spacing(4),
+                    marginBottom: theme.spacing(4),
+                  }}
+                >
+                  {emptyPostsFilterResultMsg}
+                </Typography>
+              )}
+            {postsResult.status === 'loaded' &&
+              showLoadMorePosts &&
+              !loadingMorePosts && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Button
+                    color="primary"
+                    className={classes.button}
+                    variant="outlined"
+                    onClick={() =>
+                      setAfterPostsQuery(
+                        postsResult.payload[postsResult.payload.length - 1].post
+                          ._id
+                      )
+                    }
+                  >
+                    <Typography variant="button">LOAD MORE...</Typography>
+                  </Button>
+                </div>
+              )}
+            {postsResult.status === 'loaded' &&
+              showLoadMorePosts &&
+              loadingMorePosts && (
                 <div
                   style={{
                     display: 'flex',
