@@ -61,8 +61,8 @@ import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import ScheduleView from './schedule-view/ScheduleView';
 import { getAllGenres } from '../../services/genre';
 import {
-  DEFAULT_CLUB_SCHED_DURATION,
-  DEFAULT_CLUB_SCHED_DISC_FREQ,
+  DEFAULT_SCHEDULE_DURATION_WEEKS,
+  DEFAULT_DISCUSSION_FREQ_DAYS,
   UNLIMITED_CLUB_MEMBERS_VALUE,
 } from '../../common/globalConstants';
 
@@ -386,8 +386,8 @@ export default function ClubComponent(props: ClubProps) {
     setSchedule({
       shelfEntryId: currBook._id,
       startDate: null,
-      duration: DEFAULT_CLUB_SCHED_DURATION,
-      discussionFrequency: DEFAULT_CLUB_SCHED_DISC_FREQ,
+      duration: DEFAULT_SCHEDULE_DURATION_WEEKS,
+      discussionFrequency: DEFAULT_DISCUSSION_FREQ_DAYS,
       discussions: [],
     });
   };
