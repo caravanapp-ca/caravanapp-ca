@@ -42,13 +42,15 @@ import {
 } from '@caravan/buddy-reading-types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {
-  MIN_SCHEDULE_LENGTH_DAYS,
-  MIN_SCHEDULE_LENGTH_WEEKS,
-  MAX_SCHEDULE_LENGTH_WEEKS,
+  MIN_SCHEDULE_DURATION_DAYS,
+  MIN_SCHEDULE_DURATION_WEEKS,
+  MAX_SCHEDULE_DURATION_WEEKS,
   MIN_DISCUSSION_FREQ_DAYS,
   MAX_DISCUSSION_FREQ_DAYS,
   DAYS_IN_WEEK,
   CUSTOM_DISCUSSION_FREQ_VALUE,
+  DEFAULT_SCHEDULE_DURATION_WEEKS,
+  DEFAULT_SCHEDULE_DURATION_DAYS,
 } from '../../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -59,6 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
     day: {
       width: 36,
       height: 36,
+      // TODO: Remove margin from the day of week headers so everything aligns nicely.
       // This aligns the days with the day of week headers, but makes the highlight circles stretched
       // margin: "0 2px",
       fontSize: theme.typography.caption.fontSize,
@@ -226,7 +229,6 @@ export default function ScheduleView(props: ScheduleViewProps) {
 
   // Placed this here because I was getting the error:
   // React Hooks must be called in the exact same order in every component render.
-
   const { pickerProps } = usePickerState(
     {
       value: currentlySelectedDate,
@@ -471,7 +473,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
       case 'startDate':
         if (!newSchedule.startDate || !newSchedule.duration) {
           newSchedule.startDate = date;
-          newSchedule.duration = MIN_SCHEDULE_LENGTH_WEEKS;
+          newSchedule.duration = DEFAULT_SCHEDULE_DURATION_WEEKS;
+          onCustomUpdateSchedule(newSchedule);
           break;
         }
         const endDate = addDays(
@@ -479,9 +482,9 @@ export default function ScheduleView(props: ScheduleViewProps) {
           newSchedule.duration * DAYS_IN_WEEK
         );
         if (
-          differenceInCalendarDays(endDate, date) < MIN_SCHEDULE_LENGTH_DAYS
+          differenceInCalendarDays(endDate, date) < MIN_SCHEDULE_DURATION_DAYS
         ) {
-          newSchedule.duration = MIN_SCHEDULE_LENGTH_WEEKS;
+          newSchedule.duration = MIN_SCHEDULE_DURATION_WEEKS;
         } else {
           newSchedule.duration =
             differenceInCalendarDays(endDate, date) / DAYS_IN_WEEK;
@@ -526,15 +529,18 @@ export default function ScheduleView(props: ScheduleViewProps) {
         break;
       case 'endDate':
         if (!newSchedule.startDate) {
-          newSchedule.startDate = addDays(date, -MIN_SCHEDULE_LENGTH_DAYS);
+          newSchedule.startDate = addDays(
+            date,
+            -DEFAULT_SCHEDULE_DURATION_DAYS
+          );
         }
         let durationInDays = differenceInCalendarDays(
           date,
           newSchedule.startDate
         );
-        if (durationInDays < MIN_SCHEDULE_LENGTH_DAYS) {
-          newSchedule.startDate = addDays(date, -MIN_SCHEDULE_LENGTH_DAYS);
-          durationInDays = MIN_SCHEDULE_LENGTH_DAYS;
+        if (durationInDays < MIN_SCHEDULE_DURATION_DAYS) {
+          newSchedule.startDate = addDays(date, -MIN_SCHEDULE_DURATION_DAYS);
+          durationInDays = MIN_SCHEDULE_DURATION_DAYS;
         }
         newSchedule.duration = durationInDays / DAYS_IN_WEEK;
         newSchedule.discussions = makeValidDiscussionArray(newSchedule);
@@ -604,8 +610,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
             }
             step={1}
             marks
-            min={MIN_SCHEDULE_LENGTH_WEEKS}
-            max={MAX_SCHEDULE_LENGTH_WEEKS}
+            min={MIN_SCHEDULE_DURATION_WEEKS}
+            max={MAX_SCHEDULE_DURATION_WEEKS}
             value={duration ? Math.round(duration) : undefined}
           />
         </div>
