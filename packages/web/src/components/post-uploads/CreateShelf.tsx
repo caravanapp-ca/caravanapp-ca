@@ -78,21 +78,9 @@ export default function CreateShelf(props: CreateShelfProps) {
     shelf.length > 1 && shelfTitle.length > 0 && shelfGenres.length > 0;
 
   const leftComponent = (
-    <Link
-      component={RouterLink}
-      to={{
-        pathname: '/clubs',
-        state: {
-          tab: 2,
-        },
-      }}
-      underline="none"
-      color="inherit"
-    >
-      <Button color="inherit" onClick={onCloseModal}>
-        Cancel
-      </Button>
-    </Link>
+    <Button color="inherit" onClick={onCloseModal}>
+      Cancel
+    </Button>
   );
 
   const centerComponent = <HeaderTitle title="Create Shelf" />;
@@ -120,10 +108,7 @@ export default function CreateShelf(props: CreateShelfProps) {
 
   useEffect(() => {
     if (createdShelf) {
-      props.history.replace({
-        pathname: `/`,
-        state: { tab: 2 },
-      });
+      props.history.goBack();
     }
   }, [createdShelf]);
 
@@ -138,6 +123,7 @@ export default function CreateShelf(props: CreateShelfProps) {
     setShelf([]);
     setShelfTitle('');
     setShelfDescription('');
+    props.history.goBack();
   }
 
   async function postShelf() {
