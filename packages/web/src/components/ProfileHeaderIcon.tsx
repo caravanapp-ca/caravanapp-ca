@@ -75,6 +75,11 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
     window.open(DISCORD_GUILD_LINK, '_blank');
   }
 
+  function handleLogout() {
+    props.history.replace({ state: {} });
+    logout();
+  }
+
   return (
     <>
       {user ? (
@@ -120,7 +125,7 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
         <MenuItem onClick={navigateToYourProfile}>Your profile</MenuItem>
         <MenuItem onClick={navigateToSettings}>Settings</MenuItem>
         <MenuItem onClick={openChat}>Open chat</MenuItem>
-        <MenuItem onClick={logout}>Log out</MenuItem>
+        <MenuItem onClick={handleLogout}>Log out</MenuItem>
       </Menu>
       <DiscordLoginModal
         onCloseLoginDialog={onCloseLoginModal}
