@@ -773,6 +773,7 @@ export default function Home(props: HomeProps) {
   };
 
   const onSeeClubsClick = () => {
+    setTabValue(0);
     scroller.scrollTo('tabs', { smooth: true });
   };
 
