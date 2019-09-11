@@ -475,9 +475,9 @@ export default function Home(props: HomeProps) {
   // else statement in the useEffect below)
   useEffect(() => {
     if (props.history.location.state) {
-      const origState = props.history.location.state;
-      origState.tab = tabValue;
-      props.history.replace({ state: origState });
+      const newState = props.history.location.state;
+      newState.tab = tabValue;
+      props.history.replace({ state: newState });
     } else {
       props.history.replace({ state: { tab: tabValue } });
     }
@@ -485,49 +485,49 @@ export default function Home(props: HomeProps) {
 
   useEffect(() => {
     if (props.history.location.state) {
-      const origState = props.history.location.state;
-      origState.clubsFilter = activeClubsFilter;
-      props.history.replace({ state: origState });
+      const newState = props.history.location.state;
+      newState.clubsFilter = activeClubsFilter;
+      props.history.replace({ state: newState });
     }
   }, [activeClubsFilter]);
 
   useEffect(() => {
     if (props.history.location.state) {
-      const origState = props.history.location.state;
-      origState.clubsSearch = clubsSearch;
-      props.history.replace({ state: origState });
+      const newState = props.history.location.state;
+      newState.clubsSearch = clubsSearch;
+      props.history.replace({ state: newState });
     }
   }, [clubsSearch]);
 
   useEffect(() => {
     if (props.history.location.state) {
-      const origState = props.history.location.state;
-      origState.usersSearch = usersSearch;
-      props.history.replace({ state: origState });
+      const newState = props.history.location.state;
+      newState.usersSearch = usersSearch;
+      props.history.replace({ state: newState });
     }
   }, [usersSearch]);
 
   useEffect(() => {
     if (props.history.location.state) {
-      const origState = props.history.location.state;
-      origState.userSearchField = userSearchField;
-      props.history.replace({ state: origState });
+      const newState = props.history.location.state;
+      newState.userSearchField = userSearchField;
+      props.history.replace({ state: newState });
     }
   }, [userSearchField]);
 
   useEffect(() => {
     if (props.history.location.state) {
-      const origState = props.history.location.state;
-      origState.postsSearch = postsSearch;
-      props.history.replace({ state: origState });
+      const newState = props.history.location.state;
+      newState.postsSearch = postsSearch;
+      props.history.replace({ state: newState });
     }
   }, [postsSearch]);
 
   useEffect(() => {
     if (props.history.location.state) {
-      const origState = props.history.location.state;
-      origState.postSearchField = postSearchField;
-      props.history.replace({ state: origState });
+      const newState = props.history.location.state;
+      newState.postSearchField = postSearchField;
+      props.history.replace({ state: newState });
     }
   }, [postSearchField]);
 
