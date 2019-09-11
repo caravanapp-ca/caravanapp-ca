@@ -1,5 +1,4 @@
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { makeStyles, Link, Typography } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import { PostUserInfo } from '@caravan/buddy-reading-types';

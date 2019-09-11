@@ -6,7 +6,6 @@ import {
   ReadingState,
   ActiveFilter,
   ClubWUninitSchedules,
-  UserWithInvitableClubs,
   User,
 } from '@caravan/buddy-reading-types';
 import {

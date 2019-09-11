@@ -11,7 +11,6 @@ import {
   User,
 } from '@caravan/buddy-reading-types';
 import theme from '../../theme';
-import Truncate from 'react-truncate';
 import ShelfPostCardShelfList from '../../components/ShelfPostCardShelfList';
 import PostHeader from '../../components/PostHeader';
 import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
