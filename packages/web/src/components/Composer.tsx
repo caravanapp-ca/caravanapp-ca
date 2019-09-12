@@ -8,6 +8,7 @@ import { shelfPostTheme } from '../theme';
 import { washedTheme } from '../theme';
 import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
 import DiscordLoginModal from './DiscordLoginModal';
+import AdapterLink from './AdapterLink';
 
 const useStyles = makeStyles(theme => ({
   postTypes: {
@@ -65,26 +66,26 @@ export default function Composer(props: ComposerProps) {
       )}
       <MuiThemeProvider theme={shelfPostTheme}>
         {currUserInfo && (
-          <Link component={RouterLink} to="post/create" underline="none">
-            <Fab
-              variant="extended"
-              aria-label="upload-shelf"
-              className={classes.fab}
-              color="primary"
+          <Fab
+            variant="extended"
+            aria-label="upload-shelf"
+            className={classes.fab}
+            color="primary"
+            component={AdapterLink}
+            to="/post/create"
+          >
+            <Typography
+              variant="subtitle2"
+              style={{ fontWeight: 600, color: 'white' }}
             >
-              <Typography
-                variant="subtitle2"
-                style={{ fontWeight: 600, color: 'white' }}
-              >
-                Create Shelf
-              </Typography>
-              <img
-                src={shelfIcon}
-                alt="Upload shelf"
-                className={classes.postIconAvatar}
-              />
-            </Fab>
-          </Link>
+              Create Shelf
+            </Typography>
+            <img
+              src={shelfIcon}
+              alt="Upload shelf"
+              className={classes.postIconAvatar}
+            />
+          </Fab>
         )}
         {!currUserInfo && (
           <Fab

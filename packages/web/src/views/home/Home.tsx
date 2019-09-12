@@ -21,7 +21,6 @@ import {
   ClubWithMemberIds,
   UserWithInvitableClubs,
   UserSearchField,
-  Post,
   PostUserInfo,
   PostWithAuthorInfoAndLikes,
   PostSearchField,
@@ -162,16 +161,6 @@ export function shuffleUser(user: User) {
   return user;
 }
 
-function instanceOfValidElement(object: any) {
-  if (object instanceof HTMLElement) {
-    return true;
-  } else if (object instanceof Element) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 const centerComponent = (
   <>
     {window.innerWidth < theme.breakpoints.values.sm ? (
@@ -219,9 +208,6 @@ export default function Home(props: HomeProps) {
   const [loadingMorePosts, setLoadingMorePosts] = React.useState<boolean>(
     false
   );
-  const [currUsersClubs, setCurrUsersClubs] = React.useState<
-    Services.GetClubById[]
-  >([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
@@ -234,10 +220,14 @@ export default function Home(props: HomeProps) {
       : 0
   );
   const [userSearchField, setUserSearchField] = React.useState<UserSearchField>(
-    'username'
+    props.location.state && props.location.state.userSearchField
+      ? props.location.state.userSearchField
+      : 'username'
   );
   const [postSearchField, setPostSearchField] = React.useState<PostSearchField>(
-    'bookTitle'
+    props.location.state && props.location.state.postSearchField
+      ? props.location.state.postSearchField
+      : 'bookTitle'
   );
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [afterClubsQuery, setAfterClubsQuery] = React.useState<
@@ -261,10 +251,18 @@ export default function Home(props: HomeProps) {
   const [showMembershipFilter, setShowMembershipFilter] = React.useState(false);
   const [stagingClubsFilter, setStagingClubsFilter] = React.useState<
     ActiveFilter
-  >(defaultActiveFilter);
+  >(
+    props.location.state && props.location.state.clubsFilter
+      ? props.location.state.clubsFilter
+      : defaultActiveFilter
+  );
   const [activeClubsFilter, setActiveClubsFilter] = React.useState<
     ActiveFilter
-  >(defaultActiveFilter);
+  >(
+    props.location.state && props.location.state.clubsFilter
+      ? props.location.state.clubsFilter
+      : defaultActiveFilter
+  );
   const clubGenreFiltersApplied = activeClubsFilter.genres.length > 0;
   const clubSpeedFiltersApplied = activeClubsFilter.speed.length > 0;
   const clubCapacityFiltersApplied = activeClubsFilter.capacity.length > 0;
@@ -274,9 +272,21 @@ export default function Home(props: HomeProps) {
     clubSpeedFiltersApplied ||
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
-  const [clubsSearch, setClubsSearch] = React.useState<string>('');
-  const [usersSearch, setUsersSearch] = React.useState<string>('');
-  const [postsSearch, setPostsSearch] = React.useState<string>('');
+  const [clubsSearch, setClubsSearch] = React.useState<string>(
+    props.location.state && props.location.state.clubsSearch
+      ? props.location.state.clubsSearch
+      : ''
+  );
+  const [usersSearch, setUsersSearch] = React.useState<string>(
+    props.location.state && props.location.state.usersSearch
+      ? props.location.state.usersSearch
+      : ''
+  );
+  const [postsSearch, setPostsSearch] = React.useState<string>(
+    props.location.state && props.location.state.postsSearch
+      ? props.location.state.postsSearch
+      : ''
+  );
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -369,7 +379,6 @@ export default function Home(props: HomeProps) {
             }
           );
           if (currUserClubsRes.status === 200) {
-            setCurrUsersClubs(currUserClubsRes.data);
             const clubsWithOpenSpots = currUserClubsRes.data.filter(
               c => c.members.length < c.maxMembers
             );
@@ -458,9 +467,69 @@ export default function Home(props: HomeProps) {
     getGenres();
   }, []);
 
+  // These useEffects write the tab, search, and filter values to prop.history.location.state so that they can be
+  // retrieved when the user navigates back to the home screen. When the user logs out the whole
+  // props.history.location.state object is cleared. Note: when you logout then log back in,
+  // props.history.location.state begins as undefined. The first useEffect (triggered by tabValue) initializes the
+  // props.history.location.state object so that the other useEffects can modify their fields without error (see the
+  // else statement in the useEffect below)
   useEffect(() => {
-    props.history.replace({ state: { tab: tabValue } });
+    if (props.history.location.state) {
+      const newState = props.history.location.state;
+      newState.tab = tabValue;
+      props.history.replace({ state: newState });
+    } else {
+      props.history.replace({ state: { tab: tabValue } });
+    }
   }, [tabValue]);
+
+  useEffect(() => {
+    if (props.history.location.state) {
+      const newState = props.history.location.state;
+      newState.clubsFilter = activeClubsFilter;
+      props.history.replace({ state: newState });
+    }
+  }, [activeClubsFilter]);
+
+  useEffect(() => {
+    if (props.history.location.state) {
+      const newState = props.history.location.state;
+      newState.clubsSearch = clubsSearch;
+      props.history.replace({ state: newState });
+    }
+  }, [clubsSearch]);
+
+  useEffect(() => {
+    if (props.history.location.state) {
+      const newState = props.history.location.state;
+      newState.usersSearch = usersSearch;
+      props.history.replace({ state: newState });
+    }
+  }, [usersSearch]);
+
+  useEffect(() => {
+    if (props.history.location.state) {
+      const newState = props.history.location.state;
+      newState.userSearchField = userSearchField;
+      props.history.replace({ state: newState });
+    }
+  }, [userSearchField]);
+
+  useEffect(() => {
+    if (props.history.location.state) {
+      const newState = props.history.location.state;
+      newState.postsSearch = postsSearch;
+      props.history.replace({ state: newState });
+    }
+  }, [postsSearch]);
+
+  useEffect(() => {
+    if (props.history.location.state) {
+      const newState = props.history.location.state;
+      newState.postSearchField = postSearchField;
+      props.history.replace({ state: newState });
+    }
+  }, [postSearchField]);
 
   function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
@@ -704,6 +773,7 @@ export default function Home(props: HomeProps) {
   };
 
   const onSeeClubsClick = () => {
+    setTabValue(0);
     scroller.scrollTo('tabs', { smooth: true });
   };
 
@@ -799,6 +869,7 @@ export default function Home(props: HomeProps) {
                 searchBoxLabelSmall={'Search clubs'}
                 searchBoxId={'club-search'}
                 loadingMore={loadingMoreClubs}
+                searchText={clubsSearch}
               />
               <ClubFilters
                 onClickGenreFilter={() => setShowGenreFilter(true)}
@@ -1015,6 +1086,7 @@ export default function Home(props: HomeProps) {
                 searchBoxLabelSmall={'Search users'}
                 searchBoxId={'users-search'}
                 loadingMore={loadingMoreUsers}
+                searchText={usersSearch}
               />
               <UserSearchFilter
                 handleChange={handleUserSearchFieldChange}
@@ -1109,6 +1181,7 @@ export default function Home(props: HomeProps) {
                 searchBoxLabelSmall={'Search shelves'}
                 searchBoxId={'shelf-search'}
                 loadingMore={loadingMorePosts}
+                searchText={postsSearch}
               />
               <PostSearchFilter
                 handleChange={handlePostSearchFieldChange}

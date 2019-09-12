@@ -30,6 +30,7 @@ interface FilterSearchProps {
   searchBoxLabelSmall: string;
   searchBoxId: string;
   loadingMore: boolean;
+  searchText?: string;
 }
 
 const validSearch = (search: string): boolean => {
@@ -50,8 +51,11 @@ export default function FilterSearch(props: FilterSearchProps) {
     searchBoxLabelSmall,
     searchBoxId,
     loadingMore,
+    searchText,
   } = props;
-  const [search, setSearch] = React.useState<string>('');
+  const [search, setSearch] = React.useState<string>(
+    searchText ? searchText : ''
+  );
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleOnKeyDown = (e: React.KeyboardEvent<any>) => {
@@ -107,6 +111,7 @@ export default function FilterSearch(props: FilterSearchProps) {
         className={classes.textField}
         margin="normal"
         fullWidth
+        value={search}
       />
     </div>
   );

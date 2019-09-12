@@ -11,7 +11,6 @@ import {
 import {
   User,
   Services,
-  UserWithInvitableClubs,
   ClubWithMemberIds,
 } from '@caravan/buddy-reading-types';
 import DiscordLoginModal from './DiscordLoginModal';

@@ -21,12 +21,10 @@ import {
   Radio,
   TextField,
   Typography,
-  Link,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import { createClub, sendInvitesToClubFromShelf } from '../../services/club';
-import AdapterLink from '../../components/AdapterLink';
 import Header from '../../components/Header';
 import BookSearch from '../books/BookSearch';
 import {

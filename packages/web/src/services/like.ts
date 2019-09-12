@@ -1,10 +1,5 @@
 import axios from 'axios';
-import {
-  Likes,
-  User,
-  FilterAutoMongoKeys,
-  LikeAction,
-} from '@caravan/buddy-reading-types';
+import { LikeAction } from '@caravan/buddy-reading-types';
 
 const likeRoute = '/api/likes';
 
