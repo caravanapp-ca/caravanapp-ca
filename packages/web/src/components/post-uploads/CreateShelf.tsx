@@ -75,7 +75,9 @@ export default function CreateShelf(props: CreateShelfProps) {
   const [createdShelf, setCreatedShelf] = React.useState<boolean>(false);
 
   const readyToPost =
-    shelf.length > 1 && shelfTitle.length > 0 && shelfGenres.length > 0;
+    shelf.length > 1 &&
+    shelfTitle.split(' ').join('').length > 0 &&
+    shelfGenres.length > 0;
 
   const leftComponent = (
     <Button color="inherit" onClick={onCloseModal}>
@@ -93,6 +95,7 @@ export default function CreateShelf(props: CreateShelfProps) {
 
   useEffect(() => {
     getGenres();
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
