@@ -287,9 +287,9 @@ export default function CreateClub(props: CreateClubProps) {
   };
 
   const validateForm = (): boolean => {
-    if (selectedGroupBio === '') {
+    if (selectedGroupBio.split(' ').join('').length === 0) {
       return false;
-    } else if (selectedGroupName === '') {
+    } else if (selectedGroupName.split(' ').join('').length === 0) {
       return false;
     } else if (!bookToRead) {
       return false;
