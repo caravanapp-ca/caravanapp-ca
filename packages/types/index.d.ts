@@ -371,6 +371,8 @@ declare module '@caravan/buddy-reading-types' {
   export interface ClubWithRecommendation {
     club: Services.GetClubs['clubs'][0];
     recommendation: ClubRecommendation;
+    tbrMatches: UserShelfEntry[];
+    genreMatches: SelectedGenre[];
   }
 
   export type EditableUserField =

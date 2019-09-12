@@ -5,10 +5,12 @@ import {
   Club,
   ClubWithRecommendation,
   ClubRecommendationKey,
+  UserShelfEntry,
+  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { getUser, getUsername } from './user';
 import { ClubDoc, ClubModel } from '@caravan/buddy-reading-mongo';
-import { Types } from 'mongoose';
+import { Types, Aggregate } from 'mongoose';
 import { ReadingDiscordBot } from './discord';
 import {
   PROD_UNCOUNTABLE_IDS,
@@ -22,6 +24,7 @@ import {
   VoiceChannel,
 } from 'discord.js';
 import { getClubRecommendationDescription } from '../common/club';
+import { ClubDocRecommendation } from '@caravan/buddy-reading-mongo/dist/models/club';
 
 const knownHttpsRedirects = ['http://books.google.com/books/'];
 
@@ -61,57 +64,141 @@ export const getUserClubRecommendations = async (
   globalQuery.channelId = {
     $nin: channelIds,
   };
-  // Queries and sorts must correspond with the order of CLUB_RECOMMENDATION_KEYS
+  // Array params must correspond with the order of CLUB_RECOMMENDATION_KEYS
   // See globalConstantsAPI.ts
-  const queries: any[] = [
+  const isAggregation: boolean[] = [false, true, true, false];
+  const aggregateMatches = [
+    null,
+    {
+      $match: {
+        ...globalQuery,
+        'newShelf.notStarted.sourceId': { $in: userTBRSourceIds },
+      },
+    },
+    {
+      $match: {
+        ...globalQuery,
+        'genres.key': { $in: userGenreKeys },
+      },
+    },
+    null,
+  ];
+  const aggregateProjections = [
+    null,
+    {
+      $addFields: {
+        order: {
+          $size: {
+            $setIntersection: [
+              userTBRSourceIds,
+              '$newShelf.notStarted.sourceId',
+            ],
+          },
+        },
+        tbrMatches: {
+          $setIntersection: [userTBRSourceIds, '$newShelf.notStarted.sourceId'],
+        },
+      },
+    },
+    {
+      $addFields: {
+        order: {
+          $size: {
+            $setIntersection: [userGenreKeys, '$genres.key'],
+          },
+        },
+        genreMatches: {
+          $setIntersection: [userGenreKeys, '$genres.key'],
+        },
+      },
+    },
+    null,
+  ];
+  const findQueries: any[] = [
     {
       'newShelf.current.sourceId': {
         $in: userTBRSourceIds,
       },
     },
-    {
-      'newShelf.notStarted.sourceId': {
-        $in: userTBRSourceIds,
-      },
-    },
-    {
-      'genres.key': {
-        $in: userGenreKeys,
-      },
-    },
+    null,
+    null,
     {},
   ];
-  // These are all the same for now, but leaving as an array structure for flexibility in the future.
-  const sorts: SameKeysAs<Partial<ClubDoc>>[] = [
+  const sorts: any[] = [
     { createdAt: -1 },
+    { $sort: { order: -1, createdAt: -1 } },
+    { $sort: { order: -1, createdAt: -1 } },
     { createdAt: -1 },
-    { createdAt: -1 },
-    { createdAt: -1 },
+  ];
+  const limits: any[] = [
+    limit - recommendedClubs.length,
+    { $limit: limit - recommendedClubs.length },
+    { $limit: limit - recommendedClubs.length },
+    limit - recommendedClubs.length,
+  ];
+  const dbActions: any[] = [
+    ClubModel.find({ ...globalQuery, ...findQueries[0] })
+      .sort(sorts[0])
+      .limit(limits[0])
+      .exec(),
+    ClubModel.aggregate([
+      aggregateMatches[1],
+      aggregateProjections[1],
+      sorts[1],
+      limits[1],
+    ]),
+    ClubModel.aggregate([
+      aggregateMatches[2],
+      aggregateProjections[2],
+      sorts[2],
+      limits[2],
+    ]),
+    ClubModel.find({ ...globalQuery, ...findQueries[3] })
+      .sort(sorts[3])
+      .limit(limits[3])
+      .exec(),
   ];
   const numSteps = CLUB_RECOMMENDATION_KEYS.length;
   let stepNum = 0;
   while (recommendedClubs.length < limit && stepNum < numSteps) {
-    const query = {
-      ...globalQuery,
-      ...queries[stepNum],
-    };
-    const sort = sorts[stepNum];
-    const clubDocs = await ClubModel.find(query)
-      .sort(sort)
-      .limit(limit - recommendedClubs.length)
-      .exec();
-    if(clubDocs.length > 0){
-      const transformedClubs = await transformToGetClubs(clubDocs);
-      const recs: ClubWithRecommendation[] = transformedClubs.map(club => ({
-        club,
-        recommendation: {
-          key: CLUB_RECOMMENDATION_KEYS[stepNum],
-          description: getClubRecommendationDescription(
-            CLUB_RECOMMENDATION_KEYS[stepNum]
-          ),
-        },
-      }));
-      recommendedClubs = recommendedClubs.concat(recs);
+    let clubDocs = (await dbActions[stepNum]) as ClubDocRecommendation[];
+    if (clubDocs.length > limit - recommendedClubs.length) {
+      clubDocs = clubDocs.slice(0, limit - recommendedClubs.length);
+    }
+    if (clubDocs.length > 0) {
+      const transformedClubsPromises = clubDocs.map(async cDoc => {
+        const tbrMatches =
+          stepNum === 0 && cDoc.newShelf.current.length > 0
+            ? [cDoc.newShelf.current[0]]
+            : cDoc.tbrMatches && cDoc.tbrMatches.length > 0
+            ? user.shelf.notStarted.filter(b =>
+                cDoc.tbrMatches.includes(b.sourceId)
+              )
+            : [];
+        const genreMatches =
+          cDoc.genreMatches && cDoc.genreMatches.length > 0
+            ? user.selectedGenres.filter(sg =>
+                cDoc.genreMatches.includes(sg.key)
+              )
+            : [];
+        const bookTitles = tbrMatches.map(tbr => tbr.title);
+        const genreNames = genreMatches.map(g => g.name);
+        return {
+          club: await transformSingleToGetClub(cDoc, guild),
+          recommendation: {
+            key: CLUB_RECOMMENDATION_KEYS[stepNum],
+            description: getClubRecommendationDescription(
+              CLUB_RECOMMENDATION_KEYS[stepNum],
+              bookTitles,
+              genreNames
+            ),
+          },
+          tbrMatches,
+          genreMatches,
+        };
+      });
+      const transformedClubs = await Promise.all(transformedClubsPromises);
+      recommendedClubs = recommendedClubs.concat(transformedClubs);
       const clubsToAddIds = clubDocs.map(c => c._id);
       recommendedClubIds = recommendedClubIds.concat(clubsToAddIds);
     }
@@ -126,50 +213,55 @@ export const transformToGetClubs = async (
 ): Promise<Services.GetClubs['clubs']> => {
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
-  const mutatedClubsPromises = clubDocs.map(async cDoc => {
-    const discordChannel = guild.channels.get(cDoc.channelId);
-    if (!discordChannel) {
-      console.error(`No discord channel found for club ${cDoc.id}`);
-      return null;
-    }
-    const memberCount = getMemberCount(discordChannel, cDoc);
-    const ownerDoc = await getUser(cDoc.ownerId);
-    if (!ownerDoc) {
-      console.error(`Unable to find user doc for user ${cDoc.ownerId}`);
-      return null;
-    }
-    const ownerMember = guild.members.get(cDoc.ownerDiscordId);
-    if (!ownerMember) {
-      console.error(`Unable to find guild member for user ${cDoc.ownerId}`);
-      return null;
-    }
-    const ownerName = getUsername(ownerDoc, ownerMember);
-    const guildId = guild.id;
-    const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
-      createdAt: string;
-      updatedAt: string;
-    } = {
-      ...cDoc.toObject(),
-      createdAt:
-        cDoc.createdAt instanceof Date
-          ? cDoc.createdAt.toISOString()
-          : cDoc.createdAt,
-      updatedAt:
-        cDoc.updatedAt instanceof Date
-          ? cDoc.updatedAt.toISOString()
-          : cDoc.updatedAt,
-    };
-    const mutatedClub: Services.GetClubs['clubs'][0] = {
-      ...club,
-      guildId,
-      memberCount,
-      ownerName,
-    };
-    return mutatedClub;
-  });
+  const mutatedClubsPromises = clubDocs.map(cDoc =>
+    transformSingleToGetClub(cDoc, guild)
+  );
   let mutatedClubs = await Promise.all(mutatedClubsPromises);
   mutatedClubs = mutatedClubs.filter(c => c !== null);
   return mutatedClubs;
+};
+
+export const transformSingleToGetClub = async (cDoc: ClubDoc, guild: Guild) => {
+  const discordChannel = guild.channels.get(cDoc.channelId);
+  if (!discordChannel) {
+    console.error(`No discord channel found for club ${cDoc.id}`);
+    return null;
+  }
+  const memberCount = getMemberCount(discordChannel, cDoc);
+  const ownerDoc = await getUser(cDoc.ownerId);
+  if (!ownerDoc) {
+    console.error(`Unable to find user doc for user ${cDoc.ownerId}`);
+    return null;
+  }
+  const ownerMember = guild.members.get(cDoc.ownerDiscordId);
+  if (!ownerMember) {
+    console.error(`Unable to find guild member for user ${cDoc.ownerId}`);
+    return null;
+  }
+  const ownerName = getUsername(ownerDoc, ownerMember);
+  const guildId = guild.id;
+  const doc = typeof cDoc.toObject === 'function' ? cDoc.toObject() : cDoc;
+  const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
+    createdAt: string;
+    updatedAt: string;
+  } = {
+    ...doc,
+    createdAt:
+      cDoc.createdAt instanceof Date
+        ? cDoc.createdAt.toISOString()
+        : cDoc.createdAt,
+    updatedAt:
+      cDoc.updatedAt instanceof Date
+        ? cDoc.updatedAt.toISOString()
+        : cDoc.updatedAt,
+  };
+  const mutatedClub: Services.GetClubs['clubs'][0] = {
+    ...club,
+    guildId,
+    memberCount,
+    ownerName,
+  };
+  return mutatedClub;
 };
 
 // For speed purposes, we can guarantee that in prod environments there are always

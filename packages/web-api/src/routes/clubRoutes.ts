@@ -42,7 +42,6 @@ import {
   getUserChannels,
   getCountableMembersInChannel,
   getMemberCount,
-  transformToGetClubs,
 } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
@@ -154,7 +153,9 @@ router.get('/userRecommendations', async (req, res) => {
         minRecommendations
       )
     : defaultRecommendations;
-  const clubsReceivedIdsArr: string[] = clubsReceivedIds ? clubsReceivedIds.split(',') : [];
+  const clubsReceivedIdsArr: string[] = clubsReceivedIds
+    ? clubsReceivedIds.split(',')
+    : [];
   const recommendedClubs = await getUserClubRecommendations(
     userId,
     limitToUse,
