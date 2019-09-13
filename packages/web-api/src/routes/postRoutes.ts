@@ -45,6 +45,67 @@ router.post('/', isAuthenticated, async (req, res, next) => {
   }
 });
 
+// Edit post
+router.put('/:id', isAuthenticated, async (req, res, next) => {
+  console.log('Editing');
+  const { postContent } = req.body.params;
+  const { userId } = req.session;
+  const postId = req.params.id;
+  if (userId && instanceOfPostContent(postContent)) {
+    const postToUpload: FilterAutoMongoKeys<Post> = {
+      authorId: userId,
+      content: postContent,
+    };
+    let editPostResult: PostDoc;
+    try {
+      editPostResult = await PostModel.findByIdAndUpdate(postId, postToUpload, {
+        new: true,
+      });
+      if (editPostResult) {
+        return res.status(200).send(editPostResult);
+      } else {
+        console.warn(
+          `User ${userId} attempted to edit post ${postId} but the post was not found.`
+        );
+        return res.status(404).send(`Unable to find post ${postId}`);
+      }
+    } catch (err) {
+      console.error('Failed to save post data', err);
+      return res.status(400).send('Failed to save post data');
+    }
+  }
+});
+
+// Delete a post
+router.delete('/:postId', isAuthenticated, async (req, res) => {
+  const { userId } = req.session;
+  const { postId } = req.params.id;
+
+  let postDoc: PostDoc;
+  try {
+    postDoc = await PostModel.findById(postId);
+  } catch (err) {
+    return res.status(400).send(`Could not find post ${postId}`);
+  }
+  if (userId === postDoc.authorId) {
+    try {
+      postDoc = await postDoc.remove();
+      console.log(`Deleted post ${postDoc.id} by user ${userId}`);
+      return res.status(204).send(`Deleted post ${postDoc.id}`);
+    } catch (err) {
+      console.log(`User ${userId} failed to delete post ${postDoc.id}`);
+      return res.status(500).send(err);
+    }
+  } else {
+    console.log(
+      `User ${userId} failed to authenticate to delete post ${postDoc.id}, actually created by user ${postDoc.authorId}`
+    );
+    return res
+      .status(401)
+      .send("You don't have permission to delete this post.");
+  }
+});
+
 // Get post author info
 router.get('/userInfo/:userId', async (req, res) => {
   const { userId } = req.params;
@@ -259,6 +320,42 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     posts: filteredPostsWithAuthorAndLikesUserInfo,
   };
   res.status(200).json(result);
+});
+
+// Get a post
+router.get('/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const postDoc = await PostModel.findById(id);
+    if (!postDoc) {
+      res.sendStatus(404);
+      return;
+    }
+    let filteredPost: Services.GetPostById = {
+      ...postDoc.toObject(),
+      createdAt:
+        postDoc.createdAt instanceof Date
+          ? postDoc.createdAt.toISOString()
+          : postDoc.createdAt,
+      updatedAt:
+        postDoc.updatedAt instanceof Date
+          ? postDoc.updatedAt.toISOString()
+          : postDoc.updatedAt,
+    };
+    return res.status(200).send(filteredPost);
+  } catch (err) {
+    if (err.name) {
+      switch (err.name) {
+        case 'CastError':
+          res.sendStatus(404);
+          return;
+        default:
+          break;
+      }
+    }
+    console.log(`Failed to get post ${id}`, err);
+    return next(err);
+  }
 });
 
 export default router;

@@ -590,6 +590,13 @@ declare module '@caravan/buddy-reading-types' {
         content: PostContent;
       }[];
     }
+    export interface GetPostById {
+      _id: string;
+      createdAt: string;
+      updatedAt: string;
+      authorId: string;
+      content: PostContent;
+    }
     export interface GetPostsWithAuthorInfoAndLikes {
       posts: {
         post: Post;

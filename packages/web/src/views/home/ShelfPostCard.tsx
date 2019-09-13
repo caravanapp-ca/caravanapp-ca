@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { RouteComponentProps } from 'react-router';
 import { CardActions } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -17,6 +18,8 @@ import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
 import PostActions from '../../components/PostActions';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
 import { modifyPostLike } from '../../services/like';
+import DeletePostDialog from '../../components/DeletePostDialog';
+import { deletePost } from '../../services/post';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -84,9 +87,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ShelfPostCardProps {
+interface ShelfPostCardProps extends RouteComponentProps {
   postContent: PostContent;
   postAuthorInfo: PostUserInfo;
+  postDate: string | Date;
   feedViewerUserInfo: PostUserInfo | null;
   likes: PostUserInfo[];
   likeUserIds: string[];
@@ -100,6 +104,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
   const {
     postContent,
     postAuthorInfo,
+    postDate,
     feedViewerUserInfo,
     likes,
     likeUserIds,
@@ -129,6 +134,10 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     false
   );
 
+  const [deletePostDialogVisible, setDeletePostDialogVisible] = React.useState<
+    boolean
+  >(false);
+
   useEffect(() => {
     if (shouldExecuteLike && currUser) {
       modifyPostLike(postId, hasLiked ? 'like' : 'unlike');
@@ -153,6 +162,15 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
       }
       setHasLiked(!hasLiked);
       setTimeout(() => setLikeButtonDisabled(false), 5000);
+    }
+  }
+
+  async function onDeletePost() {
+    const res = await deletePost(postId);
+    if (res.status === 200) {
+      props.history.replace('/clubs');
+    } else {
+      return;
     }
   }
 
@@ -183,6 +201,10 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           postAuthorInfo={postAuthorInfo}
           iconColor={'#64B5F6'}
           postIcon={shelfIcon}
+          postDate={postDate}
+          ownPost={currUser !== null && currUser._id === postAuthorInfo.userId}
+          onClickDelete={() => setDeletePostDialogVisible(true)}
+          postId={postId}
         />
         <CardContent classes={{ root: classes.cardContent }}>
           {shelfPost.shelf.length > 0 && (
@@ -228,7 +250,6 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         <CardActions className={classes.cardActions}>
           <PostActions
             likes={modifiedLikes}
-            likeUserIds={likeUserIds}
             hasLiked={hasLiked}
             numLikes={modifiedNumLikes}
             onClickLike={handleLikeAction}
@@ -236,11 +257,16 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             shelf={shelfPost.shelf}
             shelfName={shelfPost.title}
             shelfGenres={shelfPost.genres ? shelfPost.genres : []}
-            shelfAuthorName={postAuthorInfo.name}
+            shelfAuthorInfo={postAuthorInfo}
             userId={currUser ? currUser._id : undefined}
           />
         </CardActions>
       </Card>
+      <DeletePostDialog
+        open={deletePostDialogVisible}
+        onCancel={() => setDeletePostDialogVisible(false)}
+        onDelete={onDeletePost}
+      />
     </>
   );
 }

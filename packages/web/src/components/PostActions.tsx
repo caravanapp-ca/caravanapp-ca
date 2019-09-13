@@ -47,7 +47,6 @@ const useStyles = makeStyles(theme => ({
 
 interface PostActionsProps {
   likes: PostUserInfo[];
-  likeUserIds: string[];
   hasLiked: boolean | null;
   numLikes: number;
   onClickLike: () => void;
@@ -55,7 +54,7 @@ interface PostActionsProps {
   shelf: FilterAutoMongoKeys<ShelfEntry>[];
   shelfName: string;
   shelfGenres: SelectedGenre[];
-  shelfAuthorName: string;
+  shelfAuthorInfo: PostUserInfo;
   userId: string | undefined;
 }
 
@@ -64,7 +63,6 @@ function PostActions(props: PostActionsProps) {
   const theme = useTheme();
   const {
     likes,
-    likeUserIds,
     onClickLike,
     hasLiked,
     numLikes,
@@ -72,7 +70,7 @@ function PostActions(props: PostActionsProps) {
     shelf,
     shelfName,
     shelfGenres,
-    shelfAuthorName,
+    shelfAuthorInfo,
     userId,
   } = props;
 
@@ -126,17 +124,16 @@ function PostActions(props: PostActionsProps) {
               pathname: '/clubs/create',
               state: {
                 shelf: shelf,
-                numLikes: hasLiked ? numLikes - 1 : numLikes,
-                likes: hasLiked
-                  ? likes.filter(l => l.userId !== userId)
-                  : likes,
-                likeUserIds: hasLiked
-                  ? likeUserIds.filter(l => l !== userId)
-                  : likeUserIds,
-                likeListLength,
+                invites:
+                  shelfAuthorInfo.userId === userId || hasLiked
+                    ? likes.filter(l => l.userId !== userId)
+                    : likes.map(l => l.userId).includes(shelfAuthorInfo.userId)
+                    ? likes
+                    : [shelfAuthorInfo, ...likes],
+                inviteListLength: likeListLength,
                 shelfName,
                 shelfGenres,
-                shelfAuthorName,
+                shelfAuthorName: shelfAuthorInfo.name,
               },
             }}
             underline="none"

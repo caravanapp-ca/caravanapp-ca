@@ -40,9 +40,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface CreateClubFromShelfInviteListProps {
-  likes: PostUserInfo[];
-  numLikes: number;
-  likeListLength: number;
+  invites: PostUserInfo[];
+  numInvites: number;
+  inviteListLength: number;
 }
 
 export default function CreateClubFromShelfInviteList(
@@ -50,7 +50,7 @@ export default function CreateClubFromShelfInviteList(
 ) {
   const classes = useStyles();
 
-  const { likes, numLikes, likeListLength } = props;
+  const { invites, numInvites, inviteListLength } = props;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -97,37 +97,37 @@ export default function CreateClubFromShelfInviteList(
       >
         <ListItem style={{ backgroundColor: 'rgba(0, 0, 0, 0.07)' }}>
           <Typography style={{ fontWeight: 600, color: 'textPrimary' }}>
-            Send invites to ({numLikes.toString()})
+            Send invites to ({numInvites.toString()})
           </Typography>
         </ListItem>
-        {likes.map(l => (
-          <MenuItem className={classes.likedByMenuItem} key={l.userId}>
-            <Link href={`/user/${l.urlSlug}`}>
+        {invites.map(i => (
+          <MenuItem className={classes.likedByMenuItem} key={i.userId}>
+            <Link href={`/user/${i.urlSlug}`}>
               <ListItemIcon>
                 <Avatar
-                  alt={l.name}
-                  src={l.photoUrl}
+                  alt={i.name}
+                  src={i.photoUrl}
                   className={classes.thumbnailAvatar}
                 />
               </ListItemIcon>
             </Link>
-            <Link href={`/user/${l.urlSlug}`} underline="none">
+            <Link href={`/user/${i.urlSlug}`} underline="none">
               <Typography
                 className={classes.likedByNameText}
                 color="textPrimary"
               >
-                {l.name}
+                {i.name}
               </Typography>
               <Typography className={classes.likedByUrlSlugText}>
-                @{l.urlSlug}
+                @{i.urlSlug}
               </Typography>
             </Link>
           </MenuItem>
         ))}
-        {numLikes > likeListLength && (
+        {numInvites > inviteListLength && (
           <ListItem style={{ backgroundColor: 'rgba(0, 0, 0, 0.07)' }}>
             <Typography style={{ fontWeight: 600, color: 'textPrimary' }}>
-              and {numLikes - likeListLength} more
+              and {numInvites - inviteListLength} more
             </Typography>
           </ListItem>
         )}

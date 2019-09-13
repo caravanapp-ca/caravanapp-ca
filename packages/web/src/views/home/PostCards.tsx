@@ -137,7 +137,7 @@ export default function PostCards(props: PostCardProps) {
         <Grid container spacing={4}>
           {postsWithAuthorInfoAndLikes.map(p => {
             const { post, authorInfo, likes, likeUserIds, numLikes } = p;
-            const { content } = post;
+            const { content, createdAt } = post;
             let postCard = <></>;
             if (authorInfo) {
               switch (content.postType) {
@@ -147,6 +147,7 @@ export default function PostCards(props: PostCardProps) {
                     <ShelfPostCard
                       postContent={content}
                       postAuthorInfo={authorInfo}
+                      postDate={createdAt}
                       feedViewerUserInfo={feedViewerUserInfo}
                       likes={likes}
                       likeUserIds={likeUserIds}
