@@ -4,12 +4,13 @@ import {
   SameKeysAs,
   Club,
   ClubWithRecommendation,
-  ClubRecommendationKey,
-  UserShelfEntry,
-  SelectedGenre,
 } from '@caravan/buddy-reading-types';
 import { getUser, getUsername } from './user';
-import { ClubDoc, ClubModel } from '@caravan/buddy-reading-mongo';
+import {
+  ClubDoc,
+  ClubRecommendationDoc,
+  ClubModel,
+} from '@caravan/buddy-reading-mongo';
 import { Types, Aggregate } from 'mongoose';
 import { ReadingDiscordBot } from './discord';
 import {
@@ -24,7 +25,6 @@ import {
   VoiceChannel,
 } from 'discord.js';
 import { getClubRecommendationDescription } from '../common/club';
-import { ClubDocRecommendation } from '@caravan/buddy-reading-mongo/dist/models/club';
 
 const knownHttpsRedirects = ['http://books.google.com/books/'];
 
@@ -161,7 +161,7 @@ export const getUserClubRecommendations = async (
   const numSteps = CLUB_RECOMMENDATION_KEYS.length;
   let stepNum = 0;
   while (recommendedClubs.length < limit && stepNum < numSteps) {
-    let clubDocs = (await dbActions[stepNum]) as ClubDocRecommendation[];
+    let clubDocs = (await dbActions[stepNum]) as ClubRecommendationDoc[];
     if (clubDocs.length > limit - recommendedClubs.length) {
       clubDocs = clubDocs.slice(0, limit - recommendedClubs.length);
     }
