@@ -61,7 +61,7 @@ declare module '@caravan/buddy-reading-types' {
     vibe?: GroupVibe;
   }
 
-  // This format of the Club has the current schedule extracted for quicker access, and a reason for recommendation, if any.
+  // This format of the Club is designed for displaying club cards.
   export interface ClubTransformed {
     club: Services.GetClubs['clubs'][0];
     schedule?: ClubReadingSchedule | null;
