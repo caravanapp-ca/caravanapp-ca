@@ -236,7 +236,12 @@ export const getUserClubRecommendations = async (
           isMember: false,
         };
       });
-      const transformedClubs = await Promise.all(transformedClubsPromises);
+      const transformedClubsWNulls = await Promise.all(
+        transformedClubsPromises
+      );
+      const transformedClubs = transformedClubsWNulls.filter(
+        tc => tc.club !== null
+      );
       recommendedClubs = recommendedClubs.concat(transformedClubs);
       const clubsToAddIds = clubDocs.map(c => c._id);
       recommendedClubIds = recommendedClubIds.concat(clubsToAddIds);
@@ -260,7 +265,10 @@ export const transformToGetClubs = async (
   return mutatedClubs;
 };
 
-export const transformSingleToGetClub = async (cDoc: ClubDoc, guild: Guild) => {
+export const transformSingleToGetClub = async (
+  cDoc: ClubDoc,
+  guild: Guild
+): Promise<Services.GetClubs['clubs'][0] | null> => {
   const discordChannel = guild.channels.get(cDoc.channelId);
   if (!discordChannel) {
     console.error(`No discord channel found for club ${cDoc.id}`);

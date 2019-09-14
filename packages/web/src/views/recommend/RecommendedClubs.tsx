@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
     },
     cardsContainer: {
-      padding: `${theme.spacing(2)}px 0px ${theme.spacing(4)}px 0px`,
+      padding: `${theme.spacing(4)}px 0px ${theme.spacing(4)}px 0px`,
     },
     headerText: {
       marginBottom: theme.spacing(2),
@@ -114,7 +114,11 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
               <Typography variant="h6" className={classes.headerText}>
                 Here are some clubs we've hand picked for you!
               </Typography>
-              <ClubCards clubsTransformed={clubs} quickJoin={true} />
+              <ClubCards
+                clubsTransformed={clubs}
+                quickJoin={true}
+                isLoggedIn={!!user}
+              />
             </div>
           )}
         {loadStatus === 'loaded' && clubs.length === 0 && (

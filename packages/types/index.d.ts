@@ -67,6 +67,7 @@ declare module '@caravan/buddy-reading-types' {
     schedule?: ClubReadingSchedule | null;
     recommendation?: ClubRecommendation;
     isMember?: boolean;
+    isChangingMembership?: boolean;
   }
 
   export interface ClubWithMemberIds {

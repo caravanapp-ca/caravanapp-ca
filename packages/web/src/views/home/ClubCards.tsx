@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { isAfter, addDays, differenceInHours, format } from 'date-fns';
 import clsx from 'clsx';
 import LazyLoad from 'react-lazyload';
@@ -10,22 +10,30 @@ import {
   CardContent,
   Grid,
   Typography,
+  CircularProgress,
+  useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import { Info } from '@material-ui/icons';
-import { ClubTransformed } from '@caravan/buddy-reading-types';
+import { ClubTransformed, Services } from '@caravan/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
 import { UNLIMITED_CLUB_MEMBERS_VALUE } from '../../common/globalConstants';
-import AdapterLink from '../../components/AdapterLink';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
 import theme, { washedTheme, successTheme, whiteTheme } from '../../theme';
+import { modifyMyClubMembership } from '../../services/club';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
+import ReactResizeDetector from 'react-resize-detector';
+
+const joinProgressIndicatorSize = 24;
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {},
@@ -135,7 +143,7 @@ const useStyles = makeStyles(theme => ({
   },
   creationInfoContainer: {
     display: 'flex',
-    flexGrow: 1,
+    flex: 1,
     height: '100%',
     padding: 8,
     flexDirection: 'column',
@@ -174,6 +182,25 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 19 + theme.spacing(1),
     borderLeft: `2px solid ${washedTheme.palette.primary.main}`,
   },
+  joinProgressIndicator: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginLeft: -joinProgressIndicatorSize / 2,
+    marginTop: -joinProgressIndicatorSize / 2,
+  },
+  buttonWrapper: {
+    position: 'relative',
+  },
+  joinButtonText: {
+    color: '#FFFFFF',
+  },
+  actionButtonsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
 }));
 
 interface ClubCardsProps {
@@ -181,17 +208,8 @@ interface ClubCardsProps {
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
   quickJoin?: boolean;
-  currUserId?: string;
+  isLoggedIn?: boolean;
 }
-
-const onChangeMembership = (
-  userId: string,
-  clubId: string,
-  newIsMember: boolean
-) => {
-  // TODO: Change membership status in DB.
-  // TODO: Write change to state.
-};
 
 // Make this approximately the height of a standard ClubCard
 const placeholderCardHeight = 525;
@@ -205,10 +223,79 @@ export default function ClubCards(props: ClubCardsProps) {
     showResultsCount,
     resultsLoaded,
     quickJoin,
-    currUserId,
+    isLoggedIn,
   } = props;
-
+  const [clubsTransformedState, setClubsTransformedState] = React.useState(
+    clubsTransformed
+  );
   const [loginModalShown, setLoginModalShown] = React.useState(false);
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'info',
+    }
+  );
+  const [
+    creationInfoContainerWidth,
+    setCreationInfoContainerWidth,
+  ] = React.useState<number>(128);
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
+
+  useEffect(() => {
+    setClubsTransformedState(clubsTransformed);
+  }, [clubsTransformed]);
+
+  const onChangeMembership = async (
+    club: Services.GetClubs['clubs'][0],
+    index: number,
+    newIsMember: boolean
+  ) => {
+    setClubsTransformedState(clubs => {
+      const newClubs = [...clubs];
+      newClubs[index].isChangingMembership = true;
+      return newClubs;
+    });
+    const result = await modifyMyClubMembership(club._id, newIsMember);
+    if (result.status >= 200 && result.status < 300) {
+      // Success
+      setClubsTransformedState(clubs => {
+        const newClubs = [...clubs];
+        newClubs[index].isMember = newIsMember;
+        return newClubs;
+      });
+      const successfulSnackBarMessage = newIsMember
+        ? `Successfully joined ${club.name}!`
+        : `Successfully left ${club.name}!`;
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'success',
+        message: successfulSnackBarMessage,
+      });
+    } else {
+      // Failure
+      const unsuccessfulSnackBarMessageVerb = newIsMember
+        ? 'joining'
+        : 'leaving';
+      setSnackbarProps({
+        ...snackbarProps,
+        isOpen: true,
+        variant: 'warning',
+        message: `We ran into some trouble ${unsuccessfulSnackBarMessageVerb}. Try logging out then back in, then contact the Caravan team on Discord.`,
+      });
+    }
+    setClubsTransformedState(clubs => {
+      const newClubs = [...clubs];
+      newClubs[index].isChangingMembership = false;
+      return newClubs;
+    });
+  };
+
+  function onSnackbarClose() {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
+  }
 
   const onCloseLoginDialog = () => {
     setLoginModalShown(false);
@@ -224,8 +311,14 @@ export default function ClubCards(props: ClubCardsProps) {
         </Typography>
       )}
       <Grid container spacing={4}>
-        {clubsTransformed.map(c => {
-          const { club, schedule, recommendation, isMember } = c;
+        {clubsTransformedState.map((c, index) => {
+          const {
+            club,
+            schedule,
+            recommendation,
+            isMember,
+            isChangingMembership,
+          } = c;
           const currentlyReading = club.newShelf.current[0];
           let year;
           if (currentlyReading && currentlyReading.publishedDate) {
@@ -445,42 +538,79 @@ export default function ClubCards(props: ClubCardsProps) {
                   <CardActions className={classes.cardActions}>
                     <div className={classes.creationInfoContainer}>
                       <Typography variant="caption" color="textSecondary">
-                        {`Created on ${format(new Date(club.createdAt), 'PP')}`}
+                        <Truncate
+                          lines={1}
+                          trimWhitespace={true}
+                          width={creationInfoContainerWidth}
+                        >
+                          {`Created on ${format(
+                            new Date(club.createdAt),
+                            'PP'
+                          )}`}
+                        </Truncate>
                       </Typography>
                       {club && club.ownerName && club.ownerName.length > 0 && (
                         <Typography variant="caption" color="textSecondary">
-                          {/* Truncate doesn't work as advertised, so we set an exact width here. */}
-                          <Truncate lines={1} trimWhitespace={true} width={196}>
+                          <Truncate
+                            lines={1}
+                            trimWhitespace={true}
+                            width={creationInfoContainerWidth}
+                          >
                             {`by ${club.ownerName}`}
                           </Truncate>
                         </Typography>
                       )}
+                      <ReactResizeDetector
+                        handleWidth
+                        onResize={(w, h) => setCreationInfoContainerWidth(w)}
+                      />
                     </div>
                     {!quickJoin && (
                       <Button
                         className={classes.button}
                         color="primary"
                         variant="contained"
-                        component={AdapterLink}
-                        to={`/clubs/${club._id}`}
+                        href={`/clubs/${club._id}`}
                       >
                         <Typography variant="button">VIEW CLUB</Typography>
                       </Button>
                     )}
-                    {quickJoin && currUserId && (
+                    {quickJoin && isLoggedIn && (
                       <MuiThemeProvider theme={isMember ? successTheme : theme}>
-                        <Button
-                          className={classes.button}
-                          color="primary"
-                          variant="contained"
-                          onClick={() =>
-                            onChangeMembership(currUserId, club._id, !isMember)
-                          }
-                        >
-                          <Typography variant="button">
-                            {isMember ? 'JOINED' : 'JOIN'}
-                          </Typography>
-                        </Button>
+                        <div className={classes.actionButtonsContainer}>
+                          <Button
+                            style={{ marginRight: 8 }}
+                            color="primary"
+                            href={`/clubs/${club._id}`}
+                            target="_blank"
+                          >
+                            <Typography variant="button">VIEW CLUB</Typography>
+                          </Button>
+                          <div className={classes.buttonWrapper}>
+                            <Button
+                              style={{ marginRight: 8 }}
+                              color="primary"
+                              variant="contained"
+                              onClick={() =>
+                                onChangeMembership(club, index, !isMember)
+                              }
+                              disabled={isChangingMembership}
+                            >
+                              <Typography
+                                className={classes.joinButtonText}
+                                variant="button"
+                              >
+                                {isMember ? 'JOINED' : 'JOIN'}
+                              </Typography>
+                            </Button>
+                            {isChangingMembership && (
+                              <CircularProgress
+                                size={joinProgressIndicatorSize}
+                                className={classes.joinProgressIndicator}
+                              />
+                            )}
+                          </div>
+                        </div>
                       </MuiThemeProvider>
                     )}
                   </CardActions>
@@ -490,6 +620,7 @@ export default function ClubCards(props: ClubCardsProps) {
           );
         })}
       </Grid>
+      <CustomSnackbar {...snackbarProps} />
       <DiscordLoginModal
         onCloseLoginDialog={onCloseLoginDialog}
         open={loginModalShown}

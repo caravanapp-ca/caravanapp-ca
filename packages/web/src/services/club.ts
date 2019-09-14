@@ -119,7 +119,7 @@ export async function modifyMyClubMembership(
   clubId: string,
   isMember: boolean
 ) {
-  const res = await axios.put(`${clubRoute}/${clubId}/membership`, {
+  const res = await axios.put<User[]>(`${clubRoute}/${clubId}/membership`, {
     isMember,
   });
   return res;
@@ -133,7 +133,7 @@ export async function deleteClub(clubId: string) {
 export async function updateShelf(
   clubId: string,
   newShelf: {
-    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
+    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[];
   }
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/shelf`, {

@@ -125,6 +125,9 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     flexWrap: 'wrap',
   },
+  cardsContainer: {
+    padding: `32px 0px 32px 0px`,
+  },
 }));
 
 const defaultActiveFilter: ActiveFilter = {
@@ -925,19 +928,21 @@ export default function Home(props: HomeProps) {
                   ))}
                 </div>
               )}
+              {(clubsTransformedResult.status === 'loaded' ||
+                clubsTransformedResult.status === 'loading') &&
+                clubsTransformedResult.payload &&
+                clubsTransformedResult.payload.length > 0 && (
+                  <div className={classes.cardsContainer}>
+                    <ClubCards
+                      clubsTransformed={clubsTransformedResult.payload}
+                      showResultsCount={
+                        clubsSearch.length > 0 || clubFiltersApplied
+                      }
+                      resultsLoaded={clubsTransformedResult.status === 'loaded'}
+                    />
+                  </div>
+                )}
             </Container>
-            {(clubsTransformedResult.status === 'loaded' ||
-              clubsTransformedResult.status === 'loading') &&
-              clubsTransformedResult.payload &&
-              clubsTransformedResult.payload.length > 0 && (
-                <ClubCards
-                  clubsTransformed={clubsTransformedResult.payload}
-                  showResultsCount={
-                    clubsSearch.length > 0 || clubFiltersApplied
-                  }
-                  resultsLoaded={clubsTransformedResult.status === 'loaded'}
-                />
-              )}
             {clubsTransformedResult.status === 'loaded' &&
               clubsTransformedResult.payload.length === 0 &&
               (clubFiltersApplied || clubsSearch.length > 0) && (
