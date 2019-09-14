@@ -24,18 +24,26 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       flexDirection: 'column',
     },
+    cardsContainer: {
+      padding: `${theme.spacing(2)}px 0px ${theme.spacing(4)}px 0px`,
+    },
+    headerText: {
+      marginBottom: theme.spacing(2),
+    },
     loadMoreContainer: {
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
+      marginBottom: theme.spacing(4),
     },
   })
 );
 
 interface RecommendedClubsProps extends RouteComponentProps<{}> {
   user: User | null;
+  userLoaded: boolean;
 }
 
 const headerCenterComponent = <HeaderTitle title="Recommended Clubs" />;
@@ -43,44 +51,46 @@ const headerCenterComponent = <HeaderTitle title="Recommended Clubs" />;
 const pageSize = 6;
 
 export default function RecommendedClubs(props: RecommendedClubsProps) {
-  const { user } = props;
+  const { user, userLoaded } = props;
   const classes = useStyles();
   const [clubs, setClubs] = useState<ClubTransformed[]>([]);
   const [loadStatus, setLoadStatus] = useState<'init' | 'loading' | 'loaded'>(
     'init'
   );
-  // const [after, setAfter] = useState<string>();
   const [clubsReceivedIds, setClubsReceivedIds] = useState<string[]>([]);
 
   const loadMoreEnabled = clubs.length % pageSize === 0;
   const rightComponent = <ProfileHeaderIcon user={user} />;
 
   useEffect(() => {
-    if (user) {
-      const getRecommendations = async (userId: string) => {
-        setLoadStatus('loading');
-        const res = await getUserClubRecommendations(
-          userId,
-          pageSize,
-          clubsReceivedIds
-        );
-        if (res.status === 404) {
-          setClubs([]);
-        } else if (res.status === 200) {
-          setClubs(clubs => [
-            ...clubs,
-            ...res.data.map(c => transformClub(c.club, c.recommendation)),
-          ]);
-        } else {
+    if (!user || !userLoaded) {
+      return;
+    }
+    const getRecommendations = async (userId: string) => {
+      setLoadStatus('loading');
+      const res = await getUserClubRecommendations(
+        userId,
+        pageSize,
+        clubsReceivedIds
+      );
+      if (res.status === 200) {
+        setClubs(clubs => [
+          ...clubs,
+          ...res.data.map(c =>
+            transformClub(c.club, c.recommendation, c.isMember)
+          ),
+        ]);
+      } else {
+        setClubs([]);
+        if (res.status !== 404) {
           // This is an error condition.
-          setClubs([]);
           // TODO: Show snackbar indicating we had trouble finding your clubs
         }
-        setLoadStatus('loaded');
-      };
-      getRecommendations(user._id);
-    }
-  }, [user, clubsReceivedIds]);
+      }
+      setLoadStatus('loaded');
+    };
+    getRecommendations(user._id);
+  }, [clubsReceivedIds, user, userLoaded]);
 
   const onClickLoadMore = () => {
     if (loadStatus === 'loaded' && loadMoreEnabled) {
@@ -100,12 +110,12 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
         )}
         {(loadStatus === 'loaded' || loadStatus === 'loading') &&
           clubs.length > 0 && (
-            <>
-              <Typography>
+            <div className={classes.cardsContainer}>
+              <Typography variant="h6" className={classes.headerText}>
                 Here are some clubs we've hand picked for you!
               </Typography>
-              <ClubCards clubsTransformed={clubs} />
-            </>
+              <ClubCards clubsTransformed={clubs} quickJoin={true} />
+            </div>
           )}
         {loadStatus === 'loaded' && clubs.length === 0 && (
           <Typography>

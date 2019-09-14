@@ -11,7 +11,7 @@ import {
   ClubRecommendationDoc,
   ClubModel,
 } from '@caravan/buddy-reading-mongo';
-import { Types, Aggregate } from 'mongoose';
+import { Types } from 'mongoose';
 import { ReadingDiscordBot } from './discord';
 import {
   PROD_UNCOUNTABLE_IDS,
@@ -52,7 +52,10 @@ export const getUserClubRecommendations = async (
   const userGenreKeys = user.selectedGenres.map(sg => sg.key);
   const globalQuery: SameKeysAs<Partial<ClubDoc>> = {
     _id: {
-      $nin: [...clubsReceivedIds, ...recommendedClubIds],
+      $nin: [
+        ...clubsReceivedIds.map(cRId => new Types.ObjectId(cRId)),
+        ...recommendedClubIds,
+      ],
     },
     unlisted: false,
   };
@@ -88,12 +91,31 @@ export const getUserClubRecommendations = async (
     {
       $addFields: {
         order: {
-          $size: {
-            $setIntersection: [
-              userTBRSourceIds,
-              '$newShelf.notStarted.sourceId',
-            ],
-          },
+          $multiply: [
+            // Num matches
+            {
+              $size: {
+                $setIntersection: [
+                  userTBRSourceIds,
+                  '$newShelf.notStarted.sourceId',
+                ],
+              },
+            },
+            // Match ratio
+            {
+              $divide: [
+                {
+                  $size: {
+                    $setIntersection: [
+                      userTBRSourceIds,
+                      '$newShelf.notStarted.sourceId',
+                    ],
+                  },
+                },
+                { $size: '$newShelf.notStarted.sourceId' },
+              ],
+            },
+          ],
         },
         tbrMatches: {
           $setIntersection: [userTBRSourceIds, '$newShelf.notStarted.sourceId'],
@@ -103,9 +125,25 @@ export const getUserClubRecommendations = async (
     {
       $addFields: {
         order: {
-          $size: {
-            $setIntersection: [userGenreKeys, '$genres.key'],
-          },
+          $multiply: [
+            // Num matches
+            {
+              $size: {
+                $setIntersection: [userGenreKeys, '$genres.key'],
+              },
+            },
+            // Match ratio
+            {
+              $divide: [
+                {
+                  $size: {
+                    $setIntersection: [userGenreKeys, '$genres.key'],
+                  },
+                },
+                { $size: '$genres.key' },
+              ],
+            },
+          ],
         },
         genreMatches: {
           $setIntersection: [userGenreKeys, '$genres.key'],
@@ -195,6 +233,7 @@ export const getUserClubRecommendations = async (
           },
           tbrMatches,
           genreMatches,
+          isMember: false,
         };
       });
       const transformedClubs = await Promise.all(transformedClubsPromises);

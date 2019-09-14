@@ -171,7 +171,11 @@ export function App(props: AppProps) {
                   render={props =>
                     forceOnboard(
                       user,
-                      <RecommendedClubs {...props} user={user} />
+                      <RecommendedClubs
+                        {...props}
+                        user={user}
+                        userLoaded={userLoaded}
+                      />
                     )
                   }
                 />

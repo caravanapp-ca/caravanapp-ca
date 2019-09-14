@@ -27,11 +27,13 @@ export function getCurrentSchedule(
 
 export const transformClub = (
   club: Services.GetClubs['clubs'][0],
-  recommendation?: ClubRecommendation
-) => {
+  recommendation?: ClubRecommendation,
+  isMember?: boolean
+): ClubTransformed => {
   const transformedClub: ClubTransformed = {
     club,
     recommendation,
+    isMember: isMember || false,
   };
   if (club.newShelf.current.length > 0) {
     let schedule = club.schedules.find(

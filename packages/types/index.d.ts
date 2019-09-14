@@ -66,6 +66,7 @@ declare module '@caravan/buddy-reading-types' {
     club: Services.GetClubs['clubs'][0];
     schedule?: ClubReadingSchedule | null;
     recommendation?: ClubRecommendation;
+    isMember?: boolean;
   }
 
   export interface ClubWithMemberIds {
@@ -373,6 +374,7 @@ declare module '@caravan/buddy-reading-types' {
     recommendation: ClubRecommendation;
     tbrMatches: UserShelfEntry[];
     genreMatches: SelectedGenre[];
+    isMember: boolean;
   }
 
   export type EditableUserField =
