@@ -1,19 +1,19 @@
+import { UserDoc } from '@caravan/buddy-reading-mongo';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
 import { getUser } from './user';
 
-export async function getPostUserInfo(userId: string) {
-  const user = await getUser(userId);
-  if (user) {
+export function mapPostUserInfo(userDoc: UserDoc) {
+  if (userDoc) {
     const userInfo: PostUserInfo = {
-      userId,
-      name: user.name
-        ? user.name
-        : user.urlSlug
-        ? user.urlSlug
+      userId: userDoc.id,
+      name: userDoc.name
+        ? userDoc.name
+        : userDoc.urlSlug
+        ? userDoc.urlSlug
         : 'Caravan User',
-      urlSlug: user.urlSlug,
-      photoUrl: user.photoUrl,
-      discordId: user.discordId,
+      urlSlug: userDoc.urlSlug,
+      photoUrl: userDoc.photoUrl,
+      discordId: userDoc.discordId,
     };
     return userInfo;
   } else {

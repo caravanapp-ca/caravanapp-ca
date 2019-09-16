@@ -6,6 +6,13 @@ export const getPostLikes = async (postId: string) => {
   return likesDoc;
 };
 
+export const getPostsLikes = async (postIds: string[]) => {
+  const likesDocs = await LikesModel.find({
+    _id: { $in: postIds },
+  });
+  return likesDocs;
+};
+
 export const createLikesDoc = async (postId: string) => {
   const likesObj: FilterAutoMongoKeys<Likes> = {
     postId,

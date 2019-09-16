@@ -1,18 +1,20 @@
+// This import allows me to use the flatMap function on arrays.
+import 'core-js/features/array';
 import express from 'express';
 import Fuse from 'fuse.js';
 import {
   FilterAutoMongoKeys,
   Post,
+  PostContent,
+  PostWithAuthorInfoAndLikes,
   SameKeysAs,
   Services,
-  PostUserInfo,
-  PostWithAuthorInfoAndLikes,
-  PostContent,
 } from '@caravan/buddy-reading-types';
-import { PostModel, PostDoc } from '@caravan/buddy-reading-mongo';
+import { PostModel, PostDoc, UserDoc } from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
-import { getPostLikes, createLikesDoc } from '../services/like';
-import { getPostUserInfo } from '../services/post';
+import { createLikesDoc, getPostsLikes } from '../services/like';
+import { mapPostUserInfo } from '../services/post';
+import { getUser, getUsersByUserIds } from '../services/user';
 
 const router = express.Router();
 
@@ -48,7 +50,8 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 // Get post author info
 router.get('/userInfo/:userId', async (req, res) => {
   const { userId } = req.params;
-  const postUserInfo = await getPostUserInfo(userId);
+  const userDoc = await getUser(userId);
+  const postUserInfo = mapPostUserInfo(userDoc);
   if (postUserInfo) {
     return res.status(200).send(postUserInfo);
   } else {
@@ -222,41 +225,62 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
   if (posts.length > limit) {
     posts = posts.slice(0, limit);
   }
-  const postsWithAuthorAndLikesUserInfo: (PostWithAuthorInfoAndLikes | null)[] = await Promise.all(
-    filteredPosts.map(async p => {
-      let filteredLikesArr: PostUserInfo[] = [];
-      const postLikes = await getPostLikes(p._id);
-      let numLikes = 0;
-      if (postLikes && postLikes.numLikes && postLikes.numLikes > 0) {
-        numLikes = postLikes.numLikes;
-        const slicedLikes = postLikes.likes.slice(0, 10);
-        const likesObjArr = await Promise.all(
-          slicedLikes.map(async luid => {
-            const likeUserInfo = await getPostUserInfo(luid.toString());
-            return likeUserInfo || null;
-          })
-        );
-        filteredLikesArr = likesObjArr.filter(l => l !== null);
-      }
-      const authorInfo = await getPostUserInfo(p.authorId);
-      if (authorInfo) {
-        return {
-          post: p,
-          authorInfo,
-          likes: filteredLikesArr,
-          likeUserIds: postLikes.likes,
-          numLikes,
-        };
-      } else {
-        return null;
-      }
-    })
-  );
-  const filteredPostsWithAuthorAndLikesUserInfo = postsWithAuthorAndLikesUserInfo.filter(
-    p => p !== null
-  );
+
+  const filteredPostsIds = filteredPosts.map(p => p._id);
+  const postsLikesDocs = await getPostsLikes(filteredPostsIds);
+  // We will need access to the subset of likes a few times, so save them here
+  const usableLikesMap = new Map<string, string[]>();
+  postsLikesDocs.forEach(p => {
+    // Get up to 10 user ids that liked each post
+    usableLikesMap.set(p.id, p.likes.slice(0, 10));
+  });
+
+  // Get all of the userIds for users that we want to get like info for from the database,
+  // removing duplicates using the Set structure.
+  const postLikesUserIds = [
+    // De-duplicates the user ids by using a Set, which is O(n) instead of O(n)^2
+    ...new Set(
+      // The flatMap() method first maps each element using a mapping function, then flattens the result into a new arr.
+      postsLikesDocs.flatMap(
+        // Get up to 10 user ids that liked each post
+        p => usableLikesMap.get(p.id)
+      )
+    ),
+  ];
+
+  // Gets unique author ids across all posts so that the DB call only requests unique users.
+  const authorIds = [...new Set(filteredPosts.map(p => p.authorId))];
+
+  const [likeUserDocs, authorUserDocs] = await Promise.all([
+    getUsersByUserIds(postLikesUserIds),
+    getUsersByUserIds(authorIds),
+  ]);
+
+  // For quicker merging, use Maps.
+  const likeUserDocsMap = new Map<string, UserDoc>();
+  const authorUserDocsMap = new Map<string, UserDoc>();
+  likeUserDocs.forEach(d => likeUserDocsMap.set(d.id, d));
+  authorUserDocs.forEach(d => authorUserDocsMap.set(d.id, d));
+
+  const postsInfo = filteredPosts.map(post => {
+    const authorUserDoc = authorUserDocsMap.get(post.authorId);
+    const authorInfo = mapPostUserInfo(authorUserDoc);
+    const likeUserIds = usableLikesMap.get(post._id);
+    const likesUserDocs = likeUserIds.map(uid => likeUserDocsMap.get(uid));
+    const likes = likesUserDocs.map(mapPostUserInfo);
+    const postsLikesDoc = postsLikesDocs.find(d => d.postId === post._id);
+    const { numLikes } = postsLikesDoc;
+    const postInfo: PostWithAuthorInfoAndLikes = {
+      authorInfo,
+      likeUserIds,
+      post,
+      numLikes,
+      likes,
+    };
+    return postInfo;
+  });
   const result: Services.GetPostsWithAuthorInfoAndLikes = {
-    posts: filteredPostsWithAuthorAndLikesUserInfo,
+    posts: postsInfo,
   };
   res.status(200).json(result);
 });

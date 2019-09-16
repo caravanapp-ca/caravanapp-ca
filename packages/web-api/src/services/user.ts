@@ -1,4 +1,4 @@
-import { GuildMember } from 'discord.js';
+import { GuildMember, Guild } from 'discord.js';
 import {
   checkObjectIdIsValid,
   BadgeDoc,
@@ -8,13 +8,16 @@ import {
 import { ReadingDiscordBot } from './discord';
 import { getBadges } from './badge';
 
-export const mutateUserDiscordContent = (userDoc: UserDoc) => {
+export const mutateUserDiscordContent = (userDoc: UserDoc, guild?: Guild) => {
   if (!userDoc) {
     return;
   }
-  const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
-  const guildMember = guild.members.get(userDoc.discordId);
+  let g = guild;
+  if (!g) {
+    const client = ReadingDiscordBot.getInstance();
+    g = client.guilds.first();
+  }
+  const guildMember = g.members.get(userDoc.discordId);
   if (guildMember) {
     const { user } = guildMember;
     userDoc.name = userDoc.name || guildMember.displayName;
@@ -64,23 +67,44 @@ export const getMe = async (id: string) => {
   return user;
 };
 
+export const getUsersByUserIds = async (userIds: string[]) => {
+  const [userDocs, badgeDoc] = await Promise.all([
+    UserModel.find({
+      _id: {
+        $in: userIds,
+      },
+    }),
+    getBadges(),
+  ]);
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  userDocs.forEach(userDoc => {
+    mutateUserDiscordContent(userDoc, guild);
+    if (userDoc && userDoc.badges && userDoc.badges.length > 0) {
+      mutateUserBadges(userDoc, badgeDoc);
+    }
+    return userDoc;
+  });
+  return userDocs;
+};
+
 export const getUser = async (urlSlugOrId: string) => {
   const isObjId = checkObjectIdIsValid(urlSlugOrId);
-  let user: UserDoc;
+  let userDoc: UserDoc;
   if (!isObjId) {
-    user = await UserModel.findOne({ urlSlug: urlSlugOrId });
+    userDoc = await UserModel.findOne({ urlSlug: urlSlugOrId });
   } else {
-    user = await UserModel.findById(urlSlugOrId);
+    userDoc = await UserModel.findById(urlSlugOrId);
   }
-  if (!user) {
-    return user;
+  if (!userDoc) {
+    return userDoc;
   }
-  mutateUserDiscordContent(user);
+  mutateUserDiscordContent(userDoc);
   const badgeDoc = await getBadges();
-  if (user && user.badges && user.badges.length > 0) {
-    mutateUserBadges(user, badgeDoc);
+  if (userDoc && userDoc.badges && userDoc.badges.length > 0) {
+    mutateUserBadges(userDoc, badgeDoc);
   }
-  return user;
+  return userDoc;
 };
 
 export const getUsername = (userDoc?: UserDoc, member?: GuildMember) => {
