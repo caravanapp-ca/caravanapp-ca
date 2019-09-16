@@ -7,9 +7,11 @@ import {
   Container,
   CircularProgress,
   Button,
+  IconButton,
 } from '@material-ui/core';
+import { ArrowBackIos } from '@material-ui/icons';
 import { User, ClubTransformed } from '@caravan/buddy-reading-types';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, Redirect } from 'react-router';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
 import { getUserClubRecommendations } from '../../services/club';
@@ -61,6 +63,23 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
 
   const loadMoreEnabled = clubs.length % pageSize === 0;
   const rightComponent = <ProfileHeaderIcon user={user} />;
+  const backButtonAction = () => {
+    if (props.history.length > 2) {
+      props.history.goBack();
+    } else {
+      props.history.replace('/');
+    }
+  };
+  const leftComponent = (
+    <IconButton
+      edge="start"
+      color="inherit"
+      aria-label="Back"
+      onClick={backButtonAction}
+    >
+      <ArrowBackIos />
+    </IconButton>
+  );
 
   useEffect(() => {
     if (!user || !userLoaded) {
@@ -92,6 +111,10 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
     getRecommendations(user._id);
   }, [clubsReceivedIds, user, userLoaded]);
 
+  if (!user && userLoaded) {
+    return <Redirect to="/" />;
+  }
+
   const onClickLoadMore = () => {
     if (loadStatus === 'loaded' && loadMoreEnabled) {
       setClubsReceivedIds(clubs.map(c => c.club._id));
@@ -101,6 +124,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   return (
     <>
       <Header
+        leftComponent={leftComponent}
         centerComponent={headerCenterComponent}
         rightComponent={rightComponent}
       />

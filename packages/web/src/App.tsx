@@ -27,6 +27,7 @@ import {
 } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
 import { GAListener } from './common/GAListener';
+import { getClubIdFromPathname } from './common/club';
 import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
@@ -121,6 +122,10 @@ export function App(props: AppProps) {
       )
         ? 'club'
         : 'home';
+      const referralDestinationId: string | null | undefined =
+        referralDestination === 'club'
+          ? getClubIdFromPathname(window.location.pathname)
+          : undefined;
       const referrerId = Array.isArray(queries.ref)
         ? queries.ref[0]
         : queries.ref;
@@ -130,7 +135,12 @@ export function App(props: AppProps) {
       if (utmSource) {
         utmSource = getUtmSourceValue(utmSource);
       }
-      handleReferral(referrerId, utmSource, referralDestination);
+      handleReferral(
+        referrerId,
+        utmSource,
+        referralDestination,
+        referralDestinationId
+      );
     }
   }, []);
 

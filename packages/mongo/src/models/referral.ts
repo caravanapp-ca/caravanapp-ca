@@ -53,6 +53,9 @@ const referralDefinition: MongooseSchema<Referral> = {
     required: true,
     default: 'home',
   },
+  referralDestinationId: {
+    type: String
+  },
 };
 
 const referralSchema = new Schema<ReferralDoc>(referralDefinition, {

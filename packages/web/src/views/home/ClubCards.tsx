@@ -241,7 +241,6 @@ export default function ClubCards(props: ClubCardsProps) {
     creationInfoContainerWidth,
     setCreationInfoContainerWidth,
   ] = React.useState<number>(128);
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
     setClubsTransformedState(clubsTransformed);

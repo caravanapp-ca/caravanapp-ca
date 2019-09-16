@@ -37,6 +37,7 @@ export async function handleFirstVisit(
   referredTempUid: string,
   referredById: string,
   referralDestination: ReferralDestination,
+  referralDestinationId?: string,
   utmSource?: ReferralSource
 ) {
   const newReferral: Omit<
@@ -44,7 +45,7 @@ export async function handleFirstVisit(
     'referredUsers' | 'referralCount'
   > = {
     userId: referredTempUid,
-    referredById: referredById,
+    referredById,
     actions: [
       {
         action: 'click',
@@ -52,7 +53,8 @@ export async function handleFirstVisit(
       },
     ],
     source: utmSource,
-    referralDestination: referralDestination,
+    referralDestination,
+    referralDestinationId,
     referredAndNotJoined: true,
   };
   const referralDoc = await new ReferralModel(newReferral).save();
@@ -78,6 +80,7 @@ export async function createReferralActionByDoc(
     case 'click':
     case 'login':
     case 'onboarded':
+      // TODO: Join club if it exists
       break;
     case 'createClub':
     case 'joinClub':

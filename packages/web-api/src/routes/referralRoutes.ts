@@ -46,6 +46,7 @@ router.post(
     let referralDestination: ReferralDestination = req.body.referralDestination
       ? req.body.referralDestination
       : null;
+    let referralDestinationId: string = req.body.referralDestinationId || null;
     referralDestination =
       referralDestination == null ||
       ALLOWED_REFERRAL_DESTINATIONS[referralDestination] === true
@@ -65,6 +66,7 @@ router.post(
         referredTempUid,
         referrerId,
         referralDestination,
+        referralDestinationId,
         utmSource
       );
       req.session.referredTempUid = referredTempUid;

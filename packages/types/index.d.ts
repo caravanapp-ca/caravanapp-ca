@@ -246,6 +246,7 @@ declare module '@caravan/buddy-reading-types' {
     source: ReferralSource;
     referralDestination: ReferralDestination;
     referredAndNotJoined: boolean;
+    referralDestinationId?: string;
   }
 
   export interface Referrals {
