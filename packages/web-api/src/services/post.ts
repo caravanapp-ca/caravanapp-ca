@@ -1,6 +1,5 @@
 import { UserDoc } from '@caravan/buddy-reading-mongo';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
-import { getUser } from './user';
 
 export function mapPostUserInfo(userDoc: UserDoc) {
   if (userDoc) {
