@@ -72,7 +72,6 @@ import PostSearchFilter from '../../components/filters/PostSearchFilter';
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
   userLoaded: boolean;
-  tabValuePassed?: number;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -208,6 +207,7 @@ export default function Home(props: HomeProps) {
   const [loadingMorePosts, setLoadingMorePosts] = React.useState<boolean>(
     false
   );
+  const [shouldGetPosts, setShouldGetPosts] = React.useState<boolean>(false);
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
@@ -453,7 +453,14 @@ export default function Home(props: HomeProps) {
       }
     })();
     setLoadingMorePosts(true);
-  }, [user, userLoaded, afterPostsQuery, postsSearch, postSearchField]);
+  }, [
+    user,
+    userLoaded,
+    afterPostsQuery,
+    postsSearch,
+    postSearchField,
+    shouldGetPosts,
+  ]);
 
   // Get genres on mount
   useEffect(() => {
@@ -464,8 +471,11 @@ export default function Home(props: HomeProps) {
         setAllGenres(data);
       }
     };
+    if (props.history.location.state && props.history.location.state.reload) {
+      setShouldGetPosts(true);
+    }
     getGenres();
-  }, []);
+  }, [props.history.location.state]);
 
   // These useEffects write the tab, search, and filter values to prop.history.location.state so that they can be
   // retrieved when the user navigates back to the home screen. When the user logs out the whole
@@ -481,7 +491,7 @@ export default function Home(props: HomeProps) {
     } else {
       props.history.replace({ state: { tab: tabValue } });
     }
-  }, [tabValue]);
+  }, [tabValue, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -489,7 +499,7 @@ export default function Home(props: HomeProps) {
       newState.clubsFilter = activeClubsFilter;
       props.history.replace({ state: newState });
     }
-  }, [activeClubsFilter]);
+  }, [activeClubsFilter, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -497,7 +507,7 @@ export default function Home(props: HomeProps) {
       newState.clubsSearch = clubsSearch;
       props.history.replace({ state: newState });
     }
-  }, [clubsSearch]);
+  }, [clubsSearch, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -505,7 +515,7 @@ export default function Home(props: HomeProps) {
       newState.usersSearch = usersSearch;
       props.history.replace({ state: newState });
     }
-  }, [usersSearch]);
+  }, [usersSearch, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -513,7 +523,7 @@ export default function Home(props: HomeProps) {
       newState.userSearchField = userSearchField;
       props.history.replace({ state: newState });
     }
-  }, [userSearchField]);
+  }, [userSearchField, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -521,7 +531,7 @@ export default function Home(props: HomeProps) {
       newState.postsSearch = postsSearch;
       props.history.replace({ state: newState });
     }
-  }, [postsSearch]);
+  }, [postsSearch, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -529,7 +539,17 @@ export default function Home(props: HomeProps) {
       newState.postSearchField = postSearchField;
       props.history.replace({ state: newState });
     }
-  }, [postSearchField]);
+  }, [postSearchField, props.history]);
+
+  function onEditPost() {
+    if (props.history.location.state) {
+      const newState = props.history.location.state;
+      newState.reload = true;
+      props.history.replace({
+        state: newState,
+      });
+    }
+  }
 
   function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
@@ -1198,6 +1218,7 @@ export default function Home(props: HomeProps) {
                   currUser={user}
                   showResultsCount={postsSearch.length > 0}
                   resultsLoaded={postsResult.status === 'loaded'}
+                  onEditPost={onEditPost}
                 />
               )}
             {postsResult.status === 'loaded' &&

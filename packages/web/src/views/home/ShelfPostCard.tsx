@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router';
 import { CardActions } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -20,6 +19,7 @@ import GenresInCommonChips from '../../components/GenresInCommonChips';
 import { modifyPostLike } from '../../services/like';
 import DeletePostDialog from '../../components/DeletePostDialog';
 import { deletePost } from '../../services/post';
+import { CustomSnackbarProps } from '../../components/CustomSnackbar';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -87,7 +87,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ShelfPostCardProps extends RouteComponentProps {
+interface ShelfPostCardProps {
   postContent: PostContent;
   postAuthorInfo: PostUserInfo;
   postDate: string | Date;
@@ -97,6 +97,7 @@ interface ShelfPostCardProps extends RouteComponentProps {
   numLikes: number;
   postId: string;
   currUser: User | null;
+  onEditShelf: () => void;
 }
 
 export default function ShelfPostCard(props: ShelfPostCardProps) {
@@ -111,6 +112,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     numLikes,
     postId,
     currUser,
+    onEditShelf,
   } = props;
   const shelfPost = postContent as ShelfPost;
 
@@ -137,6 +139,15 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
   const [deletePostDialogVisible, setDeletePostDialogVisible] = React.useState<
     boolean
   >(false);
+
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'success',
+    }
+  );
 
   useEffect(() => {
     if (shouldExecuteLike && currUser) {
@@ -167,11 +178,17 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
 
   async function onDeletePost() {
     const res = await deletePost(postId);
-    if (res.status === 200) {
-      props.history.replace('/clubs');
+    if (res && res.status && res.status >= 200 && res.status < 300) {
+      setDeletePostDialogVisible(false);
+      window.location.reload();
     } else {
+      setDeletePostDialogVisible(false);
       return;
     }
+  }
+
+  function onSnackbarClose() {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
   let myGenres: string[] = [];
@@ -205,6 +222,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           ownPost={currUser !== null && currUser._id === postAuthorInfo.userId}
           onClickDelete={() => setDeletePostDialogVisible(true)}
           postId={postId}
+          onEditShelf={onEditShelf}
         />
         <CardContent classes={{ root: classes.cardContent }}>
           {shelfPost.shelf.length > 0 && (

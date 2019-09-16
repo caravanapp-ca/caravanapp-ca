@@ -11,6 +11,7 @@ import {
 import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Create';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
+import AdapterLink from './AdapterLink';
 
 const useStyles = makeStyles(theme => ({
   heading: {
@@ -57,6 +58,7 @@ interface PostHeaderProps {
   ownPost: boolean;
   onClickDelete: () => void;
   postId: string;
+  onEditShelf: () => void;
 }
 
 function PostHeader(props: PostHeaderProps) {
@@ -69,6 +71,7 @@ function PostHeader(props: PostHeaderProps) {
     ownPost,
     onClickDelete,
     postId,
+    onEditShelf,
   } = props;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -134,10 +137,14 @@ function PostHeader(props: PostHeaderProps) {
           },
         }}
       >
-        <Link href={`/post/${postId}/edit`} underline="none" color="inherit">
-          <MenuItem>Edit Post</MenuItem>
-        </Link>
-        <MenuItem onClick={onClickDelete}>Delete Post</MenuItem>
+        <MenuItem
+          onClick={() => onEditShelf()}
+          component={AdapterLink}
+          to={`/post/${postId}/edit`}
+        >
+          Edit Shelf
+        </MenuItem>
+        <MenuItem onClick={onClickDelete}>Delete Shelf</MenuItem>
       </Menu>
     </div>
   );

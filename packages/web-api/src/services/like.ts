@@ -15,3 +15,8 @@ export const createLikesDoc = async (postId: string) => {
   };
   return LikesModel.create(likesObj);
 };
+
+export async function deleteLikesDocByPostId(postId: string) {
+  const likesDoc = await LikesModel.findOneAndDelete({ postId });
+  return likesDoc || undefined;
+}

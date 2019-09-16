@@ -30,9 +30,7 @@ export async function editPost(postContent: PostContent, postId: string) {
 }
 
 export async function deletePost(postId: string) {
-  const res = await axios.delete<Services.UploadPostResult | null>(
-    `${postRoute}/${postId}`
-  );
+  const res = await axios.delete(`${postRoute}/${postId}`);
   return res;
 }
 

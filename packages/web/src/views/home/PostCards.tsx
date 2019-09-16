@@ -101,6 +101,7 @@ interface PostCardProps {
   currUser: User | null;
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
+  onEditPost: () => void;
 }
 
 // Make this approximately the height of a standard UserCard
@@ -116,6 +117,7 @@ export default function PostCards(props: PostCardProps) {
     currUser,
     showResultsCount,
     resultsLoaded,
+    onEditPost,
   } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
@@ -154,6 +156,7 @@ export default function PostCards(props: PostCardProps) {
                       numLikes={numLikes}
                       postId={post._id}
                       currUser={currUser}
+                      onEditShelf={onEditPost}
                       key={post._id}
                     />
                   );

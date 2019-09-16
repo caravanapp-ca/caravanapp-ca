@@ -9,9 +9,13 @@ import {
   PostWithAuthorInfoAndLikes,
   PostContent,
 } from '@caravan/buddy-reading-types';
-import { PostModel, PostDoc } from '@caravan/buddy-reading-mongo';
+import { PostModel, PostDoc, LikesDoc } from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
-import { getPostLikes, createLikesDoc } from '../services/like';
+import {
+  getPostLikes,
+  createLikesDoc,
+  deleteLikesDocByPostId,
+} from '../services/like';
 import { getPostUserInfo } from '../services/post';
 
 const router = express.Router();
@@ -79,7 +83,7 @@ router.put('/:id', isAuthenticated, async (req, res, next) => {
 // Delete a post
 router.delete('/:postId', isAuthenticated, async (req, res) => {
   const { userId } = req.session;
-  const { postId } = req.params.id;
+  const { postId } = req.params;
 
   let postDoc: PostDoc;
   try {
@@ -91,10 +95,27 @@ router.delete('/:postId', isAuthenticated, async (req, res) => {
     try {
       postDoc = await postDoc.remove();
       console.log(`Deleted post ${postDoc.id} by user ${userId}`);
-      return res.status(204).send(`Deleted post ${postDoc.id}`);
     } catch (err) {
       console.log(`User ${userId} failed to delete post ${postDoc.id}`);
       return res.status(500).send(err);
+    }
+    try {
+      const likesDoc = await deleteLikesDocByPostId(postId);
+      console.log(`Deleted post ${postDoc.id} and corresponding likes doc`);
+      return res
+        .status(204)
+        .send(
+          `Deleted post ${postDoc.id} and corresponding likes doc ${likesDoc.id}`
+        );
+    } catch {
+      console.log(
+        `Deleted post ${postDoc.id} but could not delete corresponding likes doc`
+      );
+      return res
+        .status(204)
+        .send(
+          `Deleted post ${postDoc.id} but could not delete corresponding likes doc`
+        );
     }
   } else {
     console.log(

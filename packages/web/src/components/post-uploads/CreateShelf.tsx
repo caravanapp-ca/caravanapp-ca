@@ -112,7 +112,7 @@ export default function CreateShelf(props: CreateShelfProps) {
     if (createdShelf) {
       props.history.goBack();
     }
-  }, [createdShelf]);
+  }, [createdShelf, props.history]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]

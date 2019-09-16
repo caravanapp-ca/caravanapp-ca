@@ -71,9 +71,6 @@ export default function EditShelf(props: EditShelfProps) {
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
   );
-  const [inheritedShelf, setInheritedShelf] = React.useState<
-    FilterAutoMongoKeys<ShelfEntry>[]
-  >([]);
   const [
     postAuthorUserInfo,
     setPostAuthorUserInfo,
@@ -149,7 +146,7 @@ export default function EditShelf(props: EditShelfProps) {
     if (savedShelf) {
       props.history.goBack();
     }
-  }, [savedShelf]);
+  }, [savedShelf, props.history]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
