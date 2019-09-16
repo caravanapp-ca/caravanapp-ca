@@ -1,48 +1,60 @@
-// This import allows me to use the flatMap function on arrays.
-import 'core-js/features/array';
 import express from 'express';
 import Fuse from 'fuse.js';
+import mongoose from 'mongoose';
 import {
-  FilterAutoMongoKeys,
   Post,
-  PostContent,
   PostWithAuthorInfoAndLikes,
   SameKeysAs,
   Services,
 } from '@caravan/buddy-reading-types';
-import { PostModel, PostDoc, UserDoc } from '@caravan/buddy-reading-mongo';
+import {
+  PostModel,
+  PostDoc,
+  UserDoc,
+  FilterMongooseDocKeys,
+} from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
 import { createLikesDoc, getPostsLikes } from '../services/like';
-import { mapPostUserInfo } from '../services/post';
+import { createPostDoc, mapPostUserInfo } from '../services/post';
 import { getUser, getUsersByUserIds } from '../services/user';
 
 const router = express.Router();
 
-function instanceOfPostContent(object: any): object is PostContent {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function validPostContent(object: any) {
   return 'postType' in object;
 }
 
-// Upload post
 router.post('/', isAuthenticated, async (req, res, next) => {
-  console.log('Posting');
+  const { postContent } = req.body.params;
+  const userId: string = req.session.userId;
+  if (!validPostContent(postContent)) {
+    res.status(422).send(`Invalid post content: ${postContent}`);
+    return;
+  }
+  console.log(`Creating post { userId: ${userId} }`);
+  const postToUpload: Partial<PostDoc> = {
+    authorId: userId,
+    content: postContent,
+  };
+  let postDoc: PostDoc;
   try {
-    const { postContent } = req.body.params;
-    const { userId } = req.session;
-    if (userId && instanceOfPostContent(postContent)) {
-      const postToUpload: FilterAutoMongoKeys<Post> = {
-        authorId: userId,
-        content: postContent,
-      };
-      const post = new PostModel(postToUpload);
-      const newPost = await post.save();
-      const result = {
-        post: newPost,
-      };
-      await createLikesDoc(newPost._id.toHexString());
-      return res.status(201).send(result);
-    }
+    postDoc = await createPostDoc(postToUpload);
+    console.log(`Post created { userId: ${userId}, postId: ${postDoc.id} }`);
+    const likesDoc = await createLikesDoc(postDoc.id);
+    console.log(
+      `Like doc created { userId: ${userId}, postId: ${likesDoc.id} }`
+    );
+    const result = {
+      post: postDoc,
+    };
+    return res.status(201).send(result);
   } catch (err) {
-    console.log('Failed to upload post', err);
+    console.error(
+      `Failed to upload post { user: ${userId}, postId: ${postDoc &&
+        postDoc._id} }`,
+      err
+    );
     return next(err);
   }
 });
@@ -146,9 +158,10 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     res.sendStatus(404);
     return;
   }
-  let filteredPosts: Services.GetPosts['posts'] = posts
+  let filteredPosts = posts
     .map(postDoc => {
-      const post: Omit<Post, 'createdAt' | 'updatedAt'> & {
+      const post: FilterMongooseDocKeys<PostDoc> & {
+        _id: mongoose.Types.ObjectId;
         createdAt: string;
         updatedAt: string;
       } = {
@@ -173,22 +186,6 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     let fuseSearchKey: string;
     let fuseOptions: Fuse.FuseOptions<Services.GetPosts['posts']> = {};
     switch (postSearchField) {
-      case 'bookTitle':
-      default:
-        fuseSearchKey = 'content.shelf.title';
-        fuseOptions = {
-          minMatchCharLength: 2,
-          caseSensitive: false,
-          shouldSort: true,
-          threshold: 0.4,
-          location: 0,
-          distance: 100,
-          maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
-          keys: [fuseSearchKey],
-        };
-        break;
       case 'bookAuthor':
         fuseSearchKey = 'content.shelf.author';
         fuseOptions = {
@@ -212,6 +209,23 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
           keys: [fuseSearchKey],
         };
         break;
+      case 'bookTitle':
+        // Fall-through.
+      default:
+        fuseSearchKey = 'content.shelf.title';
+        fuseOptions = {
+          minMatchCharLength: 2,
+          caseSensitive: false,
+          shouldSort: true,
+          threshold: 0.4,
+          location: 0,
+          distance: 100,
+          maxPatternLength: 32,
+          // TODO: Typescript doesn't like the use of keys here.
+          // @ts-ignore
+          keys: [fuseSearchKey],
+        };
+        break;
     }
     const fuse = new Fuse(filteredPosts, fuseOptions);
     filteredPosts = fuse.search(search);
@@ -229,10 +243,10 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
   const filteredPostsIds = filteredPosts.map(p => p._id);
   const postsLikesDocs = await getPostsLikes(filteredPostsIds);
   // We will need access to the subset of likes a few times, so save them here
-  const usableLikesMap = new Map<string, string[]>();
+  const usableLikesMap = new Map<string, mongoose.Types.ObjectId[]>();
   postsLikesDocs.forEach(p => {
     // Get up to 10 user ids that liked each post
-    usableLikesMap.set(p.id, p.likes.slice(0, 10));
+    usableLikesMap.set(p.postId.toHexString(), p.likes.slice(0, 10));
   });
 
   // Get all of the userIds for users that we want to get like info for from the database,
@@ -243,13 +257,15 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
       // The flatMap() method first maps each element using a mapping function, then flattens the result into a new arr.
       postsLikesDocs.flatMap(
         // Get up to 10 user ids that liked each post
-        p => usableLikesMap.get(p.id)
+        p => usableLikesMap.get(p.postId.toHexString())
       )
     ),
   ];
 
   // Gets unique author ids across all posts so that the DB call only requests unique users.
-  const authorIds = [...new Set(filteredPosts.map(p => p.authorId))];
+  const authorIds = [
+    ...new Set(filteredPosts.map(p => p.authorId)),
+  ].map(id => new mongoose.Types.ObjectId(id));
 
   const [likeUserDocs, authorUserDocs] = await Promise.all([
     getUsersByUserIds(postLikesUserIds),
@@ -262,13 +278,19 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
   likeUserDocs.forEach(d => likeUserDocsMap.set(d.id, d));
   authorUserDocs.forEach(d => authorUserDocsMap.set(d.id, d));
 
-  const postsInfo = filteredPosts.map(post => {
+  const postsInfo = filteredPosts.map(postWithObjId => {
+    const post = {
+      ...postWithObjId,
+      _id: postWithObjId._id.toHexString(),
+    };
     const authorUserDoc = authorUserDocsMap.get(post.authorId);
     const authorInfo = mapPostUserInfo(authorUserDoc);
-    const likeUserIds = usableLikesMap.get(post._id);
+    const likeUserIds = usableLikesMap
+      .get(post._id)
+      .map(uid => uid.toHexString());
     const likesUserDocs = likeUserIds.map(uid => likeUserDocsMap.get(uid));
     const likes = likesUserDocs.map(mapPostUserInfo);
-    const postsLikesDoc = postsLikesDocs.find(d => d.postId === post._id);
+    const postsLikesDoc = postsLikesDocs.find(d => d.postId.equals(post._id));
     const { numLikes } = postsLikesDoc;
     const postInfo: PostWithAuthorInfoAndLikes = {
       authorInfo,

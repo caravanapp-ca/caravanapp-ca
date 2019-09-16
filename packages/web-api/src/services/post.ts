@@ -1,4 +1,4 @@
-import { UserDoc } from '@caravan/buddy-reading-mongo';
+import { UserDoc, PostDoc, PostModel } from '@caravan/buddy-reading-mongo';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
 
 export function mapPostUserInfo(userDoc: UserDoc) {
@@ -18,4 +18,9 @@ export function mapPostUserInfo(userDoc: UserDoc) {
   } else {
     return null;
   }
+}
+
+export const createPostDoc = async (postDoc: Partial<PostDoc>) => {
+  const resultPostDoc = await PostModel.create(postDoc);
+  return resultPostDoc;
 }

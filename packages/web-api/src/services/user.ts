@@ -1,4 +1,5 @@
 import { GuildMember, Guild } from 'discord.js';
+import mongoose from 'mongoose';
 import {
   checkObjectIdIsValid,
   BadgeDoc,
@@ -67,7 +68,7 @@ export const getMe = async (id: string) => {
   return user;
 };
 
-export const getUsersByUserIds = async (userIds: string[]) => {
+export const getUsersByUserIds = async (userIds: mongoose.Types.ObjectId[]) => {
   const [userDocs, badgeDoc] = await Promise.all([
     UserModel.find({
       _id: {

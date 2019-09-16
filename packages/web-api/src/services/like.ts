@@ -1,20 +1,20 @@
-import { LikesModel } from '@caravan/buddy-reading-mongo';
-import { FilterAutoMongoKeys, Likes } from '@caravan/buddy-reading-types';
+import mongoose from 'mongoose';
+import { FilterMongooseDocKeys, LikesModel, LikesDoc } from '@caravan/buddy-reading-mongo';
 
-export const getPostLikes = async (postId: string) => {
+export const getPostLikes = async (postId: mongoose.Types.ObjectId) => {
   const likesDoc = await LikesModel.findOne({ postId: postId });
   return likesDoc;
 };
 
-export const getPostsLikes = async (postIds: string[]) => {
+export const getPostsLikes = async (postIds: mongoose.Types.ObjectId[]) => {
   const likesDocs = await LikesModel.find({
-    _id: { $in: postIds },
+    postId: { $in: postIds },
   });
   return likesDocs;
 };
 
-export const createLikesDoc = async (postId: string) => {
-  const likesObj: FilterAutoMongoKeys<Likes> = {
+export const createLikesDoc = async (postId: mongoose.Types.ObjectId) => {
+  const likesObj: FilterMongooseDocKeys<LikesDoc> = {
     postId,
     likes: [],
     numLikes: 0,
