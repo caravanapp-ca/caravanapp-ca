@@ -1,7 +1,8 @@
+import { Types } from 'mongoose';
+import { addDays } from 'date-fns';
 import {
   ShelfEntry,
   Services,
-  SameKeysAs,
   Club,
   ClubWithRecommendation,
 } from '@caravan/buddy-reading-types';
@@ -11,11 +12,11 @@ import {
   ClubRecommendationDoc,
   ClubModel,
 } from '@caravan/buddy-reading-mongo';
-import { Types } from 'mongoose';
 import { ReadingDiscordBot } from './discord';
 import {
   PROD_UNCOUNTABLE_IDS,
   CLUB_RECOMMENDATION_KEYS,
+  MAX_CLUB_AGE_RECOMMENDATION_DAYS,
 } from '../common/globalConstantsAPI';
 import {
   Guild,
@@ -50,7 +51,7 @@ export const getUserClubRecommendations = async (
   let recommendedClubIds: Types.ObjectId[] = [];
   const userTBRSourceIds = user.shelf.notStarted.map(tbr => tbr.sourceId);
   const userGenreKeys = user.selectedGenres.map(sg => sg.key);
-  const globalQuery: SameKeysAs<Partial<ClubDoc>> = {
+  const globalQuery: any = {
     _id: {
       $nin: [
         ...clubsReceivedIds.map(cRId => new Types.ObjectId(cRId)),
@@ -58,6 +59,14 @@ export const getUserClubRecommendations = async (
       ],
     },
     unlisted: false,
+    $or: [
+      {
+        createdAt: {
+          $gte: addDays(new Date(), -MAX_CLUB_AGE_RECOMMENDATION_DAYS),
+        },
+      },
+      { 'schedules.startDate': { $gte: new Date() } },
+    ],
   };
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.first();
