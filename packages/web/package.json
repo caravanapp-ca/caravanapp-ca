@@ -26,7 +26,7 @@
     "clsx": "^1.0.4",
     "copy-to-clipboard": "^3.2.0",
     "date-fns": "^2.0.0-beta.2",
-    "query-string": "^6.8.1",
+    "query-string": "^6.8.3",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^11.0.4",
     "react-dom": "^16.8.6",
