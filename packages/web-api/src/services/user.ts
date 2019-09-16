@@ -90,17 +90,11 @@ export const getUsersByUserIds = async (userIds: string[]) => {
 
 export const getUser = async (urlSlugOrId: string) => {
   const isObjId = checkObjectIdIsValid(urlSlugOrId);
-  let userDoc: UserDoc;
-  if (!isObjId) {
-    userDoc = await UserModel.findOne({ urlSlug: urlSlugOrId });
-  } else {
-    userDoc = await UserModel.findById(urlSlugOrId);
-  }
-  if (!userDoc) {
-    return userDoc;
-  }
+  const userPromise = isObjId
+    ? UserModel.findById(urlSlugOrId)
+    : UserModel.findOne({ urlSlug: urlSlugOrId });
+  const [userDoc, badgeDoc] = await Promise.all([userPromise, getBadges()]);
   mutateUserDiscordContent(userDoc);
-  const badgeDoc = await getBadges();
   if (userDoc && userDoc.badges && userDoc.badges.length > 0) {
     mutateUserBadges(userDoc, badgeDoc);
   }
