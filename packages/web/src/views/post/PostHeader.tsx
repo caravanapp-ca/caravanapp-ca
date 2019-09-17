@@ -58,7 +58,7 @@ interface PostHeaderProps {
   ownPost: boolean;
   onClickDelete: () => void;
   postId: string;
-  onEditShelf: () => void;
+  onEditShelf?: () => void;
 }
 
 function PostHeader(props: PostHeaderProps) {
@@ -138,7 +138,7 @@ function PostHeader(props: PostHeaderProps) {
         }}
       >
         <MenuItem
-          onClick={() => onEditShelf()}
+          onClick={() => (onEditShelf ? onEditShelf() : null)}
           component={AdapterLink}
           to={`/post/${postId}/edit`}
         >

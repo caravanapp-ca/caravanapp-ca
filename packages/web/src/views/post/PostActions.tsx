@@ -21,6 +21,7 @@ import PostLikesThumbnails from '../../components/PostLikesThumbnails';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import shareIcon from '../../resources/share-icons/share-symbol.svg';
 import { getReferralLink } from '../../common/referral';
+import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({
   bottomContainer: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(2.5),
   },
   heartIcon: {
     padding: 4,
@@ -56,11 +57,15 @@ const useStyles = makeStyles(theme => ({
     resizeMode: 'contain',
     paddingRight: theme.spacing(1),
   },
+  viewPostButton: {
+    textTransform: 'none',
+  },
   createClubButtonContainer: {
     padding: theme.spacing(1),
   },
   createClubButton: {
     textTransform: 'none',
+    marginLeft: 4,
   },
 }));
 
@@ -77,6 +82,7 @@ interface PostActionsProps {
   userId: string | undefined;
   onSharePost: () => void;
   postId: string;
+  currentlyViewing?: boolean;
 }
 
 function PostActions(props: PostActionsProps) {
@@ -95,13 +101,14 @@ function PostActions(props: PostActionsProps) {
     userId,
     onSharePost,
     postId,
+    currentlyViewing,
   } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const maxLikeThumbnailsShown = screenSmallerThanSm ? 2 : 5;
+  const maxLikeThumbnailsShown = screenSmallerThanSm ? 1 : 5;
 
   const likeListLength = 10;
 
@@ -155,6 +162,16 @@ function PostActions(props: PostActionsProps) {
         </div>
       </div>
       <div className={classes.createClubButtonContainer}>
+        {!currentlyViewing && (
+          <Button
+            color="primary"
+            className={classes.viewPostButton}
+            component={AdapterLink}
+            to={`/post/${postId}`}
+          >
+            <Typography variant="subtitle2">View</Typography>
+          </Button>
+        )}
         {userId && (
           <Link
             component={RouterLink}
