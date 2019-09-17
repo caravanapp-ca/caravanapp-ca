@@ -37,6 +37,7 @@ import { getDiscordAuthUrl } from './common/auth';
 import Settings from './views/settings/Settings';
 import CreateShelf from './components/post-uploads/CreateShelf';
 import EditShelf from './views/post/EditShelf';
+import Post from './views/post/Post';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -179,6 +180,12 @@ export function App(props: AppProps) {
                   path="/post/:id/edit"
                   render={props =>
                     forceOnboard(user, <EditShelf {...props} user={user} />)
+                  }
+                />
+                <Route
+                  path="/post/:id"
+                  render={props =>
+                    forceOnboard(user, <Post {...props} user={user} />)
                   }
                 />
                 <Route

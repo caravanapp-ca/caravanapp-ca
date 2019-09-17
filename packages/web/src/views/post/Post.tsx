@@ -1,0 +1,373 @@
+import React, { useEffect } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import {
+  FilterAutoMongoKeys,
+  ShelfEntry,
+  SelectedGenre,
+  PostUserInfo,
+  User,
+} from '@caravan/buddy-reading-types';
+import {
+  makeStyles,
+  Typography,
+  useMediaQuery,
+  IconButton,
+  Card,
+  CardContent,
+  CardActions,
+  Grid,
+  Container,
+} from '@material-ui/core';
+import BackIcon from '@material-ui/icons/ArrowBackIos';
+import {
+  getFeedViewerUserInfo,
+  deletePost,
+  getPostWithAuthorAndLikesUserInfo,
+} from '../../services/post';
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
+import theme from '../../theme';
+import PostHeader from './PostHeader';
+import ShelfPostCardShelfList from './ShelfPostCardShelfList';
+import GenresInCommonChips from '../../components/GenresInCommonChips';
+import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
+import PostActions from './PostActions';
+import DeletePostDialog from '../../components/DeletePostDialog';
+import { CustomSnackbarProps } from '../../components/CustomSnackbar';
+import { modifyPostLike } from '../../services/like';
+
+const useStyles = makeStyles(theme => ({
+  cardGrid: {
+    padding: `${theme.spacing(4)}px 16px ${theme.spacing(8)}px`,
+  },
+  card: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative',
+  },
+  shelfTitle: {
+    fontWeight: 600,
+    marginTop: theme.spacing(2.5),
+  },
+  shelfDescription: {},
+  cardContent: {
+    position: 'relative',
+    flexGrow: 1,
+    backgroundColor: '#FFFFFF',
+    padding: '16px 16px 0px',
+  },
+  cardActions: {},
+  genresInCommon: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+}));
+
+interface ViewShelfRouteParams {
+  id: string;
+}
+
+interface PostProps extends RouteComponentProps<ViewShelfRouteParams> {
+  user: User | null;
+}
+
+export default function Post(props: PostProps) {
+  const classes = useStyles();
+  const { user } = props;
+  const postId = props.match.params.id;
+
+  const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
+    []
+  );
+  const [
+    postAuthorUserInfo,
+    setPostAuthorUserInfo,
+  ] = React.useState<PostUserInfo | null>(null);
+  const [
+    feedViewerUserInfo,
+    setFeedViewerUserInfo,
+  ] = React.useState<PostUserInfo | null>(null);
+  const [shelfGenres, setShelfGenres] = React.useState<SelectedGenre[]>([]);
+  const [shelfTitle, setShelfTitle] = React.useState<string>('');
+  const [postDate, setPostDate] = React.useState<string | Date | undefined>(
+    undefined
+  );
+  const [shelfDescription, setShelfDescription] = React.useState<string>('');
+  const [shouldExecuteLike, setShouldExecuteLike] = React.useState<boolean>(
+    false
+  );
+
+  const [hasLiked, setHasLiked] = React.useState<boolean>(false);
+
+  const [postLikes, setPostLikes] = React.useState<PostUserInfo[]>([]);
+
+  const [postNumLikes, setPostNumLikes] = React.useState<number>(0);
+
+  const [likeButtonDisabled, setLikeButtonDisabled] = React.useState<boolean>(
+    false
+  );
+
+  const [deletePostDialogVisible, setDeletePostDialogVisible] = React.useState<
+    boolean
+  >(false);
+
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'success',
+    }
+  );
+
+  function backButtonAction() {
+    if (props.history.length > 2) {
+      props.history.goBack();
+    } else {
+      props.history.replace('/');
+    }
+  }
+
+  const leftComponent = (
+    <IconButton
+      edge="start"
+      color="inherit"
+      aria-label="Back"
+      onClick={backButtonAction}
+    >
+      <BackIcon />
+    </IconButton>
+  );
+
+  const centerComponent =
+    shelfTitle && postAuthorUserInfo !== null && postAuthorUserInfo.name ? (
+      <HeaderTitle
+        title={`"${shelfTitle}" Shelf by ${postAuthorUserInfo.name}`}
+      />
+    ) : (
+      <HeaderTitle title="Shelf" />
+    );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const getPost = async () => {
+      try {
+        const postTransformedRes = await getPostWithAuthorAndLikesUserInfo(
+          postId
+        );
+        if (
+          postTransformedRes.status >= 200 &&
+          postTransformedRes.status < 300
+        ) {
+          const postTransformed = postTransformedRes.data;
+          const { post, authorInfo, likes, numLikes } = postTransformed;
+          if (post && post.content && post.content.postType === 'shelf') {
+            if (post.content.shelf) {
+              setShelf(post.content.shelf);
+            }
+            if (post.content.genres) {
+              setShelfGenres(post.content.genres);
+            }
+            if (post.content.title) {
+              setShelfTitle(post.content.title);
+            }
+            if (post.content.description) {
+              setShelfDescription(post.content.description);
+            }
+            if (post.createdAt) {
+              setPostDate(post.createdAt);
+            }
+          }
+          if (authorInfo) {
+            setPostAuthorUserInfo(authorInfo);
+          }
+          if (likes) {
+            setPostLikes(likes);
+          }
+          if (numLikes) {
+            setPostNumLikes(numLikes);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getPost();
+  }, [postId]);
+
+  useEffect(() => {
+    (async () => {
+      if (user && user._id) {
+        const feedViewerUserInfoRes = await getFeedViewerUserInfo(user._id);
+        if (feedViewerUserInfoRes.status === 200) {
+          setFeedViewerUserInfo(feedViewerUserInfoRes.data);
+        }
+      }
+    })();
+  }, [user]);
+
+  useEffect(() => {
+    if (shouldExecuteLike && user) {
+      modifyPostLike(postId, hasLiked ? 'like' : 'unlike');
+    }
+  }, [hasLiked]);
+
+  async function handleLikeAction() {
+    if (user && feedViewerUserInfo !== null) {
+      if (!shouldExecuteLike) {
+        setShouldExecuteLike(true);
+      }
+      if (hasLiked) {
+        const updatedLikesArr = postLikes.filter(l => l.userId !== user._id);
+        setPostLikes(updatedLikesArr);
+        setPostNumLikes(updatedLikesArr.length);
+      } else {
+        const updatedLikesArr = [...postLikes, feedViewerUserInfo];
+        setPostLikes(updatedLikesArr);
+        setPostNumLikes(updatedLikesArr.length);
+      }
+      setHasLiked(!hasLiked);
+      setTimeout(() => setLikeButtonDisabled(false), 5000);
+    }
+  }
+
+  async function onDeletePost() {
+    const res = await deletePost(postId);
+    if (res && res.status && res.status >= 200 && res.status < 300) {
+      setDeletePostDialogVisible(false);
+      window.location.reload();
+    } else {
+      setDeletePostDialogVisible(false);
+      return;
+    }
+  }
+
+  function onSnackbarClose() {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
+  }
+
+  function onSharePost() {
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'info',
+      message:
+        'Copied shelf link to clipboard. Share this shelf with the world!',
+    });
+  }
+
+  let myGenres: string[] = [];
+  if (user) {
+    myGenres = user.selectedGenres.map(x => x.name);
+  }
+  let nonSharedShelfGenres: string[] = [];
+  let commonGenres: string[] = [];
+  let shelfGenreNames: string[] = [];
+  if (shelfGenres && shelfGenres.length > 0) {
+    shelfGenreNames = shelfGenres.map(g => g.name);
+    commonGenres = shelfGenreNames.filter(val => myGenres.includes(val));
+    commonGenres = commonGenres.slice(0, Math.min(commonGenres.length, 5));
+    if (commonGenres.length < 5) {
+      nonSharedShelfGenres = shelfGenreNames.filter(
+        val => !myGenres.includes(val)
+      );
+      nonSharedShelfGenres = nonSharedShelfGenres.slice(
+        0,
+        Math.min(5 - commonGenres.length, 5)
+      );
+    }
+  }
+
+  return (
+    <>
+      <Header leftComponent={leftComponent} centerComponent={centerComponent} />
+      <Container className={classes.cardGrid} maxWidth="md">
+        <Grid item xs={12} sm={12}>
+          <Card className={classes.card}>
+            {postAuthorUserInfo && postDate && (
+              <PostHeader
+                postAuthorInfo={postAuthorUserInfo}
+                iconColor={'#64B5F6'}
+                postIcon={shelfIcon}
+                postDate={postDate}
+                ownPost={
+                  user !== null && user._id === postAuthorUserInfo.userId
+                }
+                onClickDelete={() => setDeletePostDialogVisible(true)}
+                postId={postId}
+              />
+            )}
+
+            <CardContent classes={{ root: classes.cardContent }}>
+              {shelf.length > 0 && <ShelfPostCardShelfList shelf={shelf} />}
+              <Typography
+                gutterBottom
+                variant="h6"
+                component="h5"
+                className={classes.shelfTitle}
+              >
+                {shelfTitle}
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="subtitle2"
+                component="h2"
+                className={classes.shelfDescription}
+              >
+                {shelfDescription}
+              </Typography>
+              {shelfGenreNames.length > 0 && (
+                <div className={classes.genresInCommon}>
+                  {commonGenres.map(genre => (
+                    <GenresInCommonChips
+                      name={genre}
+                      backgroundColor={theme.palette.primary.main}
+                      common={true}
+                      key={genre}
+                    />
+                  ))}
+                  {nonSharedShelfGenres.map(genre => (
+                    <GenresInCommonChips
+                      name={genre}
+                      backgroundColor={theme.palette.primary.main}
+                      common={false}
+                      key={genre}
+                    />
+                  ))}
+                </div>
+              )}
+            </CardContent>
+            {postAuthorUserInfo && (
+              <CardActions className={classes.cardActions}>
+                <PostActions
+                  likes={postLikes}
+                  hasLiked={hasLiked}
+                  numLikes={postNumLikes}
+                  onClickLike={handleLikeAction}
+                  likeButtonDisabled={likeButtonDisabled}
+                  shelf={shelf}
+                  shelfName={shelfTitle}
+                  shelfGenres={shelfGenres ? shelfGenres : []}
+                  shelfAuthorInfo={postAuthorUserInfo}
+                  userId={user ? user._id : undefined}
+                  onSharePost={onSharePost}
+                  postId={postId}
+                  currentlyViewing={true}
+                />
+              </CardActions>
+            )}
+          </Card>
+        </Grid>
+      </Container>
+      <DeletePostDialog
+        open={deletePostDialogVisible}
+        onCancel={() => setDeletePostDialogVisible(false)}
+        onDelete={onDeletePost}
+      />
+    </>
+  );
+}
