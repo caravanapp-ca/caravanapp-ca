@@ -1,19 +1,17 @@
 import { model, Schema, Types, Document } from 'mongoose';
-import {
-  FilterAutoMongoKeys,
-  SameKeysAs,
-  Likes,
-  MongoTimestamps,
-} from '@caravan/buddy-reading-types';
+import { Likes, MongoTimestamps } from '@caravan/buddy-reading-types';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface LikesDoc
   extends Document,
     MongoTimestamps,
-    Omit<Likes, '_id'> {
+    Omit<Likes, '_id' | 'likes' | 'postId'> {
   _id: Types.ObjectId;
+  postId: Types.ObjectId;
+  likes: Types.ObjectId[];
 }
 
-const likesDefinition: SameKeysAs<FilterAutoMongoKeys<Likes>> = {
+const likesDefinition: MongooseSchema<Likes> = {
   postId: { type: Schema.Types.ObjectId, required: true, index: true },
   likes: [{ type: Schema.Types.ObjectId, required: true }],
   numLikes: { type: Number, required: true, default: 0 },
