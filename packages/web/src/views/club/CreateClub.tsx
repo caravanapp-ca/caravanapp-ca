@@ -147,9 +147,7 @@ export default function CreateClub(props: CreateClubProps) {
     props.location.state &&
       props.location.state.shelfAuthorName &&
       props.location.state.shelfName
-      ? `Come join me as we read books from the '${
-          props.location.state.shelfName
-        }' shelf created by ${props.location.state.shelfAuthorName}!`
+      ? `Come join me as we read books from the '${props.location.state.shelfName}' shelf created by ${props.location.state.shelfAuthorName}!`
       : ''
   );
   const [selectedBooks, setSelectedBooks] = React.useState<

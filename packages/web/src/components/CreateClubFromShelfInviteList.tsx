@@ -8,15 +8,23 @@ import {
   Link,
   ListItemIcon,
   ListItem,
+  Button,
 } from '@material-ui/core';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({
-  viewInvitesText: {
+  viewInvitesDiv: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  viewInvitesButton: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textTransform: 'none',
   },
   thumbnailAvatar: {
     width: 48,
@@ -66,11 +74,15 @@ export default function CreateClubFromShelfInviteList(
 
   return (
     <>
-      <Link onClick={showLikesMenu}>
-        <div className={classes.viewInvitesText} onClick={showLikesMenu}>
+      <div className={classes.viewInvitesDiv}>
+        <Button
+          className={classes.viewInvitesButton}
+          onClick={showLikesMenu}
+          color="primary"
+        >
           <Typography>View Invite List</Typography>
-        </div>
-      </Link>
+        </Button>
+      </div>
       <Menu
         open={showLikesMenuOpen}
         anchorEl={anchorEl}

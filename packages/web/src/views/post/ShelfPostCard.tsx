@@ -155,7 +155,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     if (shouldExecuteLike && currUser) {
       modifyPostLike(postId, hasLiked ? 'like' : 'unlike');
     }
-  }, [hasLiked]);
+  }, [hasLiked, shouldExecuteLike, currUser, postId]);
 
   async function handleLikeAction() {
     if (currUser && feedViewerUserInfo !== null) {

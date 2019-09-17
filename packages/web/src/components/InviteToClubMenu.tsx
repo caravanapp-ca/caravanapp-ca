@@ -154,7 +154,10 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
         }}
       >
         {clubsToInviteTo.map(clubWMIds => (
-          <MenuItem onClick={() => handleInviteToClub(clubWMIds.club)}>
+          <MenuItem
+            key={clubWMIds.club._id}
+            onClick={() => handleInviteToClub(clubWMIds.club)}
+          >
             {clubWMIds.club.name}
           </MenuItem>
         ))}

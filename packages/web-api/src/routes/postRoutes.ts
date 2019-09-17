@@ -19,6 +19,7 @@ import {
   getPostLikes,
   createLikesDoc,
   deleteLikesDocByPostId,
+  getPostsLikes,
 } from '../services/like';
 import { createPostDoc, mapPostUserInfo } from '../services/post';
 import { getUser, getUsersByUserIds } from '../services/user';
@@ -71,7 +72,7 @@ router.put('/:id', isAuthenticated, async (req, res, next) => {
   const { userId } = req.session;
   const postId = req.params.id;
   if (userId && validPostContent(postContent)) {
-    const postToUpload: FilterAutoMongoKeys<Post> = {
+    const postToUpload: Partial<PostDoc> = {
       authorId: userId,
       content: postContent,
     };
