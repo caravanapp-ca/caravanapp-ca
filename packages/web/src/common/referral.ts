@@ -38,9 +38,7 @@ export const getReferralLink = (
         } else {
           urlClubParam = '?' + clubSourceParam;
         }
-        return `https://${
-          window.location.host
-        }/clubs${clubIdQuery}${urlClubParam}`;
+        return `https://${window.location.host}/clubs${clubIdQuery}${urlClubParam}`;
       case 'post':
         const postSourceParam = 'utm_source=sp';
         let urlPostParam = '';
@@ -49,9 +47,7 @@ export const getReferralLink = (
         } else {
           urlPostParam = '?' + postSourceParam;
         }
-        return `https://${
-          window.location.host
-        }/post${postIdQuery}${urlPostParam}`;
+        return `https://${window.location.host}/post${postIdQuery}${urlPostParam}`;
       default:
         return `https://${window.location.host}`;
     }
