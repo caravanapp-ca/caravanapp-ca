@@ -210,7 +210,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
         };
         break;
       case 'bookTitle':
-        // Fall-through.
+      // Fall-through.
       default:
         fuseSearchKey = 'content.shelf.title';
         fuseOptions = {
@@ -263,9 +263,9 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
   ];
 
   // Gets unique author ids across all posts so that the DB call only requests unique users.
-  const authorIds = [
-    ...new Set(filteredPosts.map(p => p.authorId)),
-  ].map(id => new mongoose.Types.ObjectId(id));
+  const authorIds = [...new Set(filteredPosts.map(p => p.authorId))].map(
+    id => new mongoose.Types.ObjectId(id)
+  );
 
   const [likeUserDocs, authorUserDocs] = await Promise.all([
     getUsersByUserIds(postLikesUserIds),

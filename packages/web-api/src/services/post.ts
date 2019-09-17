@@ -23,4 +23,4 @@ export function mapPostUserInfo(userDoc: UserDoc) {
 export const createPostDoc = async (postDoc: Partial<PostDoc>) => {
   const resultPostDoc = await PostModel.create(postDoc);
   return resultPostDoc;
-}
+};
