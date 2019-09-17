@@ -54,7 +54,7 @@ const referralDefinition: MongooseSchema<Referral> = {
     default: 'home',
   },
   referralDestinationId: {
-    type: String
+    type: String,
   },
 };
 
