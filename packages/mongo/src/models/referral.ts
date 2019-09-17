@@ -10,8 +10,9 @@ import { MongooseSchema } from '../common/mongoose';
 export interface ReferralDoc
   extends Document,
     MongoTimestamps,
-    Omit<Referral, '_id'> {
+    Omit<Referral, '_id' | 'referralDestinationId'> {
   _id: Types.ObjectId;
+  referralDestinationId?: Types.ObjectId;
 }
 
 const userReferredActionSchemaDefinition: MongooseSchema<UserReferredAction> = {
@@ -54,7 +55,7 @@ const referralDefinition: MongooseSchema<Referral> = {
     default: 'home',
   },
   referralDestinationId: {
-    type: String,
+    type: Schema.Types.ObjectId,
   },
 };
 

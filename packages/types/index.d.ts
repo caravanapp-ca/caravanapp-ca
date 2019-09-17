@@ -361,6 +361,7 @@ declare module '@caravan/buddy-reading-types' {
   }
 
   export type ClubRecommendationKey =
+    | 'referral'
     | 'currReadTBR'
     | 'tBRMatch'
     | 'genreMatch'

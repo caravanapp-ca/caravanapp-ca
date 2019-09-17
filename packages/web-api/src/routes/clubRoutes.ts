@@ -42,10 +42,12 @@ import {
   getUserChannels,
   getCountableMembersInChannel,
   getMemberCount,
+  getClub,
+  getClubRecommendationFromReferral,
 } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
 import { getUser, mutateUserBadges, getUsername } from '../services/user';
-import { createReferralAction } from '../services/referral';
+import { createReferralAction, getReferralDoc } from '../services/referral';
 import { pubsubClient } from '../common/pubsub';
 import { getBadges } from '../services/badge';
 import {
@@ -144,6 +146,14 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
 
 router.get('/userRecommendations', async (req, res) => {
   const { userId, pageSize, clubsReceivedIds } = req.query;
+  if (!userId || userId.length !== 24) {
+    res.status(400).send('Require a userId to get recommendations');
+    return;
+  }
+  if (userId.length !== 24) {
+    res.status(400).send(`${userId} is not a valid user ID`);
+    return;
+  }
   const maxRecommendations = 50;
   const minRecommendations = 1;
   const defaultRecommendations = 4;
@@ -166,6 +176,44 @@ router.get('/userRecommendations', async (req, res) => {
     return;
   }
   res.status(200).send(recommendedClubs);
+});
+
+router.get('/userReferrals', async (req, res) => {
+  const { userId } = req.query;
+  if (!userId || userId.length !== 24) {
+    res.status(400).send('Require a userId to get referred clubs');
+    return;
+  }
+  if (userId.length !== 24) {
+    res.status(400).send(`${userId} is not a valid user ID`);
+    return;
+  }
+  const userDoc = await getUser(userId);
+  if (!userDoc) {
+    res.status(400).send(`Unable to find user ${userId}`);
+    return;
+  }
+  const referralDoc = await getReferralDoc(userId);
+  if (
+    !referralDoc ||
+    referralDoc.referralDestination !== 'club' ||
+    !referralDoc.referralDestinationId
+  ) {
+    res.status(404).send(`User ${userId} was not referred to any clubs.`);
+    return;
+  }
+  const { referralDestinationId: clubId } = referralDoc;
+  const clubDoc = await getClub(clubId);
+  if (!clubDoc) {
+    res.status(404).send(`Unable to find club ${clubId}. Has it been deleted?`);
+    return;
+  }
+  const clubRecommendation = await getClubRecommendationFromReferral(
+    userDoc,
+    referralDoc,
+    clubDoc
+  );
+  res.status(200).send(clubRecommendation);
 });
 
 router.get('/', async (req, res) => {

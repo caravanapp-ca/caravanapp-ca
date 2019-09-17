@@ -5,12 +5,16 @@ import {
   Services,
   Club,
   ClubWithRecommendation,
+  ClubRecommendation,
+  ClubRecommendationKey,
 } from '@caravan/buddy-reading-types';
 import { getUser, getUsername } from './user';
 import {
   ClubDoc,
   ClubRecommendationDoc,
   ClubModel,
+  ReferralDoc,
+  UserDoc,
 } from '@caravan/buddy-reading-mongo';
 import { ReadingDiscordBot } from './discord';
 import {
@@ -28,6 +32,10 @@ import {
 import { getClubRecommendationDescription } from '../common/club';
 
 const knownHttpsRedirects = ['http://books.google.com/books/'];
+
+export const getClub = (clubId: Types.ObjectId | string) => {
+  return ClubModel.findById(clubId);
+};
 
 // Recommendation logic v1
 // Need to recommend n clubs. Stop when you have found n matching clubs.
@@ -258,6 +266,47 @@ export const getUserClubRecommendations = async (
     stepNum++;
   }
   return recommendedClubs;
+};
+
+export const getClubRecommendationFromReferral = async (
+  userDoc: UserDoc,
+  referralDoc: ReferralDoc,
+  clubDoc: ClubDoc
+): Promise<ClubWithRecommendation> => {
+  const client = ReadingDiscordBot.getInstance();
+  const guild = client.guilds.first();
+  const { referredById: referrerUserId } = referralDoc;
+  const referrerUserDoc = await getUser(referrerUserId);
+  const recommendationKey: ClubRecommendationKey = 'referral';
+  const recommendation: ClubRecommendation = {
+    key: recommendationKey,
+    description: getClubRecommendationDescription(
+      recommendationKey,
+      undefined,
+      undefined,
+      referrerUserDoc
+    ),
+  };
+  const isMember = isInClub(userDoc, clubDoc, guild);
+  return {
+    club: await transformSingleToGetClub(clubDoc, guild),
+    genreMatches: [],
+    tbrMatches: [],
+    recommendation,
+    isMember,
+  };
+};
+
+export const isInClub = (user: UserDoc, club: ClubDoc, guild: Guild) => {
+  const discordChannel: GuildChannel | undefined = guild.channels.get(
+    club.channelId
+  );
+  if (!discordChannel) {
+    console.error(`Unable to find Discord channel for club ${club.id}`);
+    return false;
+  }
+  const countableMembers = getCountableMembersInChannel(discordChannel, club);
+  return countableMembers.has(user.id);
 };
 
 // Transforms type ClubDoc[] into type Services.GetClubs['clubs']

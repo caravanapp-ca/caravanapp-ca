@@ -1,12 +1,19 @@
 import { ClubRecommendationKey } from '@caravan/buddy-reading-types';
 import { getRandItemList } from './functions';
+import { UserDoc } from '@caravan/buddy-reading-mongo';
 
 export const getClubRecommendationDescription = (
   key: ClubRecommendationKey,
   bookTitles?: string[],
-  genreNames?: string[]
+  genreNames?: string[],
+  referrer?: UserDoc,
 ): string => {
   switch (key) {
+    case 'referral':
+      if(!referrer || !referrer.name){
+        return 'You have been referred to this club!';
+      }
+      return `${referrer.name} referred you to this club.`;
     case 'currReadTBR':
       if (!bookTitles || bookTitles.length === 0) {
         return 'This club is currently reading a book on your TBR!';

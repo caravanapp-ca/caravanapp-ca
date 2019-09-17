@@ -130,7 +130,7 @@ export default function Onboarding(props: OnboardingProps) {
       case 'success':
         // Not history replace since have to reload the user object,
         // which isn't done using history.replace
-        window.location.replace('/recommend');
+        window.location.replace('/recommend?fromOnboarding=true');
         break;
       case 'failure':
         // TODO: handle errors for onboarding submission

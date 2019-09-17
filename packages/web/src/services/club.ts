@@ -58,6 +58,18 @@ export async function getUserClubRecommendations(
   return res;
 }
 
+export async function getUserReferralClub(userId: string) {
+  const res = await axios.get<ClubWithRecommendation>(
+    `${clubRoute}/userReferrals`,
+    {
+      params: {
+        userId,
+      },
+    }
+  );
+  return res;
+}
+
 export async function getClub(clubId: string) {
   const res = await axios.get<Services.GetClubById | null>(
     `${clubRoute}/${clubId}`

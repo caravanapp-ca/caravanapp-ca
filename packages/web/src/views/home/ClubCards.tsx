@@ -564,7 +564,7 @@ export default function ClubCards(props: ClubCardsProps) {
                         onResize={(w, h) => setCreationInfoContainerWidth(w)}
                       />
                     </div>
-                    {!quickJoin && (
+                    {(!quickJoin || !isLoggedIn) && (
                       <Button
                         className={classes.button}
                         color="primary"

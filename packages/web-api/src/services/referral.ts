@@ -14,6 +14,7 @@ import { Omit } from 'utility-types';
 import { giveUserBadge } from './badge';
 import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
 import { giveUserPalettes } from './userPalettes';
+import { Types, Types } from 'mongoose';
 
 export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   fb: true,
@@ -37,13 +38,13 @@ export async function handleFirstVisit(
   referredTempUid: string,
   referredById: string,
   referralDestination: ReferralDestination,
-  referralDestinationId?: string,
+  referralDestinationId?: Types.ObjectId,
   utmSource?: ReferralSource
 ) {
   const newReferral: Omit<
     FilterAutoMongoKeys<Referral>,
-    'referredUsers' | 'referralCount'
-  > = {
+    'referredUsers' | 'referralCount' | 'referralDestinationId'
+  > & { referralDestinationId: Types.ObjectId } = {
     userId: referredTempUid,
     referredById,
     actions: [
