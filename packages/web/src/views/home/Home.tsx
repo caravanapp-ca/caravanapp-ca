@@ -475,15 +475,6 @@ export default function Home(props: HomeProps) {
       setShouldGetPosts(true);
     }
     getGenres();
-    const url = window.location.pathname + '/5d7ffb5d8f5d820025bb36bb';
-    const urlSplit = url.split('/');
-    const xlen = urlSplit[1].length;
-    if (urlSplit.length !== 2 || urlSplit[1].length !== 24) {
-      const x = 'invalid';
-      //throw new Error(`URL: ${url}, is not a valid club URL`);
-    }
-    const ans = urlSplit[1];
-    const g = 'ok';
   }, [props.history.location.state]);
 
   // These useEffects write the tab, search, and filter values to prop.history.location.state so that they can be
