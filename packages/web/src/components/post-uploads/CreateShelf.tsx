@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link as RouterLink, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import {
   Services,
   FilterAutoMongoKeys,
@@ -16,7 +16,6 @@ import {
   TextField,
   CircularProgress,
   useMediaQuery,
-  Link,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import GenreChip from '../GenreChip';
