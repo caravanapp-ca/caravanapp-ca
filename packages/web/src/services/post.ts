@@ -54,6 +54,13 @@ export async function getAllPostsTransformed(
   return res;
 }
 
+export async function getPostWithAuthorAndLikesUserInfo(postId: string) {
+  const res = await axios.get<Services.GetPostWithAuthorInfoAndLikes>(
+    `${postRoute}/${postId}/withAuthorAndLikesUserInfo`
+  );
+  return res;
+}
+
 export async function getPostById(postId: string) {
   const res = await axios.get<Services.GetPostById | null>(
     `${postRoute}/${postId}`

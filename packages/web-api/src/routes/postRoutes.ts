@@ -211,6 +211,76 @@ router.get('/', async (req, res) => {
   res.status(200).json(result);
 });
 
+// Get a post with its author and likes user info
+router.get('/:postId/withAuthorAndLikesUserInfo', async (req, res, next) => {
+  const { postId } = req.params;
+  try {
+    const postDoc = await PostModel.findById(postId);
+    if (!postDoc) {
+      res.sendStatus(404);
+      return;
+    }
+    const filteredPost: FilterMongooseDocKeys<PostDoc> & {
+      _id: mongoose.Types.ObjectId;
+      createdAt: string;
+      updatedAt: string;
+    } = {
+      ...postDoc.toObject(),
+      createdAt:
+        postDoc.createdAt instanceof Date
+          ? postDoc.createdAt.toISOString()
+          : postDoc.createdAt,
+      updatedAt:
+        postDoc.updatedAt instanceof Date
+          ? postDoc.updatedAt.toISOString()
+          : postDoc.updatedAt,
+    };
+    const postsLikesDoc = await getPostLikes(postId);
+
+    const [likeUserDocs, authorUserDoc] = await Promise.all([
+      getUsersByUserIds(postsLikesDoc.likes.slice(0, 10)),
+      getUser(filteredPost.authorId),
+    ]);
+
+    const likeUserDocsMap = new Map<string, UserDoc>();
+    likeUserDocs.forEach(d => likeUserDocsMap.set(d.id, d));
+
+    const post = {
+      ...filteredPost,
+      _id: filteredPost._id.toHexString(),
+    };
+    const authorInfo = mapPostUserInfo(authorUserDoc);
+    const likeUserIds = likeUserDocs.map(lud => lud._id.toHexString());
+    const likesUserDocs = likeUserIds.map(uid => likeUserDocsMap.get(uid));
+    const likes = likesUserDocs.map(mapPostUserInfo);
+    const { numLikes } = postsLikesDoc;
+
+    const result: Services.GetPostWithAuthorInfoAndLikes = {
+      authorInfo,
+      likeUserIds,
+      post,
+      numLikes,
+      likes,
+    };
+    res.status(200).json(result);
+  } catch (err) {
+    if (err.name) {
+      switch (err.name) {
+        case 'CastError':
+          res.sendStatus(404);
+          return;
+        default:
+          break;
+      }
+    }
+    console.log(
+      `Failed to get post ${postId} with its author and likes user info`,
+      err
+    );
+    return next(err);
+  }
+});
+
 // Get all posts with author and like users info
 router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
   const { after, pageSize, search, postSearchField } = req.query;
