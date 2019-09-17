@@ -14,7 +14,7 @@ import { Omit } from 'utility-types';
 import { giveUserBadge } from './badge';
 import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
 import { giveUserPalettes } from './userPalettes';
-import { Types, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   fb: true,

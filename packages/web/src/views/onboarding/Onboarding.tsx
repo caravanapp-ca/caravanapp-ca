@@ -24,6 +24,7 @@ import { getAllProfileQuestions } from '../../services/profile';
 import { updateUserProfile } from '../../services/user';
 import HeaderTitle from '../../components/HeaderTitle';
 import DownloadDiscordDialog from '../../components/DownloadDiscordDialog';
+import { joinMyReferralClubs } from '../../services/club';
 interface OnboardingRouteParams {
   id: string;
 }
@@ -130,7 +131,7 @@ export default function Onboarding(props: OnboardingProps) {
       case 'success':
         // Not history replace since have to reload the user object,
         // which isn't done using history.replace
-        window.location.replace('/recommend?fromOnboarding=true');
+        window.location.replace('/clubs/recommend?fromOnboarding=true');
         break;
       case 'failure':
         // TODO: handle errors for onboarding submission
@@ -279,6 +280,15 @@ export default function Onboarding(props: OnboardingProps) {
       onboardingVersion: 1,
     });
     if (res.status >= 200 && res.status < 300) {
+      const referralRes = await joinMyReferralClubs();
+      if (
+        !referralRes ||
+        referralRes.status < 200 ||
+        (referralRes.status >= 300 && referralRes.status !== 404)
+      ) {
+        // TODO: Error state
+        // Although, this is not a critical issue as they will have a chance to manually join on the next page anyways.
+      }
       setSubmitState('success');
     } else {
       setSubmitState('failure');

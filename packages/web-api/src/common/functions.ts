@@ -11,14 +11,16 @@ export const getRandItemList = (
     itemsCopy.splice(randIndex, 1);
   }
   if (itemsToUse.length === 1) {
-    return itemsToUse[0];
+    return `: ${itemsToUse[0]}`;
   }
   let itemsStr = '';
   if (itemsToUse.length < items.length) {
-    itemsStr += 'including ';
+    itemsStr += ', including: ';
+  } else {
+    itemsStr += ': ';
   }
   const sliceLastItem = itemsToUse.slice(0, itemsToUse.length - 1);
   itemsStr += sliceLastItem.join(', ');
-  itemsStr += ` and ${itemsToUse[itemsToUse.length - 1]}`;
+  itemsStr += `, and ${itemsToUse[itemsToUse.length - 1]}`;
   return itemsStr;
 };

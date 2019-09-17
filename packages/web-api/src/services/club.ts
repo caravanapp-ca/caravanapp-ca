@@ -7,20 +7,24 @@ import {
   ClubWithRecommendation,
   ClubRecommendation,
   ClubRecommendationKey,
+  PubSub,
+  User,
 } from '@caravan/buddy-reading-types';
-import { getUser, getUsername } from './user';
+import { getUser, getUsername, mutateUserBadges } from './user';
 import {
   ClubDoc,
   ClubRecommendationDoc,
   ClubModel,
   ReferralDoc,
   UserDoc,
+  UserModel,
 } from '@caravan/buddy-reading-mongo';
 import { ReadingDiscordBot } from './discord';
 import {
   PROD_UNCOUNTABLE_IDS,
   CLUB_RECOMMENDATION_KEYS,
   MAX_CLUB_AGE_RECOMMENDATION_DAYS,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
 } from '../common/globalConstantsAPI';
 import {
   Guild,
@@ -30,6 +34,10 @@ import {
   VoiceChannel,
 } from 'discord.js';
 import { getClubRecommendationDescription } from '../common/club';
+import { createReferralAction } from './referral';
+import { pubsubClient } from '../common/pubsub';
+import { AxiosResponse } from 'axios';
+import { getBadges } from './badge';
 
 const knownHttpsRedirects = ['http://books.google.com/books/'];
 
@@ -297,6 +305,163 @@ export const getClubRecommendationFromReferral = async (
   };
 };
 
+export const modifyClubMembership = async (
+  userId: string,
+  userDiscordId: string,
+  clubId: string | Types.ObjectId,
+  isMember: boolean
+): Promise<Pick<AxiosResponse, 'status' | 'data'>> => {
+  const club = await getClub(clubId);
+  if (!club) {
+    return {
+      status: 404,
+      data: `Could not find club ${clubId}`,
+    };
+  }
+  const isOwner = club.ownerId === userId;
+  const discordClient = ReadingDiscordBot.getInstance();
+  const guild = discordClient.guilds.first();
+  const channel: GuildChannel = guild.channels.get(club.channelId);
+  if (!channel) {
+    return {
+      status: 400,
+      data: `Channel was deleted, clubId: ${club.id}`,
+    };
+  }
+  const memberInChannel = (channel as VoiceChannel | TextChannel).members.get(
+    userDiscordId
+  );
+  if (isMember) {
+    // Trying to add to members
+    const { size } = getCountableMembersInChannel(channel, club);
+    if (memberInChannel) {
+      // already a member
+      return {
+        status: 401,
+        data: "You're already a member of the club!",
+      };
+    } else if (
+      club.maxMembers !== UNLIMITED_CLUB_MEMBERS_VALUE &&
+      size >= club.maxMembers
+    ) {
+      return {
+        status: 401,
+        data: `There are already ${size}/${club.maxMembers} people in the club.`,
+      };
+    } else {
+      const permissions = (channel as
+        | VoiceChannel
+        | TextChannel).memberPermissions(memberInChannel);
+      if (permissions && permissions.hasPermission('READ_MESSAGES')) {
+        return { status: 401, data: 'You already have access to the channel!' };
+      }
+      await (channel as VoiceChannel | TextChannel).overwritePermissions(
+        userDiscordId,
+        {
+          READ_MESSAGES: true,
+          SEND_MESSAGES: true,
+          SEND_TTS_MESSAGES: true,
+          MANAGE_MESSAGES: isOwner,
+        }
+      );
+      createReferralAction(userId, 'joinClub');
+      const pubsub = pubsubClient.getInstance();
+      const topic: PubSub.Topic = 'club-membership';
+      const message: PubSub.Message.ClubMembershipChange = {
+        userId: userId,
+        clubId: club.id,
+        clubMembership: 'joined',
+      };
+      const buffer = Buffer.from(JSON.stringify(message));
+      pubsub.topic(topic).publish(buffer);
+    }
+  } else {
+    if (isOwner) {
+      return {
+        status: 401,
+        data: 'An owner cannot leave a club.',
+      };
+    }
+    if (!memberInChannel) {
+      return {
+        status: 401,
+        data: "You're already not a member of the club!",
+      };
+    }
+    await (channel as VoiceChannel | TextChannel).overwritePermissions(
+      userDiscordId,
+      {
+        READ_MESSAGES: false,
+        SEND_MESSAGES: false,
+        SEND_TTS_MESSAGES: false,
+        MANAGE_MESSAGES: false,
+      }
+    );
+    const pubsub = pubsubClient.getInstance();
+    const topic: PubSub.Topic = 'club-membership';
+    const message: PubSub.Message.ClubMembershipChange = {
+      userId: userId,
+      clubId: club.id,
+      clubMembership: 'left',
+    };
+    const buffer = Buffer.from(JSON.stringify(message));
+    pubsub.topic(topic).publish(buffer);
+  }
+  // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
+  await guild.fetchMembers();
+  const members = await getChannelMembers(guild, club);
+  return {
+    status: 200,
+    data: members,
+  };
+};
+
+export async function getChannelMembers(guild: Guild, club: ClubDoc) {
+  const discordChannel = guild.channels.get(club.channelId);
+  if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
+    return;
+  }
+  const guildMembers = getCountableMembersInChannel(
+    discordChannel,
+    club
+  ).array();
+  const guildMemberDiscordIds = guildMembers.map(m => m.id);
+  const userDocs = await UserModel.find({
+    discordId: { $in: guildMemberDiscordIds },
+    isBot: { $eq: false },
+  });
+  // This retrieves badge details.
+  const badgeDoc = await getBadges();
+  mutateUserBadges(userDocs, badgeDoc);
+  const users = guildMembers
+    .map(mem => {
+      const user = userDocs.find(u => u.discordId === mem.id);
+      if (user) {
+        const userObj: User = user.toObject();
+        const result: User = {
+          ...userObj,
+          name: userObj.name ? userObj.name : mem.user.username,
+          discordUsername: mem.user.username,
+          discordId: mem.id,
+          photoUrl:
+            user.photoUrl ||
+            mem.user.avatarURL ||
+            mem.user.displayAvatarURL ||
+            mem.user.defaultAvatarURL,
+        };
+        return result;
+      } else {
+        // Handle case where a user comes into discord without creating an account
+        // i.e. create a shadow account
+        console.error('Create a shadow account');
+        return null;
+      }
+    })
+    .filter(g => g !== null)
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return users;
+}
+
 export const isInClub = (user: UserDoc, club: ClubDoc, guild: Guild) => {
   const discordChannel: GuildChannel | undefined = guild.channels.get(
     club.channelId
@@ -306,7 +471,7 @@ export const isInClub = (user: UserDoc, club: ClubDoc, guild: Guild) => {
     return false;
   }
   const countableMembers = getCountableMembersInChannel(discordChannel, club);
-  return countableMembers.has(user.id);
+  return countableMembers.has(user.discordId);
 };
 
 // Transforms type ClubDoc[] into type Services.GetClubs['clubs']

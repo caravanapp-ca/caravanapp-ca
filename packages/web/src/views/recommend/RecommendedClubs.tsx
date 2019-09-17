@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import clsx from 'clsx';
 import queryString from 'query-string';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -11,7 +12,11 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
-import { User, ClubTransformed } from '@caravan/buddy-reading-types';
+import {
+  User,
+  ClubTransformed,
+  ClubWithRecommendation,
+} from '@caravan/buddy-reading-types';
 import { RouteComponentProps, Redirect } from 'react-router';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
@@ -36,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
     cardsContainer: {
       padding: `${theme.spacing(4)}px 0px ${theme.spacing(4)}px 0px`,
     },
+    cardsContainerTop: {
+      paddingBottom: 0,
+    },
     headerText: {
       marginBottom: theme.spacing(2),
     },
@@ -56,14 +64,12 @@ interface RecommendedClubsProps extends RouteComponentProps<{}> {
 }
 
 const headerCenterComponent = <HeaderTitle title="Recommended Clubs" />;
-
 const pageSize = 6;
 
 export default function RecommendedClubs(props: RecommendedClubsProps) {
   const { user, userLoaded } = props;
   const query = queryString.parse(props.location.search);
-  const fromOnboarding =
-    query.hasOwnProperty('fromOnboarding') && query.fromOnboarding === 'true';
+  const fromOnboarding = query.fromOnboarding === 'true';
   const classes = useStyles();
   const [clubs, setClubs] = useState<ClubTransformed[]>([]);
   const [referralClub, setReferralClub] = useState<ClubTransformed | undefined>(
@@ -76,6 +82,9 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
     'init' | 'disabled' | 'loading' | 'loaded'
   >('init');
   const [clubsReceivedIds, setClubsReceivedIds] = useState<string[]>([]);
+  const [wasMember, setWasMember] = useState<true | false | 'loading'>(
+    'loading'
+  );
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
       autoHideDuration: 6000,
@@ -86,6 +95,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   );
 
   const loadMoreEnabled = clubs.length % pageSize === 0;
+  const showAutoJoinedMsg = fromOnboarding && wasMember;
   const rightComponent = <ProfileHeaderIcon user={user} />;
   const backButtonAction = () => {
     if (props.history.length > 2) {
@@ -114,9 +124,22 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
       const getReferralClub = async (userId: string) => {
         setLoadReferralStatus('loading');
         const res = await getUserReferralClub(userId);
-        if (res.status === 200) {
-          const { club, recommendation, isMember } = res.data;
+        if (!res) {
+          setReferralClub(undefined);
+          setSnackbarProps(sbp => ({
+            ...sbp,
+            isOpen: true,
+            variant: 'warning',
+            message:
+              "We ran into some trouble retrieving clubs you've been referred to.",
+          }));
+          return;
+        }
+        if (res.status >= 200 && res.status < 300) {
+          const data = res.data as ClubWithRecommendation;
+          const { club, recommendation, isMember } = data;
           setReferralClub(transformClub(club, recommendation, isMember));
+          setWasMember(isMember);
         } else {
           setReferralClub(undefined);
           if (res.status !== 404) {
@@ -202,10 +225,27 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
         {(loadReferralStatus === 'loaded' ||
           loadReferralStatus === 'loading') &&
           referralClub && (
-            <div className={classes.cardsContainer}>
-              <Typography variant="h6" className={classes.headerText}>
-                You've been referred to these clubs!
+            <div
+              className={clsx(
+                classes.cardsContainer,
+                classes.cardsContainerTop
+              )}
+            >
+              <Typography
+                variant="h6"
+                className={showAutoJoinedMsg ? undefined : classes.headerText}
+              >
+                You were referred to these clubs.
               </Typography>
+              {showAutoJoinedMsg && (
+                <Typography
+                  className={classes.headerText}
+                  color="textSecondary"
+                  style={{ fontStyle: 'italic' }}
+                >
+                  You've been automatically joined, so don't worry about it!
+                </Typography>
+              )}
               <ClubCards
                 clubsTransformed={[referralClub]}
                 quickJoin={true}
@@ -217,7 +257,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
           clubs.length > 0 && (
             <div className={classes.cardsContainer}>
               <Typography variant="h6" className={classes.headerText}>
-                Here are some clubs we've hand picked for you!
+                Here are some clubs we've hand picked for you.
               </Typography>
               <ClubCards
                 clubsTransformed={clubs}
@@ -247,6 +287,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
           </div>
         )}
       </Container>
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }
