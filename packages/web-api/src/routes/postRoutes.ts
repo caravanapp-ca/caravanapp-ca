@@ -11,7 +11,7 @@ import {
   PostModel,
   PostDoc,
   UserDoc,
-  LikesDoc
+  LikesDoc,
   FilterMongooseDocKeys,
 } from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
@@ -70,7 +70,7 @@ router.put('/:id', isAuthenticated, async (req, res, next) => {
   const { postContent } = req.body.params;
   const { userId } = req.session;
   const postId = req.params.id;
-  if (userId && instanceOfPostContent(postContent)) {
+  if (userId && validPostContent(postContent)) {
     const postToUpload: FilterAutoMongoKeys<Post> = {
       authorId: userId,
       content: postContent,
