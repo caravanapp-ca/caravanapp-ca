@@ -11,10 +11,10 @@ import {
   User,
 } from '@caravan/buddy-reading-types';
 import theme from '../../theme';
-import ShelfPostCardShelfList from '../../components/ShelfPostCardShelfList';
-import PostHeader from '../../components/PostHeader';
+import ShelfPostCardShelfList from './ShelfPostCardShelfList';
+import PostHeader from './PostHeader';
 import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
-import PostActions from '../../components/PostActions';
+import PostActions from './PostActions';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
 import { modifyPostLike } from '../../services/like';
 import DeletePostDialog from '../../components/DeletePostDialog';
@@ -98,6 +98,7 @@ interface ShelfPostCardProps {
   postId: string;
   currUser: User | null;
   onEditShelf: () => void;
+  onSharePost: () => void;
 }
 
 export default function ShelfPostCard(props: ShelfPostCardProps) {
@@ -113,6 +114,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     postId,
     currUser,
     onEditShelf,
+    onSharePost,
   } = props;
   const shelfPost = postContent as ShelfPost;
 
@@ -277,6 +279,8 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             shelfGenres={shelfPost.genres ? shelfPost.genres : []}
             shelfAuthorInfo={postAuthorInfo}
             userId={currUser ? currUser._id : undefined}
+            onSharePost={onSharePost}
+            postId={postId}
           />
         </CardActions>
       </Card>

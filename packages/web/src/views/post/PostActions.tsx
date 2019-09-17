@@ -1,4 +1,5 @@
 import React from 'react';
+import copyToClipboard from 'copy-to-clipboard';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   makeStyles,
@@ -16,19 +17,27 @@ import {
   ShelfEntry,
   SelectedGenre,
 } from '@caravan/buddy-reading-types';
-import PostLikesThumbnails from './PostLikesThumbnails';
-import DiscordLoginModal from './DiscordLoginModal';
+import PostLikesThumbnails from '../../components/PostLikesThumbnails';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
+import shareIcon from '../../resources/share-icons/share-symbol.svg';
+import { getReferralLink } from '../../common/referral';
 
 const useStyles = makeStyles(theme => ({
-  actionContainer: {
+  bottomContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     width: '100%',
+  },
+  actionContainer: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   likesContainer: {
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginRight: theme.spacing(2),
   },
   heartIcon: {
     padding: 4,
@@ -36,6 +45,16 @@ const useStyles = makeStyles(theme => ({
   likeButton: {
     height: 30,
     width: 30,
+  },
+  shareContainer: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  shareIcon: {
+    height: 24,
+    resizeMode: 'contain',
+    paddingRight: theme.spacing(1),
   },
   createClubButtonContainer: {
     padding: theme.spacing(1),
@@ -56,6 +75,8 @@ interface PostActionsProps {
   shelfGenres: SelectedGenre[];
   shelfAuthorInfo: PostUserInfo;
   userId: string | undefined;
+  onSharePost: () => void;
+  postId: string;
 }
 
 function PostActions(props: PostActionsProps) {
@@ -72,6 +93,8 @@ function PostActions(props: PostActionsProps) {
     shelfGenres,
     shelfAuthorInfo,
     userId,
+    onSharePost,
+    postId,
   } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
@@ -94,27 +117,42 @@ function PostActions(props: PostActionsProps) {
     }
   }
 
+  function copyShelfLink() {
+    copyToClipboard(getReferralLink(userId, 'post', undefined, postId));
+    onSharePost();
+  }
+
   return (
-    <div className={classes.actionContainer}>
-      <div className={classes.likesContainer}>
-        <IconButton
-          onClick={handleLike}
-          classes={{ root: classes.heartIcon }}
-          disabled={likeButtonDisabled}
-        >
-          <FavoriteIcon
-            className={classes.likeButton}
-            style={{
-              fill: hasLiked ? '#AF0020' : undefined,
-            }}
+    <div className={classes.bottomContainer}>
+      <div className={classes.actionContainer}>
+        <div className={classes.likesContainer}>
+          <IconButton
+            onClick={handleLike}
+            classes={{ root: classes.heartIcon }}
+            disabled={likeButtonDisabled}
+          >
+            <FavoriteIcon
+              className={classes.likeButton}
+              style={{
+                fill: hasLiked ? '#AF0020' : undefined,
+              }}
+            />
+          </IconButton>
+          <PostLikesThumbnails
+            likes={likes}
+            numLikes={numLikes}
+            maxShown={maxLikeThumbnailsShown}
+            likeListLength={likeListLength}
           />
-        </IconButton>
-        <PostLikesThumbnails
-          likes={likes}
-          numLikes={numLikes}
-          maxShown={maxLikeThumbnailsShown}
-          likeListLength={likeListLength}
-        />
+        </div>
+        <div className={classes.shareContainer}>
+          <img
+            src={shareIcon}
+            alt="Copy shelf link"
+            className={classes.shareIcon}
+            onClick={copyShelfLink}
+          />
+        </div>
       </div>
       <div className={classes.createClubButtonContainer}>
         {userId && (
@@ -124,6 +162,9 @@ function PostActions(props: PostActionsProps) {
               pathname: '/clubs/create',
               state: {
                 shelf: shelf,
+                // If its their own post, or they've liked it, we want to remove them from the invites list.
+                // If its someone elses post, but that person liked their own post, we don't need to send the author an invite
+                // If its someone elses post, and that person hasn't liked their own post, we need to send the author an invite
                 invites:
                   shelfAuthorInfo.userId === userId || hasLiked
                     ? likes.filter(l => l.userId !== userId)
@@ -143,9 +184,14 @@ function PostActions(props: PostActionsProps) {
               variant="contained"
               color="primary"
             >
-              <Typography variant="subtitle2">
-                Create club from shelf
-              </Typography>
+              {screenSmallerThanSm && (
+                <Typography variant="subtitle2">Create club</Typography>
+              )}
+              {!screenSmallerThanSm && (
+                <Typography variant="subtitle2">
+                  Create club from shelf
+                </Typography>
+              )}
             </Button>
           </Link>
         )}
@@ -156,7 +202,14 @@ function PostActions(props: PostActionsProps) {
             color="primary"
             onClick={() => setLoginModalShown(true)}
           >
-            <Typography variant="subtitle2">Create club from shelf</Typography>
+            {screenSmallerThanSm && (
+              <Typography variant="subtitle2">Create club</Typography>
+            )}
+            {!screenSmallerThanSm && (
+              <Typography variant="subtitle2">
+                Create club from shelf
+              </Typography>
+            )}
           </Button>
         )}
       </div>

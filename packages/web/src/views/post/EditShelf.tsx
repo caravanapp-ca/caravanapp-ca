@@ -18,15 +18,15 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import GenreChip from '../GenreChip';
-import BookSearch from '../../views/books/BookSearch';
+import GenreChip from '../../components/GenreChip';
+import BookSearch from '../books/BookSearch';
 import {
   getFeedViewerUserInfo,
   getPostById,
   editPost,
 } from '../../services/post';
-import Header from '../Header';
-import HeaderTitle from '../HeaderTitle';
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
 import { getAllGenres } from '../../services/genre';
 import theme from '../../theme';
 

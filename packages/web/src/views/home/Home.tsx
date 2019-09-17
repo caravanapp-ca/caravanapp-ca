@@ -61,7 +61,7 @@ import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
 import UserSearchFilter from '../../components/filters/UserSearchFilter';
-import Composer from '../../components/Composer';
+import Composer from '../post/Composer';
 import {
   getAllPostsTransformed,
   getFeedViewerUserInfo,
@@ -475,6 +475,15 @@ export default function Home(props: HomeProps) {
       setShouldGetPosts(true);
     }
     getGenres();
+    const url = window.location.pathname + '/5d7ffb5d8f5d820025bb36bb';
+    const urlSplit = url.split('/');
+    const xlen = urlSplit[1].length;
+    if (urlSplit.length !== 2 || urlSplit[1].length !== 24) {
+      const x = 'invalid';
+      //throw new Error(`URL: ${url}, is not a valid club URL`);
+    }
+    const ans = urlSplit[1];
+    const g = 'ok';
   }, [props.history.location.state]);
 
   // These useEffects write the tab, search, and filter values to prop.history.location.state so that they can be
@@ -549,6 +558,16 @@ export default function Home(props: HomeProps) {
         state: newState,
       });
     }
+  }
+
+  function onSharePost() {
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'info',
+      message:
+        'Copied shelf link to clipboard. Share this shelf with the world!',
+    });
   }
 
   function onSnackbarClose() {
@@ -1219,6 +1238,7 @@ export default function Home(props: HomeProps) {
                   showResultsCount={postsSearch.length > 0}
                   resultsLoaded={postsResult.status === 'loaded'}
                   onEditPost={onEditPost}
+                  onSharePost={onSharePost}
                 />
               )}
             {postsResult.status === 'loaded' &&

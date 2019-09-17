@@ -43,10 +43,7 @@ export function OwnProfileCardActions(props: OwnProfileCardActionsProps) {
       className={classes.button}
       color="primary"
       component={AdapterLink}
-      to={{
-        pathname: `/user/${user.urlSlug}`,
-        state: { tabValue: 1 },
-      }}
+      to={`/user/${user.urlSlug}`}
       variant="contained"
     >
       <img src={marioIcon} alt="Mario logo" className={classes.marioIcon} />

@@ -11,6 +11,7 @@ export default function getUtmSourceValue(urlValue: string) {
     case 'cpp':
     case 'cph':
     case 'cpc':
+    case 'sp':
       return filteredUrlValue;
     default:
       throw new Error(`Unknown utm_source: ${filteredUrlValue}`);

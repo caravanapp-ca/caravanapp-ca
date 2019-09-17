@@ -11,7 +11,7 @@ import {
   PostUserInfo,
 } from '@caravan/buddy-reading-types';
 import PlaceholderCard from '../../components/PlaceholderCard';
-import ShelfPostCard from './ShelfPostCard';
+import ShelfPostCard from '../post/ShelfPostCard';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -102,6 +102,7 @@ interface PostCardProps {
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
   onEditPost: () => void;
+  onSharePost: () => void;
 }
 
 // Make this approximately the height of a standard UserCard
@@ -118,6 +119,7 @@ export default function PostCards(props: PostCardProps) {
     showResultsCount,
     resultsLoaded,
     onEditPost,
+    onSharePost,
   } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
@@ -157,6 +159,7 @@ export default function PostCards(props: PostCardProps) {
                       postId={post._id}
                       currUser={currUser}
                       onEditShelf={onEditPost}
+                      onSharePost={onSharePost}
                       key={post._id}
                     />
                   );

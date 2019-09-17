@@ -419,9 +419,10 @@ declare module '@caravan/buddy-reading-types' {
     | 'rd'
     | 'cpp'
     | 'cph'
-    | 'cpc';
+    | 'cpc'
+    | 'sp';
 
-  export type ReferralDestination = 'home' | 'club';
+  export type ReferralDestination = 'home' | 'club' | 'post';
 
   export type PostType = 'shelf' | 'progressUpdate' | 'wantToReadAbout';
 

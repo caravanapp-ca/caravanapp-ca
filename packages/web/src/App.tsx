@@ -36,7 +36,7 @@ import { validateDiscordPermissions } from './services/auth';
 import { getDiscordAuthUrl } from './common/auth';
 import Settings from './views/settings/Settings';
 import CreateShelf from './components/post-uploads/CreateShelf';
-import EditShelf from './components/post-uploads/EditShelf';
+import EditShelf from './views/post/EditShelf';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -115,11 +115,14 @@ export function App(props: AppProps) {
       clearStorageAuthState();
     }
     if (queries.ref && !getCookie('refClickComplete') && !getCookie('userId')) {
-      const regex = RegExp('/clubs/\\w+');
-      const referralDestination: ReferralDestination = regex.test(
+      const clubRegex = RegExp('/clubs/\\w+');
+      const postRegex = RegExp('/posts/\\w+');
+      const referralDestination: ReferralDestination = clubRegex.test(
         window.location.pathname
       )
         ? 'club'
+        : postRegex.test(window.location.pathname)
+        ? 'post'
         : 'home';
       const referrerId = Array.isArray(queries.ref)
         ? queries.ref[0]

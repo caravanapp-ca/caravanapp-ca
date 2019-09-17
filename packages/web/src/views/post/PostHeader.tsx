@@ -11,7 +11,7 @@ import {
 import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Create';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
-import AdapterLink from './AdapterLink';
+import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({
   heading: {
