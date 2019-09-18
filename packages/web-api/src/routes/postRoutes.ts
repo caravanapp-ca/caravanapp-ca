@@ -67,10 +67,10 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 
 // Edit post
 router.put('/:id', isAuthenticated, async (req, res, next) => {
-  console.log('Editing');
   const { postContent } = req.body.params;
   const { userId } = req.session;
   const postId = req.params.id;
+  console.log(`Editing ${postId}`);
   if (userId && validPostContent(postContent)) {
     const postToUpload: Partial<PostDoc> = {
       authorId: userId,
