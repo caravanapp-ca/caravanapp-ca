@@ -135,7 +135,7 @@ function PostHeader(props: PostHeaderProps) {
           },
         }}
       >
-        <MenuItem component={AdapterLink} to={`/post/${postId}/edit`}>
+        <MenuItem component={AdapterLink} to={`/posts/${postId}/edit`}>
           Edit Shelf
         </MenuItem>
         <MenuItem onClick={onClickDelete}>Delete Shelf</MenuItem>

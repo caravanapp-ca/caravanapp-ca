@@ -47,7 +47,7 @@ export const getReferralLink = (
         } else {
           urlPostParam = '?' + postSourceParam;
         }
-        return `https://${window.location.host}/post${postIdQuery}${urlPostParam}`;
+        return `https://${window.location.host}/posts${postIdQuery}${urlPostParam}`;
       default:
         return `https://${window.location.host}`;
     }

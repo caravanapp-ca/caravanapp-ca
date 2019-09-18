@@ -167,7 +167,7 @@ function PostActions(props: PostActionsProps) {
             color="primary"
             className={classes.viewPostButton}
             component={AdapterLink}
-            to={`/post/${postId}`}
+            to={`/posts/${postId}`}
           >
             <Typography variant="subtitle2">View</Typography>
           </Button>

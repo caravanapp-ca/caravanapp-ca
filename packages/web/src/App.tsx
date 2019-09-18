@@ -177,13 +177,13 @@ export function App(props: AppProps) {
                   }
                 />
                 <Route
-                  path="/post/:id/edit"
+                  path="/posts/:id/edit"
                   render={props =>
                     forceOnboard(user, <EditShelf {...props} user={user} />)
                   }
                 />
                 <Route
-                  path="/post/:id"
+                  path="/posts/:id"
                   render={props =>
                     forceOnboard(user, <Post {...props} user={user} />)
                   }
