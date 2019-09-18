@@ -33,7 +33,9 @@ import GenresInCommonChips from '../../components/GenresInCommonChips';
 import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
 import PostActions from './PostActions';
 import DeletePostDialog from '../../components/DeletePostDialog';
-import { CustomSnackbarProps } from '../../components/CustomSnackbar';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
 import { modifyPostLike } from '../../services/like';
 
 const useStyles = makeStyles(theme => ({
@@ -61,6 +63,9 @@ const useStyles = makeStyles(theme => ({
   genresInCommon: {
     display: 'flex',
     flexWrap: 'wrap',
+  },
+  notFoundContainer: {
+    padding: theme.spacing(4),
   },
 }));
 
@@ -97,6 +102,7 @@ export default function Post(props: PostProps) {
   const [shouldExecuteLike, setShouldExecuteLike] = React.useState<boolean>(
     false
   );
+  const [loadedPost, setLoadedPost] = React.useState<boolean>(false);
 
   const [hasLiked, setHasLiked] = React.useState<boolean>(false);
 
@@ -120,6 +126,8 @@ export default function Post(props: PostProps) {
       variant: 'success',
     }
   );
+
+  const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
   function backButtonAction() {
     if (props.history.length > 2) {
@@ -146,7 +154,7 @@ export default function Post(props: PostProps) {
         title={`"${shelfTitle}" Shelf by ${postAuthorUserInfo.name}`}
       />
     ) : (
-      <HeaderTitle title="Shelf" />
+      <HeaderTitle title="Shelf Post" />
     );
 
   useEffect(() => {
@@ -164,7 +172,13 @@ export default function Post(props: PostProps) {
           postTransformedRes.status < 300
         ) {
           const postTransformed = postTransformedRes.data;
-          const { post, authorInfo, likes, numLikes } = postTransformed;
+          const {
+            post,
+            authorInfo,
+            likes,
+            likeUserIds,
+            numLikes,
+          } = postTransformed;
           if (post && post.content && post.content.postType === 'shelf') {
             if (post.content.shelf) {
               setShelf(post.content.shelf);
@@ -188,16 +202,21 @@ export default function Post(props: PostProps) {
           if (likes) {
             setPostLikes(likes);
           }
+          if (likeUserIds && user && user._id) {
+            setHasLiked(likeUserIds.includes(user._id));
+          }
           if (numLikes) {
             setPostNumLikes(numLikes);
           }
+          setLoadedPost(true);
         }
       } catch (err) {
+        setLoadedPost(true);
         console.error(err);
       }
     };
     getPost();
-  }, [postId]);
+  }, [postId, user]);
 
   useEffect(() => {
     (async () => {
@@ -214,7 +233,23 @@ export default function Post(props: PostProps) {
     if (shouldExecuteLike && user) {
       modifyPostLike(postId, hasLiked ? 'like' : 'unlike');
     }
-  }, [hasLiked]);
+  }, [hasLiked, postId, shouldExecuteLike, user]);
+
+  if (loadedPost && shelf.length === 0) {
+    return (
+      <>
+        <Header
+          leftComponent={leftComponent}
+          centerComponent={centerComponent}
+        />
+        <Container maxWidth="md" className={classes.notFoundContainer}>
+          <Typography>
+            Whoops! It doesn't look like this post exists!
+          </Typography>
+        </Container>
+      </>
+    );
+  }
 
   async function handleLikeAction() {
     if (user && feedViewerUserInfo !== null) {
@@ -239,9 +274,21 @@ export default function Post(props: PostProps) {
     const res = await deletePost(postId);
     if (res && res.status && res.status >= 200 && res.status < 300) {
       setDeletePostDialogVisible(false);
-      window.location.reload();
+      if (props.history.length > 2) {
+        props.history.goBack();
+      } else {
+        props.history.replace('/');
+      }
     } else {
       setDeletePostDialogVisible(false);
+      // post not deleted successfully
+      setSnackbarProps(s => ({
+        ...s,
+        isOpen: true,
+        variant: 'warning',
+        message:
+          'Whoops! Something has gone wrong and we were unable to delete your post. Refresh, log in and out, or message the Caravan team if this continues.',
+      }));
       return;
     }
   }
@@ -255,8 +302,9 @@ export default function Post(props: PostProps) {
       ...snackbarProps,
       isOpen: true,
       variant: 'info',
-      message:
-        'Copied shelf link to clipboard. Share this shelf with the world!',
+      message: screenSmallerThanMd
+        ? 'Copied shelf link to clipboard!'
+        : 'Copied shelf link to clipboard. Share this shelf with the world!',
     });
   }
 
@@ -368,6 +416,7 @@ export default function Post(props: PostProps) {
         onCancel={() => setDeletePostDialogVisible(false)}
         onDelete={onDeletePost}
       />
+      <CustomSnackbar {...snackbarProps} />
     </>
   );
 }
