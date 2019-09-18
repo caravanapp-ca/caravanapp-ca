@@ -11,7 +11,6 @@ import {
   Grid,
   Typography,
   CircularProgress,
-  useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import { Info } from '@material-ui/icons';
