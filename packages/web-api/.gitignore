@@ -50,6 +50,3 @@ node_modules/
 .env
 .env.test
 .env.prod
-
-#jest cache
-.jest-cache/
