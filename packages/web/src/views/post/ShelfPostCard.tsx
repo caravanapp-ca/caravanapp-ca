@@ -97,7 +97,6 @@ interface ShelfPostCardProps {
   numLikes: number;
   postId: string;
   currUser: User | null;
-  onEditShelf: () => void;
   onSharePost: () => void;
 }
 
@@ -113,7 +112,6 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     numLikes,
     postId,
     currUser,
-    onEditShelf,
     onSharePost,
   } = props;
   const shelfPost = postContent as ShelfPost;
@@ -224,7 +222,6 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           ownPost={currUser !== null && currUser._id === postAuthorInfo.userId}
           onClickDelete={() => setDeletePostDialogVisible(true)}
           postId={postId}
-          onEditShelf={onEditShelf}
         />
         <CardContent classes={{ root: classes.cardContent }}>
           {shelfPost.shelf.length > 0 && (
@@ -281,6 +278,7 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             userId={currUser ? currUser._id : undefined}
             onSharePost={onSharePost}
             postId={postId}
+            currentlyViewing={false}
           />
         </CardActions>
       </Card>

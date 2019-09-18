@@ -207,7 +207,6 @@ export default function Home(props: HomeProps) {
   const [loadingMorePosts, setLoadingMorePosts] = React.useState<boolean>(
     false
   );
-  const [shouldGetPosts, setShouldGetPosts] = React.useState<boolean>(false);
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
@@ -453,14 +452,7 @@ export default function Home(props: HomeProps) {
       }
     })();
     setLoadingMorePosts(true);
-  }, [
-    user,
-    userLoaded,
-    afterPostsQuery,
-    postsSearch,
-    postSearchField,
-    shouldGetPosts,
-  ]);
+  }, [user, userLoaded, afterPostsQuery, postsSearch, postSearchField]);
 
   // Get genres on mount
   useEffect(() => {
@@ -471,11 +463,8 @@ export default function Home(props: HomeProps) {
         setAllGenres(data);
       }
     };
-    if (props.history.location.state && props.history.location.state.reload) {
-      setShouldGetPosts(true);
-    }
     getGenres();
-  }, [props.history.location.state]);
+  }, []);
 
   // These useEffects write the tab, search, and filter values to prop.history.location.state so that they can be
   // retrieved when the user navigates back to the home screen. When the user logs out the whole
@@ -541,23 +530,14 @@ export default function Home(props: HomeProps) {
     }
   }, [postSearchField, props.history]);
 
-  function onEditPost() {
-    if (props.history.location.state) {
-      const newState = props.history.location.state;
-      newState.reload = true;
-      props.history.replace({
-        state: newState,
-      });
-    }
-  }
-
   function onSharePost() {
     setSnackbarProps({
       ...snackbarProps,
       isOpen: true,
       variant: 'info',
-      message:
-        'Copied shelf link to clipboard. Share this shelf with the world!',
+      message: screenSmallerThanMd
+        ? 'Copied shelf link to clipboard!'
+        : 'Copied shelf link to clipboard. Share this shelf with the world!',
     });
   }
 
@@ -1228,7 +1208,6 @@ export default function Home(props: HomeProps) {
                   currUser={user}
                   showResultsCount={postsSearch.length > 0}
                   resultsLoaded={postsResult.status === 'loaded'}
-                  onEditPost={onEditPost}
                   onSharePost={onSharePost}
                 />
               )}
