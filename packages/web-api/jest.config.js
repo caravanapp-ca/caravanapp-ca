@@ -1,12 +1,8 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   cacheDirectory: '.jest-cache',
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '<rootDir>/packages/(?:.+?)/lib/',
-  ],
   coverageDirectory: '.jest-coverage',
   coveragePathIgnorePatterns: ['<rootDir>/packages/(?:.+?)/lib/'],
   coverageReporters: ['html', 'text'],
@@ -18,4 +14,5 @@ module.exports = {
       statements: 100,
     },
   },
+  testPathIgnorePatterns: ['<rootDir>/packages/(?:.+?)/lib/'],
 };
