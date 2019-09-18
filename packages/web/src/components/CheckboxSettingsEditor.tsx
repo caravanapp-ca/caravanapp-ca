@@ -93,6 +93,7 @@ export default function CheckboxSettingsEditor<T>(
             />
           }
           label={description}
+          key={key}
         />
       );
     }
