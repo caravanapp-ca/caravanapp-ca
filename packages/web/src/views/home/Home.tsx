@@ -128,6 +128,9 @@ const useStyles = makeStyles(theme => ({
   cardsContainer: {
     padding: `32px 0px 32px 0px`,
   },
+  viewRecommendationsContainer: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 const defaultActiveFilter: ActiveFilter = {
@@ -291,6 +294,7 @@ export default function Home(props: HomeProps) {
       : ''
   );
 
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
@@ -863,6 +867,18 @@ export default function Home(props: HomeProps) {
         {tabValue === 0 && (
           <>
             <Container className={classes.clubsFilterGrid} maxWidth="md">
+              <div className={classes.viewRecommendationsContainer}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  href="/clubs/recommend"
+                  fullWidth={screenSmallerThanSm}
+                >
+                  <Typography variant="button">
+                    VIEW MY RECOMMENDATIONS
+                  </Typography>
+                </Button>
+              </div>
               <FilterSearch
                 onClearSearch={onClearClubsSearch}
                 onSearchSubmitted={onSearchClubsSubmitted}

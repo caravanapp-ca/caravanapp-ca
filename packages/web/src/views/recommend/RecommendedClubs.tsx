@@ -63,7 +63,6 @@ interface RecommendedClubsProps extends RouteComponentProps<{}> {
   userLoaded: boolean;
 }
 
-const headerCenterComponent = <HeaderTitle title="Recommended Clubs" />;
 const pageSize = 6;
 
 export default function RecommendedClubs(props: RecommendedClubsProps) {
@@ -96,7 +95,6 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
 
   const loadMoreEnabled = clubs.length % pageSize === 0;
   const showAutoJoinedMsg = fromOnboarding && wasMember;
-  const rightComponent = <ProfileHeaderIcon user={user} />;
   const backButtonAction = () => {
     if (props.history.length > 2) {
       props.history.goBack();
@@ -104,7 +102,9 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
       props.history.replace('/');
     }
   };
-  const leftComponent = (
+  const leftComponent = fromOnboarding ? (
+    undefined
+  ) : (
     <IconButton
       edge="start"
       color="inherit"
@@ -113,6 +113,16 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
     >
       <ArrowBackIos />
     </IconButton>
+  );
+  const centerComponent = (
+    <HeaderTitle title={fromOnboarding ? 'Join Clubs' : 'Recommended Clubs'} />
+  );
+  const rightComponent = fromOnboarding ? (
+    <Button href="/" color="primary">
+      <Typography variant="button">CONTINUE</Typography>
+    </Button>
+  ) : (
+    <ProfileHeaderIcon user={user} />
   );
 
   // If we came from onboarding, we should retrieve the user's referred clubs, if any.
@@ -215,7 +225,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
     <>
       <Header
         leftComponent={leftComponent}
-        centerComponent={headerCenterComponent}
+        centerComponent={centerComponent}
         rightComponent={rightComponent}
       />
       <Container className={classes.root} maxWidth="md">
