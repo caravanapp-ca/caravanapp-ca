@@ -101,7 +101,6 @@ interface PostCardProps {
   currUser: User | null;
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
-  onEditPost: () => void;
   onSharePost: () => void;
 }
 
@@ -118,7 +117,6 @@ export default function PostCards(props: PostCardProps) {
     currUser,
     showResultsCount,
     resultsLoaded,
-    onEditPost,
     onSharePost,
   } = props;
 
@@ -158,7 +156,6 @@ export default function PostCards(props: PostCardProps) {
                       numLikes={numLikes}
                       postId={post._id}
                       currUser={currUser}
-                      onEditShelf={onEditPost}
                       onSharePost={onSharePost}
                       key={post._id}
                     />

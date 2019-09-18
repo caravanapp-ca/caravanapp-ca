@@ -82,7 +82,7 @@ interface PostActionsProps {
   userId: string | undefined;
   onSharePost: () => void;
   postId: string;
-  currentlyViewing?: boolean;
+  currentlyViewing: boolean;
 }
 
 function PostActions(props: PostActionsProps) {
@@ -201,10 +201,10 @@ function PostActions(props: PostActionsProps) {
               variant="contained"
               color="primary"
             >
-              {screenSmallerThanSm && (
+              {screenSmallerThanSm && !currentlyViewing && (
                 <Typography variant="subtitle2">Create club</Typography>
               )}
-              {!screenSmallerThanSm && (
+              {(!screenSmallerThanSm || currentlyViewing) && (
                 <Typography variant="subtitle2">
                   Create club from shelf
                 </Typography>
@@ -219,10 +219,10 @@ function PostActions(props: PostActionsProps) {
             color="primary"
             onClick={() => setLoginModalShown(true)}
           >
-            {screenSmallerThanSm && (
+            {screenSmallerThanSm && !currentlyViewing && (
               <Typography variant="subtitle2">Create club</Typography>
             )}
-            {!screenSmallerThanSm && (
+            {(!screenSmallerThanSm || currentlyViewing) && (
               <Typography variant="subtitle2">
                 Create club from shelf
               </Typography>
