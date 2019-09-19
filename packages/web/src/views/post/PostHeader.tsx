@@ -9,7 +9,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
-import EditIcon from '@material-ui/icons/Create';
+import OptionsIcon from '@material-ui/icons/MoreVert';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 
@@ -120,7 +120,7 @@ function PostHeader(props: PostHeaderProps) {
             color="inherit"
             className={classes.postIconAvatar}
           >
-            <EditIcon />
+            <OptionsIcon />
           </IconButton>
         )}
       </div>
