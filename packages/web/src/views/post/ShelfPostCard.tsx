@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Truncate from 'react-truncate';
 import { CardActions } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -235,14 +236,16 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           >
             {shelfPost.title}
           </Typography>
-          <Typography
-            gutterBottom
-            variant="subtitle2"
-            component="h2"
-            className={classes.shelfDescription}
-          >
-            {shelfPost.description}
-          </Typography>
+          <Truncate lines={2} trimWhitespace={true}>
+            <Typography
+              gutterBottom
+              variant="subtitle2"
+              component="h2"
+              className={classes.shelfDescription}
+            >
+              {shelfPost.description}
+            </Typography>
+          </Truncate>
           {shelfGenres.length > 0 && (
             <div className={classes.genresInCommon}>
               {commonGenres.map(genre => (
