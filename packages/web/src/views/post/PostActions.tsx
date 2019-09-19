@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import LinkIcon from '@material-ui/icons/Link';
 import {
   PostUserInfo,
   FilterAutoMongoKeys,
@@ -19,7 +20,6 @@ import {
 } from '@caravan/buddy-reading-types';
 import PostLikesThumbnails from '../../components/PostLikesThumbnails';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import shareIcon from '../../resources/share-icons/share-symbol.svg';
 import { getReferralLink } from '../../common/referral';
 import AdapterLink from '../../components/AdapterLink';
 
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginRight: theme.spacing(2.5),
+    marginRight: theme.spacing(1),
   },
   heartIcon: {
     padding: 4,
@@ -52,10 +52,12 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  shareIconButton: {
+    padding: 4,
+  },
   shareIcon: {
-    height: 24,
-    resizeMode: 'contain',
-    paddingRight: theme.spacing(1),
+    height: 30,
+    width: 30,
   },
   viewPostButton: {
     textTransform: 'none',
@@ -132,33 +134,35 @@ function PostActions(props: PostActionsProps) {
   return (
     <div className={classes.bottomContainer}>
       <div className={classes.actionContainer}>
-        <div className={classes.likesContainer}>
-          <IconButton
-            onClick={handleLike}
-            classes={{ root: classes.heartIcon }}
-            disabled={likeButtonDisabled}
-          >
-            <FavoriteIcon
-              className={classes.likeButton}
-              style={{
-                fill: hasLiked ? '#AF0020' : undefined,
-              }}
+        <IconButton
+          onClick={handleLike}
+          classes={{ root: classes.heartIcon }}
+          disabled={likeButtonDisabled}
+        >
+          <FavoriteIcon
+            className={classes.likeButton}
+            style={{
+              fill: hasLiked ? '#AF0020' : undefined,
+            }}
+          />
+        </IconButton>
+        {numLikes > 0 && (
+          <div className={classes.likesContainer}>
+            <PostLikesThumbnails
+              likes={likes}
+              numLikes={numLikes}
+              maxShown={maxLikeThumbnailsShown}
+              likeListLength={likeListLength}
             />
-          </IconButton>
-          <PostLikesThumbnails
-            likes={likes}
-            numLikes={numLikes}
-            maxShown={maxLikeThumbnailsShown}
-            likeListLength={likeListLength}
-          />
-        </div>
+          </div>
+        )}
         <div className={classes.shareContainer}>
-          <img
-            src={shareIcon}
-            alt="Copy shelf link"
-            className={classes.shareIcon}
+          <IconButton
             onClick={copyShelfLink}
-          />
+            classes={{ root: classes.shareIconButton }}
+          >
+            <LinkIcon className={classes.shareIcon} />
+          </IconButton>
         </div>
       </div>
       <div className={classes.createClubButtonContainer}>
