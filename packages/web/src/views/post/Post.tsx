@@ -25,7 +25,6 @@ import {
   getPostWithAuthorAndLikesUserInfo,
 } from '../../services/post';
 import Header from '../../components/Header';
-import HeaderTitle from '../../components/HeaderTitle';
 import theme from '../../theme';
 import PostHeader from './PostHeader';
 import ShelfPostCardShelfList from './ShelfPostCardShelfList';
@@ -150,11 +149,21 @@ export default function Post(props: PostProps) {
 
   const centerComponent =
     shelfTitle && postAuthorUserInfo !== null && postAuthorUserInfo.name ? (
-      <HeaderTitle
-        title={`"${shelfTitle}" Shelf by ${postAuthorUserInfo.name}`}
-      />
+      <Typography
+        variant="h5"
+        color="textPrimary"
+        style={{ textAlign: 'center' }}
+      >
+        {`"${shelfTitle}" Shelf by ${postAuthorUserInfo.name}`}
+      </Typography>
     ) : (
-      <HeaderTitle title="Shelf Post" />
+      <Typography
+        variant="h5"
+        color="textPrimary"
+        style={{ textAlign: 'center' }}
+      >
+        Shelf Post
+      </Typography>
     );
 
   useEffect(() => {
