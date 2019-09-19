@@ -34,7 +34,7 @@ export default function DeletePostDialog(props: DeletePostDialogProps) {
         </Button>
         <MuiThemeProvider theme={errorTheme}>
           <Button onClick={onDelete} color="primary">
-            Yes, delete this shelf
+            Delete
           </Button>
         </MuiThemeProvider>
       </DialogActions>
