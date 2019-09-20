@@ -15,7 +15,6 @@ import {
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import { Info } from '@material-ui/icons';
 import {
-  ClubTransformed,
   Services,
   ClubTransformedRecommended,
 } from '@caravan/buddy-reading-types';

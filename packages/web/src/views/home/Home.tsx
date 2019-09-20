@@ -295,7 +295,6 @@ export default function Home(props: HomeProps) {
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {

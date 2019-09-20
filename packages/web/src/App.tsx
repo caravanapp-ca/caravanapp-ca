@@ -225,13 +225,21 @@ export function App(props: AppProps) {
                 <Route
                   path="/posts/:id/edit"
                   render={props =>
-                    forceOnboard(user, <EditShelf {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <EditShelf {...props} user={user} />
+                    )
                   }
                 />
                 <Route
                   path="/posts/:id"
                   render={props =>
-                    forceOnboard(user, <Post {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <Post {...props} user={user} />
+                    )
                   }
                 />
                 <Route

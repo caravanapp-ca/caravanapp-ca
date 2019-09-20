@@ -81,9 +81,9 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
     'init' | 'disabled' | 'loading' | 'loaded'
   >('init');
   const [blockedClubIds, setBlockedClubIds] = useState<string[]>([]);
-  const [wasMember, setWasMember] = useState<true | false | 'loading'>(
-    'loading'
-  );
+  const [wasReferralMember, setWasReferralMember] = useState<
+    'wasMember' | 'wasNotMember' | 'loading'
+  >('loading');
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
       autoHideDuration: 6000,
@@ -94,7 +94,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   );
 
   const loadMoreEnabled = clubs.length % pageSize === 0;
-  const showAutoJoinedMsg = fromOnboarding && wasMember;
+  const showAutoJoinedMsg = fromOnboarding && wasReferralMember === 'wasMember';
   const backButtonAction = () => {
     if (props.history.length > 2) {
       props.history.goBack();
@@ -151,7 +151,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
           setReferralClub(
             transformClubRecommended(club, recommendation, isMember)
           );
-          setWasMember(isMember);
+          setWasReferralMember(isMember ? 'wasMember' : 'wasNotMember');
         } else {
           setReferralClub(undefined);
           if (res.status !== 404) {
