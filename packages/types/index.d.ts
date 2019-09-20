@@ -1,5 +1,4 @@
 import { Omit } from 'utility-types';
-import { CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS } from '../web/src/common/globalConstants';
 
 declare module '@caravan/buddy-reading-types' {
   export type FilterAutoMongoKeys<Base> = Omit<
