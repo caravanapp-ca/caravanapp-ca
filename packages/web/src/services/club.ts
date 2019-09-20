@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import {
   Services,
   ShelfEntry,
@@ -57,6 +57,33 @@ export async function getUserClubRecommendations(
   );
   return res;
 }
+
+export const getUserReferralClub = async (userId: string) => {
+  try {
+    const res = await axios.get<ClubWithRecommendation>(
+      `${clubRoute}/userReferrals`,
+      {
+        params: {
+          userId,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    const errTyped: AxiosError = err;
+    return errTyped.response;
+  }
+};
+
+export const joinMyReferralClubs = async () => {
+  try {
+    const res = await axios.put<User[]>(`${clubRoute}/joinMyReferralClubs`);
+    return res;
+  } catch (err) {
+    const errTyped: AxiosError = err;
+    return errTyped.response;
+  }
+};
 
 export async function getClub(clubId: string) {
   const res = await axios.get<Services.GetClubById | null>(

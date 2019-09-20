@@ -63,3 +63,5 @@ export const CLUB_RECOMMENDATION_KEYS: ClubRecommendationKey[] = [
   'genreMatch',
   'new',
 ];
+
+export const MAX_CLUB_AGE_RECOMMENDATION_DAYS = 14;

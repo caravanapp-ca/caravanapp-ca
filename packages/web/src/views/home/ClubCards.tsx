@@ -11,7 +11,6 @@ import {
   Grid,
   Typography,
   CircularProgress,
-  useMediaQuery,
 } from '@material-ui/core';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import { Info } from '@material-ui/icons';
@@ -241,7 +240,6 @@ export default function ClubCards(props: ClubCardsProps) {
     creationInfoContainerWidth,
     setCreationInfoContainerWidth,
   ] = React.useState<number>(128);
-  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
     setClubsTransformedState(clubsTransformed);
@@ -565,7 +563,7 @@ export default function ClubCards(props: ClubCardsProps) {
                         onResize={(w, h) => setCreationInfoContainerWidth(w)}
                       />
                     </div>
-                    {!quickJoin && (
+                    {(!quickJoin || !isLoggedIn) && (
                       <Button
                         className={classes.button}
                         color="primary"

@@ -11,6 +11,7 @@ import {
   handleFirstVisit,
   ALLOWED_REFERRAL_DESTINATIONS,
 } from '../services/referral';
+import { Types } from 'mongoose';
 
 const router = express.Router();
 
@@ -42,9 +43,13 @@ router.post(
       return res.status(422).json({ errors: errorArr });
     }
     const { referrerId } = req.params;
+    const referralDestinationIdStr: string = req.body.referralDestinationId;
     // Ugly way of forcing to null, consider cleaning up
     let referralDestination: ReferralDestination = req.body.referralDestination
       ? req.body.referralDestination
+      : null;
+    let referralDestinationId: Types.ObjectId = referralDestinationIdStr
+      ? new Types.ObjectId(referralDestinationIdStr)
       : null;
     referralDestination =
       referralDestination == null ||
@@ -65,6 +70,7 @@ router.post(
         referredTempUid,
         referrerId,
         referralDestination,
+        referralDestinationId,
         utmSource
       );
       req.session.referredTempUid = referredTempUid;

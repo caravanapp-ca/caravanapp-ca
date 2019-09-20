@@ -14,6 +14,7 @@ import { Omit } from 'utility-types';
 import { giveUserBadge } from './badge';
 import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
 import { giveUserPalettes } from './userPalettes';
+import { Types } from 'mongoose';
 
 export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   fb: true,
@@ -37,14 +38,15 @@ export async function handleFirstVisit(
   referredTempUid: string,
   referredById: string,
   referralDestination: ReferralDestination,
+  referralDestinationId?: Types.ObjectId,
   utmSource?: ReferralSource
 ) {
   const newReferral: Omit<
     FilterAutoMongoKeys<Referral>,
-    'referredUsers' | 'referralCount'
-  > = {
+    'referredUsers' | 'referralCount' | 'referralDestinationId'
+  > & { referralDestinationId: Types.ObjectId } = {
     userId: referredTempUid,
-    referredById: referredById,
+    referredById,
     actions: [
       {
         action: 'click',
@@ -52,7 +54,8 @@ export async function handleFirstVisit(
       },
     ],
     source: utmSource,
-    referralDestination: referralDestination,
+    referralDestination,
+    referralDestinationId,
     referredAndNotJoined: true,
   };
   const referralDoc = await new ReferralModel(newReferral).save();
@@ -78,6 +81,7 @@ export async function createReferralActionByDoc(
     case 'click':
     case 'login':
     case 'onboarded':
+      // TODO: Join club if it exists
       break;
     case 'createClub':
     case 'joinClub':
