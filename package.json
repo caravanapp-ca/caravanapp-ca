@@ -6,7 +6,7 @@
     "build": "lerna run build",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",
-    "test": "lerna exec -- npm run test",
+    "test": "cross-env CI=true lerna run test --stream",
     "start": "cd ./packages/web-api && npm start",
     "create-env": "printenv > ./packages/web-api/.env && printenv | sed 's/=/: /g' > ./packages/cloud-functions/functions/.env.yaml",
     "deploy:production": "yarn build && yarn deploy-only:production",

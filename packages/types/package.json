@@ -9,8 +9,7 @@
   "scripts": {
     "build": "exit 0",
     "lint": "eslint \"index.d.ts\"",
-    "lint:fix": "eslint \"index.d.ts\" --quiet --fix",
-    "test": "echo \"Tests are not implemented.\" && exit 0"
+    "lint:fix": "eslint \"index.d.ts\" --quiet --fix"
   },
   "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/types",
   "keywords": [
