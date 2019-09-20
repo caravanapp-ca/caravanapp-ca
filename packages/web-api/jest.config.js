@@ -1,8 +1,5 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  moduleNameMapper: {
-    '^@caravan/(.*)$': '<rootDir>/../../node_modules/@caravan/$1',
-  },
+  testPathIgnorePatterns: ['/node_modules/', '/dist/']
 };
