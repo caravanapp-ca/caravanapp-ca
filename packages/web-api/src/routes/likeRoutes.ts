@@ -56,6 +56,19 @@ router.post('/:postId', isAuthenticated, async (req, res, next) => {
   }
 });
 
+// Delete a likes doc by post id
+router.delete('/:postId', isAuthenticated, async (req, res) => {
+  const { postId } = req.params;
+  let likesDoc: LikesDoc;
+  try {
+    likesDoc = await LikesModel.findOneAndDelete({ postId });
+    return res.status(204).send(`Deleted likes doc ${likesDoc.id}`);
+  } catch (err) {
+    console.error(`User failed to delete likes doc ${likesDoc.id}`);
+    return res.status(500).send(err);
+  }
+});
+
 router.get('/:postId', async (req, res, next) => {
   const { postId } = req.params;
   try {

@@ -16,7 +16,7 @@ import ListElementBook from '../../../components/ListElementBook';
 import { Radio, IconButton, Paper, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlusIcon from '@material-ui/icons/Add';
-import AmazonBuyButton from '../../../components/AmazonBuyButton';
+//import AmazonBuyButton from '../../../components/AmazonBuyButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -133,11 +133,12 @@ export default function BookList(props: BookListProps) {
   }
 
   function buyButton(link: string | undefined): JSX.Element {
-    if (link) {
-      return <AmazonBuyButton link={link} />;
-    } else {
-      return <></>;
-    }
+    // if (link) {
+    //   return <AmazonBuyButton link={link} />;
+    // } else {
+    //   return <></>;
+    // }
+    return <></>;
   }
 
   // If you're making changes to the render here you will need to replicate them in both the droppable and regular cases.

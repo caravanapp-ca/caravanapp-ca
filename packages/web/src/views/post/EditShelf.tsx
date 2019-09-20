@@ -18,26 +18,19 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import GenreChip from '../GenreChip';
-import BookSearch from '../../views/books/BookSearch';
-import { uploadPost, getFeedViewerUserInfo } from '../../services/post';
-import Header from '../Header';
-import HeaderTitle from '../HeaderTitle';
+import GenreChip from '../../components/GenreChip';
+import BookSearch from '../books/BookSearch';
+import {
+  getFeedViewerUserInfo,
+  getPostById,
+  editPost,
+} from '../../services/post';
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
 import { getAllGenres } from '../../services/genre';
 import theme from '../../theme';
 
 const useStyles = makeStyles(theme => ({
-  modal: {
-    overflow: 'scroll',
-    'webkit-overflow-scrolling': 'touch',
-  },
-  appBar: {
-    position: 'relative',
-  },
-  toolbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
   dialogContent: {
     paddingBottom: theme.spacing(2),
   },
@@ -51,13 +44,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface CreateShelfProps extends RouteComponentProps {
+interface EditShelfRouteParams {
+  id: string;
+}
+
+interface EditShelfProps extends RouteComponentProps<EditShelfRouteParams> {
   user: User | null;
 }
 
-export default function CreateShelf(props: CreateShelfProps) {
+export default function EditShelf(props: EditShelfProps) {
   const classes = useStyles();
   const { user } = props;
+  const postId = props.match.params.id;
 
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
@@ -70,8 +68,8 @@ export default function CreateShelf(props: CreateShelfProps) {
   const [shelfGenres, setShelfGenres] = React.useState<SelectedGenre[]>([]);
   const [shelfTitle, setShelfTitle] = React.useState<string>('');
   const [shelfDescription, setShelfDescription] = React.useState<string>('');
-  const [postingShelf, setPostingShelf] = React.useState(false);
-  const [createdShelf, setCreatedShelf] = React.useState<boolean>(false);
+  const [savingShelf, setSavingShelf] = React.useState(false);
+  const [savedShelf, setSavedShelf] = React.useState<boolean>(false);
 
   const readyToPost =
     shelf.length > 1 &&
@@ -84,11 +82,11 @@ export default function CreateShelf(props: CreateShelfProps) {
     </Button>
   );
 
-  const centerComponent = <HeaderTitle title="Create Shelf" />;
+  const centerComponent = <HeaderTitle title="Edit Shelf" />;
 
   const rightComponent = (
-    <Button color="inherit" disabled={!readyToPost} onClick={postShelf}>
-      Post
+    <Button color="inherit" disabled={!readyToPost} onClick={saveShelf}>
+      Save
     </Button>
   );
 
@@ -96,6 +94,31 @@ export default function CreateShelf(props: CreateShelfProps) {
     getGenres();
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    const getPost = async () => {
+      try {
+        const post = await getPostById(postId);
+        if (post && post.content && post.content.postType === 'shelf') {
+          if (post.content.shelf) {
+            setShelf(post.content.shelf);
+          }
+          if (post.content.genres) {
+            setShelfGenres(post.content.genres);
+          }
+          if (post.content.title) {
+            setShelfTitle(post.content.title);
+          }
+          if (post.content.description) {
+            setShelfDescription(post.content.description);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getPost();
+  }, [postId]);
 
   useEffect(() => {
     (async () => {
@@ -109,10 +132,10 @@ export default function CreateShelf(props: CreateShelfProps) {
   }, [user]);
 
   useEffect(() => {
-    if (createdShelf) {
+    if (savedShelf) {
       props.history.goBack();
     }
-  }, [createdShelf, props.history]);
+  }, [savedShelf, props.history]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
@@ -128,8 +151,9 @@ export default function CreateShelf(props: CreateShelfProps) {
     props.history.goBack();
   }
 
-  async function postShelf() {
+  async function saveShelf() {
     if (user && user._id && postAuthorUserInfo) {
+      setSavingShelf(true);
       const postContent: PostContent = {
         postType: 'shelf',
         shelf,
@@ -137,12 +161,11 @@ export default function CreateShelf(props: CreateShelfProps) {
         genres: shelfGenres,
         description: shelfDescription,
       };
-      setPostingShelf(true);
-      const uploadShelfRes = await uploadPost(postContent);
-      const { data } = uploadShelfRes;
+      const editShelfRes = await editPost(postContent, postId);
+      const { data } = editShelfRes;
       if (data) {
-        setPostingShelf(false);
-        setCreatedShelf(true);
+        setSavingShelf(false);
+        setSavedShelf(true);
       }
     }
   }
@@ -191,6 +214,7 @@ export default function CreateShelf(props: CreateShelfProps) {
             onSubmitBooks={onSubmitSelectedBooks}
             maxSelected={50}
             secondary="delete"
+            inheritSearchedBooks={shelf}
           />
         </div>
         {genres && (
@@ -229,6 +253,7 @@ export default function CreateShelf(props: CreateShelfProps) {
                 HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
               >
             ) => setShelfTitle(e.target.value)}
+            value={shelfTitle}
           />
         </div>
         <div className={classes.sectionContainer}>
@@ -249,6 +274,7 @@ export default function CreateShelf(props: CreateShelfProps) {
                 HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
               >
             ) => setShelfDescription(e.target.value)}
+            value={shelfDescription}
           />
         </div>
         <div className={classes.sectionContainer}>
@@ -260,17 +286,17 @@ export default function CreateShelf(props: CreateShelfProps) {
               marginBottom: theme.spacing(6),
             }}
           >
-            {!postingShelf && (
+            {!savingShelf && (
               <Button
                 variant="contained"
                 disabled={!readyToPost}
-                onClick={postShelf}
+                onClick={saveShelf}
                 color="secondary"
               >
-                POST
+                SAVE
               </Button>
             )}
-            {postingShelf && <CircularProgress />}
+            {savingShelf && <CircularProgress />}
           </div>
         </div>
       </Container>

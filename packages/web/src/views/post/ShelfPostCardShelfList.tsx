@@ -4,7 +4,7 @@ import { makeStyles, createStyles, Tooltip } from '@material-ui/core';
 import { ShelfEntry, FilterAutoMongoKeys } from '@caravan/buddy-reading-types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { theme } from '../theme';
+import { theme } from '../../theme';
 import ReactResizeDetector from 'react-resize-detector';
 
 const bookCoverHeight = 72;

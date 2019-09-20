@@ -186,6 +186,7 @@ export default function UserCards(props: UserCardProps) {
               <LazyLoad
                 unmountIfInvisible={true}
                 offset={placeholderCardHeight * lazyloadOffset}
+                key={_id}
                 placeholder={
                   <Grid item key={_id} xs={12} sm={6}>
                     <PlaceholderCard height={placeholderCardHeight} />
@@ -194,7 +195,7 @@ export default function UserCards(props: UserCardProps) {
               >
                 <Grid item key={_id} xs={12} sm={6}>
                   <Card className={classes.card}>
-                    <MuiThemeProvider theme={userTheme}>
+                    <MuiThemeProvider theme={userTheme || theme}>
                       <div
                         className={classes.userHeading}
                         style={{
@@ -231,6 +232,7 @@ export default function UserCards(props: UserCardProps) {
                           <div className={classes.genresInCommon}>
                             {commonGenres.map(genre => (
                               <GenresInCommonChips
+                                key={genre}
                                 name={genre}
                                 backgroundColor={
                                   userTheme
@@ -242,6 +244,7 @@ export default function UserCards(props: UserCardProps) {
                             ))}
                             {otherUniqueGenres.map(genre => (
                               <GenresInCommonChips
+                                key={genre}
                                 name={genre}
                                 backgroundColor={
                                   userTheme

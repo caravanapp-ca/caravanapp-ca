@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Truncate from 'react-truncate';
 import { CardActions } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -11,12 +12,15 @@ import {
   User,
 } from '@caravan/buddy-reading-types';
 import theme from '../../theme';
-import ShelfPostCardShelfList from '../../components/ShelfPostCardShelfList';
-import PostHeader from '../../components/PostHeader';
+import ShelfPostCardShelfList from './ShelfPostCardShelfList';
+import PostHeader from './PostHeader';
 import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
-import PostActions from '../../components/PostActions';
+import PostActions from './PostActions';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
 import { modifyPostLike } from '../../services/like';
+import DeletePostDialog from '../../components/DeletePostDialog';
+import { deletePost } from '../../services/post';
+import { CustomSnackbarProps } from '../../components/CustomSnackbar';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -87,12 +91,14 @@ const useStyles = makeStyles(theme => ({
 interface ShelfPostCardProps {
   postContent: PostContent;
   postAuthorInfo: PostUserInfo;
+  postDate: string | Date;
   feedViewerUserInfo: PostUserInfo | null;
   likes: PostUserInfo[];
   likeUserIds: string[];
   numLikes: number;
   postId: string;
   currUser: User | null;
+  onSharePost: () => void;
 }
 
 export default function ShelfPostCard(props: ShelfPostCardProps) {
@@ -100,12 +106,14 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
   const {
     postContent,
     postAuthorInfo,
+    postDate,
     feedViewerUserInfo,
     likes,
     likeUserIds,
     numLikes,
     postId,
     currUser,
+    onSharePost,
   } = props;
   const shelfPost = postContent as ShelfPost;
 
@@ -125,15 +133,24 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     numLikes
   );
 
-  const [likeButtonDisabled, setLikeButtonDisabled] = React.useState<boolean>(
-    false
+  const [deletePostDialogVisible, setDeletePostDialogVisible] = React.useState<
+    boolean
+  >(false);
+
+  const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
+    {
+      autoHideDuration: 6000,
+      isOpen: false,
+      handleClose: onSnackbarClose,
+      variant: 'success',
+    }
   );
 
   useEffect(() => {
     if (shouldExecuteLike && currUser) {
       modifyPostLike(postId, hasLiked ? 'like' : 'unlike');
     }
-  }, [hasLiked]);
+  }, [hasLiked, shouldExecuteLike, currUser, postId]);
 
   async function handleLikeAction() {
     if (currUser && feedViewerUserInfo !== null) {
@@ -152,8 +169,22 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         setModifiedNumLikes(updatedLikesArr.length);
       }
       setHasLiked(!hasLiked);
-      setTimeout(() => setLikeButtonDisabled(false), 5000);
     }
+  }
+
+  async function onDeletePost() {
+    const res = await deletePost(postId);
+    if (res && res.status && res.status >= 200 && res.status < 300) {
+      setDeletePostDialogVisible(false);
+      window.location.reload();
+    } else {
+      setDeletePostDialogVisible(false);
+      return;
+    }
+  }
+
+  function onSnackbarClose() {
+    setSnackbarProps({ ...snackbarProps, isOpen: false });
   }
 
   let myGenres: string[] = [];
@@ -183,6 +214,10 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           postAuthorInfo={postAuthorInfo}
           iconColor={'#64B5F6'}
           postIcon={shelfIcon}
+          postDate={postDate}
+          ownPost={currUser !== null && currUser._id === postAuthorInfo.userId}
+          onClickDelete={() => setDeletePostDialogVisible(true)}
+          postId={postId}
         />
         <CardContent classes={{ root: classes.cardContent }}>
           {shelfPost.shelf.length > 0 && (
@@ -196,14 +231,16 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
           >
             {shelfPost.title}
           </Typography>
-          <Typography
-            gutterBottom
-            variant="subtitle2"
-            component="h2"
-            className={classes.shelfDescription}
-          >
-            {shelfPost.description}
-          </Typography>
+          <Truncate lines={2} trimWhitespace={true}>
+            <Typography
+              gutterBottom
+              variant="subtitle2"
+              component="h2"
+              className={classes.shelfDescription}
+            >
+              {shelfPost.description}
+            </Typography>
+          </Truncate>
           {shelfGenres.length > 0 && (
             <div className={classes.genresInCommon}>
               {commonGenres.map(genre => (
@@ -228,19 +265,25 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         <CardActions className={classes.cardActions}>
           <PostActions
             likes={modifiedLikes}
-            likeUserIds={likeUserIds}
             hasLiked={hasLiked}
             numLikes={modifiedNumLikes}
             onClickLike={handleLikeAction}
-            likeButtonDisabled={likeButtonDisabled}
             shelf={shelfPost.shelf}
             shelfName={shelfPost.title}
             shelfGenres={shelfPost.genres ? shelfPost.genres : []}
-            shelfAuthorName={postAuthorInfo.name}
+            shelfAuthorInfo={postAuthorInfo}
             userId={currUser ? currUser._id : undefined}
+            onSharePost={onSharePost}
+            postId={postId}
+            currentlyViewing={false}
           />
         </CardActions>
       </Card>
+      <DeletePostDialog
+        open={deletePostDialogVisible}
+        onCancel={() => setDeletePostDialogVisible(false)}
+        onDelete={onDeletePost}
+      />
     </>
   );
 }

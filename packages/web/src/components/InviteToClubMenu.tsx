@@ -146,9 +146,18 @@ export function InviteToClubMenu(props: InviteToClubMenuProps) {
         open={inviteMenuOpen}
         anchorEl={anchorEl}
         onClose={handleInviteMenuClose}
+        MenuListProps={{
+          style: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        }}
       >
         {clubsToInviteTo.map(clubWMIds => (
-          <MenuItem onClick={() => handleInviteToClub(clubWMIds.club)}>
+          <MenuItem
+            key={clubWMIds.club._id}
+            onClick={() => handleInviteToClub(clubWMIds.club)}
+          >
             {clubWMIds.club.name}
           </MenuItem>
         ))}

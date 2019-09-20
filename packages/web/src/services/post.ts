@@ -17,6 +17,23 @@ export async function uploadPost(postContent: PostContent) {
   return res;
 }
 
+export async function editPost(postContent: PostContent, postId: string) {
+  const res = await axios.put<Services.UploadPostResult | null>(
+    `${postRoute}/${postId}`,
+    {
+      params: {
+        postContent,
+      },
+    }
+  );
+  return res;
+}
+
+export async function deletePost(postId: string) {
+  const res = await axios.delete(`${postRoute}/${postId}`);
+  return res;
+}
+
 export async function getAllPostsTransformed(
   after?: string,
   pageSize?: number,
@@ -35,6 +52,21 @@ export async function getAllPostsTransformed(
     }
   );
   return res;
+}
+
+export async function getPostWithAuthorAndLikesUserInfo(postId: string) {
+  const res = await axios.get<Services.GetPostWithAuthorInfoAndLikes>(
+    `${postRoute}/${postId}/withAuthorAndLikesUserInfo`
+  );
+  return res;
+}
+
+export async function getPostById(postId: string) {
+  const res = await axios.get<Services.GetPostById | null>(
+    `${postRoute}/${postId}`
+  );
+  const post = res.data;
+  return post;
 }
 
 export async function getFeedViewerUserInfo(userId: string) {

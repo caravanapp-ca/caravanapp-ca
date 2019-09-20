@@ -72,7 +72,7 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
     <div>
       <Slider {...settings}>
         {shelf.map(book => (
-          <div>
+          <div key={book._id}>
             <Tooltip title={book.title} aria-label={book.title}>
               <img
                 src={book.coverImageURL}

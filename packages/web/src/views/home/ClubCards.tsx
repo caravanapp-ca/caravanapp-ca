@@ -244,6 +244,7 @@ export default function ClubCards(props: ClubCardsProps) {
             }
             return (
               <LazyLoad
+                key={club._id}
                 unmountIfInvisible={true}
                 offset={placeholderCardHeight * lazyloadOffset}
                 placeholder={

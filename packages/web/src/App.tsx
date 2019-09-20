@@ -36,6 +36,8 @@ import { validateDiscordPermissions } from './services/auth';
 import { getDiscordAuthUrl } from './common/auth';
 import Settings from './views/settings/Settings';
 import CreateShelf from './components/post-uploads/CreateShelf';
+import EditShelf from './views/post/EditShelf';
+import Post from './views/post/Post';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;
@@ -114,11 +116,14 @@ export function App(props: AppProps) {
       clearStorageAuthState();
     }
     if (queries.ref && !getCookie('refClickComplete') && !getCookie('userId')) {
-      const regex = RegExp('/clubs/\\w+');
-      const referralDestination: ReferralDestination = regex.test(
+      const clubRegex = RegExp('/clubs/\\w+');
+      const postRegex = RegExp('/posts/\\w+');
+      const referralDestination: ReferralDestination = clubRegex.test(
         window.location.pathname
       )
         ? 'club'
+        : postRegex.test(window.location.pathname)
+        ? 'post'
         : 'home';
       const referrerId = Array.isArray(queries.ref)
         ? queries.ref[0]
@@ -169,6 +174,18 @@ export function App(props: AppProps) {
                   path="/post/create"
                   render={props =>
                     forceOnboard(user, <CreateShelf {...props} user={user} />)
+                  }
+                />
+                <Route
+                  path="/posts/:id/edit"
+                  render={props =>
+                    forceOnboard(user, <EditShelf {...props} user={user} />)
+                  }
+                />
+                <Route
+                  path="/posts/:id"
+                  render={props =>
+                    forceOnboard(user, <Post {...props} user={user} />)
                   }
                 />
                 <Route

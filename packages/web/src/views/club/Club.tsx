@@ -105,6 +105,9 @@ const useStyles = makeStyles((theme: Theme) =>
       right: theme.spacing(4),
     },
     fab: {},
+    notFoundContainer: {
+      padding: theme.spacing(4),
+    },
   })
 );
 
@@ -265,14 +268,6 @@ export default function ClubComponent(props: ClubProps) {
     }
   }, [club, user]);
 
-  if (loadedClub && !club) {
-    return (
-      <Container maxWidth="md">
-        <Typography>Whoops! It doesn't look like this club exists!</Typography>
-      </Container>
-    );
-  }
-
   const getGenres = async () => {
     const res = await getAllGenres();
     if (res.status === 200) {
@@ -354,6 +349,22 @@ export default function ClubComponent(props: ClubProps) {
       return <ProfileHeaderIcon user={user} />;
     }
   };
+
+  if (loadedClub && !club) {
+    return (
+      <>
+        <Header
+          leftComponent={leftComponent}
+          centerComponent={centerComponent}
+        />
+        <Container maxWidth="md" className={classes.notFoundContainer}>
+          <Typography>
+            Whoops! It doesn't look like this club exists!
+          </Typography>
+        </Container>
+      </>
+    );
+  }
 
   function onSnackbarClose(event?: SyntheticEvent, reason?: string) {
     setSnackbarProps({ ...snackbarProps, isOpen: false });

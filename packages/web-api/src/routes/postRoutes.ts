@@ -11,10 +11,16 @@ import {
   PostModel,
   PostDoc,
   UserDoc,
+  LikesDoc,
   FilterMongooseDocKeys,
 } from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
-import { createLikesDoc, getPostsLikes } from '../services/like';
+import {
+  getPostLikes,
+  createLikesDoc,
+  deleteLikesDocByPostId,
+  getPostsLikes,
+} from '../services/like';
 import { createPostDoc, mapPostUserInfo } from '../services/post';
 import { getUser, getUsersByUserIds } from '../services/user';
 
@@ -56,6 +62,87 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       err
     );
     return next(err);
+  }
+});
+
+// Edit post
+router.put('/:id', isAuthenticated, async (req, res, next) => {
+  const { postContent } = req.body.params;
+  const { userId } = req.session;
+  const postId = req.params.id;
+  console.log(`Editing ${postId}`);
+  if (userId && validPostContent(postContent)) {
+    const postToUpload: Partial<PostDoc> = {
+      authorId: userId,
+      content: postContent,
+    };
+    try {
+      const editPostResult: PostDoc = await PostModel.findByIdAndUpdate(
+        postId,
+        postToUpload,
+        {
+          new: true,
+        }
+      );
+      if (editPostResult) {
+        return res.status(200).send(editPostResult);
+      } else {
+        console.warn(
+          `User ${userId} attempted to edit post ${postId} but the post was not found.`
+        );
+        return res.status(404).send(`Unable to find post ${postId}`);
+      }
+    } catch (err) {
+      console.error('Failed to save post data', err);
+      return res.status(400).send('Failed to save post data');
+    }
+  }
+});
+
+// Delete a post
+router.delete('/:postId', isAuthenticated, async (req, res) => {
+  const { userId } = req.session;
+  const { postId } = req.params;
+
+  let postDoc: PostDoc;
+  try {
+    postDoc = await PostModel.findById(postId);
+  } catch (err) {
+    return res.status(400).send(`Could not find post ${postId}`);
+  }
+  if (userId === postDoc.authorId) {
+    try {
+      postDoc = await postDoc.remove();
+      console.log(`Deleted post ${postDoc.id} by user ${userId}`);
+    } catch (err) {
+      console.log(`User ${userId} failed to delete post ${postDoc.id}`);
+      return res.status(500).send(err);
+    }
+    try {
+      const likesDoc = await deleteLikesDocByPostId(postId);
+      console.log(`Deleted post ${postDoc.id} and corresponding likes doc`);
+      return res
+        .status(204)
+        .send(
+          `Deleted post ${postDoc.id} and corresponding likes doc ${likesDoc.id}`
+        );
+    } catch {
+      console.log(
+        `Deleted post ${postDoc.id} but could not delete corresponding likes doc`
+      );
+      return res
+        .status(204)
+        .send(
+          `Deleted post ${postDoc.id} but could not delete corresponding likes doc`
+        );
+    }
+  } else {
+    console.log(
+      `User ${userId} failed to authenticate to delete post ${postDoc.id}, actually created by user ${postDoc.authorId}`
+    );
+    return res
+      .status(401)
+      .send("You don't have permission to delete this post.");
   }
 });
 
@@ -125,6 +212,76 @@ router.get('/', async (req, res) => {
     posts: filteredPosts,
   };
   res.status(200).json(result);
+});
+
+// Get a post with its author and likes user info
+router.get('/:postId/withAuthorAndLikesUserInfo', async (req, res, next) => {
+  const { postId } = req.params;
+  try {
+    const postDoc = await PostModel.findById(postId);
+    if (!postDoc) {
+      res.sendStatus(404);
+      return;
+    }
+    const filteredPost: FilterMongooseDocKeys<PostDoc> & {
+      _id: mongoose.Types.ObjectId;
+      createdAt: string;
+      updatedAt: string;
+    } = {
+      ...postDoc.toObject(),
+      createdAt:
+        postDoc.createdAt instanceof Date
+          ? postDoc.createdAt.toISOString()
+          : postDoc.createdAt,
+      updatedAt:
+        postDoc.updatedAt instanceof Date
+          ? postDoc.updatedAt.toISOString()
+          : postDoc.updatedAt,
+    };
+    const postsLikesDoc = await getPostLikes(postId);
+
+    const [likeUserDocs, authorUserDoc] = await Promise.all([
+      getUsersByUserIds(postsLikesDoc.likes.slice(0, 10)),
+      getUser(filteredPost.authorId),
+    ]);
+
+    const likeUserDocsMap = new Map<string, UserDoc>();
+    likeUserDocs.forEach(d => likeUserDocsMap.set(d.id, d));
+
+    const post = {
+      ...filteredPost,
+      _id: filteredPost._id.toHexString(),
+    };
+    const authorInfo = mapPostUserInfo(authorUserDoc);
+    const likeUserIds = likeUserDocs.map(lud => lud._id.toHexString());
+    const likesUserDocs = likeUserIds.map(uid => likeUserDocsMap.get(uid));
+    const likes = likesUserDocs.map(mapPostUserInfo);
+    const { numLikes } = postsLikesDoc;
+
+    const result: Services.GetPostWithAuthorInfoAndLikes = {
+      authorInfo,
+      likeUserIds,
+      post,
+      numLikes,
+      likes,
+    };
+    res.status(200).json(result);
+  } catch (err) {
+    if (err.name) {
+      switch (err.name) {
+        case 'CastError':
+          res.sendStatus(404);
+          return;
+        default:
+          break;
+      }
+    }
+    console.log(
+      `Failed to get post ${postId} with its author and likes user info`,
+      err
+    );
+    return next(err);
+  }
 });
 
 // Get all posts with author and like users info
@@ -305,6 +462,42 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     posts: postsInfo,
   };
   res.status(200).json(result);
+});
+
+// Get a post
+router.get('/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const postDoc = await PostModel.findById(id);
+    if (!postDoc) {
+      res.sendStatus(404);
+      return;
+    }
+    let filteredPost: Services.GetPostById = {
+      ...postDoc.toObject(),
+      createdAt:
+        postDoc.createdAt instanceof Date
+          ? postDoc.createdAt.toISOString()
+          : postDoc.createdAt,
+      updatedAt:
+        postDoc.updatedAt instanceof Date
+          ? postDoc.updatedAt.toISOString()
+          : postDoc.updatedAt,
+    };
+    return res.status(200).send(filteredPost);
+  } catch (err) {
+    if (err.name) {
+      switch (err.name) {
+        case 'CastError':
+          res.sendStatus(404);
+          return;
+        default:
+          break;
+      }
+    }
+    console.log(`Failed to get post ${id}`, err);
+    return next(err);
+  }
 });
 
 export default router;

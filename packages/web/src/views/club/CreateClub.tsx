@@ -140,16 +140,14 @@ export default function CreateClub(props: CreateClubProps) {
     props.location.state &&
       props.location.state.shelfName &&
       props.location.state.shelfName.length < 40
-      ? `The "${props.location.state.shelfName}" club`
+      ? `The '${props.location.state.shelfName}' club`
       : ''
   );
   const [selectedGroupBio, setSelectedGroupBio] = React.useState(
     props.location.state &&
       props.location.state.shelfAuthorName &&
       props.location.state.shelfName
-      ? `Come join me as we read books from the "${
-          props.location.state.shelfName
-        }" shelf created by ${props.location.state.shelfAuthorName}!`
+      ? `Come join me as we read books from the '${props.location.state.shelfName}' shelf created by ${props.location.state.shelfAuthorName}!`
       : ''
   );
   const [selectedBooks, setSelectedBooks] = React.useState<
@@ -240,7 +238,7 @@ export default function CreateClub(props: CreateClubProps) {
       readingSpeed: selectedGroupSpeed,
       unlisted: unlistedClub,
       currUser: user,
-      usersToInviteIds: likeUserIdsArr ? likeUserIdsArr : [],
+      usersToInviteIds: inviteUserIdsArr ? inviteUserIdsArr : [],
       vibe: selectedGroupVibe,
     };
     setCreatingClub(true);
@@ -322,40 +320,40 @@ export default function CreateClub(props: CreateClubProps) {
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   let inheritedBooks: FilterAutoMongoKeys<ShelfEntry>[] | undefined;
-  let numLikesString: string = '';
-  let numLikesVal: number | undefined;
-  let likesArr: PostUserInfo[] | undefined;
-  let likeUserIdsArr: string[] | undefined;
-  let likeListLengthVal: number | undefined;
+  let numInvitesString: string = '';
+  let numInvitesVal: number | undefined;
+  let invitesArr: PostUserInfo[] | undefined;
+  let inviteUserIdsArr: string[] | undefined;
+  let inviteListLengthVal: number | undefined;
 
   if (props.location && props.location.state) {
-    const {
-      shelf,
-      numLikes,
-      likes,
-      likeUserIds,
-      likeListLength,
-    } = props.location.state;
+    const { shelf, invites, inviteListLength } = props.location.state;
     if (shelf && shelf.length > 0) {
       inheritedBooks = shelf;
     } else {
       inheritedBooks = undefined;
     }
-    if (numLikes && numLikes > 0) {
-      numLikesVal = numLikes;
-      if (numLikes === 0) {
-        numLikesString = '';
-      } else if (numLikes === 1) {
-        numLikesString = '1 person';
+    if (invites && invites.length > 0) {
+      const invitesSet = new Set(invites);
+      // @ts-ignore
+      // TypeScript only supports iterables on Arrays at the moment. Didn't want to modify ts-config for whole project,
+      // so just ignoring this here
+      invitesArr = [...invitesSet];
+      numInvitesVal = invitesArr.length;
+      if (numInvitesVal === 0) {
+        numInvitesString = '';
+      } else if (numInvitesVal === 1) {
+        numInvitesString = '1 person likes';
       } else {
-        numLikesString = `${numLikes} people`;
+        numInvitesString = `${numInvitesVal} people like`;
       }
+      inviteUserIdsArr = invitesArr.map(i => i.userId);
     } else {
-      numLikesString = 'Caravaners';
+      numInvitesString = 'Caravaners';
+      invitesArr = undefined;
+      inviteUserIdsArr = undefined;
     }
-    likesArr = likes || undefined;
-    likeUserIdsArr = likeUserIds || undefined;
-    likeListLengthVal = likeListLength || undefined;
+    inviteListLengthVal = inviteListLength || undefined;
   }
 
   return (
@@ -445,28 +443,31 @@ export default function CreateClub(props: CreateClubProps) {
             selectedGroupSize={selectedGroupSize}
           />
         </div>
-
-        {inheritedBooks && numLikesVal && likesArr && likeListLengthVal && (
-          <div className={classes.sectionContainer}>
-            <Typography variant="subtitle1" className={classes.sectionHeader}>
-              {numLikesString} liked this shelf. Should we send them an invite
-              to join?
-            </Typography>
-            <SendClubInvitesSwitch
-              onChange={(sendInvitesValue: boolean) =>
-                setSendInvites(sendInvitesValue)
-              }
-              sendInvites={sendInvites}
-            />
-            {sendInvites && (
-              <CreateClubFromShelfInviteList
-                likes={likesArr}
-                numLikes={numLikesVal}
-                likeListLength={likeListLengthVal}
+        {inheritedBooks &&
+          numInvitesVal &&
+          numInvitesVal > 0 &&
+          invitesArr &&
+          inviteListLengthVal && (
+            <div className={classes.sectionContainer}>
+              <Typography variant="subtitle1" className={classes.sectionHeader}>
+                {numInvitesString} these books. Should we send them an invite to
+                join?
+              </Typography>
+              <SendClubInvitesSwitch
+                onChange={(sendInvitesValue: boolean) =>
+                  setSendInvites(sendInvitesValue)
+                }
+                sendInvites={sendInvites}
               />
-            )}
-          </div>
-        )}
+              {sendInvites && (
+                <CreateClubFromShelfInviteList
+                  invites={invitesArr}
+                  numInvites={numInvitesVal}
+                  inviteListLength={inviteListLengthVal}
+                />
+              )}
+            </div>
+          )}
         <div className={classes.sectionContainer}>
           <Typography variant="subtitle1" className={classes.sectionHeader}>
             How fast do you want the group to read?
