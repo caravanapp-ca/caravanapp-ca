@@ -2,13 +2,15 @@ import { ReferralTiers, ReferralTier } from '@caravan/buddy-reading-types';
 
 export const getReferralLink = (
   userId: string | undefined,
-  location: 'home' | 'profile' | 'club',
-  clubId?: string
+  location: 'home' | 'profile' | 'club' | 'post',
+  clubId?: string,
+  postId?: string
 ) => {
   if (location) {
     // TODO: add more cases - should we parse URL?
     const refQuery = userId ? `?ref=${userId}` : '';
     const clubIdQuery = clubId ? `/${clubId}` : '';
+    const postIdQuery = postId ? `/${postId}` : '';
     switch (location) {
       case 'home':
         const homeSourceParam = 'utm_source=cph';
@@ -37,6 +39,15 @@ export const getReferralLink = (
           urlClubParam = '?' + clubSourceParam;
         }
         return `https://${window.location.host}/clubs${clubIdQuery}${urlClubParam}`;
+      case 'post':
+        const postSourceParam = 'utm_source=sp';
+        let urlPostParam = '';
+        if (refQuery !== '') {
+          urlPostParam = refQuery + '&' + postSourceParam;
+        } else {
+          urlPostParam = '?' + postSourceParam;
+        }
+        return `https://${window.location.host}/posts${postIdQuery}${urlPostParam}`;
       default:
         return `https://${window.location.host}`;
     }

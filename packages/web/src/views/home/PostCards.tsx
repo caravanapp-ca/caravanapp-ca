@@ -11,7 +11,7 @@ import {
   PostUserInfo,
 } from '@caravan/buddy-reading-types';
 import PlaceholderCard from '../../components/PlaceholderCard';
-import ShelfPostCard from './ShelfPostCard';
+import ShelfPostCard from '../post/ShelfPostCard';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -101,6 +101,7 @@ interface PostCardProps {
   currUser: User | null;
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
+  onSharePost: () => void;
 }
 
 // Make this approximately the height of a standard UserCard
@@ -116,6 +117,7 @@ export default function PostCards(props: PostCardProps) {
     currUser,
     showResultsCount,
     resultsLoaded,
+    onSharePost,
   } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
@@ -137,7 +139,7 @@ export default function PostCards(props: PostCardProps) {
         <Grid container spacing={4}>
           {postsWithAuthorInfoAndLikes.map(p => {
             const { post, authorInfo, likes, likeUserIds, numLikes } = p;
-            const { content } = post;
+            const { content, createdAt } = post;
             let postCard = <></>;
             if (authorInfo) {
               switch (content.postType) {
@@ -147,12 +149,14 @@ export default function PostCards(props: PostCardProps) {
                     <ShelfPostCard
                       postContent={content}
                       postAuthorInfo={authorInfo}
+                      postDate={createdAt}
                       feedViewerUserInfo={feedViewerUserInfo}
                       likes={likes}
                       likeUserIds={likeUserIds}
                       numLikes={numLikes}
                       postId={post._id}
                       currUser={currUser}
+                      onSharePost={onSharePost}
                       key={post._id}
                     />
                   );

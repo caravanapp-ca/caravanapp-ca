@@ -446,9 +446,10 @@ declare module '@caravan/buddy-reading-types' {
     | 'rd'
     | 'cpp'
     | 'cph'
-    | 'cpc';
+    | 'cpc'
+    | 'sp';
 
-  export type ReferralDestination = 'home' | 'club';
+  export type ReferralDestination = 'home' | 'club' | 'post';
 
   export type PostType = 'shelf' | 'progressUpdate' | 'wantToReadAbout';
 
@@ -617,6 +618,13 @@ declare module '@caravan/buddy-reading-types' {
         content: PostContent;
       }[];
     }
+    export interface GetPostById {
+      _id: string;
+      createdAt: string;
+      updatedAt: string;
+      authorId: string;
+      content: PostContent;
+    }
     export interface GetPostsWithAuthorInfoAndLikes {
       posts: {
         post: Post;
@@ -625,6 +633,13 @@ declare module '@caravan/buddy-reading-types' {
         likeUserIds: string[];
         numLikes: number;
       }[];
+    }
+    export interface GetPostWithAuthorInfoAndLikes {
+      post: Post;
+      authorInfo: PostUserInfo;
+      likes: PostUserInfo[];
+      likeUserIds: string[];
+      numLikes: number;
     }
   }
 

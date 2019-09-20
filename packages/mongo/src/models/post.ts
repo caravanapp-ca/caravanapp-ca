@@ -1,7 +1,5 @@
 import { model, Schema, Document, Types } from 'mongoose';
 import {
-  FilterAutoMongoKeys,
-  SameKeysAs,
   Post,
   ShelfPost,
   ProgressUpdatePost,
@@ -9,6 +7,7 @@ import {
   MongoTimestamps,
 } from '@caravan/buddy-reading-types';
 import { shelfSchemaDefinition, genresSchema } from './club';
+import { MongooseSchema } from '../common/mongoose';
 
 export interface PostDoc extends Document, MongoTimestamps, Omit<Post, '_id'> {
   _id: Types.ObjectId;
@@ -26,16 +25,13 @@ const interestsSchema = new Schema({
   imageUrl: String,
 });
 
-const shelfPostSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfPost>> = {
+const shelfPostSchemaDefinition: MongooseSchema<ShelfPost> = {
   postType: {
     type: String,
     required: true,
     validate: {
       validator: function(v: string) {
         return v === 'shelf';
-      },
-      message: function(props: { value: string }) {
-        `${props.value} does not match the expected value, shelf.`;
       },
     },
   },
@@ -46,22 +42,17 @@ const shelfPostSchemaDefinition: SameKeysAs<FilterAutoMongoKeys<ShelfPost>> = {
   interests: { type: [interestsSchema] },
 };
 
-const shelfPostSchema = new Schema(shelfPostSchemaDefinition, {
+const shelfPostSchema = new Schema<ShelfPost>(shelfPostSchemaDefinition, {
   _id: false,
 });
 
-const progressUpdatePostSchemaDefinition: SameKeysAs<
-  FilterAutoMongoKeys<ProgressUpdatePost>
-> = {
+const progressUpdatePostSchemaDefinition: MongooseSchema<ProgressUpdatePost> = {
   postType: {
     type: String,
     required: true,
     validate: {
       validator: function(v: string) {
         return v === 'progressUpdate';
-      },
-      message: function(props: { value: string }) {
-        `${props.value} does not match the expected value, progressUpdate.`;
       },
     },
   },
@@ -74,25 +65,20 @@ const progressUpdatePostSchemaDefinition: SameKeysAs<
   description: { type: String, required: true },
 };
 
-const progressUpdatePostSchema = new Schema(
+const progressUpdatePostSchema = new Schema<ProgressUpdatePost>(
   progressUpdatePostSchemaDefinition,
   {
     _id: false,
   }
 );
 
-const wantToReadAboutSchemaDefinition: SameKeysAs<
-  FilterAutoMongoKeys<WantToReadAboutPost>
-> = {
+const wantToReadAboutSchemaDefinition: MongooseSchema<WantToReadAboutPost> = {
   postType: {
     type: String,
     required: true,
     validate: {
       validator: function(v: string) {
         return v === 'wantToReadAbout';
-      },
-      message: function(props: { value: string }) {
-        `${props.value} does not match the expected value, wantToReadAbout.`;
       },
     },
   },
@@ -101,11 +87,14 @@ const wantToReadAboutSchemaDefinition: SameKeysAs<
   description: { type: String, required: true },
 };
 
-const wantToReadAboutSchema = new Schema(wantToReadAboutSchemaDefinition, {
-  _id: false,
-});
+const wantToReadAboutSchema = new Schema<WantToReadAboutPost>(
+  wantToReadAboutSchemaDefinition,
+  {
+    _id: false,
+  }
+);
 
-const postDefinition: SameKeysAs<FilterAutoMongoKeys<Post>> = {
+const postDefinition: MongooseSchema<Post> = {
   authorId: { type: String, required: true },
   content: {
     type: shelfPostSchema || progressUpdatePostSchema || wantToReadAboutSchema,

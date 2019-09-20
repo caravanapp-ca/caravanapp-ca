@@ -1,14 +1,13 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
-import { Fab, Typography, Avatar, Link, IconButton } from '@material-ui/core';
+import { Fab, Typography, Avatar, IconButton } from '@material-ui/core';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
-import shelfIcon from '../resources/post-icons/shelf_icon.svg';
-import { shelfPostTheme } from '../theme';
-import { washedTheme } from '../theme';
-import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
-import DiscordLoginModal from './DiscordLoginModal';
-import AdapterLink from './AdapterLink';
+import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
+import { shelfPostTheme } from '../../theme';
+import { washedTheme } from '../../theme';
+import GenericGroupMemberIcon from '../../components/misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
+import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({
   postTypes: {

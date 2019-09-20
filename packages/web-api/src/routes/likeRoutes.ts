@@ -1,8 +1,6 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import { isAuthenticated } from '../middleware/auth';
 import { LikesModel, LikesDoc } from '@caravan/buddy-reading-mongo';
-import { getPostLikes } from '../services/like';
 
 const router = express.Router();
 
@@ -55,6 +53,19 @@ router.post('/:postId', isAuthenticated, async (req, res, next) => {
     //session.endSession();
     console.log('Failed to modify post likes', err);
     return next(err);
+  }
+});
+
+// Delete a likes doc by post id
+router.delete('/:postId', isAuthenticated, async (req, res) => {
+  const { postId } = req.params;
+  let likesDoc: LikesDoc;
+  try {
+    likesDoc = await LikesModel.findOneAndDelete({ postId });
+    return res.status(204).send(`Deleted likes doc ${likesDoc.id}`);
+  } catch (err) {
+    console.error(`User failed to delete likes doc ${likesDoc.id}`);
+    return res.status(500).send(err);
   }
 });
 

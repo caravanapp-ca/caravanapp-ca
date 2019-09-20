@@ -25,6 +25,7 @@ export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   cpp: true,
   cph: true,
   cpc: true,
+  sp: true,
 };
 
 export const ALLOWED_REFERRAL_DESTINATIONS: {
@@ -32,6 +33,7 @@ export const ALLOWED_REFERRAL_DESTINATIONS: {
 } = {
   home: true,
   club: true,
+  post: true,
 };
 
 export async function handleFirstVisit(

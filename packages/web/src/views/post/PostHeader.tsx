@@ -1,7 +1,17 @@
 import React from 'react';
-import { makeStyles, Link, Typography } from '@material-ui/core';
+import { format } from 'date-fns';
+import {
+  makeStyles,
+  Link,
+  Typography,
+  Menu,
+  MenuItem,
+  IconButton,
+} from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
+import OptionsIcon from '@material-ui/icons/MoreVert';
 import { PostUserInfo } from '@caravan/buddy-reading-types';
+import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({
   heading: {
@@ -23,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'flex-start',
     marginLeft: theme.spacing(2),
   },
@@ -44,11 +54,31 @@ interface PostHeaderProps {
   postAuthorInfo: PostUserInfo;
   postIcon: string;
   iconColor: string;
+  postDate: string | Date;
+  ownPost: boolean;
+  onClickDelete: () => void;
+  postId: string;
 }
 
 function PostHeader(props: PostHeaderProps) {
   const classes = useStyles();
-  const { postAuthorInfo, postIcon, iconColor } = props;
+  const {
+    postAuthorInfo,
+    postIcon,
+    iconColor,
+    postDate,
+    ownPost,
+    onClickDelete,
+    postId,
+  } = props;
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const editMenuOpen = Boolean(anchorEl);
+
+  function openEditMenu(event: React.MouseEvent<HTMLElement>) {
+    setAnchorEl(event.currentTarget);
+  }
 
   return (
     <div className={classes.heading}>
@@ -71,15 +101,45 @@ function PostHeader(props: PostHeaderProps) {
             {postAuthorInfo.name}
           </Typography>
         </Link>
+        <Typography variant="caption" color="textSecondary">
+          {`${format(new Date(postDate), 'PP')}`}
+        </Typography>
       </div>
       <div className={classes.iconContainer}>
-        <Avatar
-          alt={'shelf post'}
-          src={postIcon}
-          className={classes.postIconAvatar}
-          style={{ backgroundColor: iconColor }}
-        />
+        {!ownPost && (
+          <Avatar
+            alt={'shelf post'}
+            src={postIcon}
+            className={classes.postIconAvatar}
+            style={{ backgroundColor: iconColor }}
+          />
+        )}
+        {ownPost && (
+          <IconButton
+            onClick={openEditMenu}
+            color="inherit"
+            className={classes.postIconAvatar}
+          >
+            <OptionsIcon />
+          </IconButton>
+        )}
       </div>
+      <Menu
+        open={editMenuOpen}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        MenuListProps={{
+          style: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        }}
+      >
+        <MenuItem component={AdapterLink} to={`/posts/${postId}/edit`}>
+          Edit Shelf
+        </MenuItem>
+        <MenuItem onClick={onClickDelete}>Delete Shelf</MenuItem>
+      </Menu>
     </div>
   );
 }

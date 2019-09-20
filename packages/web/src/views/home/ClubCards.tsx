@@ -14,7 +14,11 @@ import {
 } from '@material-ui/core';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import { Info } from '@material-ui/icons';
-import { ClubTransformed, Services, ClubTransformedRecommended } from '@caravan/buddy-reading-types';
+import {
+  ClubTransformed,
+  Services,
+  ClubTransformedRecommended,
+} from '@caravan/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,
@@ -203,7 +207,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface ClubCardsProps {
-  clubsTransformed: ClubTransformed[] | ClubTransformedRecommended[];
+  clubsTransformed: ClubTransformedRecommended[];
   showResultsCount?: boolean;
   resultsLoaded?: boolean;
   quickJoin?: boolean;
@@ -369,6 +373,7 @@ export default function ClubCards(props: ClubCardsProps) {
           }
           return (
             <LazyLoad
+              key={club._id}
               unmountIfInvisible={true}
               offset={placeholderCardHeight * lazyloadOffset}
               placeholder={

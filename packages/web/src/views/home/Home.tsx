@@ -61,7 +61,7 @@ import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
 import UserSearchFilter from '../../components/filters/UserSearchFilter';
-import Composer from '../../components/Composer';
+import Composer from '../post/Composer';
 import {
   getAllPostsTransformed,
   getFeedViewerUserInfo,
@@ -72,7 +72,6 @@ import PostSearchFilter from '../../components/filters/PostSearchFilter';
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;
   userLoaded: boolean;
-  tabValuePassed?: number;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -296,6 +295,7 @@ export default function Home(props: HomeProps) {
 
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
@@ -488,7 +488,7 @@ export default function Home(props: HomeProps) {
     } else {
       props.history.replace({ state: { tab: tabValue } });
     }
-  }, [tabValue]);
+  }, [tabValue, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -496,7 +496,7 @@ export default function Home(props: HomeProps) {
       newState.clubsFilter = activeClubsFilter;
       props.history.replace({ state: newState });
     }
-  }, [activeClubsFilter]);
+  }, [activeClubsFilter, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -504,7 +504,7 @@ export default function Home(props: HomeProps) {
       newState.clubsSearch = clubsSearch;
       props.history.replace({ state: newState });
     }
-  }, [clubsSearch]);
+  }, [clubsSearch, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -512,7 +512,7 @@ export default function Home(props: HomeProps) {
       newState.usersSearch = usersSearch;
       props.history.replace({ state: newState });
     }
-  }, [usersSearch]);
+  }, [usersSearch, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -520,7 +520,7 @@ export default function Home(props: HomeProps) {
       newState.userSearchField = userSearchField;
       props.history.replace({ state: newState });
     }
-  }, [userSearchField]);
+  }, [userSearchField, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -528,7 +528,7 @@ export default function Home(props: HomeProps) {
       newState.postsSearch = postsSearch;
       props.history.replace({ state: newState });
     }
-  }, [postsSearch]);
+  }, [postsSearch, props.history]);
 
   useEffect(() => {
     if (props.history.location.state) {
@@ -536,7 +536,18 @@ export default function Home(props: HomeProps) {
       newState.postSearchField = postSearchField;
       props.history.replace({ state: newState });
     }
-  }, [postSearchField]);
+  }, [postSearchField, props.history]);
+
+  function onSharePost() {
+    setSnackbarProps({
+      ...snackbarProps,
+      isOpen: true,
+      variant: 'info',
+      message: screenSmallerThanSm
+        ? 'Copied shelf link to clipboard!'
+        : 'Copied shelf link to clipboard. Share this shelf with the world!',
+    });
+  }
 
   function onSnackbarClose() {
     setSnackbarProps({ ...snackbarProps, isOpen: false });
@@ -1219,6 +1230,7 @@ export default function Home(props: HomeProps) {
                   currUser={user}
                   showResultsCount={postsSearch.length > 0}
                   resultsLoaded={postsResult.status === 'loaded'}
+                  onSharePost={onSharePost}
                 />
               )}
             {postsResult.status === 'loaded' &&

@@ -22,7 +22,7 @@ export default function SendClubInvitesSwitch(
   const { sendInvites, onChange } = props;
 
   const labelText = sendInvites
-    ? 'Everyone who liked the shelf will be sent an invite link'
+    ? 'Everyone who liked the shelf and the shelf creator will be sent an invite link'
     : 'No invites will be sent';
 
   return (
