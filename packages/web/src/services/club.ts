@@ -40,18 +40,16 @@ export async function getAllClubs(
 export async function getUserClubRecommendations(
   userId: string,
   pageSize?: number,
-  clubsReceivedIds?: string[]
+  blockedClubIds?: string[]
 ) {
-  const clubsReceivedIdsStr = clubsReceivedIds
-    ? clubsReceivedIds.join()
-    : undefined;
+  const blockedClubIdsStr = blockedClubIds ? blockedClubIds.join() : undefined;
   const res = await axios.get<ClubWithRecommendation[]>(
-    `${clubRoute}/userRecommendations`,
+    `${clubRoute}/user/recommendations`,
     {
       params: {
         userId,
         pageSize,
-        clubsReceivedIds: clubsReceivedIdsStr,
+        blockedClubIds: blockedClubIdsStr,
       },
     }
   );
@@ -61,7 +59,7 @@ export async function getUserClubRecommendations(
 export const getUserReferralClub = async (userId: string) => {
   try {
     const res = await axios.get<ClubWithRecommendation>(
-      `${clubRoute}/userReferrals`,
+      `${clubRoute}/user/referrals`,
       {
         params: {
           userId,

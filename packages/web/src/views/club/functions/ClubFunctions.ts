@@ -8,6 +8,7 @@ import {
   Services,
   ClubTransformed,
   ClubRecommendation,
+  ClubTransformedRecommended,
 } from '@caravan/buddy-reading-types';
 import { scheduleStrToDates } from '../../../common/scheduleStrToDates';
 
@@ -26,14 +27,10 @@ export function getCurrentSchedule(
 }
 
 export const transformClub = (
-  club: Services.GetClubs['clubs'][0],
-  recommendation?: ClubRecommendation,
-  isMember?: boolean
+  club: Services.GetClubs['clubs'][0]
 ): ClubTransformed => {
   const transformedClub: ClubTransformed = {
     club,
-    recommendation,
-    isMember: isMember || false,
   };
   if (club.newShelf.current.length > 0) {
     let schedule = club.schedules.find(
@@ -45,6 +42,20 @@ export const transformClub = (
     }
   }
   return transformedClub;
+};
+
+export const transformClubRecommended = (
+  club: Services.GetClubs['clubs'][0],
+  recommendation?: ClubRecommendation,
+  isMember?: boolean
+): ClubTransformedRecommended => {
+  const transformedClub = transformClub(club);
+  const transformedClubRecommended: ClubTransformedRecommended = {
+    ...transformedClub,
+    recommendation,
+    isMember,
+  };
+  return transformedClubRecommended;
 };
 
 export function getWantToRead(club: Club): ShelfEntry[] {

@@ -56,7 +56,7 @@ export const getClub = (clubId: Types.ObjectId | string) => {
 export const getUserClubRecommendations = async (
   userId: string,
   limit: number,
-  clubsReceivedIds?: string[]
+  blockedClubIds?: string[]
 ): Promise<ClubWithRecommendation[]> => {
   const user = await getUser(userId);
   if (!user) {
@@ -70,7 +70,7 @@ export const getUserClubRecommendations = async (
   const globalQuery: any = {
     _id: {
       $nin: [
-        ...clubsReceivedIds.map(cRId => new Types.ObjectId(cRId)),
+        ...blockedClubIds.map(cRId => new Types.ObjectId(cRId)),
         ...recommendedClubIds,
       ],
     },

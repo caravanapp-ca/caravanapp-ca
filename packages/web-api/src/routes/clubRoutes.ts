@@ -54,6 +54,7 @@ import {
   MAX_SHELF_SIZE,
   UNLIMITED_CLUB_MEMBERS_VALUE,
 } from '../common/globalConstantsAPI';
+import { Types } from 'mongoose';
 
 const router = express.Router();
 
@@ -97,14 +98,18 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   return foundUsers;
 }
 
-router.get('/userRecommendations', async (req, res) => {
-  const { userId, pageSize, clubsReceivedIds } = req.query;
-  if (!userId || userId.length !== 24) {
-    res.status(400).send('Require a userId to get recommendations');
+router.get('/user/recommendations', async (req, res) => {
+  const { userId, pageSize, blockedClubIds } = req.query;
+  if (!userId) {
+    res.status(400).send('Require a userId');
     return;
   }
-  if (userId.length !== 24) {
-    res.status(400).send(`${userId} is not a valid user ID`);
+  if (typeof userId !== 'string') {
+    res.status(400).send('userId must be a string.');
+    return;
+  }
+  if (!Types.ObjectId.isValid(userId)) {
+    res.status(400).send(`userId ${userId} is not a valid mongo ObjectId.`);
     return;
   }
   const maxRecommendations = 50;
@@ -116,43 +121,49 @@ router.get('/userRecommendations', async (req, res) => {
         minRecommendations
       )
     : defaultRecommendations;
-  const clubsReceivedIdsArr: string[] = clubsReceivedIds
-    ? clubsReceivedIds.split(',')
+  const blockedClubIdsArr: string[] = blockedClubIds
+    ? blockedClubIds.split(',')
     : [];
   const recommendedClubs = await getUserClubRecommendations(
     userId,
     limitToUse,
-    clubsReceivedIdsArr
+    blockedClubIdsArr
   );
   if (recommendedClubs.length === 0) {
-    res.status(404).send(`Found no recommended clubs for user ${userId}`);
+    console.warn(`Found no recommended clubs for user ${userId}`);
+    res.status(200).send([]);
     return;
   }
   res.status(200).send(recommendedClubs);
 });
 
-router.get('/userReferrals', async (req, res) => {
-  const { userId } = req.query;
-  if (!userId || userId.length !== 24) {
-    res.status(400).send('Require a userId to get referred clubs');
+router.get('/user/referrals', async (req, res) => {
+  const { userId } = req.session;
+  if (!userId) {
+    res.status(400).send('Require a userId');
     return;
   }
-  if (userId.length !== 24) {
-    res.status(400).send(`${userId} is not a valid user ID`);
+  if (typeof userId !== 'string') {
+    res.status(400).send('userId must be a string.');
     return;
   }
-  const userDoc = await getUser(userId);
+  if (!Types.ObjectId.isValid(userId)) {
+    res.status(400).send(`userId ${userId} is not a valid mongo ObjectId.`);
+    return;
+  }
+  const [userDoc, referralDoc] = await Promise.all([getUser(userId), getReferralDoc(userId)]);
   if (!userDoc) {
-    res.status(400).send(`Unable to find user ${userId}`);
+    res.status(404).send(`Unable to find user ${userId}`);
     return;
   }
-  const referralDoc = await getReferralDoc(userId);
+  if(!referralDoc){
+    res.status(404).send(`User ${userId} does not have a referral doc.`);
+  }
   if (
-    !referralDoc ||
     referralDoc.referralDestination !== 'club' ||
     !referralDoc.referralDestinationId
-  ) {
-    res.status(404).send(`User ${userId} was not referred to any clubs.`);
+  ){
+    res.status(200).send(undefined);
     return;
   }
   const { referralDestinationId: clubId } = referralDoc;

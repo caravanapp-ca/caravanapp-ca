@@ -64,6 +64,9 @@ declare module '@caravan/buddy-reading-types' {
   export interface ClubTransformed {
     club: Services.GetClubs['clubs'][0];
     schedule?: ClubReadingSchedule | null;
+  }
+
+  export interface ClubTransformedRecommended extends ClubTransformed {
     recommendation?: ClubRecommendation;
     isMember?: boolean;
     isChangingMembership?: boolean;

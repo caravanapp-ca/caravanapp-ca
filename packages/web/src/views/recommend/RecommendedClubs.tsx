@@ -14,7 +14,7 @@ import {
 import { ArrowBackIos } from '@material-ui/icons';
 import {
   User,
-  ClubTransformed,
+  ClubTransformedRecommended,
   ClubWithRecommendation,
 } from '@caravan/buddy-reading-types';
 import { RouteComponentProps, Redirect } from 'react-router';
@@ -25,7 +25,7 @@ import {
   getUserReferralClub,
 } from '../../services/club';
 import ClubCards from '../home/ClubCards';
-import { transformClub } from '../club/functions/ClubFunctions';
+import { transformClubRecommended } from '../club/functions/ClubFunctions';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import CustomSnackbar, {
   CustomSnackbarProps,
@@ -70,17 +70,17 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   const query = queryString.parse(props.location.search);
   const fromOnboarding = query.fromOnboarding === 'true';
   const classes = useStyles();
-  const [clubs, setClubs] = useState<ClubTransformed[]>([]);
-  const [referralClub, setReferralClub] = useState<ClubTransformed | undefined>(
-    undefined
-  );
+  const [clubs, setClubs] = useState<ClubTransformedRecommended[]>([]);
+  const [referralClub, setReferralClub] = useState<
+    ClubTransformedRecommended | undefined
+  >(undefined);
   const [loadStatus, setLoadStatus] = useState<'init' | 'loading' | 'loaded'>(
     'init'
   );
   const [loadReferralStatus, setLoadReferralStatus] = useState<
     'init' | 'disabled' | 'loading' | 'loaded'
   >('init');
-  const [clubsReceivedIds, setClubsReceivedIds] = useState<string[]>([]);
+  const [blockedClubIds, setBlockedClubIds] = useState<string[]>([]);
   const [wasMember, setWasMember] = useState<true | false | 'loading'>(
     'loading'
   );
@@ -148,7 +148,9 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
         if (res.status >= 200 && res.status < 300) {
           const data = res.data as ClubWithRecommendation;
           const { club, recommendation, isMember } = data;
-          setReferralClub(transformClub(club, recommendation, isMember));
+          setReferralClub(
+            transformClubRecommended(club, recommendation, isMember)
+          );
           setWasMember(isMember);
         } else {
           setReferralClub(undefined);
@@ -180,13 +182,13 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
       const res = await getUserClubRecommendations(
         userId,
         pageSize,
-        clubsReceivedIds
+        blockedClubIds
       );
       if (res.status === 200) {
         setClubs(clubs => [
           ...clubs,
           ...res.data.map(c =>
-            transformClub(c.club, c.recommendation, c.isMember)
+            transformClubRecommended(c.club, c.recommendation, c.isMember)
           ),
         ]);
       } else {
@@ -205,7 +207,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
       setLoadStatus('loaded');
     };
     getRecommendations(user._id);
-  }, [clubsReceivedIds, user, userLoaded]);
+  }, [blockedClubIds, user, userLoaded]);
 
   if (!user && userLoaded) {
     return <Redirect to="/" />;
@@ -213,7 +215,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
 
   const onClickLoadMore = () => {
     if (loadStatus === 'loaded' && loadMoreEnabled) {
-      setClubsReceivedIds(clubs.map(c => c.club._id));
+      setBlockedClubIds(clubs.map(c => c.club._id));
     }
   };
 
