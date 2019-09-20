@@ -76,11 +76,14 @@ router.put('/:id', isAuthenticated, async (req, res, next) => {
       authorId: userId,
       content: postContent,
     };
-    let editPostResult: PostDoc;
     try {
-      editPostResult = await PostModel.findByIdAndUpdate(postId, postToUpload, {
-        new: true,
-      });
+      const editPostResult: PostDoc = await PostModel.findByIdAndUpdate(
+        postId,
+        postToUpload,
+        {
+          new: true,
+        }
+      );
       if (editPostResult) {
         return res.status(200).send(editPostResult);
       } else {

@@ -288,6 +288,7 @@ export default function Home(props: HomeProps) {
   );
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
+  const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
@@ -535,7 +536,7 @@ export default function Home(props: HomeProps) {
       ...snackbarProps,
       isOpen: true,
       variant: 'info',
-      message: screenSmallerThanMd
+      message: screenSmallerThanSm
         ? 'Copied shelf link to clipboard!'
         : 'Copied shelf link to clipboard. Share this shelf with the world!',
     });

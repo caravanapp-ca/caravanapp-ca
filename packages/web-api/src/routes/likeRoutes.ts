@@ -64,7 +64,7 @@ router.delete('/:postId', isAuthenticated, async (req, res) => {
     likesDoc = await LikesModel.findOneAndDelete({ postId });
     return res.status(204).send(`Deleted likes doc ${likesDoc.id}`);
   } catch (err) {
-    console.log(`User failed to delete likes doc ${likesDoc.id}`);
+    console.error(`User failed to delete likes doc ${likesDoc.id}`);
     return res.status(500).send(err);
   }
 });

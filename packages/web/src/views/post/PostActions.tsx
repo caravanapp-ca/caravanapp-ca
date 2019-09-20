@@ -8,6 +8,7 @@ import {
   useMediaQuery,
   useTheme,
   Link,
+  Tooltip,
 } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -76,7 +77,6 @@ interface PostActionsProps {
   hasLiked: boolean | null;
   numLikes: number;
   onClickLike: () => void;
-  likeButtonDisabled: boolean;
   shelf: FilterAutoMongoKeys<ShelfEntry>[];
   shelfName: string;
   shelfGenres: SelectedGenre[];
@@ -95,7 +95,6 @@ function PostActions(props: PostActionsProps) {
     onClickLike,
     hasLiked,
     numLikes,
-    likeButtonDisabled,
     shelf,
     shelfName,
     shelfGenres,
@@ -134,11 +133,7 @@ function PostActions(props: PostActionsProps) {
   return (
     <div className={classes.bottomContainer}>
       <div className={classes.actionContainer}>
-        <IconButton
-          onClick={handleLike}
-          classes={{ root: classes.heartIcon }}
-          disabled={likeButtonDisabled}
-        >
+        <IconButton onClick={handleLike} classes={{ root: classes.heartIcon }}>
           <FavoriteIcon
             className={classes.likeButton}
             style={{
@@ -206,12 +201,22 @@ function PostActions(props: PostActionsProps) {
               color="primary"
             >
               {screenSmallerThanSm && !currentlyViewing && (
-                <Typography variant="subtitle2">Create club</Typography>
+                <Tooltip
+                  title="This will create a club with this shelf as the launching point"
+                  aria-label="This will create a club with this shelf as the launching point"
+                >
+                  <Typography variant="subtitle2">Create club</Typography>
+                </Tooltip>
               )}
               {(!screenSmallerThanSm || currentlyViewing) && (
-                <Typography variant="subtitle2">
-                  Create club from shelf
-                </Typography>
+                <Tooltip
+                  title="This will create a club with this shelf as the launching point"
+                  aria-label="This will create a club with this shelf as the launching point"
+                >
+                  <Typography variant="subtitle2">
+                    Create club from shelf
+                  </Typography>
+                </Tooltip>
               )}
             </Button>
           </Link>

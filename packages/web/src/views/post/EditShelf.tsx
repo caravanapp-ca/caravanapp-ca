@@ -31,17 +31,6 @@ import { getAllGenres } from '../../services/genre';
 import theme from '../../theme';
 
 const useStyles = makeStyles(theme => ({
-  modal: {
-    overflow: 'scroll',
-    'webkit-overflow-scrolling': 'touch',
-  },
-  appBar: {
-    position: 'relative',
-  },
-  toolbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
   dialogContent: {
     paddingBottom: theme.spacing(2),
   },
@@ -164,6 +153,7 @@ export default function EditShelf(props: EditShelfProps) {
 
   async function saveShelf() {
     if (user && user._id && postAuthorUserInfo) {
+      setSavingShelf(true);
       const postContent: PostContent = {
         postType: 'shelf',
         shelf,
@@ -171,7 +161,6 @@ export default function EditShelf(props: EditShelfProps) {
         genres: shelfGenres,
         description: shelfDescription,
       };
-      setSavingShelf(true);
       const editShelfRes = await editPost(postContent, postId);
       const { data } = editShelfRes;
       if (data) {

@@ -20,7 +20,6 @@ import {
 } from '@material-ui/core';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import {
-  getFeedViewerUserInfo,
   deletePost,
   getPostWithAuthorAndLikesUserInfo,
 } from '../../services/post';
@@ -108,10 +107,6 @@ export default function Post(props: PostProps) {
   const [postLikes, setPostLikes] = React.useState<PostUserInfo[]>([]);
 
   const [postNumLikes, setPostNumLikes] = React.useState<number>(0);
-
-  const [likeButtonDisabled, setLikeButtonDisabled] = React.useState<boolean>(
-    false
-  );
 
   const [deletePostDialogVisible, setDeletePostDialogVisible] = React.useState<
     boolean
@@ -229,11 +224,21 @@ export default function Post(props: PostProps) {
 
   useEffect(() => {
     (async () => {
-      if (user && user._id) {
-        const feedViewerUserInfoRes = await getFeedViewerUserInfo(user._id);
-        if (feedViewerUserInfoRes.status === 200) {
-          setFeedViewerUserInfo(feedViewerUserInfoRes.data);
-        }
+      if (
+        user &&
+        user._id &&
+        user.name &&
+        user.urlSlug &&
+        user.discordId &&
+        user.photoUrl
+      ) {
+        setFeedViewerUserInfo({
+          userId: user._id,
+          name: user.name,
+          urlSlug: user.urlSlug,
+          discordId: user.discordId,
+          photoUrl: user.photoUrl,
+        });
       }
     })();
   }, [user]);
@@ -275,7 +280,6 @@ export default function Post(props: PostProps) {
         setPostNumLikes(updatedLikesArr.length);
       }
       setHasLiked(!hasLiked);
-      setTimeout(() => setLikeButtonDisabled(false), 5000);
     }
   }
 
@@ -296,7 +300,7 @@ export default function Post(props: PostProps) {
         isOpen: true,
         variant: 'warning',
         message:
-          'Whoops! Something has gone wrong and we were unable to delete your post. Refresh, log in and out, or message the Caravan team if this continues.',
+          'Whoops! Something has gone wrong and we were unable to delete your post. Refresh, log in and out, then message the Caravan team if this continues.',
       }));
       return;
     }
@@ -405,7 +409,6 @@ export default function Post(props: PostProps) {
                   hasLiked={hasLiked}
                   numLikes={postNumLikes}
                   onClickLike={handleLikeAction}
-                  likeButtonDisabled={likeButtonDisabled}
                   shelf={shelf}
                   shelfName={shelfTitle}
                   shelfGenres={shelfGenres ? shelfGenres : []}

@@ -133,10 +133,6 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
     numLikes
   );
 
-  const [likeButtonDisabled, setLikeButtonDisabled] = React.useState<boolean>(
-    false
-  );
-
   const [deletePostDialogVisible, setDeletePostDialogVisible] = React.useState<
     boolean
   >(false);
@@ -173,7 +169,6 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
         setModifiedNumLikes(updatedLikesArr.length);
       }
       setHasLiked(!hasLiked);
-      setTimeout(() => setLikeButtonDisabled(false), 5000);
     }
   }
 
@@ -273,7 +268,6 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
             hasLiked={hasLiked}
             numLikes={modifiedNumLikes}
             onClickLike={handleLikeAction}
-            likeButtonDisabled={likeButtonDisabled}
             shelf={shelfPost.shelf}
             shelfName={shelfPost.title}
             shelfGenres={shelfPost.genres ? shelfPost.genres : []}
