@@ -4,13 +4,10 @@ import {
   SameKeysAs,
   Post,
   ShelfPost,
-  ShelfEntry,
-  BookSource,
   ProgressUpdatePost,
   WantToReadAboutPost,
   MongoTimestamps,
 } from '@caravan/buddy-reading-types';
-import { ALLOWED_BOOK_SOURCES } from '../common/club';
 import { shelfSchemaDefinition, genresSchema } from './club';
 
 export interface PostDoc extends Document, MongoTimestamps, Omit<Post, '_id'> {
