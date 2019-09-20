@@ -10,6 +10,6 @@ COPY ./packages/web/package.json ./packages/web/
 COPY ./packages/web-api/package.json ./packages/web-api/
 RUN yarn install --frozen-lockfile
 ADD . .
-RUN CI=true yarn test &&\
+RUN CI=true yarn build &&\
   yarn lint &&\
-  yarn build
+  yarn test
