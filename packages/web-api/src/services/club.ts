@@ -45,6 +45,68 @@ export const getClub = (clubId: Types.ObjectId | string) => {
   return ClubModel.findById(clubId);
 };
 
+export const getUserChannels = (
+  guild: Guild,
+  discordId: string,
+  inChannels: boolean
+) => {
+  const channels = guild.channels.filter(c => {
+    if (c.type === 'text' || c.type === 'voice') {
+      const inThisChannel = !!(c as TextChannel).members.get(discordId);
+      return inChannels === inThisChannel;
+    } else {
+      return false;
+    }
+  });
+  return channels;
+};
+
+export const transformSingleToGetClub = async (
+  cDoc: ClubDoc,
+  guild: Guild
+): Promise<Services.GetClubs['clubs'][0] | null> => {
+  const discordChannel = guild.channels.get(cDoc.channelId);
+  if (!discordChannel) {
+    console.error(`No discord channel found for club ${cDoc.id}`);
+    return null;
+  }
+  const memberCount = getMemberCount(discordChannel, cDoc);
+  const ownerDoc = await getUser(cDoc.ownerId);
+  if (!ownerDoc) {
+    console.error(`Unable to find user doc for user ${cDoc.ownerId}`);
+    return null;
+  }
+  const ownerMember = guild.members.get(cDoc.ownerDiscordId);
+  if (!ownerMember) {
+    console.error(`Unable to find guild member for user ${cDoc.ownerId}`);
+    return null;
+  }
+  const ownerName = getUsername(ownerDoc, ownerMember);
+  const guildId = guild.id;
+  const doc = typeof cDoc.toObject === 'function' ? cDoc.toObject() : cDoc;
+  const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
+    createdAt: string;
+    updatedAt: string;
+  } = {
+    ...doc,
+    createdAt:
+      cDoc.createdAt instanceof Date
+        ? cDoc.createdAt.toISOString()
+        : cDoc.createdAt,
+    updatedAt:
+      cDoc.updatedAt instanceof Date
+        ? cDoc.updatedAt.toISOString()
+        : cDoc.updatedAt,
+  };
+  const mutatedClub: Services.GetClubs['clubs'][0] = {
+    ...club,
+    guildId,
+    memberCount,
+    ownerName,
+  };
+  return mutatedClub;
+};
+
 // Recommendation logic v1
 // Need to recommend n clubs. Stop when you have found n matching clubs.
 // 1. Recommend clubs that are currently reading a book on your TBR
@@ -305,6 +367,60 @@ export const getClubRecommendationFromReferral = async (
   };
 };
 
+export const getCountableMembersInChannel = (
+  discordChannel: GuildChannel,
+  club: ClubDoc
+) =>
+  (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
+    isInChannel(m, club)
+  );
+
+export const getChannelMembers = (guild: Guild, club: ClubDoc) => {
+  const discordChannel = guild.channels.get(club.channelId);
+  if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
+    return;
+  }
+  const guildMembers = getCountableMembersInChannel(
+    discordChannel,
+    club
+  ).array();
+  const guildMemberDiscordIds = guildMembers.map(m => m.id);
+  const userDocs = await UserModel.find({
+    discordId: { $in: guildMemberDiscordIds },
+    isBot: { $eq: false },
+  });
+  // This retrieves badge details.
+  const badgeDoc = await getBadges();
+  mutateUserBadges(userDocs, badgeDoc);
+  const users = guildMembers
+    .map(mem => {
+      const user = userDocs.find(u => u.discordId === mem.id);
+      if (user) {
+        const userObj: User = user.toObject();
+        const result: User = {
+          ...userObj,
+          name: userObj.name ? userObj.name : mem.user.username,
+          discordUsername: mem.user.username,
+          discordId: mem.id,
+          photoUrl:
+            user.photoUrl ||
+            mem.user.avatarURL ||
+            mem.user.displayAvatarURL ||
+            mem.user.defaultAvatarURL,
+        };
+        return result;
+      } else {
+        // Handle case where a user comes into discord without creating an account
+        // i.e. create a shadow account
+        console.error('Create a shadow account');
+        return null;
+      }
+    })
+    .filter(g => g !== null)
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return users;
+};
+
 export const modifyClubMembership = async (
   userId: string,
   userDiscordId: string,
@@ -416,52 +532,6 @@ export const modifyClubMembership = async (
   };
 };
 
-export async function getChannelMembers(guild: Guild, club: ClubDoc) {
-  const discordChannel = guild.channels.get(club.channelId);
-  if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
-    return;
-  }
-  const guildMembers = getCountableMembersInChannel(
-    discordChannel,
-    club
-  ).array();
-  const guildMemberDiscordIds = guildMembers.map(m => m.id);
-  const userDocs = await UserModel.find({
-    discordId: { $in: guildMemberDiscordIds },
-    isBot: { $eq: false },
-  });
-  // This retrieves badge details.
-  const badgeDoc = await getBadges();
-  mutateUserBadges(userDocs, badgeDoc);
-  const users = guildMembers
-    .map(mem => {
-      const user = userDocs.find(u => u.discordId === mem.id);
-      if (user) {
-        const userObj: User = user.toObject();
-        const result: User = {
-          ...userObj,
-          name: userObj.name ? userObj.name : mem.user.username,
-          discordUsername: mem.user.username,
-          discordId: mem.id,
-          photoUrl:
-            user.photoUrl ||
-            mem.user.avatarURL ||
-            mem.user.displayAvatarURL ||
-            mem.user.defaultAvatarURL,
-        };
-        return result;
-      } else {
-        // Handle case where a user comes into discord without creating an account
-        // i.e. create a shadow account
-        console.error('Create a shadow account');
-        return null;
-      }
-    })
-    .filter(g => g !== null)
-    .sort((a, b) => a.name.localeCompare(b.name));
-  return users;
-}
-
 export const isInClub = (user: UserDoc, club: ClubDoc, guild: Guild) => {
   const discordChannel: GuildChannel | undefined = guild.channels.get(
     club.channelId
@@ -488,52 +558,6 @@ export const transformToGetClubs = async (
   return mutatedClubs;
 };
 
-export const transformSingleToGetClub = async (
-  cDoc: ClubDoc,
-  guild: Guild
-): Promise<Services.GetClubs['clubs'][0] | null> => {
-  const discordChannel = guild.channels.get(cDoc.channelId);
-  if (!discordChannel) {
-    console.error(`No discord channel found for club ${cDoc.id}`);
-    return null;
-  }
-  const memberCount = getMemberCount(discordChannel, cDoc);
-  const ownerDoc = await getUser(cDoc.ownerId);
-  if (!ownerDoc) {
-    console.error(`Unable to find user doc for user ${cDoc.ownerId}`);
-    return null;
-  }
-  const ownerMember = guild.members.get(cDoc.ownerDiscordId);
-  if (!ownerMember) {
-    console.error(`Unable to find guild member for user ${cDoc.ownerId}`);
-    return null;
-  }
-  const ownerName = getUsername(ownerDoc, ownerMember);
-  const guildId = guild.id;
-  const doc = typeof cDoc.toObject === 'function' ? cDoc.toObject() : cDoc;
-  const club: Omit<Club, 'createdAt' | 'updatedAt'> & {
-    createdAt: string;
-    updatedAt: string;
-  } = {
-    ...doc,
-    createdAt:
-      cDoc.createdAt instanceof Date
-        ? cDoc.createdAt.toISOString()
-        : cDoc.createdAt,
-    updatedAt:
-      cDoc.updatedAt instanceof Date
-        ? cDoc.updatedAt.toISOString()
-        : cDoc.updatedAt,
-  };
-  const mutatedClub: Services.GetClubs['clubs'][0] = {
-    ...club,
-    guildId,
-    memberCount,
-    ownerName,
-  };
-  return mutatedClub;
-};
-
 // For speed purposes, we can guarantee that in prod environments there are always
 // 3 less members than what are shown due to bots and the admin. In testing,
 // quinn's account and matt's account are admins so we need to perform the full countable
@@ -545,30 +569,6 @@ export const getMemberCount = (
   process.env.GAE_ENV === 'production'
     ? (discordChannel as TextChannel).members.size - PROD_UNCOUNTABLE_IDS.length
     : getCountableMembersInChannel(discordChannel, clubDoc).size;
-
-export const getCountableMembersInChannel = (
-  discordChannel: GuildChannel,
-  club: ClubDoc
-) =>
-  (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
-    isInChannel(m, club)
-  );
-
-export const getUserChannels = (
-  guild: Guild,
-  discordId: string,
-  inChannels: boolean
-) => {
-  const channels = guild.channels.filter(c => {
-    if (c.type === 'text' || c.type === 'voice') {
-      const inThisChannel = !!(c as TextChannel).members.get(discordId);
-      return inChannels === inThisChannel;
-    } else {
-      return false;
-    }
-  });
-  return channels;
-};
 
 const isInChannel = (member: GuildMember, club: ClubDoc) =>
   (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&

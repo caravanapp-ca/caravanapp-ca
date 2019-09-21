@@ -36,6 +36,6 @@ export const getClubRecommendationDescription = (
     case 'new':
       return 'This club is new to Caravan!';
     default:
-      throw new Error(`Unknown club recommendation key: ${key}`)
+      throw new Error(`Unknown club recommendation key: ${key}`);
   }
 };

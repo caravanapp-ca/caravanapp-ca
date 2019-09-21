@@ -151,18 +151,21 @@ router.get('/user/referrals', async (req, res) => {
     res.status(400).send(`userId ${userId} is not a valid mongo ObjectId.`);
     return;
   }
-  const [userDoc, referralDoc] = await Promise.all([getUser(userId), getReferralDoc(userId)]);
+  const [userDoc, referralDoc] = await Promise.all([
+    getUser(userId),
+    getReferralDoc(userId),
+  ]);
   if (!userDoc) {
     res.status(404).send(`Unable to find user ${userId}`);
     return;
   }
-  if(!referralDoc){
+  if (!referralDoc) {
     res.status(404).send(`User ${userId} does not have a referral doc.`);
   }
   if (
     referralDoc.referralDestination !== 'club' ||
     !referralDoc.referralDestinationId
-  ){
+  ) {
     res.status(200).send(undefined);
     return;
   }
