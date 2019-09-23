@@ -8,6 +8,7 @@ import { getClubUrl, getDefaultClubTopic } from './club';
 
 const clubId = '5d252dde47f6210027071948';
 
+// eslint-disable-next-line jest/no-disabled-tests
 describe.skip('club services', () => {
   it('should create the correct club URL', () => {
     expect.hasAssertions();

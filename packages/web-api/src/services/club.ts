@@ -398,6 +398,18 @@ export const getUserClubRecommendations = async (
   return recommendedClubs;
 };
 
+export const isInClub = (user: UserDoc, club: ClubDoc, guild: Guild) => {
+  const discordChannel: GuildChannel | undefined = guild.channels.get(
+    club.channelId
+  );
+  if (!discordChannel) {
+    console.error(`Unable to find Discord channel for club ${club.id}`);
+    return false;
+  }
+  const countableMembers = getCountableMembersInChannel(discordChannel, club);
+  return countableMembers.has(user.discordId);
+};
+
 export const getClubRecommendationFromReferral = async (
   userDoc: UserDoc,
   referralDoc: ReferralDoc,
@@ -583,18 +595,6 @@ export const modifyClubMembership = async (
     status: 200,
     data: members,
   };
-};
-
-export const isInClub = (user: UserDoc, club: ClubDoc, guild: Guild) => {
-  const discordChannel: GuildChannel | undefined = guild.channels.get(
-    club.channelId
-  );
-  if (!discordChannel) {
-    console.error(`Unable to find Discord channel for club ${club.id}`);
-    return false;
-  }
-  const countableMembers = getCountableMembersInChannel(discordChannel, club);
-  return countableMembers.has(user.discordId);
 };
 
 // Transforms type ClubDoc[] into type Services.GetClubs['clubs']
