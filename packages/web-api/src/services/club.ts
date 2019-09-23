@@ -61,6 +61,18 @@ export const getUserChannels = (
   return channels;
 };
 
+const isInChannel = (member: GuildMember, club: ClubDoc) =>
+  (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
+  !member.user.bot;
+
+export const getCountableMembersInChannel = (
+  discordChannel: GuildChannel,
+  club: ClubDoc
+) =>
+  (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
+    isInChannel(m, club)
+  );
+
 // For speed purposes, we can guarantee that in prod environments there are always
 // 3 less members than what are shown due to bots and the admin. In testing,
 // quinn's account and matt's account are admins so we need to perform the full countable
@@ -141,6 +153,7 @@ export const getUserClubRecommendations = async (
   let recommendedClubIds: Types.ObjectId[] = [];
   const userTBRSourceIds = user.shelf.notStarted.map(tbr => tbr.sourceId);
   const userGenreKeys = user.selectedGenres.map(sg => sg.key);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globalQuery: any = {
     _id: {
       $nin: [
@@ -155,7 +168,11 @@ export const getUserClubRecommendations = async (
           $gte: addDays(new Date(), -MAX_CLUB_AGE_RECOMMENDATION_DAYS),
         },
       },
-      { 'schedules.startDate': { $gte: new Date() } },
+      {
+        'schedules.startDate': {
+          $gte: new Date(),
+        },
+      },
     ],
   };
   const client = ReadingDiscordBot.getInstance();
@@ -173,13 +190,17 @@ export const getUserClubRecommendations = async (
     {
       $match: {
         ...globalQuery,
-        'newShelf.notStarted.sourceId': { $in: userTBRSourceIds },
+        'newShelf.notStarted.sourceId': {
+          $in: userTBRSourceIds,
+        },
       },
     },
     {
       $match: {
         ...globalQuery,
-        'genres.key': { $in: userGenreKeys },
+        'genres.key': {
+          $in: userGenreKeys,
+        },
       },
     },
     null,
@@ -210,7 +231,9 @@ export const getUserClubRecommendations = async (
                     ],
                   },
                 },
-                { $size: '$newShelf.notStarted.sourceId' },
+                {
+                  $size: '$newShelf.notStarted.sourceId',
+                },
               ],
             },
           ],
@@ -238,7 +261,9 @@ export const getUserClubRecommendations = async (
                     $setIntersection: [userGenreKeys, '$genres.key'],
                   },
                 },
-                { $size: '$genres.key' },
+                {
+                  $size: '$genres.key',
+                },
               ],
             },
           ],
@@ -250,6 +275,7 @@ export const getUserClubRecommendations = async (
     },
     null,
   ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const findQueries: any[] = [
     {
       'newShelf.current.sourceId': {
@@ -260,20 +286,40 @@ export const getUserClubRecommendations = async (
     null,
     {},
   ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sorts: any[] = [
     { createdAt: -1 },
-    { $sort: { order: -1, createdAt: -1 } },
-    { $sort: { order: -1, createdAt: -1 } },
+    {
+      $sort: {
+        order: -1,
+        createdAt: -1,
+      },
+    },
+    {
+      $sort: {
+        order: -1,
+        createdAt: -1,
+      },
+    },
     { createdAt: -1 },
   ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const limits: any[] = [
     limit - recommendedClubs.length,
-    { $limit: limit - recommendedClubs.length },
-    { $limit: limit - recommendedClubs.length },
+    {
+      $limit: limit - recommendedClubs.length,
+    },
+    {
+      $limit: limit - recommendedClubs.length,
+    },
     limit - recommendedClubs.length,
   ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dbActions: any[] = [
-    ClubModel.find({ ...globalQuery, ...findQueries[0] })
+    ClubModel.find({
+      ...globalQuery,
+      ...findQueries[0],
+    })
       .sort(sorts[0])
       .limit(limits[0])
       .exec(),
@@ -289,7 +335,10 @@ export const getUserClubRecommendations = async (
       sorts[2],
       limits[2],
     ]),
-    ClubModel.find({ ...globalQuery, ...findQueries[3] })
+    ClubModel.find({
+      ...globalQuery,
+      ...findQueries[3],
+    })
       .sort(sorts[3])
       .limit(limits[3])
       .exec(),
@@ -377,18 +426,6 @@ export const getClubRecommendationFromReferral = async (
     isMember,
   };
 };
-
-const isInChannel = (member: GuildMember, club: ClubDoc) =>
-  (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
-  !member.user.bot;
-
-export const getCountableMembersInChannel = (
-  discordChannel: GuildChannel,
-  club: ClubDoc
-) =>
-  (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
-    isInChannel(m, club)
-  );
 
 export const getChannelMembers = async (guild: Guild, club: ClubDoc) => {
   const discordChannel = guild.channels.get(club.channelId);
