@@ -25,7 +25,6 @@ import {
   ActiveFilter,
   ClubShelf,
   SameKeysAs,
-  PubSub,
 } from '@caravan/buddy-reading-types';
 import {
   ClubDoc,
@@ -38,17 +37,24 @@ import {
   shelfEntryWithHttpsBookUrl,
   getClubUrl,
   getDefaultClubTopic,
+  getUserClubRecommendations,
+  getUserChannels,
+  getCountableMembersInChannel,
+  getMemberCount,
+  getClub,
+  getClubRecommendationFromReferral,
+  getChannelMembers,
+  modifyClubMembership,
 } from '../services/club';
 import { ReadingDiscordBot } from '../services/discord';
-import { getUser, mutateUserBadges, getUsername } from '../services/user';
-import { createReferralAction } from '../services/referral';
-import { pubsubClient } from '../common/pubsub';
-import { getBadges } from '../services/badge';
+import { getUser, getUsername } from '../services/user';
+import { createReferralAction, getReferralDoc } from '../services/referral';
 import {
   VALID_READING_STATES,
   MAX_SHELF_SIZE,
   UNLIMITED_CLUB_MEMBERS_VALUE,
 } from '../common/globalConstantsAPI';
+import { Types } from 'mongoose';
 
 const router = express.Router();
 
@@ -65,87 +71,6 @@ const getValidShelfFromNewShelf = (newShelf: ClubShelf) => {
   });
   return validShelf;
 };
-
-const isInChannel = (member: GuildMember, club: ClubDoc) =>
-  (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
-  !member.user.bot;
-
-// This should come from config instead of here
-const prodUncountableIds = [
-  '491769129318088714', // Statbot
-  '592761757764812801', // caravan-admin
-  '592781980026798120', // caravan-clubs-bot
-];
-
-const getCountableMembersInChannel = (
-  discordChannel: GuildChannel,
-  club: ClubDoc
-) =>
-  (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
-    isInChannel(m, club)
-  );
-
-const getUserChannels = (
-  guild: Guild,
-  discordId: string,
-  inChannels: boolean
-) => {
-  const channels = guild.channels.filter(c => {
-    if (c.type === 'text' || c.type === 'voice') {
-      const inThisChannel = !!(c as TextChannel).members.get(discordId);
-      return inChannels === inThisChannel;
-    } else {
-      return false;
-    }
-  });
-  return channels;
-};
-
-async function getChannelMembers(guild: Guild, club: ClubDoc) {
-  const discordChannel = guild.channels.get(club.channelId);
-  if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
-    return;
-  }
-  const guildMembers = getCountableMembersInChannel(
-    discordChannel,
-    club
-  ).array();
-  const guildMemberDiscordIds = guildMembers.map(m => m.id);
-  const userDocs = await UserModel.find({
-    discordId: { $in: guildMemberDiscordIds },
-    isBot: { $eq: false },
-  });
-  // This retrieves badge details.
-  const badgeDoc = await getBadges();
-  mutateUserBadges(userDocs, badgeDoc);
-  const users = guildMembers
-    .map(mem => {
-      const user = userDocs.find(u => u.discordId === mem.id);
-      if (user) {
-        const userObj: User = user.toObject();
-        const result: User = {
-          ...userObj,
-          name: userObj.name ? userObj.name : mem.user.username,
-          discordUsername: mem.user.username,
-          discordId: mem.id,
-          photoUrl:
-            user.photoUrl ||
-            mem.user.avatarURL ||
-            mem.user.displayAvatarURL ||
-            mem.user.defaultAvatarURL,
-        };
-        return result;
-      } else {
-        // Handle case where a user comes into discord without creating an account
-        // i.e. create a shadow account
-        console.error('Create a shadow account');
-        return null;
-      }
-    })
-    .filter(g => g !== null)
-    .sort((a, b) => a.name.localeCompare(b.name));
-  return users;
-}
 
 /**
  * This returns a Map of UserDoc and GuildMember for each clubDoc.
@@ -173,6 +98,91 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   return foundUsers;
 }
 
+router.get('/user/recommendations', async (req, res) => {
+  const { userId, pageSize, blockedClubIds } = req.query;
+  if (!userId) {
+    res.status(400).send('Require a userId');
+    return;
+  }
+  if (typeof userId !== 'string') {
+    res.status(400).send('userId must be a string.');
+    return;
+  }
+  if (!Types.ObjectId.isValid(userId)) {
+    res.status(400).send(`userId ${userId} is not a valid mongo ObjectId.`);
+    return;
+  }
+  const maxRecommendations = 50;
+  const minRecommendations = 1;
+  const defaultRecommendations = 4;
+  const limitToUse = pageSize
+    ? Math.max(
+        Math.min(parseInt(pageSize), maxRecommendations),
+        minRecommendations
+      )
+    : defaultRecommendations;
+  const blockedClubIdsArr: string[] = blockedClubIds
+    ? blockedClubIds.split(',')
+    : [];
+  const recommendedClubs = await getUserClubRecommendations(
+    userId,
+    limitToUse,
+    blockedClubIdsArr
+  );
+  if (recommendedClubs.length === 0) {
+    console.warn(`Found no recommended clubs for user ${userId}`);
+    res.status(200).send([]);
+    return;
+  }
+  res.status(200).send(recommendedClubs);
+});
+
+router.get('/user/referrals', async (req, res) => {
+  const { userId } = req.session;
+  if (!userId) {
+    res.status(400).send('Require a userId');
+    return;
+  }
+  if (typeof userId !== 'string') {
+    res.status(400).send('userId must be a string.');
+    return;
+  }
+  if (!Types.ObjectId.isValid(userId)) {
+    res.status(400).send(`userId ${userId} is not a valid mongo ObjectId.`);
+    return;
+  }
+  const [userDoc, referralDoc] = await Promise.all([
+    getUser(userId),
+    getReferralDoc(userId),
+  ]);
+  if (!userDoc) {
+    res.status(404).send(`Unable to find user ${userId}`);
+    return;
+  }
+  if (!referralDoc) {
+    res.status(404).send(`User ${userId} does not have a referral doc.`);
+  }
+  if (
+    referralDoc.referralDestination !== 'club' ||
+    !referralDoc.referralDestinationId
+  ) {
+    res.status(200).send(undefined);
+    return;
+  }
+  const { referralDestinationId: clubId } = referralDoc;
+  const clubDoc = await getClub(clubId);
+  if (!clubDoc) {
+    res.status(404).send(`Unable to find club ${clubId}. Has it been deleted?`);
+    return;
+  }
+  const clubRecommendation = await getClubRecommendationFromReferral(
+    userDoc,
+    referralDoc,
+    clubDoc
+  );
+  res.status(200).send(clubRecommendation);
+});
+
 router.get('/', async (req, res) => {
   const { userId, after, pageSize, activeFilter, search } = req.query;
   const isSearching = !!search;
@@ -181,8 +191,10 @@ router.get('/', async (req, res) => {
     currUserId ? await getUser(currUserId) : undefined,
     userId ? await getUser(userId) : undefined,
   ]);
-
   const query: SameKeysAs<Partial<Club>> = {};
+  const sort: SameKeysAs<Partial<Club>> = {
+    createdAt: -1,
+  };
   if (!isSearching && after) {
     query._id = { $lt: after };
   }
@@ -214,15 +226,15 @@ router.get('/', async (req, res) => {
   }
   // Calculate number of documents to skip
   const size = Number.parseInt(pageSize || 0);
-  const limit = Math.min(Math.max(size, 10), 50);
+  const limit = Math.min(Math.max(size, 1), 50);
   let clubDocs: ClubDoc[];
   try {
     if (isSearching) {
-      clubDocs = await ClubModel.find(query).sort({ createdAt: -1 });
+      clubDocs = await ClubModel.find(query).sort(sort);
     } else {
       // The +12 is a safety net for clubs that get filtered out
       clubDocs = await ClubModel.find(query)
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .limit(limit + 12);
     }
   } catch (err) {
@@ -266,15 +278,7 @@ router.get('/', async (req, res) => {
       ) {
         return null;
       }
-      // For speed purposes, we can guarantee that in prod environments there are always
-      // 3 less members than what are shown due to bots and the admin. In testing,
-      // quinn's account and matt's account are admins so we need to perform the full countable
-      // members check. Well, we don't need to, but it's OK for now.
-      const memberCount =
-        process.env.GAE_ENV === 'production'
-          ? (discordChannel as TextChannel).members.size -
-            prodUncountableIds.length
-          : getCountableMembersInChannel(discordChannel, clubDoc).size;
+      const memberCount = getMemberCount(discordChannel, clubDoc);
       if (
         (includesSpotsAvailable && memberCount >= clubDoc.maxMembers) ||
         (includesFull && memberCount < clubDoc.maxMembers)
@@ -840,6 +844,34 @@ const GROUP_VIBES: GroupVibe[] = [
   'power',
 ];
 
+router.put('/joinMyReferralClubs', isAuthenticated, async (req, res) => {
+  const { id: userId, discordId: userDiscordId } = req.user;
+  if (!userId) {
+    return res.status(400).send('req.user.userId must be set');
+  }
+  if (!userDiscordId) {
+    return res.status(400).send('req.user.discordId must be set');
+  }
+  const referralDoc = await getReferralDoc(userId);
+  if (
+    !referralDoc ||
+    referralDoc.referralDestination !== 'club' ||
+    !referralDoc.referralDestinationId
+  ) {
+    res.status(404).send(`User ${userId} was not referred to any clubs`);
+  }
+  const { referralDestinationId: clubId } = referralDoc;
+  const isMember = true;
+  const { status, data } = await modifyClubMembership(
+    userId,
+    userDiscordId,
+    clubId,
+    isMember
+  );
+  res.status(status).send(data);
+  return;
+});
+
 // Modify a club
 router.put(
   '/:id',
@@ -1187,97 +1219,14 @@ router.put(
     const userDiscordId = req.user.discordId;
     const { clubId } = req.params;
     const { isMember } = req.body;
-    let club: ClubDoc;
-    try {
-      club = await ClubModel.findById(clubId);
-    } catch (err) {
-      return res.status(400).send(`Could not find club ${clubId}`);
-    }
-    const isOwner = club.ownerId === userId;
-    const discordClient = ReadingDiscordBot.getInstance();
-    const guild = discordClient.guilds.first();
-    const channel: GuildChannel = guild.channels.get(club.channelId);
-    if (!channel) {
-      return res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
-    }
-    const memberInChannel = (channel as VoiceChannel | TextChannel).members.get(
-      userDiscordId
+    const { status, data } = await modifyClubMembership(
+      userId,
+      userDiscordId,
+      clubId,
+      isMember
     );
-    if (isMember) {
-      // Trying to add to members
-      const { size } = getCountableMembersInChannel(channel, club);
-      if (memberInChannel) {
-        // already a member
-        return res.status(401).send("You're already a member of the club!");
-      } else if (
-        club.maxMembers !== UNLIMITED_CLUB_MEMBERS_VALUE &&
-        size >= club.maxMembers
-      ) {
-        res
-          .status(401)
-          .send(
-            `There are already ${size}/${club.maxMembers} people in the club.`
-          );
-        return;
-      } else {
-        const permissions = (channel as
-          | VoiceChannel
-          | TextChannel).memberPermissions(memberInChannel);
-        if (permissions && permissions.hasPermission('READ_MESSAGES')) {
-          return res
-            .status(401)
-            .send('You already have access to the channel!');
-        }
-        await (channel as VoiceChannel | TextChannel).overwritePermissions(
-          userDiscordId,
-          {
-            READ_MESSAGES: true,
-            SEND_MESSAGES: true,
-            SEND_TTS_MESSAGES: true,
-            MANAGE_MESSAGES: isOwner,
-          }
-        );
-        createReferralAction(userId, 'joinClub');
-        const pubsub = pubsubClient.getInstance();
-        const topic: PubSub.Topic = 'club-membership';
-        const message: PubSub.Message.ClubMembershipChange = {
-          userId: userId,
-          clubId: club.id,
-          clubMembership: 'joined',
-        };
-        const buffer = Buffer.from(JSON.stringify(message));
-        pubsub.topic(topic).publish(buffer);
-      }
-    } else {
-      if (isOwner) {
-        return res.status(401).send('An owner cannot leave a club.');
-      }
-      if (!memberInChannel) {
-        return res.status(401).send("You're not a member of the club already!");
-      }
-      await (channel as VoiceChannel | TextChannel).overwritePermissions(
-        userDiscordId,
-        {
-          READ_MESSAGES: false,
-          SEND_MESSAGES: false,
-          SEND_TTS_MESSAGES: false,
-          MANAGE_MESSAGES: false,
-        }
-      );
-      const pubsub = pubsubClient.getInstance();
-      const topic: PubSub.Topic = 'club-membership';
-      const message: PubSub.Message.ClubMembershipChange = {
-        userId: userId,
-        clubId: club.id,
-        clubMembership: 'left',
-      };
-      const buffer = Buffer.from(JSON.stringify(message));
-      pubsub.topic(topic).publish(buffer);
-    }
-    // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
-    await guild.fetchMembers();
-    const members = await getChannelMembers(guild, club);
-    return res.status(200).send(members);
+    res.status(status).send(data);
+    return;
   }
 );
 

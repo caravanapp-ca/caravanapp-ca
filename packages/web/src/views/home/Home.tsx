@@ -124,6 +124,12 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     flexWrap: 'wrap',
   },
+  cardsContainer: {
+    padding: `32px 0px 32px 0px`,
+  },
+  viewRecommendationsContainer: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 const defaultActiveFilter: ActiveFilter = {
@@ -287,8 +293,8 @@ export default function Home(props: HomeProps) {
       : ''
   );
 
-  const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
   const screenSmallerThanSm = useMediaQuery(theme.breakpoints.down('xs'));
+  const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
@@ -871,6 +877,18 @@ export default function Home(props: HomeProps) {
         {tabValue === 0 && (
           <>
             <Container className={classes.clubsFilterGrid} maxWidth="md">
+              <div className={classes.viewRecommendationsContainer}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  href="/clubs/recommend"
+                  fullWidth={screenSmallerThanSm}
+                >
+                  <Typography variant="button">
+                    VIEW MY RECOMMENDATIONS
+                  </Typography>
+                </Button>
+              </div>
               <FilterSearch
                 onClearSearch={onClearClubsSearch}
                 onSearchSubmitted={onSearchClubsSubmitted}
@@ -936,19 +954,21 @@ export default function Home(props: HomeProps) {
                   ))}
                 </div>
               )}
+              {(clubsTransformedResult.status === 'loaded' ||
+                clubsTransformedResult.status === 'loading') &&
+                clubsTransformedResult.payload &&
+                clubsTransformedResult.payload.length > 0 && (
+                  <div className={classes.cardsContainer}>
+                    <ClubCards
+                      clubsTransformed={clubsTransformedResult.payload}
+                      showResultsCount={
+                        clubsSearch.length > 0 || clubFiltersApplied
+                      }
+                      resultsLoaded={clubsTransformedResult.status === 'loaded'}
+                    />
+                  </div>
+                )}
             </Container>
-            {(clubsTransformedResult.status === 'loaded' ||
-              clubsTransformedResult.status === 'loading') &&
-              clubsTransformedResult.payload &&
-              clubsTransformedResult.payload.length > 0 && (
-                <ClubCards
-                  clubsTransformed={clubsTransformedResult.payload}
-                  showResultsCount={
-                    clubsSearch.length > 0 || clubFiltersApplied
-                  }
-                  resultsLoaded={clubsTransformedResult.status === 'loaded'}
-                />
-              )}
             {clubsTransformedResult.status === 'loaded' &&
               clubsTransformedResult.payload.length === 0 &&
               (clubFiltersApplied || clubsSearch.length > 0) && (

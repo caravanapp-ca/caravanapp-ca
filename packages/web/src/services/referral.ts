@@ -7,13 +7,15 @@ const referralRoute = '/api/referrals';
 export async function handleReferral(
   referrerId: string,
   utmSource: string | undefined | null,
-  referralDestination: ReferralDestination
+  referralDestination: ReferralDestination,
+  referralDestinationId: string | undefined | null
 ) {
   const res = await axios.post(
     `${referralRoute}/handleReferralClick/${referrerId}`,
     {
       utmSource,
       referralDestination,
+      referralDestinationId,
     }
   );
   if (res.status === 200) {

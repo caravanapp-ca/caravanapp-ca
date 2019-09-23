@@ -60,10 +60,16 @@ declare module '@caravan/buddy-reading-types' {
     vibe?: GroupVibe;
   }
 
-  // This format of the Club has the current book, schedule, and owner extracted for quicker access.
+  // This format of the Club is designed for displaying club cards.
   export interface ClubTransformed {
     club: Services.GetClubs['clubs'][0];
-    schedule: ClubReadingSchedule | null;
+    schedule?: ClubReadingSchedule | null;
+  }
+
+  export interface ClubTransformedRecommended extends ClubTransformed {
+    recommendation?: ClubRecommendation;
+    isMember?: boolean;
+    isChangingMembership?: boolean;
   }
 
   export interface ClubWithMemberIds {
@@ -242,6 +248,7 @@ declare module '@caravan/buddy-reading-types' {
     source: ReferralSource;
     referralDestination: ReferralDestination;
     referredAndNotJoined: boolean;
+    referralDestinationId?: string;
   }
 
   export interface Referrals {
@@ -353,6 +360,26 @@ declare module '@caravan/buddy-reading-types' {
     userId: string;
     hasSets?: PaletteSet[];
     hasIndividuals?: string[];
+  }
+
+  export type ClubRecommendationKey =
+    | 'referral'
+    | 'currReadTBR'
+    | 'tBRMatch'
+    | 'genreMatch'
+    | 'new';
+
+  export interface ClubRecommendation {
+    key: ClubRecommendationKey;
+    description: string;
+  }
+
+  export interface ClubWithRecommendation {
+    club: Services.GetClubs['clubs'][0];
+    recommendation: ClubRecommendation;
+    tbrMatches: UserShelfEntry[];
+    genreMatches: SelectedGenre[];
+    isMember: boolean;
   }
 
   export type EditableUserField =

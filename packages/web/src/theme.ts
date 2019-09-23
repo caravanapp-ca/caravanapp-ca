@@ -7,6 +7,19 @@ import { PaletteObject } from '@caravan/buddy-reading-types';
 import { TypeText } from '@material-ui/core/styles/createPalette';
 const montserrat = require('typeface-montserrat');
 
+const darkText: TypeText = {
+  primary: 'rgba(0, 0, 0, 0.87)',
+  secondary: 'rgba(0, 0, 0, 0.65)',
+  disabled: 'rgba(0, 0, 0, 0.49)',
+  hint: 'rgba(0, 0, 0, 0.49)',
+};
+const lightText: TypeText = {
+  primary: 'rgba(255, 255, 255, 1)',
+  secondary: 'rgba(255, 255, 255, 0.75)',
+  disabled: 'rgba(255, 255, 255, 0.56)',
+  hint: 'rrgba(255, 255, 255, 0.56)',
+};
+
 export const themeObj = {
   palette: {
     primary: {
@@ -74,6 +87,7 @@ export const successTheme = responsiveFontSizes(
       primary: {
         main: '#4CAF50',
       },
+      text: lightText,
     },
   })
 );
@@ -373,35 +387,11 @@ export const makeUserDarkTheme = (palette: PaletteObject | null) => {
 };
 
 const getUserTextPalette = (palette: PaletteObject) => {
-  const opacitiesDark = {
-    primary: 0.87,
-    secondary: 0.54,
-    disabled: 0.38,
-    hint: 0.38,
-  };
-  const opacitiesLight = {
-    primary: 1,
-    secondary: 0.66,
-    disabled: 0.5,
-    hint: 0.5,
-  };
   switch (palette.textColor) {
     case 'primary':
-      const primaryText: TypeText = {
-        primary: `rgba(0, 0, 0, ${opacitiesDark.primary})`,
-        secondary: `rgba(0, 0, 0, ${opacitiesDark.secondary})`,
-        disabled: `rgba(0, 0, 0, ${opacitiesDark.disabled})`,
-        hint: `rgba(0, 0, 0, ${opacitiesDark.hint})`,
-      };
-      return primaryText;
+      return darkText;
     case 'white':
-      const whiteText: TypeText = {
-        primary: `rgba(255, 255, 255, ${opacitiesLight.primary})`,
-        secondary: `rgba(255, 255, 255, ${opacitiesLight.secondary})`,
-        disabled: `rgba(255, 255, 255, ${opacitiesLight.disabled})`,
-        hint: `rgba(255, 255, 255, ${opacitiesLight.hint})`,
-      };
-      return whiteText;
+      return lightText;
     default:
       return theme.palette.text;
   }

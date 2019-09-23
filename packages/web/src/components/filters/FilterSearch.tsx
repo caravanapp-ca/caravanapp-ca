@@ -101,7 +101,6 @@ export default function FilterSearch(props: FilterSearchProps) {
           <Search />
         </IconButton>
       )}
-
       <TextField
         id={searchBoxId}
         label={screenSmallerThanSm ? searchBoxLabelSmall : searchBoxLabel}

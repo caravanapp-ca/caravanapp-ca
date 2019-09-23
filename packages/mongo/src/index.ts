@@ -1,6 +1,6 @@
 // Export models
 export { BadgeDoc, BadgeModel } from './models/badge';
-export { ClubDoc, ClubModel } from './models/club';
+export { ClubDoc, ClubRecommendationDoc, ClubModel } from './models/club';
 export { GenreDoc, GenreModel } from './models/genre';
 export {
   ProfileQuestionsDoc,

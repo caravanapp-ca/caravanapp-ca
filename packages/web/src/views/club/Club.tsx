@@ -560,7 +560,7 @@ export default function ClubComponent(props: ClubProps) {
         ...snackbarProps,
         isOpen: true,
         variant: 'warning',
-        message: `We ran into some trouble ${unsuccessfulSnackBarMessageVerb}. Try logging out then back in, or contact the Caravan team on Discord`,
+        message: `We ran into some trouble ${unsuccessfulSnackBarMessageVerb}. Try logging out then back in, or contact the Caravan team on Discord.`,
       });
     }
   }
