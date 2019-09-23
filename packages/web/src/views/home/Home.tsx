@@ -871,6 +871,19 @@ export default function Home(props: HomeProps) {
         {tabValue === 0 && (
           <>
             <Container className={classes.clubsFilterGrid} maxWidth="md">
+              <div className={classes.viewRecommendationsContainer}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  href={user ? '/clubs/recommend' : undefined}
+                  onClick={user ? undefined : () => setLoginModalShown(true)}
+                  fullWidth={screenSmallerThanSm}
+                >
+                  <Typography variant="button">
+                    VIEW MY RECOMMENDATIONS
+                  </Typography>
+                </Button>
+              </div>
               <FilterSearch
                 onClearSearch={onClearClubsSearch}
                 onSearchSubmitted={onSearchClubsSubmitted}
