@@ -61,6 +61,18 @@ export const getUserChannels = (
   return channels;
 };
 
+// For speed purposes, we can guarantee that in prod environments there are always
+// 3 less members than what are shown due to bots and the admin. In testing,
+// quinn's account and matt's account are admins so we need to perform the full countable
+// members check. Well, we don't need to, but it's OK for now.
+export const getMemberCount = (
+  discordChannel: GuildChannel,
+  clubDoc: ClubDoc
+) =>
+  process.env.GAE_ENV === 'production'
+    ? (discordChannel as TextChannel).members.size - PROD_UNCOUNTABLE_IDS.length
+    : getCountableMembersInChannel(discordChannel, clubDoc).size;
+
 export const transformSingleToGetClub = async (
   cDoc: ClubDoc,
   guild: Guild
@@ -156,7 +168,6 @@ export const getUserClubRecommendations = async (
   };
   // Array params must correspond with the order of CLUB_RECOMMENDATION_KEYS
   // See globalConstantsAPI.ts
-  const isAggregation: boolean[] = [false, true, true, false];
   const aggregateMatches = [
     null,
     {
@@ -367,6 +378,10 @@ export const getClubRecommendationFromReferral = async (
   };
 };
 
+const isInChannel = (member: GuildMember, club: ClubDoc) =>
+  (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
+  !member.user.bot;
+
 export const getCountableMembersInChannel = (
   discordChannel: GuildChannel,
   club: ClubDoc
@@ -375,7 +390,7 @@ export const getCountableMembersInChannel = (
     isInChannel(m, club)
   );
 
-export const getChannelMembers = (guild: Guild, club: ClubDoc) => {
+export const getChannelMembers = async (guild: Guild, club: ClubDoc) => {
   const discordChannel = guild.channels.get(club.channelId);
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
@@ -385,12 +400,13 @@ export const getChannelMembers = (guild: Guild, club: ClubDoc) => {
     club
   ).array();
   const guildMemberDiscordIds = guildMembers.map(m => m.id);
-  const userDocs = await UserModel.find({
-    discordId: { $in: guildMemberDiscordIds },
-    isBot: { $eq: false },
-  });
-  // This retrieves badge details.
-  const badgeDoc = await getBadges();
+  const [userDocs, badgeDoc] = await Promise.all([
+    UserModel.find({
+      discordId: { $in: guildMemberDiscordIds },
+      isBot: { $eq: false },
+    }),
+    getBadges(),
+  ]);
   mutateUserBadges(userDocs, badgeDoc);
   const users = guildMembers
     .map(mem => {
@@ -557,22 +573,6 @@ export const transformToGetClubs = async (
   mutatedClubs = mutatedClubs.filter(c => c !== null);
   return mutatedClubs;
 };
-
-// For speed purposes, we can guarantee that in prod environments there are always
-// 3 less members than what are shown due to bots and the admin. In testing,
-// quinn's account and matt's account are admins so we need to perform the full countable
-// members check. Well, we don't need to, but it's OK for now.
-export const getMemberCount = (
-  discordChannel: GuildChannel,
-  clubDoc: ClubDoc
-) =>
-  process.env.GAE_ENV === 'production'
-    ? (discordChannel as TextChannel).members.size - PROD_UNCOUNTABLE_IDS.length
-    : getCountableMembersInChannel(discordChannel, clubDoc).size;
-
-const isInChannel = (member: GuildMember, club: ClubDoc) =>
-  (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
-  !member.user.bot;
 
 export const getClubUrl = (clubId: string) =>
   `https://caravanapp.ca/clubs/${clubId}`;
