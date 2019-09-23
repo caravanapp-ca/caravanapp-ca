@@ -27,6 +27,7 @@ import {
 } from './common/localStorage';
 import { deleteCookie, getCookie } from './common/cookies';
 import { GAListener } from './common/GAListener';
+import { getClubIdFromPathname } from './common/club';
 import theme from './theme';
 import { getUser } from './services/user';
 import { handleReferral } from './services/referral';
@@ -35,6 +36,7 @@ import getUtmSourceValue from './common/getUtmSourceValue';
 import { validateDiscordPermissions } from './services/auth';
 import { getDiscordAuthUrl } from './common/auth';
 import Settings from './views/settings/Settings';
+import RecommendedClubs from './views/recommend/RecommendedClubs';
 import CreateShelf from './components/post-uploads/CreateShelf';
 import EditShelf from './views/post/EditShelf';
 import Post from './views/post/Post';
@@ -48,15 +50,23 @@ const HomeRedirect = () => {
   return <Redirect to="/clubs" />;
 };
 
-const forceOnboard = (user: User | null, route: JSX.Element) => {
-  if (user && user.onboardingVersion === 0) {
+const forceOnboard = (
+  user: User | null,
+  userLoaded: boolean,
+  route: JSX.Element
+) => {
+  if (userLoaded && user && user.onboardingVersion === 0) {
     return <Redirect to="/onboarding" />;
   }
   return route;
 };
 
-const forceOutOfOnboard = (user: User | null, route: JSX.Element) => {
-  if (!user || user.onboardingVersion === 1) {
+const forceOutOfOnboard = (
+  user: User | null,
+  userLoaded: boolean,
+  route: JSX.Element
+) => {
+  if (userLoaded && (!user || user.onboardingVersion === 1)) {
     return <Redirect to="/clubs" />;
   }
   return route;
@@ -76,6 +86,7 @@ export function App(props: AppProps) {
 
   useEffect(() => {
     const getUserAsync = async () => {
+      setLoadedUser(false);
       const userId = getCookie('userId');
       if (userId) {
         validateDiscordPermissions().then(res => {
@@ -125,6 +136,10 @@ export function App(props: AppProps) {
         : postRegex.test(window.location.pathname)
         ? 'post'
         : 'home';
+      const referralDestinationId: string | null | undefined =
+        referralDestination === 'club'
+          ? getClubIdFromPathname(window.location.pathname)
+          : undefined;
       const referrerId = Array.isArray(queries.ref)
         ? queries.ref[0]
         : queries.ref;
@@ -134,7 +149,12 @@ export function App(props: AppProps) {
       if (utmSource) {
         utmSource = getUtmSourceValue(utmSource);
       }
-      handleReferral(referrerId, utmSource, referralDestination);
+      handleReferral(
+        referrerId,
+        utmSource,
+        referralDestination,
+        referralDestinationId
+      );
     }
   }, []);
 
@@ -150,7 +170,9 @@ export function App(props: AppProps) {
                 <Route
                   exact
                   path="/"
-                  render={props => forceOnboard(user, HomeRedirect())}
+                  render={props =>
+                    forceOnboard(user, userLoaded, HomeRedirect())
+                  }
                 />
                 <Route
                   exact
@@ -158,6 +180,7 @@ export function App(props: AppProps) {
                   render={props =>
                     forceOnboard(
                       user,
+                      userLoaded,
                       <Home {...props} user={user} userLoaded={userLoaded} />
                     )
                   }
@@ -166,26 +189,57 @@ export function App(props: AppProps) {
                   exact
                   path="/clubs/create"
                   render={props =>
-                    forceOnboard(user, <CreateClub {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <CreateClub {...props} user={user} />
+                    )
+                  }
+                />
+                <Route
+                  exact
+                  path="/clubs/recommend"
+                  render={props =>
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <RecommendedClubs
+                        {...props}
+                        user={user}
+                        userLoaded={userLoaded}
+                      />
+                    )
                   }
                 />
                 <Route
                   exact
                   path="/post/create"
                   render={props =>
-                    forceOnboard(user, <CreateShelf {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <CreateShelf {...props} user={user} />
+                    )
                   }
                 />
                 <Route
                   path="/posts/:id/edit"
                   render={props =>
-                    forceOnboard(user, <EditShelf {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <EditShelf {...props} user={user} />
+                    )
                   }
                 />
                 <Route
                   path="/posts/:id"
                   render={props =>
-                    forceOnboard(user, <Post {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <Post {...props} user={user} />
+                    )
                   }
                 />
                 <Route
@@ -194,6 +248,7 @@ export function App(props: AppProps) {
                   render={props =>
                     forceOutOfOnboard(
                       user,
+                      userLoaded,
                       <Onboarding {...props} user={user} />
                     )
                   }
@@ -202,37 +257,57 @@ export function App(props: AppProps) {
                   exact
                   path="/about"
                   render={props =>
-                    forceOnboard(user, <About {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <About {...props} user={user} />
+                    )
                   }
                 />
                 <Route
                   exact
                   path="/privacy"
-                  render={props => forceOnboard(user, <Privacy />)}
+                  render={props => forceOnboard(user, userLoaded, <Privacy />)}
                 />
                 <Route
                   exact
                   path="/settings"
                   render={props =>
-                    forceOnboard(user, <Settings {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <Settings {...props} user={user} />
+                    )
                   }
                 />
                 <Route
                   path="/clubs/:id/manage-shelf"
                   render={props =>
-                    forceOnboard(user, <UpdateBook {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <UpdateBook {...props} user={user} />
+                    )
                   }
                 />
                 <Route
                   path="/clubs/:id"
                   render={props =>
-                    forceOnboard(user, <Club {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <Club {...props} user={user} />
+                    )
                   }
                 />
                 <Route
                   path="/user/:id"
                   render={props =>
-                    forceOnboard(user, <UserView {...props} user={user} />)
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <UserView {...props} user={user} />
+                    )
                   }
                 />
               </Switch>

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import {
   Services,
   ShelfEntry,
@@ -7,6 +7,7 @@ import {
   ActiveFilter,
   ClubWUninitSchedules,
   User,
+  ClubWithRecommendation,
 } from '@caravan/buddy-reading-types';
 import {
   getRandomInviteMessage,
@@ -35,6 +36,52 @@ export async function getAllClubs(
   });
   return res;
 }
+
+export async function getUserClubRecommendations(
+  userId: string,
+  pageSize?: number,
+  blockedClubIds?: string[]
+) {
+  const blockedClubIdsStr = blockedClubIds ? blockedClubIds.join() : undefined;
+  const res = await axios.get<ClubWithRecommendation[]>(
+    `${clubRoute}/user/recommendations`,
+    {
+      params: {
+        userId,
+        pageSize,
+        blockedClubIds: blockedClubIdsStr,
+      },
+    }
+  );
+  return res;
+}
+
+export const getUserReferralClub = async (userId: string) => {
+  try {
+    const res = await axios.get<ClubWithRecommendation>(
+      `${clubRoute}/user/referrals`,
+      {
+        params: {
+          userId,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    const errTyped: AxiosError = err;
+    return errTyped.response;
+  }
+};
+
+export const joinMyReferralClubs = async () => {
+  try {
+    const res = await axios.put<User[]>(`${clubRoute}/joinMyReferralClubs`);
+    return res;
+  } catch (err) {
+    const errTyped: AxiosError = err;
+    return errTyped.response;
+  }
+};
 
 export async function getClub(clubId: string) {
   const res = await axios.get<Services.GetClubById | null>(
@@ -97,7 +144,7 @@ export async function modifyMyClubMembership(
   clubId: string,
   isMember: boolean
 ) {
-  const res = await axios.put(`${clubRoute}/${clubId}/membership`, {
+  const res = await axios.put<User[]>(`${clubRoute}/${clubId}/membership`, {
     isMember,
   });
   return res;
@@ -111,7 +158,7 @@ export async function deleteClub(clubId: string) {
 export async function updateShelf(
   clubId: string,
   newShelf: {
-    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[]
+    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[];
   }
 ) {
   const res = await axios.put(`${clubRoute}/${clubId}/shelf`, {

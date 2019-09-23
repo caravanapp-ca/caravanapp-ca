@@ -21,6 +21,12 @@ export interface ClubDoc extends Document, Omit<Club, 'shelf' | '_id'> {
   shelf: ShelfEntryDoc[];
 }
 
+export interface ClubRecommendationDoc extends ClubDoc {
+  order?: number;
+  tbrMatches?: string[];
+  genreMatches?: string[];
+}
+
 export const genresSchema = new Schema({
   key: String,
   name: String,

@@ -1,25 +1,15 @@
 import React from 'react';
 import { User, Services, UserQA } from '@caravan/buddy-reading-types';
 import { Fab } from '@material-ui/core';
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import Typography from '@material-ui/core/Typography';
-import purple from '@material-ui/core/colors/purple';
 import Grid from '@material-ui/core/Grid';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Clear';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: purple,
-    secondary: {
-      main: '#7289da',
-    },
-  },
-});
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -115,6 +105,7 @@ const defaultQuestions = {
 
 export default function AboutYou(props: AboutYouProps) {
   const classes = useStyles();
+  const theme = useTheme();
   const { questions, answers } = props;
 
   const minimumRequired = 3;

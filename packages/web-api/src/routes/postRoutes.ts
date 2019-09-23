@@ -11,7 +11,6 @@ import {
   PostModel,
   PostDoc,
   UserDoc,
-  LikesDoc,
   FilterMongooseDocKeys,
 } from '@caravan/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
@@ -66,7 +65,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 });
 
 // Edit post
-router.put('/:id', isAuthenticated, async (req, res, next) => {
+router.put('/:id', isAuthenticated, async (req, res) => {
   const { postContent } = req.body.params;
   const { userId } = req.session;
   const postId = req.params.id;
