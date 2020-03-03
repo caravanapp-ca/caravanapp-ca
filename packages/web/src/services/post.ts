@@ -4,7 +4,7 @@ import {
   PostContent,
   PostUserInfo,
   PostSearchField,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 
 const postRoute = '/api/posts';
 

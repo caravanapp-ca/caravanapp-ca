@@ -24,7 +24,7 @@ import {
   PostUserInfo,
   PostWithAuthorInfoAndLikes,
   PostSearchField,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
 import { Service } from '../../common/service';
 import theme, { washedTheme } from '../../theme';

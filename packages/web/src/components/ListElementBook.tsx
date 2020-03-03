@@ -8,7 +8,7 @@ import {
   Typography,
   Link,
 } from '@material-ui/core';
-import { Services } from '@caravan/buddy-reading-types';
+import { Services } from '@caravanapp/buddy-reading-types';
 import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
 import Truncate from 'react-truncate';
 

@@ -6,13 +6,13 @@ import {
   PostWithAuthorInfoAndLikes,
   SameKeysAs,
   Services,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   PostModel,
   PostDoc,
   UserDoc,
   FilterMongooseDocKeys,
-} from '@caravan/buddy-reading-mongo';
+} from '@caravanapp/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
 import {
   getPostLikes,

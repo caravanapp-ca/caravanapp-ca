@@ -1,6 +1,6 @@
 import { makeStyles, Button, Typography } from '@material-ui/core';
 import React from 'react';
-import { User } from '@caravan/buddy-reading-types';
+import { User } from '@caravanapp/buddy-reading-types';
 import { washedTheme } from '../theme';
 import AdapterLink from './AdapterLink';
 import marioIcon from '../resources/mario-icon.png';

@@ -14,7 +14,7 @@ import {
   User,
   UserSettings,
   EmailSettings,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import clsx from 'clsx';
 import { getMySettings, updateMySettings } from '../../services/userSettings';
 import UserEmailField from '../../components/UserEmailField';

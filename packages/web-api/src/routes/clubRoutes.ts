@@ -25,13 +25,13 @@ import {
   ActiveFilter,
   ClubShelf,
   SameKeysAs,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   ClubDoc,
   ClubModel,
   UserDoc,
   UserModel,
-} from '@caravan/buddy-reading-mongo';
+} from '@caravanapp/buddy-reading-mongo';
 import { isAuthenticated } from '../middleware/auth';
 import {
   shelfEntryWithHttpsBookUrl,

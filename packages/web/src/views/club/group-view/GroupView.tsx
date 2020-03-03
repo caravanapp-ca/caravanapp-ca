@@ -4,7 +4,7 @@ import {
   ReadingSpeed,
   GroupVibe,
   ClubBotSettings,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, TextField, Radio } from '@material-ui/core';
 import ListElementAvatar from '../../../components/ListElementAvatar';

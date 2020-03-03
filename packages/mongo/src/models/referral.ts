@@ -4,7 +4,7 @@ import {
   UserReferredAction,
   Referral,
   ReferredUser,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { MongooseSchema } from '../common/mongoose';
 
 export interface ReferralDoc

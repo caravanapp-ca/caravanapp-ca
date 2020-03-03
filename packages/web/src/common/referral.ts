@@ -1,4 +1,4 @@
-import { ReferralTiers, ReferralTier } from '@caravan/buddy-reading-types';
+import { ReferralTiers, ReferralTier } from '@caravanapp/buddy-reading-types';
 
 export const getReferralLink = (
   userId: string | undefined,

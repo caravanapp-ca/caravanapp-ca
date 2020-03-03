@@ -9,7 +9,7 @@ import {
   UserQA,
   SelectedGenre,
   FilterAutoMongoKeys,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';

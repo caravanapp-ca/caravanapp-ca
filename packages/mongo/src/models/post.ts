@@ -5,7 +5,7 @@ import {
   ProgressUpdatePost,
   WantToReadAboutPost,
   MongoTimestamps,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { shelfSchemaDefinition, genresSchema } from './club';
 import { MongooseSchema } from '../common/mongoose';
 

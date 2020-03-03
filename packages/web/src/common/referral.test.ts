@@ -1,5 +1,5 @@
 import { getCurrReferralTier } from './referral';
-import { ReferralTiers } from '@caravan/buddy-reading-types';
+import { ReferralTiers } from '@caravanapp/buddy-reading-types';
 
 const tiers: ReferralTiers = {
   tiers: [

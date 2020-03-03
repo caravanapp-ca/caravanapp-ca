@@ -9,7 +9,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
-import { User } from '@caravan/buddy-reading-types';
+import { User } from '@caravanapp/buddy-reading-types';
 import Header from '../../components/Header';
 import textLogo from '../../resources/text-logo.svg';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';

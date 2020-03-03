@@ -9,7 +9,7 @@ import {
   ClubTransformed,
   ClubRecommendation,
   ClubTransformedRecommended,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { scheduleStrToDates } from '../../../common/scheduleStrToDates';
 
 export function getCurrentSchedule(

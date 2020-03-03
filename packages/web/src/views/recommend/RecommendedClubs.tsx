@@ -16,7 +16,7 @@ import {
   User,
   ClubTransformedRecommended,
   ClubWithRecommendation,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { RouteComponentProps, Redirect } from 'react-router';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';

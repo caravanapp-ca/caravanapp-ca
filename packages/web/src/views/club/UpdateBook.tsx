@@ -6,7 +6,7 @@ import {
   Services,
   FilterAutoMongoKeys,
   ReadingState,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { IconButton, Typography, Button, Container } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';

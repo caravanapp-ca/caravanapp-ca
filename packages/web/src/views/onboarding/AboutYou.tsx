@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Services, UserQA } from '@caravan/buddy-reading-types';
+import { User, Services, UserQA } from '@caravanapp/buddy-reading-types';
 import { Fab } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';

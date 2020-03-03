@@ -1,6 +1,6 @@
 import express from 'express';
 import { isAuthenticated } from '../middleware/auth';
-import { LikesModel, LikesDoc } from '@caravan/buddy-reading-mongo';
+import { LikesModel, LikesDoc } from '@caravanapp/buddy-reading-mongo';
 
 const router = express.Router();
 

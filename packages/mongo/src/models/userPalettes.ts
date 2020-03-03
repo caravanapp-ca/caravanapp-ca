@@ -1,5 +1,5 @@
 import { model, Schema, Types, Document } from 'mongoose';
-import { UserPalettes } from '@caravan/buddy-reading-types';
+import { UserPalettes } from '@caravanapp/buddy-reading-types';
 import { MongooseSchema } from '../common/mongoose';
 
 export interface UserPalettesDoc extends Document, Omit<UserPalettes, '_id'> {

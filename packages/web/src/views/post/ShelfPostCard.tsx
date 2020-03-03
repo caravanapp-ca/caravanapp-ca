@@ -10,7 +10,7 @@ import {
   PostUserInfo,
   PostContent,
   User,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import theme from '../../theme';
 import ShelfPostCardShelfList from './ShelfPostCardShelfList';
 import PostHeader from './PostHeader';

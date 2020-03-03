@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from 'mongoose';
 import { Omit } from 'utility-types';
-import { Session } from '@caravan/buddy-reading-types';
+import { Session } from '@caravanapp/buddy-reading-types';
 import { MongooseSchema } from '../common/mongoose';
 
 export interface SessionDoc extends Document, Omit<Session, '_id' | 'userId'> {

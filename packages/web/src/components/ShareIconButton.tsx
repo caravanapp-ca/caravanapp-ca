@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ShareIcon from '@material-ui/icons/Share';
 import copyToClipboard from 'copy-to-clipboard';
-import { User } from '@caravan/buddy-reading-types';
+import { User } from '@caravanapp/buddy-reading-types';
 import { washedTheme } from '../theme';
 import { getReferralLink } from '../common/referral';
 

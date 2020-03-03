@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Services } from '@caravan/buddy-reading-types';
+import { Services } from '@caravanapp/buddy-reading-types';
 
 const questionPromptsRoute = '/api/profile/questions';
 

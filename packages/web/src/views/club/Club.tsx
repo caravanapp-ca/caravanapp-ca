@@ -12,7 +12,7 @@ import {
   SelectedGenre,
   ClubWUninitSchedules,
   ClubBotSettings,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   Paper,
   Tabs,

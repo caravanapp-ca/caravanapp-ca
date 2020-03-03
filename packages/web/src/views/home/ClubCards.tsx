@@ -17,7 +17,7 @@ import { Info } from '@material-ui/icons';
 import {
   Services,
   ClubTransformedRecommended,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   groupVibeIcons,
   groupVibeLabels,

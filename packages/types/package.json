@@ -1,5 +1,5 @@
 {
-  "name": "@caravan/buddy-reading-types",
+  "name": "@caravanapp/buddy-reading-types",
   "version": "1.0.0",
   "description": "Shared type definitions for Caravan's buddy reading website",
   "main": "index.d.ts",
@@ -25,16 +25,16 @@
   "homepage": "https://github.com/quinnturner/buddy-reading-website#readme",
   "dependencies": {
     "discord.js": "^11.5.1",
-    "utility-types": "^3.7.0"
+    "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
-    "eslint": "^6.1.0",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^1.18.2",
-    "rimraf": "^2.6.3",
-    "typescript": "^3.5.3"
+    "@typescript-eslint/eslint-plugin": "^2.22.0",
+    "@typescript-eslint/parser": "^2.22.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.8.3"
   }
 }

@@ -4,7 +4,7 @@ import {
   ShelfEntry,
   ProgressUpdateType,
   PostContent,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   Dialog,
   makeStyles,

@@ -1,5 +1,5 @@
 import { model, Schema, Types, Document } from 'mongoose';
-import { Likes, MongoTimestamps } from '@caravan/buddy-reading-types';
+import { Likes, MongoTimestamps } from '@caravanapp/buddy-reading-types';
 import { MongooseSchema } from '../common/mongoose';
 
 export interface LikesDoc

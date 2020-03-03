@@ -6,12 +6,12 @@ import {
   OAuth2Client,
   User,
   UserSettings,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   SessionDoc,
   SessionModel,
   UserModel,
-} from '@caravan/buddy-reading-mongo';
+} from '@caravanapp/buddy-reading-mongo';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,

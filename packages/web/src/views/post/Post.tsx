@@ -6,7 +6,7 @@ import {
   SelectedGenre,
   PostUserInfo,
   User,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   makeStyles,
   Typography,

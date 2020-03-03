@@ -4,7 +4,7 @@ import {
   ShelfEntry,
   UserShelfEntry,
   FilterAutoMongoKeys,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   makeStyles,
   Theme,

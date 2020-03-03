@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '@caravan/buddy-reading-types';
+import { User } from '@caravanapp/buddy-reading-types';
 import { Avatar, makeStyles, createStyles } from '@material-ui/core';
 import { shrinkDiscordPhotoSize } from '../../common/discord';
 

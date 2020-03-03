@@ -39,7 +39,7 @@ import {
   LoadableMemberStatus,
   Discussion,
   ClubScheduleEvent,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {
   MIN_SCHEDULE_DURATION_DAYS,

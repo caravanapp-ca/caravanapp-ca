@@ -1,4 +1,4 @@
-import { Capacity } from '@caravan/buddy-reading-types';
+import { Capacity } from '@caravanapp/buddy-reading-types';
 
 export function capacityLabels(
   capacity: Capacity,

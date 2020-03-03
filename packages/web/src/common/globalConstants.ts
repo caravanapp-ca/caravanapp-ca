@@ -4,7 +4,7 @@ import {
   EmailSettings,
   UnlimitedClubMembersValue,
   ClubBotSettings,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { isMobileDevice } from './isMobileDevice';
 
 // Store global constants for the Web project here.

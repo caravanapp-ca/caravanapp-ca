@@ -5,7 +5,7 @@ import {
   SelectedGenre,
   Services,
   ClubShelf,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import GenreChip from '../../../components/GenreChip';
 
 const useStyles = makeStyles(theme => ({

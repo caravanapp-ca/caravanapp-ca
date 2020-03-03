@@ -11,7 +11,7 @@ import {
   UninitClubShelfType,
   PostUserInfo,
   ClubBotSettings,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   useMediaQuery,
   Button,

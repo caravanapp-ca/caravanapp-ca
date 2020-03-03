@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import OptionsIcon from '@material-ui/icons/MoreVert';
-import { PostUserInfo } from '@caravan/buddy-reading-types';
+import { PostUserInfo } from '@caravanapp/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({

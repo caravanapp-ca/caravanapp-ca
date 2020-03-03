@@ -5,7 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
-import { User } from '@caravan/buddy-reading-types';
+import { User } from '@caravanapp/buddy-reading-types';
 import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
 import { washedTheme } from '../theme';
 import { logout } from '../services/user';

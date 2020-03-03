@@ -5,7 +5,7 @@ import {
   Services,
   ProfileQuestion,
   UserQA,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { Typography, makeStyles } from '@material-ui/core';
 import UserReadingSpeed from './UserReadingSpeed';
 import UserGenres from './UserGenres';

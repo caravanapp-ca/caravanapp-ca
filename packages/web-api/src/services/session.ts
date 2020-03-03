@@ -3,8 +3,8 @@ import {
   OAuth2Client,
   SameKeysAs,
   Session,
-} from '@caravan/buddy-reading-types';
-import { SessionDoc, SessionModel } from '@caravan/buddy-reading-mongo';
+} from '@caravanapp/buddy-reading-types';
+import { SessionDoc, SessionModel } from '@caravanapp/buddy-reading-mongo';
 
 export const getSessionFromUserId = async (
   userId: mongoose.Types.ObjectId,

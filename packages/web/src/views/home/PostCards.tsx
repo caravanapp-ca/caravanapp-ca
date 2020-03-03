@@ -9,7 +9,7 @@ import {
   User,
   PostWithAuthorInfoAndLikes,
   PostUserInfo,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import ShelfPostCard from '../post/ShelfPostCard';
 

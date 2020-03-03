@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { GoogleBooks } from '@caravan/buddy-reading-types';
+import { GoogleBooks } from '@caravanapp/buddy-reading-types';
 import './SelectedBookCards.css';
 import { getThemeProps } from '@material-ui/styles';
 

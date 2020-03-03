@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShelfEntry, User } from '@caravan/buddy-reading-types';
+import { ShelfEntry, User } from '@caravanapp/buddy-reading-types';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ClubShareButtons from '../../components/ClubShareButtons';

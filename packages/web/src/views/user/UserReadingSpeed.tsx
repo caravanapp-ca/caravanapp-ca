@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, ReadingSpeed } from '@caravan/buddy-reading-types';
+import { User, ReadingSpeed } from '@caravanapp/buddy-reading-types';
 import ListElementAvatar from '../../components/ListElementAvatar';
 import {
   readingSpeedIcons,

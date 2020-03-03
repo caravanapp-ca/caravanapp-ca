@@ -1,4 +1,4 @@
-import { SessionDoc } from '@caravan/buddy-reading-mongo';
+import { SessionDoc } from '@caravanapp/buddy-reading-mongo';
 import { DISCORD_PERMISSIONS } from '../common/globalConstantsAPI';
 
 export const validateSessionPermissions = (session: SessionDoc) => {

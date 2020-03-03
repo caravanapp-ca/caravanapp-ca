@@ -1,5 +1,5 @@
 import React from 'react';
-import { PostUserInfo } from '@caravan/buddy-reading-types';
+import { PostUserInfo } from '@caravanapp/buddy-reading-types';
 import { Fab, Typography, Avatar, IconButton } from '@material-ui/core';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import shelfIcon from '../../resources/post-icons/shelf_icon.svg';

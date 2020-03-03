@@ -12,7 +12,7 @@ import {
 import { darkTheme, whiteTheme } from '../../theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import splash from '../../resources/splash.svg';
-import { User } from '@caravan/buddy-reading-types';
+import { User } from '@caravanapp/buddy-reading-types';
 import { DISCORD_GUILD_LINK } from '../../common/globalConstants';
 
 const useStyles = makeStyles((theme: Theme) =>

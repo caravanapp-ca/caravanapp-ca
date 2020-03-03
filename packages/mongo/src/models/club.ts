@@ -8,7 +8,7 @@ import {
   Discussion,
   ShelfEntry,
   ClubBotSettings,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
 import { MongooseSchema } from '../common/mongoose';
 

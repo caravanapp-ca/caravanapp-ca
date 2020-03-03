@@ -1,4 +1,4 @@
-import { Membership } from '@caravan/buddy-reading-types';
+import { Membership } from '@caravanapp/buddy-reading-types';
 
 export function membershipLabels(
   membership: Membership,

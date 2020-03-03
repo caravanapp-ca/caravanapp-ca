@@ -4,7 +4,7 @@ import {
   Services,
   ProfileQuestion,
   UserQA,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { Grid, makeStyles, Button, Typography } from '@material-ui/core';
 import QuestionAnswer from '../../components/QuestionAnswer';
 import { UserQAwMinMax } from './User';

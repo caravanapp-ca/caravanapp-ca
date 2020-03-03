@@ -11,7 +11,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { User, ReferralDestination } from '@caravan/buddy-reading-types';
+import { User, ReferralDestination } from '@caravanapp/buddy-reading-types';
 import Footer from './components/Footer';
 import Club from './views/club/Club';
 import CreateClub from './views/club/CreateClub';

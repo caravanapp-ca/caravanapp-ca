@@ -9,7 +9,7 @@ import {
   ClubRecommendationKey,
   PubSub,
   User,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import { getUser, getUsername, mutateUserBadges } from './user';
 import {
   ClubDoc,
@@ -18,7 +18,7 @@ import {
   ReferralDoc,
   UserDoc,
   UserModel,
-} from '@caravan/buddy-reading-mongo';
+} from '@caravanapp/buddy-reading-mongo';
 import { ReadingDiscordBot } from './discord';
 import {
   PROD_UNCOUNTABLE_IDS,

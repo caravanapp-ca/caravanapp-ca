@@ -1,6 +1,6 @@
 import { model, Document, Schema, Types } from 'mongoose';
 import { Omit } from 'utility-types';
-import { Badge, Badges } from '@caravan/buddy-reading-types';
+import { Badge, Badges } from '@caravanapp/buddy-reading-types';
 import { MongooseSchema } from '../common/mongoose';
 
 export interface BadgeDoc extends Document, Omit<Badges, '_id'> {

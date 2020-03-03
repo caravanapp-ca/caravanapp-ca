@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UserPalettes } from '@caravan/buddy-reading-types';
+import { UserPalettes } from '@caravanapp/buddy-reading-types';
 
 const userPalettesRoute = '/api/userPalettes';
 

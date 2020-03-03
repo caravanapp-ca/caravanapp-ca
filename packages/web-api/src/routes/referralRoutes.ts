@@ -4,7 +4,7 @@ import generateUuid from 'uuid/v4';
 import {
   ReferralSource,
   ReferralDestination,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   ALLOWED_UTM_SOURCES,
   getReferralDoc,

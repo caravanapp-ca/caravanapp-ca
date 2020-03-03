@@ -11,7 +11,7 @@ import {
   UserShelfEntry,
   UserPalettes,
   PaletteObject,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   Container,
   createStyles,

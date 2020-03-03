@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, ClubTransformed } from '@caravan/buddy-reading-types';
+import { User, ClubTransformed } from '@caravanapp/buddy-reading-types';
 import ClubCards from '../home/ClubCards';
 import { Typography, useTheme, Container, makeStyles } from '@material-ui/core';
 

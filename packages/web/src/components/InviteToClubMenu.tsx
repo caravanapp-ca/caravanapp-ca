@@ -12,7 +12,7 @@ import {
   User,
   Services,
   ClubWithMemberIds,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import DiscordLoginModal from './DiscordLoginModal';
 import { washedTheme } from '../theme';
 import CustomSnackbar, {

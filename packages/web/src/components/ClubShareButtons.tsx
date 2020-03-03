@@ -3,7 +3,7 @@ import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import copyToClipboard from 'copy-to-clipboard';
-import { User } from '@caravan/buddy-reading-types';
+import { User } from '@caravanapp/buddy-reading-types';
 import { getReferralLink } from '../common/referral';
 import fbSvg from '../resources/share-icons/fb--whiteonblack.svg';
 import twitterSvg from '../resources/share-icons/twitter--whiteonblack.svg';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReadingSpeed } from '@caravan/buddy-reading-types';
+import { ReadingSpeed } from '@caravanapp/buddy-reading-types';
 import FastReadingSpeedIcon from './reading-speed-icons/FastReadingSpeedIcon';
 import ModerateReadingSpeedIcon from './reading-speed-icons/ModerateReadingSpeedIcon';
 import SlowReadingSpeedIcon from './reading-speed-icons/SlowReadingSpeedIcon';

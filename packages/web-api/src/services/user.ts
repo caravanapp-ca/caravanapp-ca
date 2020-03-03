@@ -5,7 +5,7 @@ import {
   BadgeDoc,
   UserDoc,
   UserModel,
-} from '@caravan/buddy-reading-mongo';
+} from '@caravanapp/buddy-reading-mongo';
 import { ReadingDiscordBot } from './discord';
 import { getBadges } from './badge';
 

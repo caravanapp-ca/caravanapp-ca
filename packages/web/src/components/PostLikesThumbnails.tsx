@@ -10,7 +10,7 @@ import {
   ListItemIcon,
   ListItem,
 } from '@material-ui/core';
-import { PostUserInfo } from '@caravan/buddy-reading-types';
+import { PostUserInfo } from '@caravanapp/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({
   likeThumbnails: {

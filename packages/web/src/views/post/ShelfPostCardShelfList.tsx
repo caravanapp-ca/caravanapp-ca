@@ -1,7 +1,7 @@
 import React from 'react';
 import Slider, { Settings } from 'react-slick';
 import { makeStyles, createStyles, Tooltip } from '@material-ui/core';
-import { ShelfEntry, FilterAutoMongoKeys } from '@caravan/buddy-reading-types';
+import { ShelfEntry, FilterAutoMongoKeys } from '@caravanapp/buddy-reading-types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { theme } from '../../theme';

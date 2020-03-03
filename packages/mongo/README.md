@@ -1,3 +1,3 @@
-# @caravan/buddy-reading-mongo
+# @caravanapp/buddy-reading-mongo
 
 The shared type definitions and code for Caravan's buddy reading MongoDB

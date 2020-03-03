@@ -12,7 +12,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { User, PaletteObject } from '@caravan/buddy-reading-types';
+import { User, PaletteObject } from '@caravanapp/buddy-reading-types';
 import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
 import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';

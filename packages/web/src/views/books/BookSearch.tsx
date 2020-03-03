@@ -3,7 +3,7 @@ import {
   GoogleBooks,
   ShelfEntry,
   FilterAutoMongoKeys,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   Container,
   Paper,

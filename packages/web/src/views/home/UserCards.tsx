@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User, UserWithInvitableClubs } from '@caravan/buddy-reading-types';
+import { User, UserWithInvitableClubs } from '@caravanapp/buddy-reading-types';
 import AdapterLink from '../../components/AdapterLink';
 import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
 import GenresInCommonChips from '../../components/GenresInCommonChips';

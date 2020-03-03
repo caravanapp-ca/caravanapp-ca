@@ -11,7 +11,7 @@ import {
   Button,
   Typography,
 } from '@material-ui/core';
-import { SameKeysAs } from '@caravan/buddy-reading-types';
+import { SameKeysAs } from '@caravanapp/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

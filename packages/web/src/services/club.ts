@@ -8,7 +8,7 @@ import {
   ClubWUninitSchedules,
   User,
   ClubWithRecommendation,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import {
   getRandomInviteMessage,
   getRandomInviteMessageFromShelf,

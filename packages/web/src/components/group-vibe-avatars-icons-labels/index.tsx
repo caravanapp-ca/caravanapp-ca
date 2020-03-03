@@ -1,5 +1,5 @@
 import React from 'react';
-import { GroupVibe } from '@caravan/buddy-reading-types';
+import { GroupVibe } from '@caravanapp/buddy-reading-types';
 import ChillGroupVibeAvatar from './group-vibe-avatars/ChillGroupVibeAvatar';
 import FirstTimersGroupVibeAvatar from './group-vibe-avatars/FirstTimersGroupVibeAvatar';
 import LearningGroupVibeAvatar from './group-vibe-avatars/LearningGroupVibeAvatar';

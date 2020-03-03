@@ -18,7 +18,7 @@ import {
   FilterAutoMongoKeys,
   ShelfEntry,
   SelectedGenre,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/buddy-reading-types';
 import PostLikesThumbnails from '../../components/PostLikesThumbnails';
 import DiscordLoginModal from '../../components/DiscordLoginModal';
 import { getReferralLink } from '../../common/referral';

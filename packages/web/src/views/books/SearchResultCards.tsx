@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { GoogleBooks } from '@caravan/buddy-reading-types';
+import { GoogleBooks } from '@caravanapp/buddy-reading-types';
 import './SelectedBookCards.css';
 
 interface ResultsProps {

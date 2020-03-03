@@ -2,8 +2,8 @@ import axios from 'axios';
 import btoa from 'btoa';
 import Discord, { TextChannel } from 'discord.js';
 import fetch from 'node-fetch';
-import { ReferralTier } from '@caravan/buddy-reading-types';
-import { UserDoc } from '@caravan/buddy-reading-mongo';
+import { ReferralTier } from '@caravanapp/buddy-reading-types';
+import { UserDoc } from '@caravanapp/buddy-reading-mongo';
 import { getUser } from './user';
 import { getReferralTier } from './referral';
 import {

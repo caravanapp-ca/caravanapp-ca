@@ -1,6 +1,6 @@
 import { Omit } from 'utility-types';
 
-declare module '@caravan/buddy-reading-types' {
+declare module '@caravanapp/buddy-reading-types' {
   export type FilterAutoMongoKeys<Base> = Omit<
     Base,
     'createdAt' | 'updatedAt' | '__v' | '_id'

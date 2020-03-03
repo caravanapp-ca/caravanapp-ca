@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserSearchField } from '@caravan/buddy-reading-types';
+import { UserSearchField } from '@caravanapp/buddy-reading-types';
 import { Select, FormControl, InputLabel, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 

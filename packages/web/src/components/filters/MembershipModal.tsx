@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilterChip, Membership } from '@caravan/buddy-reading-types';
+import { FilterChip, Membership } from '@caravanapp/buddy-reading-types';
 import {
   Dialog,
   DialogTitle,

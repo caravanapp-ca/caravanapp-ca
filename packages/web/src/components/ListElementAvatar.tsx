@@ -2,7 +2,7 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import AdapterLink from './AdapterLink';
-import { UserBadge } from '@caravan/buddy-reading-types';
+import { UserBadge } from '@caravanapp/buddy-reading-types';
 import UserBadgeIcon from './UserBadgeIcon';
 import { Typography, makeStyles, Theme, createStyles } from '@material-ui/core';
 
