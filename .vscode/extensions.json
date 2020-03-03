@@ -2,11 +2,9 @@
   "recommendations": [
     "christian-kohler.path-intellisense",
     "dbaeumer.vscode-eslint",
-    "dsznajder.es7-react-js-snippets",
     "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode",
     "msjsdiag.debugger-for-chrome",
-    "PKief.material-icon-theme",
     "streetsidesoftware.code-spell-checker"
   ]
 }
