@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./typings"],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "lib": [
       // "es2019" is supported thru the usage of core-js,
       // so be careful when using something like .flatMap
