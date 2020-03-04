@@ -1,5 +1,6 @@
-import { Schema, SchemaTypeOpts, SchemaType, Types } from 'mongoose';
-import { FilterAutoMongoKeys } from '@caravanapp/buddy-reading-types';
+import { Schema, SchemaType, SchemaTypeOpts, Types } from 'mongoose';
+
+import { FilterAutoMongoKeys } from '@caravanapp/types';
 
 export function checkObjectIdIsValid(id: string) {
   return (

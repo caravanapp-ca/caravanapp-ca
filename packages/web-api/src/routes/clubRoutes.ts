@@ -3,58 +3,54 @@ import {
   ChannelData,
   Guild,
   GuildChannel,
-  TextChannel,
-  VoiceChannel,
   GuildMember,
   PermissionResolvable,
+  TextChannel,
+  VoiceChannel,
 } from 'discord.js';
 import express from 'express';
-import { check, validationResult, oneOf } from 'express-validator';
+import { check, oneOf, validationResult } from 'express-validator';
 import Fuse from 'fuse.js';
-import { Omit } from 'utility-types';
+import { Types } from 'mongoose';
+
+import { ClubDoc, ClubModel, UserDoc, UserModel } from '@caravanapp/mongo';
 import {
+  ActiveFilter,
   Club,
+  ClubShelf,
+  CurrBookAction,
   FilterAutoMongoKeys,
+  GroupVibe,
+  ReadingSpeed,
   ReadingState,
+  SameKeysAs,
   Services,
   ShelfEntry,
   User,
-  CurrBookAction,
-  ReadingSpeed,
-  GroupVibe,
-  ActiveFilter,
-  ClubShelf,
-  SameKeysAs,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
+
 import {
-  ClubDoc,
-  ClubModel,
-  UserDoc,
-  UserModel,
-} from '@caravanapp/buddy-reading-mongo';
-import { isAuthenticated } from '../middleware/auth';
-import {
-  shelfEntryWithHttpsBookUrl,
-  getClubUrl,
-  getDefaultClubTopic,
-  getUserClubRecommendations,
-  getUserChannels,
-  getCountableMembersInChannel,
-  getMemberCount,
-  getClub,
-  getClubRecommendationFromReferral,
-  getChannelMembers,
-  modifyClubMembership,
-} from '../services/club';
-import { ReadingDiscordBot } from '../services/discord';
-import { getUser, getUsername } from '../services/user';
-import { createReferralAction, getReferralDoc } from '../services/referral';
-import {
-  VALID_READING_STATES,
   MAX_SHELF_SIZE,
   UNLIMITED_CLUB_MEMBERS_VALUE,
+  VALID_READING_STATES,
 } from '../common/globalConstantsAPI';
-import { Types } from 'mongoose';
+import { isAuthenticated } from '../middleware/auth';
+import {
+  getChannelMembers,
+  getClub,
+  getClubRecommendationFromReferral,
+  getClubUrl,
+  getCountableMembersInChannel,
+  getDefaultClubTopic,
+  getMemberCount,
+  getUserChannels,
+  getUserClubRecommendations,
+  modifyClubMembership,
+  shelfEntryWithHttpsBookUrl,
+} from '../services/club';
+import { ReadingDiscordBot } from '../services/discord';
+import { createReferralAction, getReferralDoc } from '../services/referral';
+import { getUser, getUsername } from '../services/user';
 
 const router = express.Router();
 

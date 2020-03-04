@@ -1,4 +1,4 @@
-import { ProfileQuestionsModel } from '@caravanapp/buddy-reading-mongo';
+import { ProfileQuestionsModel } from '@caravanapp/mongo';
 
 export const getProfileQuestions = async () => {
   const profileQuestionsDoc = await ProfileQuestionsModel.findOne()

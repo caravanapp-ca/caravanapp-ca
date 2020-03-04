@@ -1,15 +1,19 @@
-import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import { GoogleBooks } from '@caravanapp/buddy-reading-types';
 import './SelectedBookCards.css';
+
+import React from 'react';
+
+import { GoogleBooks } from '@caravanapp/types';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  GridList,
+  GridListTile,
+  IconButton,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons';
 
 interface ResultsProps {
   searchResultObject: GoogleBooks.Item[] | null;

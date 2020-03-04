@@ -1,8 +1,6 @@
 import React from 'react';
-import { Container, Typography, useTheme } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({}));
+import { Container, Typography, useTheme } from '@material-ui/core';
 
 export default function EmptyClubsFilterResult() {
   const theme = useTheme();

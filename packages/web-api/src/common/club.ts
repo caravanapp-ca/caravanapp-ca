@@ -1,6 +1,7 @@
-import { ClubRecommendationKey } from '@caravanapp/buddy-reading-types';
+import { UserDoc } from '@caravanapp/mongo';
+import { ClubRecommendationKey } from '@caravanapp/types';
+
 import { getRandItemList } from './functions';
-import { UserDoc } from '@caravanapp/buddy-reading-mongo';
 
 export const getClubRecommendationDescription = (
   key: ClubRecommendationKey,

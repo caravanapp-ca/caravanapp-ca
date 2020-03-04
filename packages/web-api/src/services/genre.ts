@@ -1,4 +1,4 @@
-import { GenreModel } from '@caravanapp/buddy-reading-mongo';
+import { GenreModel } from '@caravanapp/mongo';
 
 export const getGenreDoc = async () => {
   const genreDoc = await GenreModel.findOne()

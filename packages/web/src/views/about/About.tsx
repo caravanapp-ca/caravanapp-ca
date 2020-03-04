@@ -1,18 +1,20 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { makeStyles } from '@material-ui/styles';
+
+import { User } from '@caravanapp/types';
 import {
-  Theme,
-  createStyles,
-  Typography,
   Container,
+  createStyles,
   IconButton,
+  makeStyles,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
-import { User } from '@caravanapp/buddy-reading-types';
+
 import Header from '../../components/Header';
-import textLogo from '../../resources/text-logo.svg';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import textLogo from '../../resources/text-logo.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

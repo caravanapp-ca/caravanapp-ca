@@ -1,70 +1,72 @@
-import React, { useEffect, SyntheticEvent } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import { addDays, eachDayOfInterval } from 'date-fns';
+import React, { SyntheticEvent, useEffect } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+
 import {
+  ClubBotSettings,
+  ClubReadingSchedule,
+  ClubWUninitSchedules,
+  Discussion,
+  FilterAutoMongoKeys,
+  LoadableMemberStatus,
+  SelectedGenre,
+  Services,
   ShelfEntry,
   User,
-  LoadableMemberStatus,
-  Services,
-  ClubReadingSchedule,
-  FilterAutoMongoKeys,
-  Discussion,
-  SelectedGenre,
-  ClubWUninitSchedules,
-  ClubBotSettings,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
 import {
-  Paper,
-  Tabs,
-  Tab,
   Button,
-  Typography,
   CircularProgress,
   Container,
-  useMediaQuery,
+  createStyles,
   Fab,
   IconButton,
-} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Create';
-import SaveIcon from '@material-ui/icons/Save';
-import BackIcon from '@material-ui/icons/ArrowBackIos';
-import ChatIcon from '@material-ui/icons/Chat';
-import JoinIcon from '@material-ui/icons/PersonAdd';
-import {
   makeStyles,
-  createStyles,
-  useTheme,
-  Theme,
   MuiThemeProvider,
-} from '@material-ui/core/styles';
+  Paper,
+  Tab,
+  Tabs,
+  Theme,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import {
-  getClub,
-  modifyMyClubMembership,
-  deleteClub,
-  modifyClub,
-} from '../../services/club';
-import { getCurrentSchedule } from './functions/ClubFunctions';
-import ClubHero from './ClubHero';
-import GroupView from './group-view/GroupView';
-import ShelfView from './shelf-view/ShelfView';
+  ArrowBackIos as BackIcon,
+  Chat as ChatIcon,
+  Create as EditIcon,
+  PersonAdd as JoinIcon,
+  Save as SaveIcon,
+} from '@material-ui/icons';
+
+import {
+  DEFAULT_DISCUSSION_FREQ_DAYS,
+  DEFAULT_SCHEDULE_DURATION_WEEKS,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
+} from '../../common/globalConstants';
 import AdapterLink from '../../components/AdapterLink';
-import DiscordLoginModal from '../../components/DiscordLoginModal';
-import ClubLeaveDialog from './ClubLeaveDialog';
-import Header from '../../components/Header';
-import HeaderTitle from '../../components/HeaderTitle';
-import { errorTheme } from '../../theme';
-import ClubDisbandDialog from './ClubDisbandDialog';
 import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import ScheduleView from './schedule-view/ScheduleView';
-import { getAllGenres } from '../../services/genre';
 import {
-  DEFAULT_SCHEDULE_DURATION_WEEKS,
-  DEFAULT_DISCUSSION_FREQ_DAYS,
-  UNLIMITED_CLUB_MEMBERS_VALUE,
-} from '../../common/globalConstants';
+  deleteClub,
+  getClub,
+  modifyClub,
+  modifyMyClubMembership,
+} from '../../services/club';
+import { getAllGenres } from '../../services/genre';
+import { errorTheme } from '../../theme';
+import ClubDisbandDialog from './ClubDisbandDialog';
+import ClubHero from './ClubHero';
+import ClubLeaveDialog from './ClubLeaveDialog';
+import { getCurrentSchedule } from './functions/ClubFunctions';
+import GroupView from './group-view/GroupView';
+import ScheduleView from './schedule-view/ScheduleView';
+import ShelfView from './shelf-view/ShelfView';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -456,7 +458,8 @@ export default function ClubComponent(props: ClubProps) {
     if (madeScheduleChanges && currBook && schedule) {
       let scheduleCopy: (
         | ClubReadingSchedule
-        | FilterAutoMongoKeys<ClubReadingSchedule>)[] = [...club.schedules];
+        | FilterAutoMongoKeys<ClubReadingSchedule>
+      )[] = [...club.schedules];
       if (schedule.startDate == null || schedule.duration == null) {
         nullSchedule = true;
       } else {

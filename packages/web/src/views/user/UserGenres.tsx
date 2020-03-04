@@ -1,7 +1,9 @@
 import React from 'react';
-import { User, Services } from '@caravanapp/buddy-reading-types';
+
+import { Services, User } from '@caravanapp/types';
+import { Button, makeStyles, Typography } from '@material-ui/core';
+
 import GenreChip from '../../components/GenreChip';
-import { makeStyles, Button, Typography } from '@material-ui/core';
 
 interface UserGenresProps {
   user: User;

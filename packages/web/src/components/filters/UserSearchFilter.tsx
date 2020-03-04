@@ -1,7 +1,13 @@
 import React from 'react';
-import { UserSearchField } from '@caravanapp/buddy-reading-types';
-import { Select, FormControl, InputLabel, MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+
+import { UserSearchField } from '@caravanapp/types';
+import {
+  FormControl,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Select,
+} from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   dialogStyle: {

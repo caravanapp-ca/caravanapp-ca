@@ -1,6 +1,7 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { createStyles, Typography, Theme } from '@material-ui/core';
+
+import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+
 import { CARAVAN_BOT_NAME } from '../common/globalConstants';
 
 const botAvatarSrc =

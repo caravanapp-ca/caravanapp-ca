@@ -1,11 +1,17 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { createStyles, Typography, Switch } from '@material-ui/core';
-import GroupSizeSelector from './GroupSizeSelector';
+
+import {
+  createStyles,
+  makeStyles,
+  Switch,
+  Typography,
+} from '@material-ui/core';
+
 import {
   CLUB_SIZE_NO_LIMIT_LABEL,
   CLUB_SIZES,
 } from '../common/globalConstants';
+import GroupSizeSelector from './GroupSizeSelector';
 
 const useStyles = makeStyles(() =>
   createStyles({

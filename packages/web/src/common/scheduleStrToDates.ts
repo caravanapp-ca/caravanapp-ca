@@ -1,4 +1,4 @@
-import { ClubReadingSchedule } from '@caravanapp/buddy-reading-types';
+import { ClubReadingSchedule } from '@caravanapp/types';
 
 export function scheduleStrToDates(
   schedule: ClubReadingSchedule

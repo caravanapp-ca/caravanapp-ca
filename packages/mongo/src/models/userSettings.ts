@@ -1,5 +1,7 @@
 import { Document, model, Schema, Types } from 'mongoose';
-import { EmailSettings, UserSettings } from '@caravanapp/buddy-reading-types';
+
+import { EmailSettings, UserSettings } from '@caravanapp/types';
+
 import { MongooseSchema } from '../common/mongoose';
 
 export interface UserSettingsDoc extends Document, Omit<UserSettings, '_id'> {

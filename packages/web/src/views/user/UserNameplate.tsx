@@ -1,6 +1,8 @@
-import React from 'react';
 import clsx from 'clsx';
 import copyToClipboard from 'copy-to-clipboard';
+import React from 'react';
+
+import { PaletteObject, User } from '@caravanapp/types';
 import {
   Button,
   createStyles,
@@ -10,17 +12,17 @@ import {
   Theme,
   Typography,
   useTheme,
+  MuiThemeProvider,
 } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { User, PaletteObject } from '@caravanapp/buddy-reading-types';
-import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
+
+import { getBadgeToDisplay } from '../../common/getBadgeToDisplay';
+import { DISCORD_GUILD_LINK } from '../../common/globalConstants';
+import { getReferralLink } from '../../common/referral';
+import PaletteButton from '../../components/PaletteButton';
+import UserBadgeIcon from '../../components/UserBadgeIcon';
 import { ReactComponent as DiscordLogoDark } from '../../resources/discord-logo-dark.svg';
 import { ReactComponent as DiscordLogoWhite } from '../../resources/discord-logo-white.svg';
-import UserBadgeIcon from '../../components/UserBadgeIcon';
-import { getReferralLink } from '../../common/referral';
-import { getBadgeToDisplay } from '../../common/getBadgeToDisplay';
-import PaletteButton from '../../components/PaletteButton';
-import { DISCORD_GUILD_LINK } from '../../common/globalConstants';
+import { ReactComponent as DiscordLogo } from '../../resources/discord-logo.svg';
 
 interface UserNameplateProps {
   user: User;

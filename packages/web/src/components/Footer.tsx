@@ -1,9 +1,7 @@
-import React, { createRef } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import clsx from 'clsx';
-import { Container } from '@material-ui/core';
+import React, { createRef } from 'react';
+
+import { Container, Link, makeStyles, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   footer: {

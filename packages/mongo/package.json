@@ -1,5 +1,5 @@
 {
-  "name": "@caravanapp/buddy-reading-mongo",
+  "name": "@caravanapp/mongo",
   "version": "1.0.0",
   "description": "Shared type definitions for Caravan's buddy reading MongoDB",
   "main": "dist/index.js",
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/quinnturner/buddy-reading-website#readme",
   "dependencies": {
-    "@caravanapp/buddy-reading-types": "1.0.0",
+    "@caravanapp/types": "1.0.0",
     "mongoose": "^5.6.8",
     "utility-types": "^3.10.0"
   },

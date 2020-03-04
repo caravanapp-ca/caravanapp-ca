@@ -1,9 +1,11 @@
 import { Document, model, Schema, Types } from 'mongoose';
+
 import {
   MongoTimestamps,
   ProfileQuestion,
   ProfileQuestions,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
+
 import { MongooseSchema } from '../common/mongoose';
 
 export interface ProfileQuestionsDoc

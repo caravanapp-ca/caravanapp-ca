@@ -1,9 +1,11 @@
-import { makeStyles, Button, Typography } from '@material-ui/core';
 import React from 'react';
-import { User } from '@caravanapp/buddy-reading-types';
+
+import { User } from '@caravanapp/types';
+import { Button, makeStyles, Typography } from '@material-ui/core';
+
+import marioIcon from '../resources/mario-icon.png';
 import { washedTheme } from '../theme';
 import AdapterLink from './AdapterLink';
-import marioIcon from '../resources/mario-icon.png';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {

@@ -1,7 +1,8 @@
 import React from 'react';
-import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+
+import { SvgIconProps } from '@material-ui/core';
+import { VideogameAsset } from '@material-ui/icons';
 
 export default function NerdyGroupVibeIcon(props: SvgIconProps) {
-  return <VideogameAssetIcon {...props} />;
+  return <VideogameAsset {...props} />;
 }

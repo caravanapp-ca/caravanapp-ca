@@ -1,35 +1,33 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { DeepPartial } from 'utility-types';
+
+import { SessionDoc, SessionModel, UserModel } from '@caravanapp/mongo';
 import {
   FilterAutoMongoKeys,
   OAuth2Client,
   User,
   UserSettings,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
+
 import {
-  SessionDoc,
-  SessionModel,
-  UserModel,
-} from '@caravanapp/buddy-reading-mongo';
+  DEFAULT_EMAIL_SETTINGS,
+  DISCORD_PERMISSIONS,
+} from '../common/globalConstantsAPI';
+import { validateSessionPermissions } from '../common/session';
+import { generateSlugIds } from '../common/url';
 import {
   DiscordOAuth2Url,
   OAuth2TokenResponseData,
   ReadingDiscordBot,
 } from '../services/discord';
-import { generateSlugIds } from '../common/url';
-import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
 import {
-  getReferralDoc,
   createReferralActionByDoc,
+  getReferralDoc,
 } from '../services/referral';
-import { getUserSettings, createUserSettings } from '../services/userSettings';
 import { getSessionFromUserId } from '../services/session';
-import { validateSessionPermissions } from '../common/session';
-import {
-  DISCORD_PERMISSIONS,
-  DEFAULT_EMAIL_SETTINGS,
-} from '../common/globalConstantsAPI';
+import { getAvailableSlugIds, getUserByDiscordId } from '../services/user';
+import { createUserSettings, getUserSettings } from '../services/userSettings';
 
 const router = express.Router();
 

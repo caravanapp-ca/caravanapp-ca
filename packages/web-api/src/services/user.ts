@@ -1,13 +1,15 @@
-import { GuildMember, Guild } from 'discord.js';
+import { Guild, GuildMember } from 'discord.js';
 import mongoose from 'mongoose';
+
 import {
-  checkObjectIdIsValid,
   BadgeDoc,
+  checkObjectIdIsValid,
   UserDoc,
   UserModel,
-} from '@caravanapp/buddy-reading-mongo';
-import { ReadingDiscordBot } from './discord';
+} from '@caravanapp/mongo';
+
 import { getBadges } from './badge';
+import { ReadingDiscordBot } from './discord';
 
 export const mutateUserDiscordContent = (userDoc: UserDoc, guild?: Guild) => {
   if (!userDoc) {

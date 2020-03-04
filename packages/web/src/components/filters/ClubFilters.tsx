@@ -1,9 +1,7 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography, MuiThemeProvider, makeStyles } from '@material-ui/core';
 import { ArrowDropDown } from '@material-ui/icons';
 import { textSecondaryTheme } from '../../theme';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(() => ({
   root: {

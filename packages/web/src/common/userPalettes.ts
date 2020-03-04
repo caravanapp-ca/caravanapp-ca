@@ -2,7 +2,7 @@ import {
   UserPalettes,
   PaletteObject,
   PaletteSet,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
 
 export const getSelectablePalettes = (
   palettes: PaletteObject[],

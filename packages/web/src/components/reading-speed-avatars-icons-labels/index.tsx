@@ -1,11 +1,13 @@
 import React from 'react';
-import { ReadingSpeed } from '@caravanapp/buddy-reading-types';
-import FastReadingSpeedIcon from './reading-speed-icons/FastReadingSpeedIcon';
-import ModerateReadingSpeedIcon from './reading-speed-icons/ModerateReadingSpeedIcon';
-import SlowReadingSpeedIcon from './reading-speed-icons/SlowReadingSpeedIcon';
+
+import { ReadingSpeed } from '@caravanapp/types';
+
 import FastReadingSpeedAvatar from './reading-speed-avatars/FastReadingSpeedAvatar';
 import ModerateReadingSpeedAvatar from './reading-speed-avatars/ModerateReadingSpeedAvatar';
 import SlowReadingSpeedAvatar from './reading-speed-avatars/SlowReadingSpeedAvatar';
+import FastReadingSpeedIcon from './reading-speed-icons/FastReadingSpeedIcon';
+import ModerateReadingSpeedIcon from './reading-speed-icons/ModerateReadingSpeedIcon';
+import SlowReadingSpeedIcon from './reading-speed-icons/SlowReadingSpeedIcon';
 
 export function readingSpeedIcons(
   speed: ReadingSpeed,

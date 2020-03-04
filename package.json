@@ -1,5 +1,5 @@
 {
-  "name": "@caravanapp/buddy-reading",
+  "name": "@caravanapp/root",
   "private": true,
   "scripts": {
     "prebuild": "sh ./pre-deploy-cloud-functions.sh",

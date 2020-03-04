@@ -1,34 +1,36 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+
 import {
-  Services,
   FilterAutoMongoKeys,
-  ShelfEntry,
-  SelectedGenre,
   PostContent,
   PostUserInfo,
+  SelectedGenre,
+  Services,
+  ShelfEntry,
   User,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
 import {
-  makeStyles,
-  Typography,
-  Container,
-  TextField,
+  Button,
   CircularProgress,
+  Container,
+  makeStyles,
+  TextField,
+  Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+
 import GenreChip from '../../components/GenreChip';
-import BookSearch from '../books/BookSearch';
-import {
-  getFeedViewerUserInfo,
-  getPostById,
-  editPost,
-} from '../../services/post';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
 import { getAllGenres } from '../../services/genre';
+import {
+  editPost,
+  getFeedViewerUserInfo,
+  getPostById,
+} from '../../services/post';
 import theme from '../../theme';
+import BookSearch from '../books/BookSearch';
 
 const useStyles = makeStyles(theme => ({
   dialogContent: {

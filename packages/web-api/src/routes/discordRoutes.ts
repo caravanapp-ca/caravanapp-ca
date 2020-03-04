@@ -1,8 +1,9 @@
-import express from 'express';
 import { TextChannel } from 'discord.js';
+import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { ReadingDiscordBot } from '../services/discord';
+
 import { hasScope } from '../common/discordbot';
+import { ReadingDiscordBot } from '../services/discord';
 import { getSession } from '../services/session';
 
 const router = express.Router();

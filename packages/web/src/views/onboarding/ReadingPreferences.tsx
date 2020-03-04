@@ -1,25 +1,24 @@
 import React, { useEffect } from 'react';
+
+import { ReadingSpeed, SelectedGenre, Services, User } from '@caravanapp/types';
 import {
-  User,
-  ReadingSpeed,
-  Services,
-  SelectedGenre,
-} from '@caravanapp/buddy-reading-types';
-import { Fab } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import Radio from '@material-ui/core/Radio';
-import { getAllGenres } from '../../services/genre';
+  CircularProgress,
+  Container,
+  Fab,
+  makeStyles,
+  Radio,
+  Typography,
+} from '@material-ui/core';
+import { ArrowForwardIos as ForwardIcon } from '@material-ui/icons';
+
+import GenreChip from '../../components/GenreChip';
+import ListElementAvatar from '../../components/ListElementAvatar';
 import {
   readingSpeedIcons,
   readingSpeedLabels,
 } from '../../components/reading-speed-avatars-icons-labels';
-import ListElementAvatar from '../../components/ListElementAvatar';
-import GenreChip from '../../components/GenreChip';
 import textLogo from '../../resources/text-logo.svg';
+import { getAllGenres } from '../../services/genre';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {

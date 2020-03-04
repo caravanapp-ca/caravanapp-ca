@@ -1,16 +1,22 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { makeStyles, Menu, MenuItem } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
-import { User } from '@caravanapp/buddy-reading-types';
-import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
-import { washedTheme } from '../theme';
-import { logout } from '../services/user';
-import DiscordLoginModal from './DiscordLoginModal';
+
+import { User } from '@caravanapp/types';
+import {
+  Avatar,
+  IconButton,
+  makeStyles,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from '@material-ui/core';
+import { ArrowDropDown } from '@material-ui/icons';
+
 import { DISCORD_GUILD_LINK } from '../common/globalConstants';
+import { logout } from '../services/user';
+import { washedTheme } from '../theme';
+import DiscordLoginModal from './DiscordLoginModal';
+import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {

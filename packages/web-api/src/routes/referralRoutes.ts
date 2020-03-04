@@ -1,17 +1,16 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import generateUuid from 'uuid/v4';
+import { Types } from 'mongoose';
+import { v4 as generateUuid } from 'uuid';
+
+import { ReferralDestination, ReferralSource } from '@caravanapp/types';
+
 import {
-  ReferralSource,
-  ReferralDestination,
-} from '@caravanapp/buddy-reading-types';
-import {
+  ALLOWED_REFERRAL_DESTINATIONS,
   ALLOWED_UTM_SOURCES,
   getReferralDoc,
   handleFirstVisit,
-  ALLOWED_REFERRAL_DESTINATIONS,
 } from '../services/referral';
-import { Types } from 'mongoose';
 
 const router = express.Router();
 
@@ -64,7 +63,7 @@ router.post(
     let referralDestination: ReferralDestination = req.body.referralDestination
       ? req.body.referralDestination
       : null;
-    let referralDestinationId: Types.ObjectId = referralDestinationIdStr
+    const referralDestinationId: Types.ObjectId = referralDestinationIdStr
       ? new Types.ObjectId(referralDestinationIdStr)
       : null;
     referralDestination =

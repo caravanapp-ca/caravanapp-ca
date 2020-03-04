@@ -1,54 +1,58 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+
 import {
   ClubTransformed,
   EditableUserField,
+  PaletteObject,
   ProfileQuestion,
   ReadingState,
   Services,
   User,
+  UserPalettes,
   UserQA,
   UserShelfEntry,
-  UserPalettes,
-  PaletteObject,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
 import {
+  CircularProgress,
   Container,
   createStyles,
+  IconButton,
   makeStyles,
+  MuiThemeProvider,
   Tab,
   Tabs,
   Theme,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import BackIcon from '@material-ui/icons/ArrowBackIos';
-import EditIcon from '@material-ui/icons/Create';
-import SaveIcon from '@material-ui/icons/Save';
-import { getUser, modifyUser } from '../../services/user';
-import Header from '../../components/Header';
-import HeaderTitle from '../../components/HeaderTitle';
+import {
+  ArrowBackIos as BackIcon,
+  Create as EditIcon,
+  Save as SaveIcon,
+} from '@material-ui/icons';
+
+import { GLOBAL_PALETTE_SETS } from '../../common/globalConstants';
+import { getSelectablePalettes } from '../../common/userPalettes';
+import validURL from '../../common/validURL';
 import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
-import UserAvatar from './UserAvatar';
-import UserBio from './UserBio';
-import UserShelf from './UserShelf';
-import UserNameplate from './UserNameplate';
-import UserClubs from './UserClubs';
-import { getClubsByIdNoMembers, getAllClubs } from '../../services/club';
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
+import { getAllClubs, getClubsByIdNoMembers } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
 import { getReferralCount } from '../../services/referral';
-import { transformClub } from '../club/functions/ClubFunctions';
-import validURL from '../../common/validURL';
-import { makeUserTheme, makeUserDarkTheme, palettes } from '../../theme';
-import { GLOBAL_PALETTE_SETS } from '../../common/globalConstants';
+import { getUser, modifyUser } from '../../services/user';
 import { getUserPalettes } from '../../services/userPalettes';
-import { getSelectablePalettes } from '../../common/userPalettes';
+import { makeUserDarkTheme, makeUserTheme, palettes } from '../../theme';
+import { transformClub } from '../club/functions/ClubFunctions';
+import UserAvatar from './UserAvatar';
+import UserBio from './UserBio';
+import UserClubs from './UserClubs';
+import UserNameplate from './UserNameplate';
+import UserShelf from './UserShelf';
 
 interface MinMax {
   min: number;

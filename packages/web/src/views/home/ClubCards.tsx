@@ -1,39 +1,39 @@
-import React, { useEffect } from 'react';
-import { isAfter, addDays, differenceInHours, format } from 'date-fns';
 import clsx from 'clsx';
+import { addDays, differenceInHours, format, isAfter } from 'date-fns';
+import React, { useEffect } from 'react';
 import LazyLoad from 'react-lazyload';
+import ReactResizeDetector from 'react-resize-detector';
 import Truncate from 'react-truncate';
+
+import { ClubTransformedRecommended, Services } from '@caravanapp/types';
 import {
   Button,
   Card,
   CardActions,
   CardContent,
-  Grid,
-  Typography,
   CircularProgress,
+  Grid,
+  makeStyles,
+  MuiThemeProvider,
+  Typography,
 } from '@material-ui/core';
-import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import { Info } from '@material-ui/icons';
-import {
-  Services,
-  ClubTransformedRecommended,
-} from '@caravanapp/buddy-reading-types';
+
+import { UNLIMITED_CLUB_MEMBERS_VALUE } from '../../common/globalConstants';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
 import {
   groupVibeIcons,
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
-import { UNLIMITED_CLUB_MEMBERS_VALUE } from '../../common/globalConstants';
-import DiscordLoginModal from '../../components/DiscordLoginModal';
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
-import theme, { washedTheme, successTheme, whiteTheme } from '../../theme';
+import PlaceholderCard from '../../components/PlaceholderCard';
 import { modifyMyClubMembership } from '../../services/club';
-import CustomSnackbar, {
-  CustomSnackbarProps,
-} from '../../components/CustomSnackbar';
-import ReactResizeDetector from 'react-resize-detector';
+import theme, { successTheme, washedTheme, whiteTheme } from '../../theme';
 
 const joinProgressIndicatorSize = 24;
 

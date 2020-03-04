@@ -1,6 +1,7 @@
 import express from 'express';
-import { Services, Genres } from '@caravanapp/buddy-reading-types';
-import { GenreModel } from '@caravanapp/buddy-reading-mongo';
+
+import { GenreModel } from '@caravanapp/mongo';
+import { Genres, Services } from '@caravanapp/types';
 
 const router = express.Router();
 

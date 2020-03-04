@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Services } from '@caravanapp/buddy-reading-types';
+
+import { Services } from '@caravanapp/types';
 
 const genresRoute = '/api/books/genres';
 

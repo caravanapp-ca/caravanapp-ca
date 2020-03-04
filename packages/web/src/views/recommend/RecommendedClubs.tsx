@@ -1,35 +1,37 @@
-import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import queryString from 'query-string';
-import { makeStyles } from '@material-ui/styles';
+import React, { useEffect, useState } from 'react';
+import { Redirect, RouteComponentProps } from 'react-router';
+
 import {
-  Theme,
-  createStyles,
-  Typography,
-  Container,
-  CircularProgress,
-  Button,
-  IconButton,
-} from '@material-ui/core';
-import { ArrowBackIos } from '@material-ui/icons';
-import {
-  User,
   ClubTransformedRecommended,
   ClubWithRecommendation,
-} from '@caravanapp/buddy-reading-types';
-import { RouteComponentProps, Redirect } from 'react-router';
+  User,
+} from '@caravanapp/types';
+import {
+  Button,
+  CircularProgress,
+  Container,
+  createStyles,
+  IconButton,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+import { ArrowBackIos } from '@material-ui/icons';
+
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import {
   getUserClubRecommendations,
   getUserReferralClub,
 } from '../../services/club';
-import ClubCards from '../home/ClubCards';
 import { transformClubRecommended } from '../club/functions/ClubFunctions';
-import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import CustomSnackbar, {
-  CustomSnackbarProps,
-} from '../../components/CustomSnackbar';
+import ClubCards from '../home/ClubCards';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

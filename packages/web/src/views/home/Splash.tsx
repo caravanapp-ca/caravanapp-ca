@@ -1,19 +1,21 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
+
+import { User } from '@caravanapp/types';
 import {
-  Theme,
-  createStyles,
-  Typography,
-  Container,
   Button,
+  Container,
+  createStyles,
+  makeStyles,
+  MuiThemeProvider,
+  Theme,
+  Typography,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import { darkTheme, whiteTheme } from '../../theme';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import splash from '../../resources/splash.svg';
-import { User } from '@caravanapp/buddy-reading-types';
+
 import { DISCORD_GUILD_LINK } from '../../common/globalConstants';
+import splash from '../../resources/splash.svg';
+import { darkTheme, whiteTheme } from '../../theme';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

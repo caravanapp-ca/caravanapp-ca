@@ -1,11 +1,13 @@
 import React from 'react';
-import { User, ReadingSpeed } from '@caravanapp/buddy-reading-types';
+
+import { ReadingSpeed, User } from '@caravanapp/types';
+import { Radio, Typography } from '@material-ui/core';
+
 import ListElementAvatar from '../../components/ListElementAvatar';
 import {
   readingSpeedIcons,
   readingSpeedLabels,
 } from '../../components/reading-speed-avatars-icons-labels';
-import { Radio, Typography } from '@material-ui/core';
 
 interface UserReadingSpeedProps {
   user: User;

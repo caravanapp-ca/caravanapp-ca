@@ -1,6 +1,4 @@
-import { Omit } from 'utility-types';
-
-declare module '@caravanapp/buddy-reading-types' {
+declare module '@caravanapp/types' {
   export type FilterAutoMongoKeys<Base> = Omit<
     Base,
     'createdAt' | 'updatedAt' | '__v' | '_id'
@@ -480,7 +478,8 @@ declare module '@caravanapp/buddy-reading-types' {
     extends Omit<Services.GetClubById, 'schedules'> {
     schedules: (
       | ClubReadingSchedule
-      | FilterAutoMongoKeys<ClubReadingSchedule>)[];
+      | FilterAutoMongoKeys<ClubReadingSchedule>
+    )[];
   }
 
   /** Google Cloud Pub/Sub and Functions */

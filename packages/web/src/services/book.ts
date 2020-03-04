@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { GoogleBooks } from '@caravanapp/buddy-reading-types';
+
+import { GoogleBooks } from '@caravanapp/types';
 
 export async function searchGoogleBooks(query: string) {
   const baseURL = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(

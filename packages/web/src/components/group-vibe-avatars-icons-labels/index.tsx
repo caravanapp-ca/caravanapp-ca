@@ -1,15 +1,17 @@
 import React from 'react';
-import { GroupVibe } from '@caravanapp/buddy-reading-types';
+
+import { GroupVibe } from '@caravanapp/types';
+
 import ChillGroupVibeAvatar from './group-vibe-avatars/ChillGroupVibeAvatar';
 import FirstTimersGroupVibeAvatar from './group-vibe-avatars/FirstTimersGroupVibeAvatar';
 import LearningGroupVibeAvatar from './group-vibe-avatars/LearningGroupVibeAvatar';
-import PowerGroupVibeAvatar from './group-vibe-avatars/PowerGroupVibeAvatar';
 import NerdyGroupVibeAvatar from './group-vibe-avatars/NerdyGroupVibeAvatar';
+import PowerGroupVibeAvatar from './group-vibe-avatars/PowerGroupVibeAvatar';
 import ChillGroupVibeIcon from './group-vibe-icons/ChillGroupVibeIcon';
 import FirstTimersGroupVibeIcon from './group-vibe-icons/FirstTimersGroupVibeIcon';
 import LearningGroupVibeIcon from './group-vibe-icons/LearningGroupVibeIcon';
-import PowerGroupVibeIcon from './group-vibe-icons/PowerGroupVibeIcon';
 import NerdyGroupVibeIcon from './group-vibe-icons/NerdyGroupVibeIcon';
+import PowerGroupVibeIcon from './group-vibe-icons/PowerGroupVibeIcon';
 
 export function groupVibeIcons(
   vibe: GroupVibe,

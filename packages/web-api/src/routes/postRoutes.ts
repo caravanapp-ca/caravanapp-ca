@@ -1,23 +1,25 @@
 import express from 'express';
 import Fuse from 'fuse.js';
 import mongoose from 'mongoose';
+
+import {
+  FilterMongooseDocKeys,
+  PostDoc,
+  PostModel,
+  UserDoc,
+} from '@caravanapp/mongo';
 import {
   Post,
   PostWithAuthorInfoAndLikes,
   SameKeysAs,
   Services,
-} from '@caravanapp/buddy-reading-types';
-import {
-  PostModel,
-  PostDoc,
-  UserDoc,
-  FilterMongooseDocKeys,
-} from '@caravanapp/buddy-reading-mongo';
+} from '@caravanapp/types';
+
 import { isAuthenticated } from '../middleware/auth';
 import {
-  getPostLikes,
   createLikesDoc,
   deleteLikesDocByPostId,
+  getPostLikes,
   getPostsLikes,
 } from '../services/like';
 import { createPostDoc, mapPostUserInfo } from '../services/post';

@@ -1,11 +1,8 @@
 import React from 'react';
-import {
-  User,
-  Services,
-  ProfileQuestion,
-  UserQA,
-} from '@caravanapp/buddy-reading-types';
-import { Grid, makeStyles, Button, Typography } from '@material-ui/core';
+
+import { ProfileQuestion, Services, User, UserQA } from '@caravanapp/types';
+import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
+
 import QuestionAnswer from '../../components/QuestionAnswer';
 import { UserQAwMinMax } from './User';
 

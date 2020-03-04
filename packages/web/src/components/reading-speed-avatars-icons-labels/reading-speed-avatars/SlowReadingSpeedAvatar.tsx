@@ -1,8 +1,9 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import SlowReadingSpeedIcon from '../reading-speed-icons/SlowReadingSpeedIcon';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
+
+import { Avatar, createStyles, makeStyles, Theme } from '@material-ui/core';
+
 import { washedTheme } from '../../../theme';
+import SlowReadingSpeedIcon from '../reading-speed-icons/SlowReadingSpeedIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

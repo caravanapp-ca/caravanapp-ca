@@ -1,17 +1,19 @@
+import clsx from 'clsx';
 import React from 'react';
+
 import {
-  User,
   EditableUserField,
-  Services,
   ProfileQuestion,
+  Services,
+  User,
   UserQA,
-} from '@caravanapp/buddy-reading-types';
-import { Typography, makeStyles } from '@material-ui/core';
-import UserReadingSpeed from './UserReadingSpeed';
+} from '@caravanapp/types';
+import { makeStyles, Typography } from '@material-ui/core';
+
+import { UserQAwMinMax } from './User';
 import UserGenres from './UserGenres';
 import UserQuestions from './UserQuestions';
-import clsx from 'clsx';
-import { UserQAwMinMax } from './User';
+import UserReadingSpeed from './UserReadingSpeed';
 
 const useStyles = makeStyles(theme => ({
   sectionContainer: {

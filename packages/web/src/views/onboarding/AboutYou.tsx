@@ -1,15 +1,21 @@
 import React from 'react';
-import { User, Services, UserQA } from '@caravanapp/buddy-reading-types';
-import { Fab } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import CardContent from '@material-ui/core/CardContent';
-import Card from '@material-ui/core/Card';
-import Container from '@material-ui/core/Container';
-import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Clear';
+
+import { Services, User, UserQA } from '@caravanapp/types';
+import {
+  Card,
+  CardContent,
+  Container,
+  Fab,
+  Grid,
+  makeStyles,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
+import {
+  Add as AddIcon,
+  ArrowForwardIos as ForwardIcon,
+  Clear as RemoveIcon,
+} from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {

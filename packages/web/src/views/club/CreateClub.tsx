@@ -1,57 +1,59 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+
 import {
-  User,
-  ShelfEntry,
-  ReadingSpeed,
-  GroupVibe,
-  Services,
-  FilterAutoMongoKeys,
-  SelectedGenre,
-  UninitClubShelfType,
-  PostUserInfo,
   ClubBotSettings,
-} from '@caravanapp/buddy-reading-types';
+  FilterAutoMongoKeys,
+  GroupVibe,
+  PostUserInfo,
+  ReadingSpeed,
+  SelectedGenre,
+  Services,
+  ShelfEntry,
+  UninitClubShelfType,
+  User,
+} from '@caravanapp/types';
 import {
-  useMediaQuery,
   Button,
   CircularProgress,
   Container,
   IconButton,
+  makeStyles,
   Radio,
   TextField,
   Typography,
+  useMediaQuery,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import BackIcon from '@material-ui/icons/ArrowBackIos';
-import { createClub, sendInvitesToClubFromShelf } from '../../services/club';
-import Header from '../../components/Header';
-import BookSearch from '../books/BookSearch';
+import { ArrowBackIos as BackIcon } from '@material-ui/icons';
+
 import {
-  readingSpeedIcons,
-  readingSpeedLabels,
-} from '../../components/reading-speed-avatars-icons-labels';
+  CARAVAN_BOT_NAME,
+  CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS,
+  CLUB_SIZE_NO_LIMIT_LABEL,
+  DEFAULT_CLUB_BOT_SETTINGS,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
+} from '../../common/globalConstants';
+import BotMessageVector from '../../components/BotMessageVector';
+import CheckboxSettingsEditor from '../../components/CheckboxSettingsEditor';
+import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
+import ClubPrivacySlider from '../../components/ClubPrivacySlider';
+import CreateClubFromShelfInviteList from '../../components/CreateClubFromShelfInviteList';
+import GenreChip from '../../components/GenreChip';
 import {
   groupVibeIcons,
   groupVibeLabels,
 } from '../../components/group-vibe-avatars-icons-labels';
+import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
-import { getAllGenres } from '../../services/genre';
-import GenreChip from '../../components/GenreChip';
-import theme from '../../theme';
-import ClubPrivacySlider from '../../components/ClubPrivacySlider';
 import {
-  CLUB_SIZE_NO_LIMIT_LABEL,
-  UNLIMITED_CLUB_MEMBERS_VALUE,
-  CARAVAN_BOT_NAME,
-  DEFAULT_CLUB_BOT_SETTINGS,
-  CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS,
-} from '../../common/globalConstants';
-import ClubMemberLimitEditor from '../../components/ClubMemberLimitEditor';
+  readingSpeedIcons,
+  readingSpeedLabels,
+} from '../../components/reading-speed-avatars-icons-labels';
 import SendClubInvitesSwitch from '../../components/SendClubInvitesSwitch';
-import CreateClubFromShelfInviteList from '../../components/CreateClubFromShelfInviteList';
-import BotMessageVector from '../../components/BotMessageVector';
-import CheckboxSettingsEditor from '../../components/CheckboxSettingsEditor';
+import { createClub, sendInvitesToClubFromShelf } from '../../services/club';
+import { getAllGenres } from '../../services/genre';
+import theme from '../../theme';
+import BookSearch from '../books/BookSearch';
 
 const useStyles = makeStyles(theme => ({
   formContainer: {

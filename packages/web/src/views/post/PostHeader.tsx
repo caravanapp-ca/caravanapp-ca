@@ -1,16 +1,18 @@
-import React from 'react';
 import { format } from 'date-fns';
+import React from 'react';
+
+import { PostUserInfo } from '@caravanapp/types';
 import {
-  makeStyles,
+  Avatar,
+  IconButton,
   Link,
-  Typography,
+  makeStyles,
   Menu,
   MenuItem,
-  IconButton,
+  Typography,
 } from '@material-ui/core';
-import Avatar from '@material-ui/core/Avatar';
-import OptionsIcon from '@material-ui/icons/MoreVert';
-import { PostUserInfo } from '@caravanapp/buddy-reading-types';
+import { MoreVert as OptionsIcon } from '@material-ui/icons';
+
 import AdapterLink from '../../components/AdapterLink';
 
 const useStyles = makeStyles(theme => ({

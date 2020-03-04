@@ -1,7 +1,7 @@
 // import assert from 'assert';
 // import path from 'path';
 // import requestRetry from 'requestretry';
-// import { PubSub } from '@caravanapp/buddy-reading-types';
+// import { PubSub } from '@caravanapp/types';
 
 // const execPromise = require('child-process-promise').exec;
 

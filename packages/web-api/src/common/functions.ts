@@ -4,7 +4,7 @@ export const getRandItemList = (
 ): string => {
   const numItemsToUse = Math.min(Math.max(numItemsToInclude, 1), items.length);
   const itemsToUse: string[] = [];
-  let itemsCopy = [...items];
+  const itemsCopy = [...items];
   for (let i = 0; i < numItemsToUse; i++) {
     const randIndex = Math.floor(Math.random() * itemsCopy.length);
     itemsToUse.push(itemsCopy[randIndex]);

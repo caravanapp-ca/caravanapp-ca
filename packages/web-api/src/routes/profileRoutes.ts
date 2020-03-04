@@ -1,6 +1,8 @@
 import express from 'express';
-import { Services } from '@caravanapp/buddy-reading-types';
-import { ProfileQuestionsDoc } from '@caravanapp/buddy-reading-mongo';
+
+import { ProfileQuestionsDoc } from '@caravanapp/mongo';
+import { Services } from '@caravanapp/types';
+
 import { getProfileQuestions } from '../services/profileQuestions';
 
 const router = express.Router();

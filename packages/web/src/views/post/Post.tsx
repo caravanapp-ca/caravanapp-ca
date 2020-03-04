@@ -1,40 +1,42 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+
 import {
   FilterAutoMongoKeys,
-  ShelfEntry,
-  SelectedGenre,
   PostUserInfo,
+  SelectedGenre,
+  ShelfEntry,
   User,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
 import {
+  Card,
+  CardActions,
+  CardContent,
+  Container,
+  Grid,
+  IconButton,
   makeStyles,
   Typography,
   useMediaQuery,
-  IconButton,
-  Card,
-  CardContent,
-  CardActions,
-  Grid,
-  Container,
 } from '@material-ui/core';
-import BackIcon from '@material-ui/icons/ArrowBackIos';
+import { ArrowBackIos as BackIcon } from '@material-ui/icons';
+
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
+import DeletePostDialog from '../../components/DeletePostDialog';
+import GenresInCommonChips from '../../components/GenresInCommonChips';
+import Header from '../../components/Header';
+import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
+import { modifyPostLike } from '../../services/like';
 import {
   deletePost,
   getPostWithAuthorAndLikesUserInfo,
 } from '../../services/post';
-import Header from '../../components/Header';
 import theme from '../../theme';
+import PostActions from './PostActions';
 import PostHeader from './PostHeader';
 import ShelfPostCardShelfList from './ShelfPostCardShelfList';
-import GenresInCommonChips from '../../components/GenresInCommonChips';
-import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
-import PostActions from './PostActions';
-import DeletePostDialog from '../../components/DeletePostDialog';
-import CustomSnackbar, {
-  CustomSnackbarProps,
-} from '../../components/CustomSnackbar';
-import { modifyPostLike } from '../../services/like';
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {

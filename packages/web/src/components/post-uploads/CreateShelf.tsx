@@ -1,30 +1,32 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+
 import {
-  Services,
   FilterAutoMongoKeys,
-  ShelfEntry,
-  SelectedGenre,
   PostContent,
   PostUserInfo,
+  SelectedGenre,
+  Services,
+  ShelfEntry,
   User,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
 import {
-  makeStyles,
-  Typography,
-  Container,
-  TextField,
+  Button,
   CircularProgress,
+  Container,
+  makeStyles,
+  TextField,
+  Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import GenreChip from '../GenreChip';
+
+import { getAllGenres } from '../../services/genre';
+import { getFeedViewerUserInfo, uploadPost } from '../../services/post';
+import theme from '../../theme';
 import BookSearch from '../../views/books/BookSearch';
-import { uploadPost, getFeedViewerUserInfo } from '../../services/post';
+import GenreChip from '../GenreChip';
 import Header from '../Header';
 import HeaderTitle from '../HeaderTitle';
-import { getAllGenres } from '../../services/genre';
-import theme from '../../theme';
 
 const useStyles = makeStyles(theme => ({
   modal: {

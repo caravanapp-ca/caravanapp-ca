@@ -1,10 +1,7 @@
 import mongoose from 'mongoose';
-import {
-  OAuth2Client,
-  SameKeysAs,
-  Session,
-} from '@caravanapp/buddy-reading-types';
-import { SessionDoc, SessionModel } from '@caravanapp/buddy-reading-mongo';
+
+import { SessionDoc, SessionModel } from '@caravanapp/mongo';
+import { OAuth2Client, SameKeysAs, Session } from '@caravanapp/types';
 
 export const getSessionFromUserId = async (
   userId: mongoose.Types.ObjectId,

@@ -1,34 +1,42 @@
 import React from 'react';
+
 import {
   Club,
-  ReadingSpeed,
-  GroupVibe,
   ClubBotSettings,
-} from '@caravanapp/buddy-reading-types';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Typography, TextField, Radio } from '@material-ui/core';
+  GroupVibe,
+  ReadingSpeed,
+} from '@caravanapp/types';
+import {
+  createStyles,
+  makeStyles,
+  Radio,
+  TextField,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+
+import {
+  CARAVAN_BOT_NAME,
+  CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS,
+  CLUB_SIZE_MAX,
+  CLUB_SIZE_NO_LIMIT_LABEL,
+  DEFAULT_MEMBER_LIMIT,
+  UNLIMITED_CLUB_MEMBERS_VALUE,
+} from '../../../common/globalConstants';
+import BotMessageVector from '../../../components/BotMessageVector';
+import CheckboxSettingsEditor from '../../../components/CheckboxSettingsEditor';
+import ClubMemberLimitEditor from '../../../components/ClubMemberLimitEditor';
+import ClubPrivacySlider from '../../../components/ClubPrivacySlider';
+import {
+  groupVibeIcons,
+  groupVibeLabels,
+} from '../../../components/group-vibe-avatars-icons-labels';
 import ListElementAvatar from '../../../components/ListElementAvatar';
 import {
   readingSpeedIcons,
   readingSpeedLabels,
 } from '../../../components/reading-speed-avatars-icons-labels';
-import {
-  groupVibeIcons,
-  groupVibeLabels,
-} from '../../../components/group-vibe-avatars-icons-labels';
 import MemberList from './MemberList';
-import ClubPrivacySlider from '../../../components/ClubPrivacySlider';
-import {
-  CLUB_SIZE_NO_LIMIT_LABEL,
-  CLUB_SIZE_MAX,
-  UNLIMITED_CLUB_MEMBERS_VALUE,
-  DEFAULT_MEMBER_LIMIT,
-  CARAVAN_BOT_NAME,
-  CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS,
-} from '../../../common/globalConstants';
-import ClubMemberLimitEditor from '../../../components/ClubMemberLimitEditor';
-import BotMessageVector from '../../../components/BotMessageVector';
-import CheckboxSettingsEditor from '../../../components/CheckboxSettingsEditor';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

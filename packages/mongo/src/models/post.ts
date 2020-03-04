@@ -1,13 +1,15 @@
-import { model, Schema, Document, Types } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
+
 import {
-  Post,
-  ShelfPost,
-  ProgressUpdatePost,
-  WantToReadAboutPost,
   MongoTimestamps,
-} from '@caravanapp/buddy-reading-types';
-import { shelfSchemaDefinition, genresSchema } from './club';
+  Post,
+  ProgressUpdatePost,
+  ShelfPost,
+  WantToReadAboutPost,
+} from '@caravanapp/types';
+
 import { MongooseSchema } from '../common/mongoose';
+import { genresSchema, shelfSchemaDefinition } from './club';
 
 export interface PostDoc extends Document, MongoTimestamps, Omit<Post, '_id'> {
   _id: Types.ObjectId;

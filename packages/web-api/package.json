@@ -1,5 +1,5 @@
 {
-  "name": "@caravanapp/buddy-reading-web-api",
+  "name": "@caravanapp/web-api",
   "version": "1.0.0",
   "description": "Web API for Caravan's buddy reading website",
   "main": "dist/index.js",
@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/quinnturner/buddy-reading-website#README",
   "dependencies": {
-    "@caravanapp/buddy-reading-mongo": "1.0.0",
+    "@caravanapp/mongo": "1.0.0",
     "@google-cloud/pubsub": "^0.30.3",
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
@@ -50,7 +50,7 @@
     "uuid": "^7.0.1"
   },
   "devDependencies": {
-    "@caravanapp/buddy-reading-types": "1.0.0",
+    "@caravanapp/types": "1.0.0",
     "@types/btoa": "^1.2.3",
     "@types/cookie-parser": "^1.4.2",
     "@types/cookie-session": "^2.0.38",
@@ -68,11 +68,11 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-jest": "^23.8.1",
     "eslint-plugin-prettier": "^3.1.2",
-    "jest": "25.1.0",
+    "jest": "24.9.0",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.2",
-    "ts-jest": "^25.2.1",
+    "ts-jest": "24.1.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.3",
     "utility-types": "^3.10.0"

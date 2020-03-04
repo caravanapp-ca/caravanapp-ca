@@ -1,11 +1,13 @@
 import React from 'react';
-import { User } from '@caravanapp/buddy-reading-types';
-import { Avatar, IconButton, Grid } from '@material-ui/core';
-import StarIcon from '@material-ui/icons/Star';
-import ListElementAvatar from '../../../components/ListElementAvatar';
-import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
-import { getBadgeToDisplay } from '../../../common/getBadgeToDisplay';
+
+import { User } from '@caravanapp/types';
+import { Avatar, Grid, IconButton } from '@material-ui/core';
+import { Star as StarIcon } from '@material-ui/icons';
+
 import { shrinkDiscordPhotoSize } from '../../../common/discord';
+import { getBadgeToDisplay } from '../../../common/getBadgeToDisplay';
+import FreeGroupSlotListElement from '../../../components/FreeGroupSlotListElement';
+import ListElementAvatar from '../../../components/ListElementAvatar';
 
 interface MemberListProps {
   ownerId: string;

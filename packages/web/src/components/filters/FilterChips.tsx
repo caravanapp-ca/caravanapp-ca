@@ -1,7 +1,8 @@
-import React from 'react';
-import { makeStyles, createStyles, Chip } from '@material-ui/core';
 import clsx from 'clsx';
-import { FilterChipType } from '@caravanapp/buddy-reading-types';
+import React from 'react';
+
+import { FilterChipType } from '@caravanapp/types';
+import { Chip, createStyles, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme =>
   createStyles({

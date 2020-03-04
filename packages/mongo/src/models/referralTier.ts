@@ -1,5 +1,5 @@
 import { Document, model, Schema, Types } from 'mongoose';
-import { ReferralTier, ReferralTiers } from '@caravanapp/buddy-reading-types';
+import { ReferralTier, ReferralTiers } from '@caravanapp/types';
 import { MongooseSchema } from '../common/mongoose';
 
 export interface ReferralTierDoc extends Document, Omit<ReferralTiers, '_id'> {

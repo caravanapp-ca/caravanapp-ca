@@ -1,21 +1,26 @@
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
+
 import {
+  FilterAutoMongoKeys,
   ShelfEntry,
   UserShelfEntry,
-  FilterAutoMongoKeys,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
 import {
-  makeStyles,
-  Theme,
   createStyles,
+  IconButton,
+  List,
+  makeStyles,
+  Paper,
+  Radio,
+  Theme,
+  Typography,
   useTheme,
-} from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
+} from '@material-ui/core';
+import { Add as PlusIcon, Delete as DeleteIcon } from '@material-ui/icons';
+
 import ListElementBook from '../../../components/ListElementBook';
-import { Radio, IconButton, Paper, Typography } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import PlusIcon from '@material-ui/icons/Add';
+
 //import AmazonBuyButton from '../../../components/AmazonBuyButton';
 
 const useStyles = makeStyles((theme: Theme) =>

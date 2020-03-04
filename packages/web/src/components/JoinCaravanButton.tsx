@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Button, makeStyles, Typography } from '@material-ui/core';
 
 export interface JoinCaravanButtonProps {

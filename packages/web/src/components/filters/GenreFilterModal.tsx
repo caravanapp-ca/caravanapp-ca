@@ -1,13 +1,15 @@
 import React from 'react';
-import { Services, FilterChip } from '@caravanapp/buddy-reading-types';
+
+import { FilterChip, Services } from '@caravanapp/types';
 import {
+  Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
   useMediaQuery,
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+
 import GenreChip from '../../components/GenreChip';
 import theme from '../../theme';
 

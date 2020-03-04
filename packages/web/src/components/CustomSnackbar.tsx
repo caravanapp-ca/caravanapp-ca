@@ -1,5 +1,7 @@
 import React, { SyntheticEvent } from 'react';
+
 import { Snackbar } from '@material-ui/core';
+
 import MySnackbarContentWrapper, {
   variantIcon,
 } from './MySnackbarContentWrapper';

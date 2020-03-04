@@ -1,16 +1,18 @@
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { makeStyles } from '@material-ui/core/styles';
+import Truncate from 'react-truncate';
+
+import { Services } from '@caravanapp/types';
 import {
+  Link,
   ListItem,
   ListItemIcon,
   ListItemSecondaryAction,
+  makeStyles,
   Typography,
-  Link,
 } from '@material-ui/core';
-import { Services } from '@caravanapp/buddy-reading-types';
+
 import GroupIcon from './misc-avatars-icons-labels/icons/GroupIcon';
-import Truncate from 'react-truncate';
 
 export interface ListElementBookProps {
   id: string;

@@ -1,5 +1,5 @@
 import { CloudFunctionsContext } from '@google-cloud/functions-framework';
-import { PubSub as PubSubTypes } from '@caravanapp/buddy-reading-types';
+import { PubSub as PubSubTypes } from '@caravanapp/types';
 import { ReadingDiscordBot } from '../discord';
 import { sendDiscordMessage } from '../discordMessenger';
 import { getUser, getUserProfileUrl } from '../services/user';

@@ -1,4 +1,4 @@
-import { BadgeDoc, BadgeModel } from '@caravanapp/buddy-reading-mongo';
+import { BadgeDoc, BadgeModel } from '@caravanapp/mongo';
 
 // Singleton pattern
 export const BadgeDocInstance = (() => {

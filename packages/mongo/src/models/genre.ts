@@ -1,5 +1,7 @@
-import { model, Document, Schema, Types } from 'mongoose';
-import { Genre, Genres } from '@caravanapp/buddy-reading-types';
+import { Document, model, Schema, Types } from 'mongoose';
+
+import { Genre, Genres } from '@caravanapp/types';
+
 import { MongooseSchema } from '../common/mongoose';
 
 export interface GenreDoc extends Document, Omit<Genres, '_id'> {

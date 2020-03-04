@@ -1,6 +1,8 @@
 import React from 'react';
+
 import { Button, makeStyles } from '@material-ui/core';
-import LockIcon from '@material-ui/icons/Lock';
+import { Lock } from '@material-ui/icons';
+
 import { getDiscordAuthUrl } from '../common/auth';
 
 export interface DiscordAuthButtonProps {}
@@ -29,7 +31,7 @@ export default function DiscordAuthButton(props: DiscordAuthButtonProps) {
       className={classes.button}
       onClick={onClick}
     >
-      <LockIcon className={classes.leftIcon} />
+      <Lock className={classes.leftIcon} />
       Login with Discord
     </Button>
   );

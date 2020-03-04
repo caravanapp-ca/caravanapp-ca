@@ -1,27 +1,28 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { Omit } from 'utility-types';
+import Fuse from 'fuse.js';
 import mongoose from 'mongoose';
+
+import { UserDoc, UserModel } from '@caravanapp/mongo';
 import {
-  User,
-  ReadingSpeed,
   FilterAutoMongoKeys,
-  UserQA,
-  Services,
+  ReadingSpeed,
   SameKeysAs,
-} from '@caravanapp/buddy-reading-types';
-import { UserDoc, UserModel } from '@caravanapp/buddy-reading-mongo';
+  Services,
+  User,
+  UserQA,
+} from '@caravanapp/types';
+
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
-import {
-  userSlugExists,
-  getMe,
-  getUser,
-  mutateUserDiscordContent,
-} from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { createReferralAction } from '../services/referral';
-import Fuse from 'fuse.js';
+import {
+  getMe,
+  getUser,
+  mutateUserDiscordContent,
+  userSlugExists,
+} from '../services/user';
 
 const router = express.Router();
 
@@ -143,7 +144,7 @@ router.get('/', async (req, res) => {
   if (isSearching && users.length > limit) {
     users = users.slice(0, limit);
   }
-  let mutatedUsers: Services.GetUsers['users'] = users.map(userDocument => {
+  const mutatedUsers: Services.GetUsers['users'] = users.map(userDocument => {
     mutateUserDiscordContent(userDocument);
     const user: Omit<User, 'createdAt' | 'updatedAt'> & {
       createdAt: string;

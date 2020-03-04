@@ -1,4 +1,5 @@
 import { Document, model, Schema, Types } from 'mongoose';
+
 import {
   BookSource,
   PaletteObject,
@@ -6,7 +7,8 @@ import {
   UserBadge,
   UserQA,
   UserShelfEntry,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
+
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
 import { MongooseSchema } from '../common/mongoose';
 

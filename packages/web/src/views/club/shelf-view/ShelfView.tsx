@@ -1,12 +1,10 @@
 import React from 'react';
-import { Typography, makeStyles } from '@material-ui/core';
-import BookList from './BookList';
-import {
-  SelectedGenre,
-  Services,
-  ClubShelf,
-} from '@caravanapp/buddy-reading-types';
+
+import { ClubShelf, SelectedGenre, Services } from '@caravanapp/types';
+import { makeStyles, Typography } from '@material-ui/core';
+
 import GenreChip from '../../../components/GenreChip';
+import BookList from './BookList';
 
 const useStyles = makeStyles(theme => ({
   sectionContainer: {

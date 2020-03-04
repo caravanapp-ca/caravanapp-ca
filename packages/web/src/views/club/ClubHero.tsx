@@ -1,7 +1,8 @@
 import React from 'react';
-import { ShelfEntry, User } from '@caravanapp/buddy-reading-types';
-import { Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+
+import { ShelfEntry, User } from '@caravanapp/types';
+import { makeStyles, Typography } from '@material-ui/core';
+
 import ClubShareButtons from '../../components/ClubShareButtons';
 
 const useStyles = makeStyles(theme => ({

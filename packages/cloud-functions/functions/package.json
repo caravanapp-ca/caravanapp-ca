@@ -1,5 +1,5 @@
 {
-  "name": "@caravanapp/buddy-reading-cloud-functions",
+  "name": "@caravanapp/cloud-functions",
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint \"./**/**.ts\"",

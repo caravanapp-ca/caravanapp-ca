@@ -1,30 +1,31 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+
 import {
-  User,
-  ShelfEntry,
-  ReadingSpeed,
-  Services,
-  ProfileQuestions,
-  UserQA,
-  SelectedGenre,
   FilterAutoMongoKeys,
-} from '@caravanapp/buddy-reading-types';
-import BackIcon from '@material-ui/icons/ArrowBackIos';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
+  ProfileQuestions,
+  ReadingSpeed,
+  SelectedGenre,
+  Services,
+  ShelfEntry,
+  User,
+  UserQA,
+} from '@caravanapp/types';
+import { Button, IconButton, Typography } from '@material-ui/core';
+import { ArrowBackIos as BackIcon } from '@material-ui/icons';
+
+import DownloadDiscordDialog from '../../components/DownloadDiscordDialog';
 import Header from '../../components/Header';
-import ReadingPreferences from './ReadingPreferences';
-import AboutYou from './AboutYou';
-import AnswerQuestion from './AnswerQuestion';
+import HeaderTitle from '../../components/HeaderTitle';
 import ProfileQuestionsCarousel from '../../components/ProfileQuestionsCarousel';
-import SelectBooks from './SelectBooks';
+import { joinMyReferralClubs } from '../../services/club';
 import { getAllProfileQuestions } from '../../services/profile';
 import { updateUserProfile } from '../../services/user';
-import HeaderTitle from '../../components/HeaderTitle';
-import DownloadDiscordDialog from '../../components/DownloadDiscordDialog';
-import { joinMyReferralClubs } from '../../services/club';
+import AboutYou from './AboutYou';
+import AnswerQuestion from './AnswerQuestion';
+import ReadingPreferences from './ReadingPreferences';
+import SelectBooks from './SelectBooks';
+
 interface OnboardingRouteParams {
   id: string;
 }

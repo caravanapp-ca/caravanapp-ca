@@ -1,17 +1,16 @@
 import React from 'react';
+
 import {
   AppBar,
-  Toolbar,
-  useScrollTrigger,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
-import {
   createStyles,
   makeStyles,
-  Theme,
   MuiThemeProvider,
-} from '@material-ui/core/styles';
+  Theme,
+  Toolbar,
+  useMediaQuery,
+  useScrollTrigger,
+  useTheme,
+} from '@material-ui/core';
 
 interface ScrollProps {
   children: React.ReactElement;

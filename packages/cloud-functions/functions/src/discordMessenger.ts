@@ -1,5 +1,5 @@
 import { Message, MessageOptions, Channel, TextChannel } from 'discord.js';
-import { Firestore } from '@caravanapp/buddy-reading-types';
+import { Firestore } from '@caravanapp/types';
 import { shouldSendWithLease, markSent } from './idempotent';
 import { firestore } from './db';
 

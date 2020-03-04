@@ -1,31 +1,32 @@
 require('dotenv').config();
 
 import 'core-js';
+
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 import express from 'express';
 import helmet from 'helmet';
 import path from 'path';
-import authRoutes from './routes/authRoutes';
-import clubRoutes from './routes/clubRoutes';
-import userRoutes from './routes/userRoutes';
-import bookRoutes from './routes/bookRoutes';
-import profileRoutes from './routes/profileRoutes';
-import testRoutes from './routes/testRoutes';
-import discordRoutes from './routes/discordRoutes';
-import referralRoutes from './routes/referralRoutes';
-import userPalettesRoutes from './routes/userPalettesRoutes';
-import userSettingsRoutes from './routes/userSettingsRoutes';
-import postRoutes from './routes/postRoutes';
-import likeRoutes from './routes/likeRoutes';
 
+import { pubsubClient } from './common/pubsub';
 import {
   connect as connectToDb,
   disconnect as disconnectFromDb,
 } from './db/config';
+import authRoutes from './routes/authRoutes';
+import bookRoutes from './routes/bookRoutes';
+import clubRoutes from './routes/clubRoutes';
+import discordRoutes from './routes/discordRoutes';
+import likeRoutes from './routes/likeRoutes';
+import postRoutes from './routes/postRoutes';
+import profileRoutes from './routes/profileRoutes';
+import referralRoutes from './routes/referralRoutes';
+import testRoutes from './routes/testRoutes';
+import userPalettesRoutes from './routes/userPalettesRoutes';
+import userRoutes from './routes/userRoutes';
+import userSettingsRoutes from './routes/userSettingsRoutes';
 import { ReadingDiscordBot } from './services/discord';
-import { pubsubClient } from './common/pubsub';
 
 (async () => {
   const app = express();

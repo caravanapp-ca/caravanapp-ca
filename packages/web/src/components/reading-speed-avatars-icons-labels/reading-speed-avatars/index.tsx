@@ -1,6 +1,6 @@
-import SlowReadingSpeedAvatar from './SlowReadingSpeedAvatar';
-import ModerateReadingSpeedAvatar from './ModerateReadingSpeedAvatar';
 import FastReadingSpeedAvatar from './FastReadingSpeedAvatar';
+import ModerateReadingSpeedAvatar from './ModerateReadingSpeedAvatar';
+import SlowReadingSpeedAvatar from './SlowReadingSpeedAvatar';
 
 export {
   SlowReadingSpeedAvatar,

@@ -1,73 +1,75 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Element as ScrollElement, scroller } from 'react-scroll';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import AddIcon from '@material-ui/icons/Add';
+
 import {
-  User,
-  Services,
-  ReadingSpeed,
-  Capacity,
-  FilterChip,
   ActiveFilter,
-  FilterChipType,
-  Membership,
+  Capacity,
   ClubTransformed,
   ClubWithMemberIds,
-  UserWithInvitableClubs,
-  UserSearchField,
+  FilterChip,
+  FilterChipType,
+  Membership,
+  PostSearchField,
   PostUserInfo,
   PostWithAuthorInfoAndLikes,
-  PostSearchField,
-} from '@caravanapp/buddy-reading-types';
-import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
-import { Service } from '../../common/service';
-import theme, { washedTheme } from '../../theme';
-import { getAllClubs, getUserClubsWithMembers } from '../../services/club';
-import { getAllGenres } from '../../services/genre';
-import logo from '../../resources/logo.svg';
-import textLogo from '../../resources/text-logo.svg';
-import AdapterLink from '../../components/AdapterLink';
-import Header from '../../components/Header';
-import DiscordLoginModal from '../../components/DiscordLoginModal';
-import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import ClubFilters from '../../components/filters/ClubFilters';
-import GenreFilterModal from '../../components/filters/GenreFilterModal';
-import ReadingSpeedModal from '../../components/filters/ReadingSpeedModal';
-import CapacityModal from '../../components/filters/CapacityModal';
-import FilterChips from '../../components/filters/FilterChips';
-import MembershipModal from '../../components/filters/MembershipModal';
-import ClubCards from './ClubCards';
+  ReadingSpeed,
+  Services,
+  User,
+  UserSearchField,
+  UserWithInvitableClubs,
+} from '@caravanapp/types';
 import {
-  Tabs,
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  makeStyles,
   Tab,
+  Tabs,
+  Tooltip,
+  Typography,
   useMediaQuery,
   useTheme,
-  CircularProgress,
 } from '@material-ui/core';
-import { getAllUsers } from '../../services/user';
-import UserCards from './UserCards';
-import { transformClub } from '../club/functions/ClubFunctions';
+import { Add as AddIcon } from '@material-ui/icons';
+
+import { KEY_HIDE_WELCOME_CLUBS } from '../../common/localStorage';
+import { Service } from '../../common/service';
 import shuffleArr from '../../common/shuffleArr';
-import FilterSearch from '../../components/filters/FilterSearch';
-import Splash from './Splash';
-import ShareIconButton from '../../components/ShareIconButton';
+import AdapterLink from '../../components/AdapterLink';
 import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
+import CapacityModal from '../../components/filters/CapacityModal';
+import ClubFilters from '../../components/filters/ClubFilters';
+import FilterChips from '../../components/filters/FilterChips';
+import FilterSearch from '../../components/filters/FilterSearch';
+import GenreFilterModal from '../../components/filters/GenreFilterModal';
+import MembershipModal from '../../components/filters/MembershipModal';
+import PostSearchFilter from '../../components/filters/PostSearchFilter';
+import ReadingSpeedModal from '../../components/filters/ReadingSpeedModal';
 import UserSearchFilter from '../../components/filters/UserSearchFilter';
-import Composer from '../post/Composer';
+import Header from '../../components/Header';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import ShareIconButton from '../../components/ShareIconButton';
+import logo from '../../resources/logo.svg';
+import textLogo from '../../resources/text-logo.svg';
+import { getAllClubs, getUserClubsWithMembers } from '../../services/club';
+import { getAllGenres } from '../../services/genre';
 import {
   getAllPostsTransformed,
   getFeedViewerUserInfo,
 } from '../../services/post';
+import { getAllUsers } from '../../services/user';
+import theme, { washedTheme } from '../../theme';
+import { transformClub } from '../club/functions/ClubFunctions';
+import Composer from '../post/Composer';
+import ClubCards from './ClubCards';
 import PostCards from './PostCards';
-import PostSearchFilter from '../../components/filters/PostSearchFilter';
+import Splash from './Splash';
+import UserCards from './UserCards';
 
 interface HomeProps extends RouteComponentProps<{}> {
   user: User | null;

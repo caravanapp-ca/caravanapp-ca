@@ -1,15 +1,16 @@
 import {
   Club,
-  ShelfEntry,
-  FilterAutoMongoKeys,
-  ReadingState,
-  GoogleBooks,
   ClubReadingSchedule,
-  Services,
-  ClubTransformed,
   ClubRecommendation,
+  ClubTransformed,
   ClubTransformedRecommended,
-} from '@caravanapp/buddy-reading-types';
+  FilterAutoMongoKeys,
+  GoogleBooks,
+  ReadingState,
+  Services,
+  ShelfEntry,
+} from '@caravanapp/types';
+
 import { scheduleStrToDates } from '../../../common/scheduleStrToDates';
 
 export function getCurrentSchedule(

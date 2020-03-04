@@ -1,10 +1,17 @@
 import React from 'react';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+
+import { UserBadge } from '@caravanapp/types';
+import {
+  createStyles,
+  ListItem,
+  ListItemAvatar,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+
 import AdapterLink from './AdapterLink';
-import { UserBadge } from '@caravanapp/buddy-reading-types';
 import UserBadgeIcon from './UserBadgeIcon';
-import { Typography, makeStyles, Theme, createStyles } from '@material-ui/core';
 
 export interface ListElementAvatarProps {
   avatarElement?: any;

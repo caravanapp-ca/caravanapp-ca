@@ -1,14 +1,15 @@
 import { Document, model, Schema, Types } from 'mongoose';
-import { Omit } from 'utility-types';
+
 import {
   BookSource,
   Club,
+  ClubBotSettings,
   ClubReadingSchedule,
   ClubShelf,
   Discussion,
   ShelfEntry,
-  ClubBotSettings,
-} from '@caravanapp/buddy-reading-types';
+} from '@caravanapp/types';
+
 import { ALLOWED_BOOK_SOURCES } from '../common/club';
 import { MongooseSchema } from '../common/mongoose';
 

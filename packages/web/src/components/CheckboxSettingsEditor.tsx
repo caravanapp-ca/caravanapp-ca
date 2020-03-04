@@ -1,17 +1,18 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
+
+import { SameKeysAs } from '@caravanapp/types';
 import {
-  Theme,
-  createStyles,
-  FormControlLabel,
-  Checkbox,
-  FormControl,
-  FormLabel,
-  FormGroup,
   Button,
+  Checkbox,
+  createStyles,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  makeStyles,
+  Theme,
   Typography,
 } from '@material-ui/core';
-import { SameKeysAs } from '@caravanapp/buddy-reading-types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

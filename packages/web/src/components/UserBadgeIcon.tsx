@@ -1,7 +1,7 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { Theme, createStyles, Tooltip } from '@material-ui/core';
-import { UserBadge } from '@caravanapp/buddy-reading-types';
+
+import { UserBadge } from '@caravanapp/types';
+import { createStyles, makeStyles, Theme, Tooltip } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

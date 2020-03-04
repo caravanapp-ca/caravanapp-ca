@@ -1,4 +1,4 @@
-import { UserDoc } from '@caravanapp/buddy-reading-mongo';
+import { UserDoc } from '@caravanapp/mongo';
 
 declare global {
   namespace Express {

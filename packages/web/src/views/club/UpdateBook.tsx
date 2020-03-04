@@ -1,27 +1,35 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import {
-  User,
-  ShelfEntry,
-  Services,
-  FilterAutoMongoKeys,
-  ReadingState,
-} from '@caravanapp/buddy-reading-types';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { IconButton, Typography, Button, Container } from '@material-ui/core';
-import { ArrowBackIos } from '@material-ui/icons';
-import Header from '../../components/Header';
-import BookList from './shelf-view/BookList';
-import BookSearch from '../books/BookSearch';
-import { getClub, updateShelf } from '../../services/club';
-import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import HeaderTitle from '../../components/HeaderTitle';
 import {
   DragDropContext,
+  DragStart,
   DropResult,
   ResponderProvided,
-  DragStart,
 } from 'react-beautiful-dnd';
+import { RouteComponentProps } from 'react-router-dom';
+
+import {
+  FilterAutoMongoKeys,
+  ReadingState,
+  Services,
+  ShelfEntry,
+  User,
+} from '@caravanapp/types';
+import {
+  Button,
+  Container,
+  IconButton,
+  makeStyles,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
+import { ArrowBackIos } from '@material-ui/icons';
+
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import { getClub, updateShelf } from '../../services/club';
+import BookSearch from '../books/BookSearch';
+import BookList from './shelf-view/BookList';
 
 interface UpdateBookRouteParams {
   id: string;
