@@ -311,9 +311,7 @@ router.get('/', async (req, res) => {
     })
     .filter(c => c !== null);
   if (isSearching) {
-    const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
-      // TODO: Typescript doesn't like the use of keys here.
-      // @ts-ignore
+    const fuseOptions = {
       keys: [
         { name: 'newShelf.current.title', weight: 3 / 9 },
         { name: 'name', weight: 2 / 9 },
@@ -424,7 +422,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   if (!clubDocs) {
     return res.status(404).send(`No clubs exist for user ${userId}`);
   }
-  let filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
+  const filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
     clubDocs.map(async clubDoc => {
       const discordChannel: GuildChannel | null = guild.channels.get(
         clubDoc.channelId
@@ -469,9 +467,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
     c => c != null
   );
   if (search && search.length > 0) {
-    const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
-      // TODO: Typescript doesn't like the use of keys here.
-      // @ts-ignore
+    const fuseOptions = {
       keys: ['name', 'shelf.title', 'shelf.author'],
     };
     const fuse = new Fuse(filteredClubsWithMembers, fuseOptions);
@@ -1056,7 +1052,7 @@ router.put(
       currBookAction,
       wantToRead,
     } = req.body;
-    let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
+    const wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
     const shelfEntry = shelfEntryWithHttpsBookUrl(newBook);
     let resultNew;
     if (currBookAction !== 'current') {

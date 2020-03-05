@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useLocation } from 'react-router-dom';
 
 import {
   ClubBotSettings,
@@ -113,6 +113,17 @@ const groupVibes: GroupVibe[] = [
 
 export default function CreateClub(props: CreateClubProps) {
   const classes = useStyles();
+  /*
+  {
+    shelf?: (FilterAutoMongoKeys<ShelfEntry> | null)[];
+    shelfName?: string;
+    shelfAuthorName?: string;
+    shelfGenres?: SelectedGenre[];
+    inviteListLength?: number;
+    invites?: any[];
+  }
+  */
+  const location = useLocation<any>();
 
   const { user } = props;
 
@@ -139,38 +150,30 @@ export default function CreateClub(props: CreateClubProps) {
     'chill'
   );
   const [selectedGroupName, setSelectedGroupName] = React.useState(
-    props.location.state &&
-      props.location.state.shelfName &&
-      props.location.state.shelfName.length < 40
-      ? `The '${props.location.state.shelfName}' club`
+    location.state &&
+      location.state.shelfName &&
+      location.state.shelfName.length < 40
+      ? `The '${location.state.shelfName}' club`
       : ''
   );
   const [selectedGroupBio, setSelectedGroupBio] = React.useState(
-    props.location.state &&
-      props.location.state.shelfAuthorName &&
-      props.location.state.shelfName
-      ? `Come join me as we read books from the '${props.location.state.shelfName}' shelf created by ${props.location.state.shelfAuthorName}!`
+    location.state && location.state.shelfAuthorName && location.state.shelfName
+      ? `Come join me as we read books from the '${location.state.shelfName}' shelf created by ${location.state.shelfAuthorName}!`
       : ''
   );
   const [selectedBooks, setSelectedBooks] = React.useState<
     FilterAutoMongoKeys<ShelfEntry>[]
-  >(
-    props.location.state && props.location.state.shelf
-      ? props.location.state.shelf
-      : []
-  );
+  >(location.state && location.state.shelf ? location.state.shelf : []);
   const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
     ShelfEntry
   > | null>(
-    props.location.state &&
-      props.location.state.shelf &&
-      props.location.state.shelf.length > 0
-      ? props.location.state.shelf[0]
+    location.state && location.state.shelf && location.state.shelf.length > 0
+      ? location.state.shelf[0]
       : null
   );
   const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
-    props.location.state && props.location.state.shelfGenres
-      ? props.location.state.shelfGenres
+    location.state && location.state.shelfGenres
+      ? location.state.shelfGenres
       : []
   );
   const [unlistedClub, setUnlistedClub] = React.useState(false);
@@ -328,8 +331,8 @@ export default function CreateClub(props: CreateClubProps) {
   let inviteUserIdsArr: string[] | undefined;
   let inviteListLengthVal: number | undefined;
 
-  if (props.location && props.location.state) {
-    const { shelf, invites, inviteListLength } = props.location.state;
+  if (location && location.state) {
+    const { shelf, invites, inviteListLength } = location.state;
     if (shelf && shelf.length > 0) {
       inheritedBooks = shelf;
     } else {

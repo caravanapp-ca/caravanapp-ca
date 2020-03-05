@@ -89,7 +89,7 @@ router.get('/', async (req, res) => {
   }
   if (isSearching) {
     let fuseSearchKey: string;
-    let fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {};
+    let fuseOptions = {};
     switch (userSearchField) {
       case 'bookTitle':
         fuseSearchKey = 'shelf.notStarted.title';
@@ -101,8 +101,6 @@ router.get('/', async (req, res) => {
           location: 0,
           distance: 100,
           maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -116,8 +114,6 @@ router.get('/', async (req, res) => {
           location: 0,
           distance: 100,
           maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -126,8 +122,6 @@ router.get('/', async (req, res) => {
         fuseSearchKey = 'urlSlug';
         fuseOptions = {
           caseSensitive: false,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;

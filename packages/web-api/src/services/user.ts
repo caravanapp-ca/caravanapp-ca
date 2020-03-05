@@ -41,7 +41,7 @@ const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
       return;
     }
     return {
-      // TODO: TS doesn't believe .toObject() exists on userBadge.
+      // TODO: Need to introduce the UserBadgeDoc definition instead of UserBadge.
       //@ts-ignore
       ...userBadge.toObject(),
       name: allBadges.badges[userBadge.key].name,

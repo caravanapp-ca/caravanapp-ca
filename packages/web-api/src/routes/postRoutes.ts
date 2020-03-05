@@ -239,7 +239,8 @@ router.get('/:postId/withAuthorAndLikesUserInfo', async (req, res, next) => {
           ? postDoc.updatedAt.toISOString()
           : postDoc.updatedAt,
     };
-    const postsLikesDoc = await getPostLikes(postId);
+    const postObjectId = new mongoose.Types.ObjectId(postId);
+    const postsLikesDoc = await getPostLikes(postObjectId);
 
     const [likeUserDocs, authorUserDoc] = await Promise.all([
       getUsersByUserIds(postsLikesDoc.likes.slice(0, 10)),
@@ -342,7 +343,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     .filter(p => p !== null);
   if ((search && search.length) > 0) {
     let fuseSearchKey: string;
-    let fuseOptions: Fuse.FuseOptions<Services.GetPosts['posts']> = {};
+    let fuseOptions = {};
     switch (postSearchField) {
       case 'bookAuthor':
         fuseSearchKey = 'content.shelf.author';
@@ -354,16 +355,12 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
           location: 0,
           distance: 100,
           maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
       case 'postTitle':
         fuseSearchKey = 'content.title';
         fuseOptions = {
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -379,8 +376,6 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
           location: 0,
           distance: 100,
           maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -474,7 +469,7 @@ router.get('/:id', async (req, res, next) => {
       res.sendStatus(404);
       return;
     }
-    let filteredPost: Services.GetPostById = {
+    const filteredPost: Services.GetPostById = {
       ...postDoc.toObject(),
       createdAt:
         postDoc.createdAt instanceof Date
