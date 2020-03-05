@@ -22,7 +22,7 @@
     },
     {
       "name": "Cloud functions",
-      "path": "packages/cloud-functions"
+      "path": "cloud-functions"
     }
   ],
   "settings": {
