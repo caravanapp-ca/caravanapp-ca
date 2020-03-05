@@ -11,7 +11,7 @@
     "lint": "eslint \"index.d.ts\"",
     "lint:fix": "eslint \"index.d.ts\" --quiet --fix"
   },
-  "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/types",
+  "repository": "https://github.com/caravanapp-ca/caravanapp-ca/tree/master/packages/types",
   "keywords": [
     "caravan",
     "buddy",
@@ -20,9 +20,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/quinnturner/buddy-reading-website/issues"
+    "url": "https://github.com/caravanapp-ca/caravanapp-ca/issues"
   },
-  "homepage": "https://github.com/quinnturner/buddy-reading-website#readme",
+  "homepage": "https://github.com/caravanapp-ca/caravanapp-ca#readme",
   "dependencies": {
     "discord.js": "^11.5.1",
     "utility-types": "^3.10.0"

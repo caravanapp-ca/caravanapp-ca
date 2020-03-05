@@ -15,7 +15,7 @@
     "lint:fix": "eslint \"src/**/*\" --quiet --fix",
     "test": "jest"
   },
-  "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/web-api",
+  "repository": "https://github.com/caravanapp-ca/caravanapp-ca/tree/master/packages/web-api",
   "keywords": [
     "caravan",
     "buddy",
@@ -24,9 +24,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/quinnturner/buddy-reading-website/issues"
+    "url": "https://github.com/caravanapp-ca/caravanapp-ca/issues"
   },
-  "homepage": "https://github.com/quinnturner/buddy-reading-website#README",
+  "homepage": "https://github.com/caravanapp-ca/caravanapp-ca#README",
   "dependencies": {
     "@caravanapp/mongo": "1.0.0",
     "@google-cloud/pubsub": "^0.30.3",

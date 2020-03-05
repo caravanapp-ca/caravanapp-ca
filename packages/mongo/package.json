@@ -9,7 +9,7 @@
     "lint": "eslint \"src/**/*\"",
     "lint:fix": "eslint \"src/**/*\" --quiet --fix"
   },
-  "repository": "https://github.com/quinnturner/buddy-reading-website/tree/master/packages/mongo",
+  "repository": "https://github.com/caravanapp-ca/caravanapp-ca/tree/master/packages/mongo",
   "keywords": [
     "caravan",
     "buddy",
@@ -19,9 +19,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/quinnturner/buddy-reading-website/issues"
+    "url": "https://github.com/caravanapp-ca/caravanapp-ca/issues"
   },
-  "homepage": "https://github.com/quinnturner/buddy-reading-website#readme",
+  "homepage": "https://github.com/caravanapp-ca/caravanapp-ca#readme",
   "dependencies": {
     "@caravanapp/types": "1.0.0",
     "mongoose": "^5.6.8",
