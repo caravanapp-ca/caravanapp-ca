@@ -5,7 +5,7 @@ import {
   DropResult,
   ResponderProvided,
 } from 'react-beautiful-dnd';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 
 import {
   FilterAutoMongoKeys,
@@ -89,6 +89,7 @@ const isValidCurrentShelf = (
 export default function UpdateBook(props: UpdateBookProps) {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
   const clubId = props.match.params.id;
   const user = props.user;
 
@@ -147,7 +148,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     const res = await updateShelf(clubId, sortedShelf);
     if (res.status === 200) {
       // TODO: show snack bar on next page
-      props.history.goBack();
+      history.goBack();
     } else {
       // TODO: need to do error handling here based on error code
       return;
@@ -155,10 +156,10 @@ export default function UpdateBook(props: UpdateBookProps) {
   }
 
   function backButtonAction() {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   }
 

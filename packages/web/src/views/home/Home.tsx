@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { Element as ScrollElement, scroller } from 'react-scroll';
 
 import {
@@ -187,9 +187,19 @@ const centerComponent = (
 );
 
 export default function Home(props: HomeProps) {
-  const classes = useStyles();
   const { user, userLoaded } = props;
+  const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory<{
+    clubsFilter?: ActiveFilter;
+    clubsSearch?: string;
+    postsSearch?: string;
+    postSearchField?: PostSearchField;
+    tab?: number;
+    usersSearch?: string;
+    userSearchField?: UserSearchField;
+  }>();
+  const { location } = history;
 
   const [clubsTransformedResult, setClubsTransformedResult] = React.useState<
     Service<ClubTransformed[]>
@@ -220,20 +230,20 @@ export default function Home(props: HomeProps) {
   );
   const allowedTabs = [0, 1, 2];
   const [tabValue, setTabValue] = React.useState(
-    props.location.state &&
-      props.location.state.tab &&
-      allowedTabs.includes(props.location.state.tab)
-      ? props.location.state.tab
+    location.state &&
+      location.state.tab &&
+      allowedTabs.includes(location.state.tab)
+      ? location.state.tab
       : 0
   );
   const [userSearchField, setUserSearchField] = React.useState<UserSearchField>(
-    props.location.state && props.location.state.userSearchField
-      ? props.location.state.userSearchField
+    location.state && location.state.userSearchField
+      ? location.state.userSearchField
       : 'username'
   );
   const [postSearchField, setPostSearchField] = React.useState<PostSearchField>(
-    props.location.state && props.location.state.postSearchField
-      ? props.location.state.postSearchField
+    location.state && location.state.postSearchField
+      ? location.state.postSearchField
       : 'bookTitle'
   );
   const [loginModalShown, setLoginModalShown] = React.useState(false);
@@ -259,15 +269,15 @@ export default function Home(props: HomeProps) {
   const [stagingClubsFilter, setStagingClubsFilter] = React.useState<
     ActiveFilter
   >(
-    props.location.state && props.location.state.clubsFilter
-      ? props.location.state.clubsFilter
+    location.state && location.state.clubsFilter
+      ? location.state.clubsFilter
       : defaultActiveFilter
   );
   const [activeClubsFilter, setActiveClubsFilter] = React.useState<
     ActiveFilter
   >(
-    props.location.state && props.location.state.clubsFilter
-      ? props.location.state.clubsFilter
+    location.state && location.state.clubsFilter
+      ? location.state.clubsFilter
       : defaultActiveFilter
   );
   const clubGenreFiltersApplied = activeClubsFilter.genres.length > 0;
@@ -280,18 +290,18 @@ export default function Home(props: HomeProps) {
     clubCapacityFiltersApplied ||
     clubMembershipFiltersApplied;
   const [clubsSearch, setClubsSearch] = React.useState<string>(
-    props.location.state && props.location.state.clubsSearch
-      ? props.location.state.clubsSearch
+    location.state && location.state.clubsSearch
+      ? location.state.clubsSearch
       : ''
   );
   const [usersSearch, setUsersSearch] = React.useState<string>(
-    props.location.state && props.location.state.usersSearch
-      ? props.location.state.usersSearch
+    location.state && location.state.usersSearch
+      ? location.state.usersSearch
       : ''
   );
   const [postsSearch, setPostsSearch] = React.useState<string>(
-    props.location.state && props.location.state.postsSearch
-      ? props.location.state.postsSearch
+    location.state && location.state.postsSearch
+      ? location.state.postsSearch
       : ''
   );
 
@@ -477,67 +487,67 @@ export default function Home(props: HomeProps) {
 
   // These useEffects write the tab, search, and filter values to prop.history.location.state so that they can be
   // retrieved when the user navigates back to the home screen. When the user logs out the whole
-  // props.history.location.state object is cleared. Note: when you logout then log back in,
-  // props.history.location.state begins as undefined. The first useEffect (triggered by tabValue) initializes the
-  // props.history.location.state object so that the other useEffects can modify their fields without error (see the
+  // history.location.state object is cleared. Note: when you logout then log back in,
+  // history.location.state begins as undefined. The first useEffect (triggered by tabValue) initializes the
+  // history.location.state object so that the other useEffects can modify their fields without error (see the
   // else statement in the useEffect below)
   useEffect(() => {
-    if (props.history.location.state) {
-      const newState = props.history.location.state;
+    if (history.location.state) {
+      const newState = history.location.state;
       newState.tab = tabValue;
-      props.history.replace({ state: newState });
+      history.replace({ state: newState });
     } else {
-      props.history.replace({ state: { tab: tabValue } });
+      history.replace({ state: { tab: tabValue } });
     }
-  }, [tabValue, props.history]);
+  }, [tabValue, history]);
 
   useEffect(() => {
-    if (props.history.location.state) {
-      const newState = props.history.location.state;
+    if (history.location.state) {
+      const newState = history.location.state;
       newState.clubsFilter = activeClubsFilter;
-      props.history.replace({ state: newState });
+      history.replace({ state: newState });
     }
-  }, [activeClubsFilter, props.history]);
+  }, [activeClubsFilter, history]);
 
   useEffect(() => {
-    if (props.history.location.state) {
-      const newState = props.history.location.state;
+    if (history.location.state) {
+      const newState = history.location.state;
       newState.clubsSearch = clubsSearch;
-      props.history.replace({ state: newState });
+      history.replace({ state: newState });
     }
-  }, [clubsSearch, props.history]);
+  }, [clubsSearch, history]);
 
   useEffect(() => {
-    if (props.history.location.state) {
-      const newState = props.history.location.state;
+    if (history.location.state) {
+      const newState = history.location.state;
       newState.usersSearch = usersSearch;
-      props.history.replace({ state: newState });
+      history.replace({ state: newState });
     }
-  }, [usersSearch, props.history]);
+  }, [usersSearch, history]);
 
   useEffect(() => {
-    if (props.history.location.state) {
-      const newState = props.history.location.state;
+    if (history.location.state) {
+      const newState = history.location.state;
       newState.userSearchField = userSearchField;
-      props.history.replace({ state: newState });
+      history.replace({ state: newState });
     }
-  }, [userSearchField, props.history]);
+  }, [userSearchField, history]);
 
   useEffect(() => {
-    if (props.history.location.state) {
-      const newState = props.history.location.state;
+    if (history.location.state) {
+      const newState = history.location.state;
       newState.postsSearch = postsSearch;
-      props.history.replace({ state: newState });
+      history.replace({ state: newState });
     }
-  }, [postsSearch, props.history]);
+  }, [postsSearch, history]);
 
   useEffect(() => {
-    if (props.history.location.state) {
-      const newState = props.history.location.state;
+    if (history.location.state) {
+      const newState = history.location.state;
       newState.postSearchField = postSearchField;
-      props.history.replace({ state: newState });
+      history.replace({ state: newState });
     }
-  }, [postSearchField, props.history]);
+  }, [postSearchField, history]);
 
   function onSharePost() {
     setSnackbarProps({

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 
 import {
   ClubTransformed,
@@ -141,6 +141,7 @@ const validationParams = {
 export default function UserView(props: UserViewProps) {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
 
   const { id: userId } = props.match.params;
   const [user, setUser] = React.useState<User | null>(null);
@@ -514,15 +515,15 @@ export default function UserView(props: UserViewProps) {
   // }
 
   function backButtonAction() {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   }
 
   const leftComponent = (
-    <MuiThemeProvider theme={userDarkTheme}>
+    <MuiThemeProvider theme={userDarkTheme || {}}>
       <IconButton
         edge="start"
         color={userDarkTheme ? 'primary' : 'inherit'}
@@ -535,7 +536,7 @@ export default function UserView(props: UserViewProps) {
   );
 
   const centerComponent = (
-    <MuiThemeProvider theme={userDarkTheme}>
+    <MuiThemeProvider theme={userDarkTheme || {}}>
       <div className={classes.centerComponent}>
         <UserAvatar user={user} style={{ marginRight: theme.spacing(1) }} />
         <HeaderTitle title={user.name || 'User Profile'} />
@@ -549,7 +550,7 @@ export default function UserView(props: UserViewProps) {
     } else {
       if (isEditing) {
         return (
-          <MuiThemeProvider theme={userDarkTheme}>
+          <MuiThemeProvider theme={userDarkTheme || {}}>
             <IconButton
               edge="start"
               color={userDarkTheme ? 'primary' : 'inherit'}
@@ -563,7 +564,7 @@ export default function UserView(props: UserViewProps) {
         );
       } else {
         return (
-          <MuiThemeProvider theme={userDarkTheme}>
+          <MuiThemeProvider theme={userDarkTheme || {}}>
             <IconButton
               edge="start"
               color={userDarkTheme ? 'primary' : 'inherit'}
@@ -599,7 +600,7 @@ export default function UserView(props: UserViewProps) {
   }
 
   return (
-    <MuiThemeProvider theme={userTheme}>
+    <MuiThemeProvider theme={userTheme || {}}>
       <Header
         leftComponent={leftComponent}
         centerComponent={scrolled > 64 ? centerComponent : undefined}
@@ -650,7 +651,7 @@ export default function UserView(props: UserViewProps) {
           />
         </div>
       </div>
-      <MuiThemeProvider theme={userDarkTheme}>
+      <MuiThemeProvider theme={userDarkTheme || {}}>
         <Tabs
           value={tabValue}
           onChange={handleTabChange}

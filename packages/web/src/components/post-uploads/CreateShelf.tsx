@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 
 import {
   FilterAutoMongoKeys,
@@ -60,6 +60,7 @@ interface CreateShelfProps extends RouteComponentProps {
 export default function CreateShelf(props: CreateShelfProps) {
   const classes = useStyles();
   const { user } = props;
+  const history = useHistory();
 
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
@@ -112,9 +113,9 @@ export default function CreateShelf(props: CreateShelfProps) {
 
   useEffect(() => {
     if (createdShelf) {
-      props.history.goBack();
+      history.goBack();
     }
-  }, [createdShelf, props.history]);
+  }, [createdShelf, history]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
@@ -127,7 +128,7 @@ export default function CreateShelf(props: CreateShelfProps) {
     setShelf([]);
     setShelfTitle('');
     setShelfDescription('');
-    props.history.goBack();
+    history.goBack();
   }
 
   async function postShelf() {

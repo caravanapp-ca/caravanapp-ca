@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 
 import { User } from '@caravanapp/types';
 import {
@@ -38,6 +38,7 @@ interface HeaderRightProps extends RouteComponentProps<{}> {
 
 function ProfileHeaderIcon(props: HeaderRightProps) {
   const classes = useStyles();
+  const history = useHistory();
   const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
   const { user } = props;
 
@@ -67,13 +68,13 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
 
   function navigateToYourProfile() {
     if (user) {
-      props.history.push(`/user/${user.urlSlug}`);
+      history.push(`/user/${user.urlSlug}`);
     }
   }
 
   function navigateToSettings() {
     if (user) {
-      props.history.push(`/settings`);
+      history.push(`/settings`);
     }
   }
 
@@ -82,7 +83,7 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
   }
 
   function handleLogout() {
-    props.history.replace({ state: {} });
+    history.replace({ state: {} });
     logout();
   }
 

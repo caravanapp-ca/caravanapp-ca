@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 
 import { User } from '@caravanapp/types';
 import {
@@ -69,12 +69,13 @@ const body = [
 export default function About(props: AboutProps) {
   const { user } = props;
   const classes = useStyles();
+  const history = useHistory();
 
   const handleBack = () => {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   };
 

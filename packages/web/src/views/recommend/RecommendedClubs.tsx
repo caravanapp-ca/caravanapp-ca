@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
 
 import {
   ClubTransformedRecommended,
@@ -72,6 +72,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   const query = queryString.parse(props.location.search);
   const fromOnboarding = query.fromOnboarding === 'true';
   const classes = useStyles();
+  const history = useHistory();
   const [clubs, setClubs] = useState<ClubTransformedRecommended[]>([]);
   const [referralClub, setReferralClub] = useState<
     ClubTransformedRecommended | undefined
@@ -98,10 +99,10 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   const loadMoreEnabled = clubs.length % pageSize === 0;
   const showAutoJoinedMsg = fromOnboarding && wasReferralMember === 'wasMember';
   const backButtonAction = () => {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   };
   const leftComponent = fromOnboarding ? (

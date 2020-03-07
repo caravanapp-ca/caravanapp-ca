@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 
 import {
   FilterAutoMongoKeys,
@@ -55,9 +55,10 @@ interface EditShelfProps extends RouteComponentProps<EditShelfRouteParams> {
 }
 
 export default function EditShelf(props: EditShelfProps) {
-  const classes = useStyles();
   const { user } = props;
   const postId = props.match.params.id;
+  const classes = useStyles();
+  const history = useHistory();
 
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
@@ -135,9 +136,9 @@ export default function EditShelf(props: EditShelfProps) {
 
   useEffect(() => {
     if (savedShelf) {
-      props.history.goBack();
+      history.goBack();
     }
-  }, [savedShelf, props.history]);
+  }, [savedShelf, history]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
@@ -150,7 +151,7 @@ export default function EditShelf(props: EditShelfProps) {
     setShelf([]);
     setShelfTitle('');
     setShelfDescription('');
-    props.history.goBack();
+    history.goBack();
   }
 
   async function saveShelf() {

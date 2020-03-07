@@ -1,6 +1,6 @@
 import { addDays, eachDayOfInterval } from 'date-fns';
 import React, { SyntheticEvent, useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 
 import {
   ClubBotSettings,
@@ -186,6 +186,7 @@ const generateDiscussions = (
 export default function ClubComponent(props: ClubProps) {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
   const { user } = props;
   const clubId = props.match.params.id;
 
@@ -297,10 +298,10 @@ export default function ClubComponent(props: ClubProps) {
   };
 
   function backButtonAction() {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   }
 
@@ -515,7 +516,7 @@ export default function ClubComponent(props: ClubProps) {
     const res = await deleteClub(clubId);
     if (res.status === 204) {
       // club successfully deleted
-      props.history.replace('/clubs');
+      history.replace('/clubs');
     } else {
       // club not deleted successfully
       setSnackbarProps(s => ({

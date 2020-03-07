@@ -135,7 +135,7 @@ export default function UserNameplate(props: UserNameplateProps) {
 
   if (userIsMe && isEditing && onEdit) {
     return (
-      <MuiThemeProvider theme={userDarkTheme}>
+      <MuiThemeProvider theme={userDarkTheme || {}}>
         <div className={nameplateShadeClass}>
           <TextField
             id="display-name"
@@ -214,7 +214,7 @@ export default function UserNameplate(props: UserNameplateProps) {
     );
   } else {
     return (
-      <MuiThemeProvider theme={userDarkTheme}>
+      <MuiThemeProvider theme={userDarkTheme || {}}>
         <div className={nameplateShadeClass}>
           <div className={classes.nameAndBadge}>
             <Typography

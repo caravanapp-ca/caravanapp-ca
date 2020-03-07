@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
 
 import { EmailSettings, User, UserSettings } from '@caravanapp/types';
 import {
@@ -77,12 +77,13 @@ export default function Settings(props: SettingsProps) {
     }
   );
   const classes = useStyles();
+  const history = useHistory();
 
   const backButtonAction = () => {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 
 import {
   FilterAutoMongoKeys,
@@ -78,8 +78,9 @@ interface PostProps extends RouteComponentProps<ViewShelfRouteParams> {
 }
 
 export default function Post(props: PostProps) {
-  const classes = useStyles();
   const { user } = props;
+  const classes = useStyles();
+  const history = useHistory();
   const postId = props.match.params.id;
 
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
@@ -126,10 +127,10 @@ export default function Post(props: PostProps) {
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 
   function backButtonAction() {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   }
 
@@ -289,10 +290,10 @@ export default function Post(props: PostProps) {
     const res = await deletePost(postId);
     if (res && res.status && res.status >= 200 && res.status < 300) {
       setDeletePostDialogVisible(false);
-      if (props.history.length > 2) {
-        props.history.goBack();
+      if (history.length > 2) {
+        history.goBack();
       } else {
-        props.history.replace('/');
+        history.replace('/');
       }
     } else {
       setDeletePostDialogVisible(false);

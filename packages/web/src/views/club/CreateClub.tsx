@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps, useLocation } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 
 import {
   ClubBotSettings,
@@ -123,7 +123,8 @@ export default function CreateClub(props: CreateClubProps) {
     invites?: any[];
   }
   */
-  const location = useLocation<any>();
+  const history = useHistory<any>();
+  const { location } = history;
 
   const { user } = props;
 
@@ -203,9 +204,9 @@ export default function CreateClub(props: CreateClubProps) {
 
   useEffect(() => {
     if (createdClub) {
-      props.history.replace(`/clubs/${createdClub.club._id}`);
+      history.replace(`/clubs/${createdClub.club._id}`);
     }
-  }, [createdClub, props.history]);
+  }, [createdClub, history]);
 
   async function createClubOnClick() {
     if (!bookToRead) {
@@ -256,10 +257,10 @@ export default function CreateClub(props: CreateClubProps) {
   }
 
   function backButtonAction() {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   }
 
