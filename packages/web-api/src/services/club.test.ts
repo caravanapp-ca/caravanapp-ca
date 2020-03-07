@@ -1,7 +1,6 @@
 /**
  * TODO: Debug Jest with Lerna configuration on Cloud build.
  * Remove .skip to reinstate these tests.
- * @see: https://github.com/caravanapp-ca/caravanapp-ca/issues/266
  */
 
 import { getClubUrl, getDefaultClubTopic } from './club';
