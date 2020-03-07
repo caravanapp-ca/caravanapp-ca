@@ -1,0 +1,45 @@
+version: '3.7'
+services:
+  mongo:
+    image: mongo:4.0.10-xenial
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=hunter2
+    ports:
+      - 27017:27017
+    volumes:
+      - caravan_data_container:/data/db
+  server:
+    build:
+      context: .
+      dockerfile: caravan-server.dev.Dockerfile
+    ports:
+      - 3001:3001
+    env_file:
+      - packages/web-api/.env
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/packages/types/node_modules
+      - /usr/src/app/packages/mongo/node_modules
+      - /usr/src/app/packages/web-api/node_modules
+    depends_on:
+      - mongo
+  web:
+    container_name: caravan-web
+    build:
+      context: .
+      dockerfile: caravan-web.dev.Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/packages/types/node_modules
+      - /usr/src/app/packages/web/node_modules
+    depends_on:
+      - server
+
+volumes:
+  caravan_data_container:
