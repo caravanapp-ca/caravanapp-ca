@@ -35,7 +35,6 @@
     "btoa": "^1.2.1",
     "cookie-parser": "^1.4.4",
     "cookie-session": "^1.4.0",
-    "core-js": "^3.6.4",
     "cross-env": "^7.0.1",
     "date-fns": "^2.10.0",
     "discord.js": "^11.5.1",

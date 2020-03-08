@@ -2,15 +2,10 @@
   "compilerOptions": {
     "typeRoots": ["./types", "./node_modules/@types"],
     "types": ["jest", "node"],
-    "lib": [
-      // "es2019" is supported thru the usage of core-js,
-      // so be careful when using something like .flatMap
-      // or .flat. Have to import the appropriate core-js package.
-      "es2019",
-    ],
+    "lib": ["es2019"],
     "module": "commonjs",
     "esModuleInterop": true,
-    "target": "es2018",
+    "target": "es2019",
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,

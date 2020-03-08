@@ -1,7 +1,5 @@
 require('dotenv').config();
 
-import 'core-js';
-
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
