@@ -12,5 +12,4 @@ describe('url functions', () => {
       expect(id.toLocaleLowerCase()).toStrictEqual(id);
     });
   });
-
-})
+});

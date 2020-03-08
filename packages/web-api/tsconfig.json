@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "typeRoots": ["./types", "./node_modules/@types"],
+    "types": ["jest", "node"],
     "lib": [
       // "es2019" is supported thru the usage of core-js,
       // so be careful when using something like .flatMap
@@ -15,5 +16,5 @@
     "sourceMap": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*"]
+  "include": ["src"]
 }
