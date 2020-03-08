@@ -17,7 +17,7 @@
     "types",
     "mongodb"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/caravanapp-ca/caravanapp-ca/issues"
   },

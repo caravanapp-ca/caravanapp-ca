@@ -1,6 +1,7 @@
 {
   "name": "@caravanapp/root",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "prebuild": "sh ./pre-deploy-cloud-functions.sh",
     "build": "lerna run build",
