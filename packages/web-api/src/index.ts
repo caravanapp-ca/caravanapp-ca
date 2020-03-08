@@ -22,7 +22,6 @@ import likeRoutes from './routes/likeRoutes';
 import postRoutes from './routes/postRoutes';
 import profileRoutes from './routes/profileRoutes';
 import referralRoutes from './routes/referralRoutes';
-import testRoutes from './routes/testRoutes';
 import userPalettesRoutes from './routes/userPalettesRoutes';
 import userRoutes from './routes/userRoutes';
 import userSettingsRoutes from './routes/userSettingsRoutes';
@@ -79,7 +78,6 @@ import { ReadingDiscordBot } from './services/discord';
   app.use(bodyParser.json({ limit: '1mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
 
-  app.use('/api/test', testRoutes);
   app.use('/api/club', clubRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/user', userRoutes);
