@@ -1,0 +1,41 @@
+[
+  {
+    "_id": {
+      "$oid": "5d3b1f7680b16779fe2f4a07"
+    },
+    "badgeKeys": [
+      "ref1",
+      "ref2",
+      "ref3",
+      "ref4",
+      "ref5"
+    ],
+    "badges": {
+      "ref1": {
+        "key": "ref1",
+        "name": "Wanderer (3 referrals)",
+        "description": "Earned by referring 3 friends to Caravan who joined a club."
+      },
+      "ref2": {
+        "key": "ref2",
+        "name": "Traveller (5 referrals)",
+        "description": "Earned by referring 5 friends to Caravan who joined a club."
+      },
+      "ref3": {
+        "key": "ref3",
+        "name": "Explorer (10 referrals)",
+        "description": "Earned by referring 10 friends to Caravan who joined a club."
+      },
+      "ref4": {
+        "key": "ref4",
+        "name": "Adventurer (20 referrals)",
+        "description": "Earned by referring 20 friends to Caravan who joined a club."
+      },
+      "ref5": {
+        "key": "ref5",
+        "name": "Trailblazer (30 referrals)",
+        "description": "Earned by referring 30 friends to Caravan who joined a club."
+      }
+    }
+  }
+]

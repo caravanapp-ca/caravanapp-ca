@@ -1,0 +1,908 @@
+[
+  {
+    "_id": {
+      "$oid": "5d3f1debf7bfee4516f1ebc9"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": false,
+    "source": "personal",
+    "userId": "5d3f1dfaf7bfee4516f1ebd0",
+    "referredById": "5d0eba832aa5960d37d1e079",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564417515177"
+          }
+        }
+      },
+      {
+        "action": "login",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564417530421"
+          }
+        }
+      },
+      {
+        "action": "onboarded",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564417586032"
+          }
+        }
+      },
+      {
+        "action": "joinClub",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1566229811794"
+          }
+        }
+      }
+    ],
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564417515184"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1566229811907"
+      }
+    },
+    "__v": {
+      "$numberInt": "25"
+    },
+    "referralDestination": "home"
+  },
+  {
+    "_id": {
+      "$oid": "5d3f252e0f7e9047cb38cc0b"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": false,
+    "source": "personal",
+    "userId": "5d3f253f0f7e9047cb38cc10",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564419374701"
+          }
+        }
+      },
+      {
+        "action": "login",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564419392022"
+          }
+        }
+      },
+      {
+        "action": "onboarded",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564419446171"
+          }
+        }
+      },
+      {
+        "action": "createClub",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1567662723184"
+          }
+        }
+      }
+    ],
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564419374710"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1567662723461"
+      }
+    },
+    "__v": {
+      "$numberInt": "3"
+    },
+    "referralDestination": "home"
+  },
+  {
+    "_id": {
+      "$oid": "5d3f1e79f7bfee4516f1ebf9"
+    },
+    "referralCount": {
+      "$numberInt": "4"
+    },
+    "referredAndNotJoined": false,
+    "source": "personal",
+    "userId": "5d0eba832aa5960d37d1e079",
+    "actions": [],
+    "referredUsers": [
+      {
+        "referredUserId": "5d3f1dfaf7bfee4516f1ebd0",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564417657329"
+          }
+        }
+      },
+      {
+        "referredUserId": "5d3f1f40f7bfee4516f1ec0a",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564417922110"
+          }
+        }
+      },
+      {
+        "referredUserId": "5d3f1dfaf7bfee4516f1ebd0",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1566229811794"
+          }
+        }
+      },
+      {
+        "referredUserId": "5d8bb82e8da4c80024a417d0",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1569437788761"
+          }
+        }
+      }
+    ],
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "referralDestination": "club",
+    "referralDestinationId": {
+      "$oid": "5d811b185165685e2b74adf6"
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564417657330"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569437788761"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d4086e4c10fe668ff6aa432"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "userId": "c3a6489f-e681-47b6-bdc9-80e359dfa869",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564509924430"
+          }
+        }
+      }
+    ],
+    "source": "email",
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564509924442"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564509924442"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d40b1d3b1ae156e094891f8"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "userId": "38a2d2bc-4b8e-43d7-b501-315f4128ec4a",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564520915477"
+          }
+        }
+      }
+    ],
+    "source": "email",
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564520915482"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564520915482"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41dc8b24827d88b789d1ea"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "userId": "347e26ae-270d-433f-9480-a5e658419cb7",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564597387402"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564597387410"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564597387410"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41dcb724827d88b789d1f6"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "userId": "384b8661-f8bd-4c57-9249-091e9727987c",
+    "referredById": "kjnsdkjnsdf",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564597431636"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564597431637"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564597431637"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41dec624827d88b789d202"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "userId": "89548dfa-8d35-416f-a968-e71eb10e57ff",
+    "referredById": "osidfoinsdf",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564597958223"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564597958225"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564597958225"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41df1024827d88b789d203"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "userId": "3f678f14-bb75-4b07-82e6-b193805a0d0e",
+    "referredById": "osidfoinsdf",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564598032472"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564598032473"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564598032473"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41e3020951708b5036f673"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "home",
+    "userId": "63e48596-99c6-4752-be98-5d7ea86afbfd",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564599042438"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564599042444"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564599042444"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41e37c0951708b5036f67c"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "home",
+    "userId": "db6189e5-b7bf-4cf3-a17e-b1381111aa81",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564599164827"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564599164829"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564599164829"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41e3d37aeec18b90f47b42"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "home",
+    "userId": "1ed17409-9e1d-4e09-8083-1d0fb032780e",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564599251785"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564599251790"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564599251790"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41e4247aeec18b90f47b43"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "home",
+    "userId": "c2eaa888-4f89-40c7-b01c-aa233d24c319",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564599332445"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564599332446"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564599332446"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41e4797aeec18b90f47b44"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "home",
+    "userId": "e2eee67d-8012-4b13-b8c7-b63a8512a076",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564599417453"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564599417454"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564599417454"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41e4ef7aeec18b90f47b45"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "home",
+    "userId": "23d995c0-cfeb-422e-b6c0-7509697ede1c",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564599535209"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564599535210"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564599535210"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d41e84b601e238c7bf9bc19"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "club",
+    "userId": "9a6a4b07-0894-49d1-a595-eb2e8eb0e795",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564600395923"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564600395936"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564600395936"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d435ab5479805acfaafd343"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": false,
+    "referralDestination": "club",
+    "userId": "5d435b07479805acfaafd345",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "referredByUrlSlug": "yusufk",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564695221417"
+          }
+        }
+      },
+      {
+        "action": "login",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564695303966"
+          }
+        }
+      },
+      {
+        "action": "onboarded",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564695340138"
+          }
+        }
+      },
+      {
+        "action": "joinClub",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564695352329"
+          }
+        }
+      }
+    ],
+    "source": null,
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564695221420"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564695352523"
+      }
+    },
+    "__v": {
+      "$numberInt": "3"
+    },
+    "urlSlug": "yhtester"
+  },
+  {
+    "_id": {
+      "$oid": "5d435b38479805acfaafd353"
+    },
+    "referralCount": {
+      "$numberInt": "2"
+    },
+    "referredAndNotJoined": false,
+    "referralDestination": "home",
+    "userId": "5d23814fc3baa16d5bb98152",
+    "urlSlug": "yusufk",
+    "actions": [],
+    "referredUsers": [
+      {
+        "referredUserId": "5d435b07479805acfaafd345",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1564695352422"
+          }
+        }
+      },
+      {
+        "referredUserId": "5d3f253f0f7e9047cb38cc10",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1567662723184"
+          }
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564695352425"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1567662723185"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d826b73fa0c677ae02331d9"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "post",
+    "userId": "ecfd2063-5a64-46a7-af3e-c14832513a95",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1568828275689"
+          }
+        }
+      }
+    ],
+    "source": "sp",
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568828275691"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568828275691"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d85145014d9ec00254021b7"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": true,
+    "referralDestination": "post",
+    "userId": "619622a5-c185-4865-a6ba-2deb47cbdbde",
+    "referredById": "5d23814fc3baa16d5bb98152",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1569002576341"
+          }
+        }
+      }
+    ],
+    "source": "sp",
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1569002576346"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569002576346"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d8bb8208da4c80024a417cf"
+    },
+    "referralCount": {
+      "$numberInt": "0"
+    },
+    "referredAndNotJoined": false,
+    "referralDestination": "club",
+    "userId": "5d8bb82e8da4c80024a417d0",
+    "referredById": "5d0eba832aa5960d37d1e079",
+    "actions": [
+      {
+        "action": "click",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1569437728416"
+          }
+        }
+      },
+      {
+        "action": "login",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1569437743001"
+          }
+        }
+      },
+      {
+        "action": "onboarded",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1569437788417"
+          }
+        }
+      },
+      {
+        "action": "joinClub",
+        "timestamp": {
+          "$date": {
+            "$numberLong": "1569437788761"
+          }
+        }
+      }
+    ],
+    "source": "cpc",
+    "referralDestinationId": {
+      "$oid": "5d7183627d3c7017f891a6f8"
+    },
+    "referredUsers": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1569437728425"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569437788795"
+      }
+    },
+    "__v": {
+      "$numberInt": "3"
+    }
+  }
+]

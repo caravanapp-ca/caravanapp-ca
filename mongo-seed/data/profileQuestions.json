@@ -1,0 +1,347 @@
+[
+  {
+    "_id": {
+      "$oid": "5d163c8d4685a24dcfdd89e8"
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "title": "One author I'd love to have dinner with",
+        "subtitle": "Wouldn't mind a glass of wine with Malcolm Gladwell",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q2",
+        "title": "If I could relive one scene from a book",
+        "subtitle": "The party in The Great Gatsby",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q3",
+        "title": "If I could live in one fictional setting",
+        "subtitle": "Westeros...pre-season 6",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q4",
+        "title": "I love reading  books from this time period",
+        "subtitle": "Ancient Greece",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q5",
+        "title": "Death of a fictional character I've yet to recover from",
+        "subtitle": "When Dobby died in Deathly Hallows 💔",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": false
+      },
+      {
+        "id": "q6",
+        "title": "Favourite fictional book character of all time",
+        "subtitle": "Katniss Everdeen 🎯",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q7",
+        "title": "One book I'm ALWAYS down to talk about",
+        "subtitle": "The Alchemist!",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q8",
+        "title": "The book that has had the biggest impact on my life",
+        "subtitle": "Brave New World by Aldous Huxley",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q9",
+        "title": "I'm looking for a reading group that can",
+        "subtitle": "Help me translate gorgeous poetry into actual English",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q10",
+        "title": "Favourite book of all time (or at least one of my top 5)",
+        "subtitle": "Hard to beat The Hobbit for me!",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q11",
+        "title": "I can't help but geek out on this book",
+        "subtitle": "Anything HP - I'll always be a Potterhead ⚡",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q12",
+        "title": "Worst movie adoption ever made",
+        "subtitle": "The Percy Jackson movies...please don't remind me 🤦🏻‍♀️",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q13",
+        "title": "I TOTALLY did not cry when I read",
+        "subtitle": "May have been some tears during The Fault in Our Stars",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q14",
+        "title": "The one thing that always distracts me from reading",
+        "subtitle": "Mostly hunger...Netflix is also a culprit...",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q15",
+        "title": "The title of my (hypothetical) first novel",
+        "subtitle": "The Day the Earth was Born",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q16",
+        "title": "Most devastating spoiler I've suffered",
+        "subtitle": "Half-Blood Prince was ruined for me sadly",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": false
+      },
+      {
+        "id": "q17",
+        "title": "Best fictional character comparison for me",
+        "subtitle": "Torn between Sansa Stark and Frodo...",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q18",
+        "title": "Before I die, I HAVE to read",
+        "subtitle": "Ralph Waldo Emerson's essays",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q19",
+        "title": "We'll be good reading pals if",
+        "subtitle": "You're always open to new ideas",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q20",
+        "title": "My reading goal for this year is",
+        "subtitle": "Read all of Yuval Noah Harari's books",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q21",
+        "title": "I'm constantly re-reading",
+        "subtitle": "Meditations by Marcus Aurelius - I level up 100HP each time I read it",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q22",
+        "title": "The most beautifully written book I've ever read",
+        "subtitle": "Extremely Loud and Incredibly Close",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q23",
+        "title": "If I'm not reading, I'm",
+        "subtitle": "Resisting my urge to sing out loud in public 🎤",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q24",
+        "title": "The book with my favourite cover art",
+        "subtitle": "The Martian is stunning",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      },
+      {
+        "id": "q25",
+        "title": "General life philosophy",
+        "subtitle": "Live and let live ⭐",
+        "required": false,
+        "min": {
+          "$numberInt": "1"
+        },
+        "max": {
+          "$numberInt": "300"
+        },
+        "visible": true
+      }
+    ],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1561738381911"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1561738381911"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
+]

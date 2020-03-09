@@ -2,7 +2,7 @@
   "name": "@caravanapp/web",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3001",
+  "proxy": "http://caravan-server:3001",
   "devDependencies": {
     "@caravanapp/types": "1.0.0",
     "@date-io/date-fns": "^2.4.0",

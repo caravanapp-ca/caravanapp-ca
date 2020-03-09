@@ -1,0 +1,3104 @@
+[
+  {
+    "_id": {
+      "$oid": "5d1100d4c5d0f22f1529f30d"
+    },
+    "name": "I have FrescoCherry and Yusuf and I'm 2/3",
+    "bio": "Let's hope this works so we can deploy :O",
+    "maxMembers": {
+      "$numberInt": "2"
+    },
+    "readingSpeed": "slow",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d14"
+        },
+        "key": "nonFiction",
+        "name": "Nonfiction"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d13"
+        },
+        "key": "selfHelp",
+        "name": "Self Help"
+      }
+    ],
+    "ownerId": "5d0eba832aa5960d37d1e079",
+    "ownerDiscordId": "539202678258008074",
+    "channelSource": "discord",
+    "channelId": "592760066042757120",
+    "unlisted": false,
+    "vibe": "power",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1561395412983"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565294166240"
+      }
+    },
+    "__v": {
+      "$numberInt": "1"
+    },
+    "schedules": [],
+    "newShelf": {
+      "current": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d228de4ad8c1908bc2a05ec"
+          },
+          "source": "google",
+          "sourceId": "yl4dILkcqm4C",
+          "readingState": "current",
+          "title": "The Lord of the Rings",
+          "author": "J.R.R. Tolkien",
+          "isbn": "9780547951942",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1329264000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=yl4dILkcqm4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1562686261370"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1562686261370"
+            }
+          }
+        }
+      ],
+      "notStarted": [
+        {
+          "genres": [
+            "Technology & Engineering"
+          ],
+          "_id": {
+            "$oid": "5d2290f1789d2b097aa2385e"
+          },
+          "source": "google",
+          "sourceId": "4mw_jVDhSnoC",
+          "readingState": "notStarted",
+          "title": "Steam Turbines for Modern Fossil-fuel Power Plants",
+          "author": "Aleksandr Shaulovich Leĭzerovich",
+          "isbn": "9780881735499",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1199145600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=4mw_jVDhSnoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1562686618142"
+            }
+          },
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1562686618142"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Family & Relationships"
+          ],
+          "_id": {
+            "$oid": "5d229167789d2b097aa23861"
+          },
+          "source": "google",
+          "sourceId": "C63mayArNqoC",
+          "readingState": "notStarted",
+          "title": "A Parent's Guide to Harry Potter",
+          "author": "Gina Burkart",
+          "isbn": "9780830874323",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1253404800000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=C63mayArNqoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1562686618142"
+            }
+          },
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1562686618142"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "_id": {
+            "$oid": "5d24b49a0fb9223ab33f7eaa"
+          },
+          "source": "google",
+          "sourceId": "Yz8Fnw0PlEQC",
+          "readingState": "notStarted",
+          "title": "The Hunger Games: Special Edition",
+          "author": "Suzanne Collins",
+          "isbn": "0545229936",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1251763200000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=Yz8Fnw0PlEQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1562686618142"
+            }
+          },
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1562686618142"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d23bd6948a4eb78bcc83a6e"
+    },
+    "name": "I have Yusuf and I'm 1/4",
+    "maxMembers": {
+      "$numberInt": "4"
+    },
+    "readingSpeed": "slow",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d16"
+        },
+        "key": "fiction",
+        "name": "Fiction"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d15"
+        },
+        "key": "philosophy",
+        "name": "Philosophy"
+      }
+    ],
+    "ownerId": "5d23814fc3baa16d5bb98152",
+    "ownerDiscordId": "585146933983707152",
+    "channelSource": "discord",
+    "channelId": "597910354529615884",
+    "unlisted": false,
+    "vibe": "chill",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1562623337295"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564699795064"
+      }
+    },
+    "__v": {
+      "$numberInt": "1"
+    },
+    "schedules": [],
+    "newShelf": {
+      "current": [
+        {
+          "genres": [],
+          "_id": {
+            "$oid": "5d23bd6948a4eb78bcc83a6f"
+          },
+          "source": "google",
+          "sourceId": "n7AHAAAAQAAJ",
+          "readingState": "current",
+          "title": "'A reasonable faith', by three 'Friends' [F. Frith, W.E. Turner and W. Pollard] refuted",
+          "author": "George Holden Braithwaite",
+          "isbn": "OXFORD:590111250",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "-2682288000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=n7AHAAAAQAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1562623337295"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1562623337295"
+            }
+          }
+        }
+      ],
+      "notStarted": [],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d24a77bf198f34bc417ddd5"
+    },
+    "name": "I have FrescoCherry and QT and I'm full",
+    "bio": "te",
+    "maxMembers": {
+      "$numberInt": "2"
+    },
+    "readingSpeed": "slow",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d19"
+        },
+        "key": "fiction",
+        "name": "Fiction"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d18"
+        },
+        "key": "youngAdult",
+        "name": "Young Adult"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d17"
+        },
+        "key": "fantasy",
+        "name": "Fantasy"
+      }
+    ],
+    "ownerId": "5d0d4517b1e63b975808755a",
+    "ownerDiscordId": "277845895066812417",
+    "channelSource": "discord",
+    "channelId": "598161694799429642",
+    "unlisted": false,
+    "vibe": "chill",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1562683259297"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565294166240"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "schedules": [],
+    "newShelf": {
+      "current": [
+        {
+          "genres": [
+            "Social Science"
+          ],
+          "_id": {
+            "$oid": "5d40b4b22fc39279045b0b2f"
+          },
+          "source": "google",
+          "sourceId": "RqFiYB2KI0YC",
+          "readingState": "current",
+          "title": "Wet Site Archaeology",
+          "author": "Barbara A. Purdy",
+          "isbn": "0936923083",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "652060800000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=RqFiYB2KI0YC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1564521650229"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1564521650229"
+            }
+          }
+        }
+      ],
+      "notStarted": [
+        {
+          "genres": [
+            "Achievement tests"
+          ],
+          "_id": {
+            "$oid": "5d40b34b6660abb85c3f473c"
+          },
+          "source": "google",
+          "sourceId": "p7W8xAdPzNwC",
+          "readingState": "notStarted",
+          "title": "Passing the Test",
+          "author": "Marita Moll",
+          "isbn": "9780886273347",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1072915200000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=p7W8xAdPzNwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1564521291875"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1564521291875"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Literary Criticism"
+          ],
+          "_id": {
+            "$oid": "5d263ee031c4846da1947d13"
+          },
+          "source": "google",
+          "sourceId": "u3S6JcFERs4C",
+          "readingState": "notStarted",
+          "title": "Genres as Repositories of Cultural Memory",
+          "author": "International Comparative Literature Association. Congress",
+          "isbn": "9042004401",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "946684800000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=u3S6JcFERs4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1564521650329"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1564521650329"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d263ee031c4846da1947d0a"
+    },
+    "name": "Fantasy Fans",
+    "bio": "Join us if you love Fantasy!",
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "readingSpeed": "slow",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d1b"
+        },
+        "key": "fiction",
+        "name": "Fiction"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d1a"
+        },
+        "key": "fantasy",
+        "name": "Fantasy"
+      }
+    ],
+    "ownerId": "5d0eba832aa5960d37d1e079",
+    "ownerDiscordId": "539202678258008074",
+    "channelSource": "discord",
+    "channelId": "598599123918389307",
+    "unlisted": false,
+    "vibe": "power",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1562787552640"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568041308175"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "schedules": [
+      {
+        "_id": {
+          "$oid": "5d2fbac50fc5bbeb85c51881"
+        },
+        "discussions": [],
+        "shelfEntryId": "5d2fba9b0fc5bbeb85c51874",
+        "startDate": {
+          "$date": {
+            "$numberLong": "1562026620000"
+          }
+        },
+        "duration": {
+          "$numberInt": "3"
+        },
+        "discussionFrequency": null
+      }
+    ],
+    "newShelf": {
+      "current": [
+        {
+          "genres": [
+            "Fantasy fiction"
+          ],
+          "_id": {
+            "$oid": "5d2fba9b0fc5bbeb85c51874"
+          },
+          "source": "google",
+          "sourceId": "c-qcoAEACAAJ",
+          "readingState": "current",
+          "title": "The Name of the Wind",
+          "author": "Patrick Rothfuss",
+          "isbn": "1473211891",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1414454400000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=c-qcoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563409051889"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563409051889"
+            }
+          },
+          "amazonLink": "https://www.amazon.com"
+        }
+      ],
+      "notStarted": [],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d264f28bbf40171c81e62e2"
+    },
+    "name": "I only have Fresco cherry and I'm 1/4",
+    "bio": "This is the one.",
+    "maxMembers": {
+      "$numberInt": "9"
+    },
+    "readingSpeed": "slow",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d1d"
+        },
+        "key": "fiction",
+        "name": "Fiction"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364e8f7410f0cbd58d1c"
+        },
+        "key": "fantasy",
+        "name": "Fantasy"
+      }
+    ],
+    "ownerId": "5d0eba832aa5960d37d1e079",
+    "ownerDiscordId": "539202678258008074",
+    "channelSource": "discord",
+    "channelId": "598616571052687391",
+    "unlisted": false,
+    "vibe": "learning",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1562791721545"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1567286715135"
+      }
+    },
+    "__v": {
+      "$numberInt": "1"
+    },
+    "schedules": [
+      {
+        "_id": {
+          "$oid": "5d5f07a66805cc06e12c357b"
+        },
+        "discussions": [
+          {
+            "_id": {
+              "$oid": "5d5f07a66805cc06e12c3582"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1566532800000"
+              }
+            },
+            "label": "Test Discussion Topic",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d5f07a66805cc06e12c3581"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1566792000000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d5f07a66805cc06e12c3580"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1567051200000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d5f07a66805cc06e12c357f"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1567310400000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d5f07a66805cc06e12c357e"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1567569600000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d5f07a66805cc06e12c357d"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1567828800000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d5f07a66805cc06e12c357c"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1568088000000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          }
+        ],
+        "shelfEntryId": "5d4c98c8581e3a0024b4713f",
+        "startDate": {
+          "$date": {
+            "$numberLong": "1566336120000"
+          }
+        },
+        "duration": {
+          "$numberInt": "3"
+        },
+        "discussionFrequency": {
+          "$numberInt": "3"
+        }
+      }
+    ],
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Psychology"
+          ],
+          "_id": {
+            "$oid": "5d4c98c8581e3a0024b4713e"
+          },
+          "source": "google",
+          "sourceId": "Hfeq6TgL1iQC",
+          "readingState": "notStarted",
+          "title": "Category-Specific Names Test",
+          "author": "Pat McKenna",
+          "isbn": "086377458X",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "887155200000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=Hfeq6TgL1iQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d4c98c8581e3a0024b4713f"
+          },
+          "source": "google",
+          "sourceId": "dLo_GyEykjQC",
+          "readingState": "notStarted",
+          "title": "The Wise Man's Fear",
+          "author": "Patrick Rothfuss",
+          "isbn": "1101486406",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1298937600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=dLo_GyEykjQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      ],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d289986ecdb3a38c21fa7bc"
+    },
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d2a364f8f7410f0cbd58d21"
+        },
+        "key": "nonFiction",
+        "name": "Nonfiction"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364f8f7410f0cbd58d20"
+        },
+        "key": "biography",
+        "name": "Biography"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364f8f7410f0cbd58d1f"
+        },
+        "key": "crime",
+        "name": "Crime"
+      },
+      {
+        "_id": {
+          "$oid": "5d2a364f8f7410f0cbd58d1e"
+        },
+        "key": "suspense",
+        "name": "Suspense"
+      }
+    ],
+    "name": "I only have Yusuf and I'm 1/4",
+    "bio": "f",
+    "maxMembers": {
+      "$numberInt": "4"
+    },
+    "readingSpeed": "slow",
+    "ownerId": "5d23814fc3baa16d5bb98152",
+    "ownerDiscordId": "585146933983707152",
+    "channelSource": "discord",
+    "channelId": "599246213728043040",
+    "unlisted": true,
+    "vibe": "chill",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1562941830874"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565294166240"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "schedules": [
+      {
+        "_id": {
+          "$oid": "5d41b5ff436ebb7e15a5736e"
+        },
+        "shelfEntryId": "5d371f08400b6d68a15bf1f1",
+        "startDate": {
+          "$date": {
+            "$numberLong": "1564673580000"
+          }
+        },
+        "duration": {
+          "$numberInt": "3"
+        },
+        "discussionFrequency": {
+          "$numberInt": "4"
+        },
+        "discussions": [
+          {
+            "_id": {
+              "$oid": "5d41b5ff436ebb7e15a57373"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1564977600000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d41b5ff436ebb7e15a57372"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1565323200000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d41b5ff436ebb7e15a57371"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1565668800000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d41b5ff436ebb7e15a57370"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1566014400000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d41b5ff436ebb7e15a5736f"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1566360000000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          }
+        ]
+      }
+    ],
+    "newShelf": {
+      "current": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d371f08400b6d68a15bf1f1"
+          },
+          "source": "google",
+          "sourceId": "p1MULH7JsTQC",
+          "readingState": "current",
+          "title": "Dune",
+          "author": "Frank Herbert",
+          "isbn": "9781101658055",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1061856000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=p1MULH7JsTQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563893512822"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563893512822"
+            }
+          }
+        }
+      ],
+      "notStarted": [
+        {
+          "genres": [
+            "Juvenile Nonfiction"
+          ],
+          "_id": {
+            "$oid": "5d371e0af83c8e63bdcc6aa4"
+          },
+          "source": "google",
+          "sourceId": "7AUNG1eLBMcC",
+          "readingState": "notStarted",
+          "title": "F-35 Lightning IIs",
+          "author": "Carlos  Alvarez",
+          "isbn": "9781612110783",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1293840000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=7AUNG1eLBMcC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "_id": {
+            "$oid": "5d371c3cf83c8e63bdcc6a80"
+          },
+          "source": "google",
+          "sourceId": "O10FtsoGXxkC",
+          "readingState": "notStarted",
+          "title": "I Am a Taxi",
+          "author": "Deborah Ellis",
+          "isbn": "9780888997364",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1136073600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=O10FtsoGXxkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d371ba8f83c8e63bdcc6a5f"
+          },
+          "source": "google",
+          "sourceId": "lKt5laoj1coC",
+          "readingState": "notStarted",
+          "title": "The Mote in God's Eye",
+          "author": "Larry Niven, Jerry Pournelle",
+          "isbn": "9780671741921",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "667785600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=lKt5laoj1coC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d375625ccd71f6bda1e0ee6"
+    },
+    "name": "Unlisted again bih",
+    "bio": "Lets go\n",
+    "maxMembers": {
+      "$numberInt": "4"
+    },
+    "readingSpeed": "moderate",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d375625ccd71f6bda1e0ee7"
+        },
+        "key": "sports",
+        "name": "Sports"
+      }
+    ],
+    "schedules": [],
+    "ownerId": "5d23814fc3baa16d5bb98152",
+    "ownerDiscordId": "585146933983707152",
+    "channelSource": "discord",
+    "channelId": "603297031766802441",
+    "unlisted": true,
+    "vibe": "chill",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1563907621197"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564699795064"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "newShelf": {
+      "current": [
+        {
+          "genres": [],
+          "_id": {
+            "$oid": "5d375625ccd71f6bda1e0ee8"
+          },
+          "source": "google",
+          "sourceId": "t4E8LgEACAAJ",
+          "readingState": "current",
+          "title": "Ice Hockey - Jokerit Helsinki Player",
+          "author": "Source: Wikia",
+          "isbn": "1234755335",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1330560000000"
+            }
+          },
+          "coverImageURL": "data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAABIAAD/4QNvaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjMtYzAxMSA2Ni4xNDU2NjEsIDIwMTIvMDIvMDYtMTQ6NTY6MjcgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6QTBGRDdBRjA0NDRERTUxMUJGMDlENURBMDc5N0ExNzMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RDZCMUE5RTU0RDRBMTFFNTkzNTFCMkQ2MEVFMkZGNkMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RDZCMUE5RTQ0RDRBMTFFNTkzNTFCMkQ2MEVFMkZGNkMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5OEIxNTJCRDRBNERFNTExQkYwOUQ1REEwNzk3QTE3MyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpBMEZEN0FGMDQ0NERFNTExQkYwOUQ1REEwNzk3QTE3MyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6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",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563907621197"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563907621197"
+            }
+          }
+        }
+      ],
+      "notStarted": [],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d3f1eb8f7bfee4516f1ebec"
+    },
+    "name": "Referral test club",
+    "bio": "Lets see bud",
+    "maxMembers": {
+      "$numberInt": "4"
+    },
+    "readingSpeed": "moderate",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d3f1eb8f7bfee4516f1ebed"
+        },
+        "key": "chickLit",
+        "name": "Chick Lit"
+      }
+    ],
+    "schedules": [],
+    "ownerId": "5d3f1dfaf7bfee4516f1ebd0",
+    "ownerDiscordId": "604326415630073876",
+    "channelSource": "discord",
+    "channelId": "605436541623468052",
+    "unlisted": false,
+    "vibe": "chill",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564417720035"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565294166240"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "newShelf": {
+      "current": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d371f08400b6d68a15bf1f1"
+          },
+          "source": "google",
+          "sourceId": "p1MULH7JsTQC",
+          "readingState": "current",
+          "title": "Dune",
+          "author": "Frank Herbert",
+          "isbn": "9781101658055",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1061856000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=p1MULH7JsTQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563893512822"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563893512822"
+            }
+          }
+        }
+      ],
+      "notStarted": [
+        {
+          "genres": [
+            "Juvenile Nonfiction"
+          ],
+          "_id": {
+            "$oid": "5d371e0af83c8e63bdcc6aa4"
+          },
+          "source": "google",
+          "sourceId": "7AUNG1eLBMcC",
+          "readingState": "notStarted",
+          "title": "F-35 Lightning IIs",
+          "author": "Carlos  Alvarez",
+          "isbn": "9781612110783",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1293840000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=7AUNG1eLBMcC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "_id": {
+            "$oid": "5d371c3cf83c8e63bdcc6a80"
+          },
+          "source": "google",
+          "sourceId": "O10FtsoGXxkC",
+          "readingState": "notStarted",
+          "title": "I Am a Taxi",
+          "author": "Deborah Ellis",
+          "isbn": "9780888997364",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1136073600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=O10FtsoGXxkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d371ba8f83c8e63bdcc6a5f"
+          },
+          "source": "google",
+          "sourceId": "lKt5laoj1coC",
+          "readingState": "notStarted",
+          "title": "The Mote in God's Eye",
+          "author": "Larry Niven, Jerry Pournelle",
+          "isbn": "9780671741921",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "667785600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=lKt5laoj1coC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1563894141143"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d460c57bf2e9a58acec9ad4"
+    },
+    "name": "Quinn test club",
+    "bio": "cfgb",
+    "maxMembers": {
+      "$numberInt": "4"
+    },
+    "readingSpeed": "moderate",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d460c57bf2e9a58acec9ad6"
+        },
+        "key": "cookbooks",
+        "name": "Cookbooks"
+      },
+      {
+        "_id": {
+          "$oid": "5d460c57bf2e9a58acec9ad5"
+        },
+        "key": "mystery",
+        "name": "Mystery"
+      }
+    ],
+    "schedules": [],
+    "ownerId": "5d0d4517b1e63b975808755a",
+    "ownerDiscordId": "277845895066812417",
+    "channelSource": "discord",
+    "channelId": "607340955242070016",
+    "unlisted": false,
+    "vibe": "chill",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564871767533"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565294166240"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "newShelf": {
+      "current": [
+        {
+          "genres": [
+            "Government purchasing"
+          ],
+          "_id": {
+            "$oid": "5d460c57bf2e9a58acec9ad7"
+          },
+          "source": "google",
+          "sourceId": "paYsAAAAIAAJ",
+          "readingState": "current",
+          "title": "Ineffective Management of GSA's Multiple Award Schedule Program--a Costly, Serious, and Longstanding Problem",
+          "author": "United States. General Accounting Office",
+          "isbn": "STANFORD:36105127387681",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "283996800000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=paYsAAAAIAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1564871767532"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1564871767532"
+            }
+          }
+        }
+      ],
+      "notStarted": [],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d47be1bd20ca329b85f81c9"
+    },
+    "name": "q t t",
+    "bio": "df",
+    "maxMembers": {
+      "$numberInt": "4"
+    },
+    "readingSpeed": "moderate",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d47be1bd20ca329b85f81cb"
+        },
+        "key": "spirituality",
+        "name": "Spirituality"
+      },
+      {
+        "_id": {
+          "$oid": "5d47be1bd20ca329b85f81ca"
+        },
+        "key": "mystery",
+        "name": "Mystery"
+      }
+    ],
+    "schedules": [],
+    "ownerId": "5d0d4517b1e63b975808755a",
+    "ownerDiscordId": "277845895066812417",
+    "channelSource": "discord",
+    "channelId": "607806711884939295",
+    "unlisted": false,
+    "vibe": "chill",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564982811210"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565294166240"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "newShelf": {
+      "current": [
+        {
+          "genres": [],
+          "_id": {
+            "$oid": "5d47be1bd20ca329b85f81cc"
+          },
+          "source": "google",
+          "sourceId": "D39BmDMhtC4C",
+          "readingState": "current",
+          "title": "S. F. D. vindiciæ dissertationis de Novi Foederis Græci Latinismis merito et falso suspectis ab nupera Apologia dissertations de Latinismis Græcæ Novi de Foederis dictioni immerito affictis Wittebergæ non ita pridem evulgata assertæ",
+          "author": "Sigismundus Fridericus DRESIGIUS",
+          "isbn": "BL:A0024749507",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "-7573651200000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=D39BmDMhtC4C&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1564982811210"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1564982811210"
+            }
+          }
+        }
+      ],
+      "notStarted": [],
+      "read": []
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d4c95d9581e3a0024b47129"
+    },
+    "name": "The Crew ",
+    "bio": "I like Harry Potter and Star Wars. I'm what you'd call a generic nerd. ",
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "readingSpeed": "moderate",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d4c95d9581e3a0024b4712e"
+        },
+        "key": "biography",
+        "name": "Biography"
+      },
+      {
+        "_id": {
+          "$oid": "5d4c95d9581e3a0024b4712d"
+        },
+        "key": "contemporary",
+        "name": "Contemporary"
+      },
+      {
+        "_id": {
+          "$oid": "5d4c95d9581e3a0024b4712c"
+        },
+        "key": "graphicNovels",
+        "name": "Graphic Novels"
+      },
+      {
+        "_id": {
+          "$oid": "5d4c95d9581e3a0024b4712b"
+        },
+        "key": "manga",
+        "name": "Manga"
+      },
+      {
+        "_id": {
+          "$oid": "5d4c95d9581e3a0024b4712a"
+        },
+        "key": "poetry",
+        "name": "Poetry"
+      }
+    ],
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Children"
+          ],
+          "_id": {
+            "$oid": "5d4c95d9581e3a0024b47130"
+          },
+          "source": "google",
+          "sourceId": "szF_pLGmJTQC",
+          "readingState": "notStarted",
+          "title": "Baptizing Harry Potter",
+          "author": "Luke Bell",
+          "amazonLink": "https://www.amazon.com",
+          "isbn": "9781616431150",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1262304000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=szF_pLGmJTQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1565300185397"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1565300185397"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Juvenile Nonfiction"
+          ],
+          "_id": {
+            "$oid": "5d4c95d9581e3a0024b47131"
+          },
+          "source": "google",
+          "sourceId": "WV8pZj_oNBwC",
+          "readingState": "notStarted",
+          "title": "Harry Potter Power",
+          "author": "Julie-Anne Sykley",
+          "isbn": "9781921479311",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1262304000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=WV8pZj_oNBwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1565300185397"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1565300185397"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Comics & Graphic Novels"
+          ],
+          "_id": {
+            "$oid": "5d4c95d9581e3a0024b4712f"
+          },
+          "source": "google",
+          "sourceId": "HpeIyvuBX2EC",
+          "readingState": "notStarted",
+          "title": "Star Wars, Episode 1",
+          "author": "Unknown author",
+          "isbn": "1569714843",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "946684800000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=HpeIyvuBX2EC&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1565300185398"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1565300185398"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d4c95d9581e3a0024b47133"
+          },
+          "source": "google",
+          "sourceId": "Ak7TCwAAQBAJ",
+          "readingState": "current",
+          "title": "Star Wars Trilogy",
+          "author": "George Lucas",
+          "isbn": "9781101885376",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1441065600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=Ak7TCwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1565300185398"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1565300185398"
+            }
+          }
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Literary Criticism"
+          ],
+          "_id": {
+            "$oid": "5d4c95d9581e3a0024b47132"
+          },
+          "source": "google",
+          "sourceId": "ThAaBwAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Harry Potter’s World Wide Influence",
+          "author": "Diana Patterson",
+          "isbn": "9781443816281",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1254441600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=ThAaBwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1565300185397"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1565300185397"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "schedules": [],
+    "ownerId": "5d4c942c581e3a0024b47126",
+    "ownerDiscordId": "582965977193512972",
+    "channelSource": "discord",
+    "channelId": "609137869185089537",
+    "unlisted": false,
+    "vibe": "chill",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1565300185398"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568040447038"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d7031f1cbf02d00238c510c"
+    },
+    "name": "No Club Member Limits",
+    "bio": "This club has no limits haha 🤘😜💯",
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "readingSpeed": "slow",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d7031f1cbf02d00238c5111"
+        },
+        "key": "chickLit",
+        "name": "Chick Lit"
+      },
+      {
+        "_id": {
+          "$oid": "5d7031f1cbf02d00238c5110"
+        },
+        "key": "suspense",
+        "name": "Suspense"
+      },
+      {
+        "_id": {
+          "$oid": "5d7031f1cbf02d00238c510f"
+        },
+        "key": "contemporary",
+        "name": "Contemporary"
+      },
+      {
+        "_id": {
+          "$oid": "5d7031f1cbf02d00238c510e"
+        },
+        "key": "psychology",
+        "name": "Psychology"
+      },
+      {
+        "_id": {
+          "$oid": "5d7031f1cbf02d00238c510d"
+        },
+        "key": "science",
+        "name": "Science"
+      }
+    ],
+    "newShelf": {
+      "notStarted": [],
+      "current": [
+        {
+          "genres": [
+            "Games"
+          ],
+          "_id": {
+            "$oid": "5d7031f1cbf02d00238c5112"
+          },
+          "source": "google",
+          "sourceId": "g9iQu95JFm4C",
+          "readingState": "current",
+          "title": "No Limit Hold 'em",
+          "author": "David Sklansky, Ed Miller",
+          "isbn": "188068537X",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1136073600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=g9iQu95JFm4C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567633905377"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567633905377"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "schedules": [],
+    "ownerId": "5d0eba832aa5960d37d1e079",
+    "ownerDiscordId": "539202678258008074",
+    "channelSource": "discord",
+    "channelId": "618926200286347303",
+    "unlisted": false,
+    "vibe": "power",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567633905378"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1567633905378"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d70406489469bb01a75b56c"
+    },
+    "name": "Testing creating club from shelf",
+    "bio": "Testing creating club from shelf",
+    "maxMembers": {
+      "$numberInt": "4"
+    },
+    "readingSpeed": "moderate",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d70406489469bb01a75b56d"
+        },
+        "key": "contemporary",
+        "name": "Contemporary"
+      }
+    ],
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d6ebc64cf6ad8202667538b"
+          },
+          "source": "google",
+          "sourceId": "12e8PJ2T7sQC",
+          "readingState": "notStarted",
+          "title": "The Two Towers",
+          "author": "J.R.R. Tolkien",
+          "isbn": "9780547952024",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1329264000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=12e8PJ2T7sQC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567637604961"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567637604961"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d6ebc64cf6ad8202667538a"
+          },
+          "source": "google",
+          "sourceId": "WZ0f_yUgc0UC",
+          "readingState": "notStarted",
+          "title": "The Return of the King",
+          "author": "J.R.R. Tolkien",
+          "isbn": "9780547952048",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1329264000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=WZ0f_yUgc0UC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567637604962"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567637604962"
+            }
+          }
+        },
+        {
+          "genres": [
+            "History"
+          ],
+          "_id": {
+            "$oid": "5d7045307a7b3abfc30351ba"
+          },
+          "source": "google",
+          "sourceId": "_TXf_sQUk9UC",
+          "readingState": "notStarted",
+          "title": "F-100 Super Sabre at War",
+          "author": "Thomas E. Gardner",
+          "isbn": "161673258X",
+          "coverImageURL": "https://books.google.com/books/content?id=_TXf_sQUk9UC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d6ebc64cf6ad8202667538c"
+          },
+          "source": "google",
+          "sourceId": "aWZzLPhY4o0C",
+          "readingState": "current",
+          "title": "The Fellowship of the Ring",
+          "author": "J.R.R. Tolkien",
+          "isbn": "9780547952017",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1329264000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=aWZzLPhY4o0C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567637604962"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567637604962"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "schedules": [],
+    "ownerId": "5d23814fc3baa16d5bb98152",
+    "ownerDiscordId": "585146933983707152",
+    "channelSource": "discord",
+    "channelId": "618941717806055424",
+    "unlisted": false,
+    "vibe": "chill",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567637604962"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1567638832344"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d71681bd09318ccb12f4208"
+    },
+    "name": "The lotr trilogy club.",
+    "bio": "Come join me as we read books from the \"The Lord of the Rings Trilogy\" shelf created by caravan-admin, my friend here on Caravan :)",
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "readingSpeed": "moderate",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d6ebc64cf6ad8202667538f"
+        },
+        "key": "classics",
+        "name": "Classics"
+      },
+      {
+        "_id": {
+          "$oid": "5d6ebc64cf6ad8202667538e"
+        },
+        "key": "fantasy",
+        "name": "Fantasy"
+      },
+      {
+        "_id": {
+          "$oid": "5d6ebc64cf6ad8202667538d"
+        },
+        "key": "fiction",
+        "name": "Fiction"
+      }
+    ],
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d6ebc64cf6ad8202667538b"
+          },
+          "source": "google",
+          "sourceId": "12e8PJ2T7sQC",
+          "readingState": "notStarted",
+          "title": "The Two Towers",
+          "author": "J.R.R. Tolkien",
+          "isbn": "9780547952024",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1329264000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=12e8PJ2T7sQC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567713307631"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567713307631"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d6ebc64cf6ad8202667538a"
+          },
+          "source": "google",
+          "sourceId": "WZ0f_yUgc0UC",
+          "readingState": "notStarted",
+          "title": "The Return of the King",
+          "author": "J.R.R. Tolkien",
+          "isbn": "9780547952048",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1329264000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=WZ0f_yUgc0UC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567713307631"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567713307631"
+            }
+          }
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d6ebc64cf6ad8202667538c"
+          },
+          "source": "google",
+          "sourceId": "aWZzLPhY4o0C",
+          "readingState": "current",
+          "title": "The Fellowship of the Ring",
+          "author": "J.R.R. Tolkien",
+          "isbn": "9780547952017",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1329264000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=aWZzLPhY4o0C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567713307631"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567713307631"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "schedules": [
+      {
+        "_id": {
+          "$oid": "5d7a5cdd3ccdc200242a52eb"
+        },
+        "shelfEntryId": "5d6ebc64cf6ad8202667538c",
+        "startDate": {
+          "$date": {
+            "$numberLong": "1568732160000"
+          }
+        },
+        "duration": {
+          "$numberInt": "2"
+        },
+        "discussionFrequency": {
+          "$numberInt": "-1"
+        },
+        "discussions": [
+          {
+            "_id": {
+              "$oid": "5d7a5cdd3ccdc200242a52ed"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1569509760000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d7a5cdd3ccdc200242a52ec"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1569768960000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          }
+        ]
+      }
+    ],
+    "ownerId": "5d23814fc3baa16d5bb98152",
+    "ownerDiscordId": "585146933983707152",
+    "channelSource": "discord",
+    "channelId": "619259237557600296",
+    "unlisted": false,
+    "vibe": "chill",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567713307631"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568300253221"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d71743bf3a780da39b1a223"
+    },
+    "name": "The \"Q!\" club",
+    "bio": "Come join me as we read books from the \"Q!\" shelf created by Literature And SunshineTypeBih!",
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "readingSpeed": "moderate",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d65309b0281f431c8d8e999"
+        },
+        "key": "christian",
+        "name": "Christian"
+      }
+    ],
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Biography & Autobiography"
+          ],
+          "_id": {
+            "$oid": "5d65309b0281f431c8d8e997"
+          },
+          "source": "google",
+          "sourceId": "IdidgShgxQcC",
+          "readingState": "notStarted",
+          "title": "Q",
+          "author": "Quincy Jones",
+          "isbn": "9780385504744",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1019520000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=IdidgShgxQcC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567716411151"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567716411151"
+            }
+          }
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Q-ships"
+          ],
+          "_id": {
+            "$oid": "5d65309b0281f431c8d8e998"
+          },
+          "source": "google",
+          "sourceId": "AshNH-aegb4C",
+          "readingState": "current",
+          "title": "Q-Boat Adventures",
+          "author": "Harold Auten",
+          "isbn": "1904381103",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1041379200000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=AshNH-aegb4C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567716411151"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567716411151"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "schedules": [],
+    "ownerId": "5d3f253f0f7e9047cb38cc10",
+    "ownerDiscordId": "508330023472857100",
+    "channelSource": "discord",
+    "channelId": "619272254945099785",
+    "unlisted": false,
+    "vibe": "chill",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567716411151"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1567716411151"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "botSettings": {
+      "intros": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d7183627d3c7017f891a6f8"
+    },
+    "bio": "This group embraces the power of AI to enable the next generation of leaders.",
+    "botSettings": {
+      "intros": true
+    },
+    "channelId": "619288525682114570",
+    "channelSource": "discord",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d7183627d3c7017f891a6fb"
+        },
+        "key": "business",
+        "name": "Business"
+      },
+      {
+        "_id": {
+          "$oid": "5d7183627d3c7017f891a6fa"
+        },
+        "key": "science",
+        "name": "Science"
+      }
+    ],
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "name": "AI-Enabled Individuals",
+    "newShelf": {
+      "notStarted": [],
+      "current": [
+        {
+          "genres": [
+            "Computers"
+          ],
+          "_id": {
+            "$oid": "5d7183627d3c7017f891a6fc"
+          },
+          "source": "google",
+          "sourceId": "nR-hLzoyMnUC",
+          "readingState": "current",
+          "title": "Believable Bots",
+          "author": "Philip Hingston",
+          "isbn": "9783642323225",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1350691200000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=nR-hLzoyMnUC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1567720290411"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1567720290411"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "ownerDiscordId": "539202678258008074",
+    "ownerId": "5d0eba832aa5960d37d1e079",
+    "readingSpeed": "fast",
+    "schedules": [
+      {
+        "_id": {
+          "$oid": "5d794a1f04d704b1f01c30ce"
+        },
+        "discussions": [
+          {
+            "_id": {
+              "$oid": "5d794a1f04d704b1f01c30d2"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1569007440000"
+              }
+            },
+            "label": "Test",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d794a1f04d704b1f01c30d1"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1569180240000"
+              }
+            },
+            "label": "Test 2",
+            "format": "text"
+          },
+          {
+            "_id": {
+              "$oid": "5d794a1f04d704b1f01c30d0"
+            },
+            "date": {
+              "$date": {
+                "$numberLong": "1569525840000"
+              }
+            },
+            "label": "",
+            "format": "text"
+          }
+        ],
+        "shelfEntryId": "5d7183627d3c7017f891a6fc",
+        "startDate": {
+          "$date": {
+            "$numberLong": "1568921040000"
+          }
+        },
+        "duration": {
+          "$numberDouble": "1.1428571428571428"
+        },
+        "discussionFrequency": {
+          "$numberInt": "-1"
+        }
+      }
+    ],
+    "unlisted": false,
+    "vibe": "power",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567720290412"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568229958149"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d77eda0f377892255467116"
+    },
+    "bio": "Come join me as we read books from the \"f\" shelf created by freeman-cortez!",
+    "botSettings": {
+      "intros": true
+    },
+    "channelId": "621051871976488979",
+    "channelSource": "discord",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d77ecb2f377892255467114"
+        },
+        "key": "fiction",
+        "name": "Fiction"
+      }
+    ],
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "name": "The \"f\" club",
+    "newShelf": {
+      "notStarted": [],
+      "current": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d77ecb2f377892255467113"
+          },
+          "source": "google",
+          "sourceId": "kP0yDQAAQBAJ",
+          "readingState": "current",
+          "title": "The F Word",
+          "author": "Liza Palmer",
+          "isbn": "9781250083463",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1493078400000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=kP0yDQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568140704913"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568140704913"
+            }
+          }
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d77ecb2f377892255467112"
+          },
+          "source": "google",
+          "sourceId": "kP0yDQAAQBAJ",
+          "readingState": "current",
+          "title": "The F Word",
+          "author": "Liza Palmer",
+          "isbn": "9781250083463",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1493078400000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=kP0yDQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568140704913"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568140704913"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "ownerDiscordId": "508330023472857100",
+    "ownerId": "5d3f253f0f7e9047cb38cc10",
+    "readingSpeed": "moderate",
+    "schedules": [],
+    "unlisted": false,
+    "vibe": "chill",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568140704913"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568140704913"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d7a62572fe5fa52c66c797b"
+    },
+    "bio": "                    v",
+    "botSettings": {
+      "intros": true
+    },
+    "channelId": "621726948061872128",
+    "channelSource": "discord",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d76a55d6e46bc0023623c18"
+        },
+        "key": "comics",
+        "name": "Comics"
+      },
+      {
+        "_id": {
+          "$oid": "5d76a55d6e46bc0023623c17"
+        },
+        "key": "fiction",
+        "name": "Fiction"
+      },
+      {
+        "_id": {
+          "$oid": "5d76a55d6e46bc0023623c16"
+        },
+        "key": "graphicNovels",
+        "name": "Graphic Novels"
+      },
+      {
+        "_id": {
+          "$oid": "5d76a55d6e46bc0023623c15"
+        },
+        "key": "horror",
+        "name": "Horror"
+      },
+      {
+        "_id": {
+          "$oid": "5d76a55d6e46bc0023623c14"
+        },
+        "key": "suspense",
+        "name": "Suspense"
+      }
+    ],
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "name": "                    c",
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "_id": {
+            "$oid": "5d76a55d6e46bc0023623c12"
+          },
+          "source": "google",
+          "sourceId": "yTdAn9JzHbkC",
+          "readingState": "notStarted",
+          "title": "The Dark Knight: Batman Fights the Joker Virus",
+          "author": "Scott Peterson",
+          "isbn": "9781434240965",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1325376000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=yTdAn9JzHbkC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568301655574"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568301655574"
+            }
+          }
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Philosophy"
+          ],
+          "_id": {
+            "$oid": "5d76a55d6e46bc0023623c13"
+          },
+          "source": "google",
+          "sourceId": "17f6DAAAQBAJ",
+          "readingState": "current",
+          "title": "The Joker",
+          "author": "Harry Eiss",
+          "isbn": "9781443894296",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1462924800000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=17f6DAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568301655575"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568301655575"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "ownerDiscordId": "508330023472857100",
+    "ownerId": "5d3f253f0f7e9047cb38cc10",
+    "readingSpeed": "moderate",
+    "schedules": [],
+    "unlisted": false,
+    "vibe": "chill",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568301655575"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568301655575"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d7d2dccef3df57d34775949"
+    },
+    "bio": "Come join me as we read books from the 'Batman and Robin' shelf created by Literature And SunshineTypeBih!",
+    "botSettings": {
+      "intros": true
+    },
+    "channelId": "622495162760691722",
+    "channelSource": "discord",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d7d1b013872dc7a3043eef3"
+        },
+        "key": "comics",
+        "name": "Comics"
+      }
+    ],
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "name": "The 'Batman and Robin' club",
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Biography & Autobiography"
+          ],
+          "_id": {
+            "$oid": "5d7d1b013872dc7a3043eef1"
+          },
+          "source": "google",
+          "sourceId": "sUHUf_ZXhS0C",
+          "readingState": "notStarted",
+          "title": "Robin and Lucienne Day",
+          "author": "Lesley Jackson",
+          "isbn": "1568982712",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "983404800000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=sUHUf_ZXhS0C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568484812272"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568484812272"
+            }
+          }
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "_id": {
+            "$oid": "5d7d1b013872dc7a3043eef2"
+          },
+          "source": "google",
+          "sourceId": "ktjKYsmHUGUC",
+          "readingState": "current",
+          "title": "Batman Undercover",
+          "author": "Paul Weissburg",
+          "isbn": "9781434240941",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1356998400000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=ktjKYsmHUGUC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568484812272"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568484812272"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "ownerDiscordId": "585146933983707152",
+    "ownerId": "5d23814fc3baa16d5bb98152",
+    "readingSpeed": "slow",
+    "schedules": [],
+    "unlisted": false,
+    "vibe": "power",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568484812272"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568485524985"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d8108bc8573c700246496f0"
+    },
+    "bio": "Come join me as we read books from the \"Books I won't read \" shelf created by currty!",
+    "botSettings": {
+      "intros": true
+    },
+    "channelId": "623554878488313867",
+    "channelSource": "discord",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d72d9139f1ac10024e71a98"
+        },
+        "key": "biography",
+        "name": "Biography"
+      },
+      {
+        "_id": {
+          "$oid": "5d72d9139f1ac10024e71a97"
+        },
+        "key": "business",
+        "name": "Business"
+      },
+      {
+        "_id": {
+          "$oid": "5d72d9139f1ac10024e71a96"
+        },
+        "key": "cookbooks",
+        "name": "Cookbooks"
+      }
+    ],
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "name": "The \"Books I won't read \" club",
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Performing Arts"
+          ],
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a94"
+          },
+          "source": "google",
+          "sourceId": "PB57P_dOF7EC",
+          "readingState": "notStarted",
+          "title": "Finding the Force of the Star Wars Franchise",
+          "author": "Matthew Kapell, John Shelton Lawrence",
+          "isbn": "0820463337",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1136073600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=PB57P_dOF7EC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568737468192"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568737468192"
+            }
+          }
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Juvenile Nonfiction"
+          ],
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a95"
+          },
+          "source": "google",
+          "sourceId": "WV8pZj_oNBwC",
+          "readingState": "current",
+          "title": "Harry Potter Power",
+          "author": "Julie-Anne Sykley",
+          "isbn": "9781921479311",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1262304000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=WV8pZj_oNBwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568737468192"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568737468192"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "ownerDiscordId": "585146933983707152",
+    "ownerId": "5d23814fc3baa16d5bb98152",
+    "readingSpeed": "moderate",
+    "schedules": [],
+    "unlisted": false,
+    "vibe": "chill",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568737468192"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568737468192"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d8108e88573c700246496f6"
+    },
+    "bio": "Come join me as we read books from the \"September TBR\" shelf created by Yusuf!",
+    "botSettings": {
+      "intros": true
+    },
+    "channelId": "623555062458744842",
+    "channelSource": "discord",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d8102af6e72f05206a82c16"
+        },
+        "key": "classics",
+        "name": "Classics"
+      },
+      {
+        "_id": {
+          "$oid": "5d8102af6e72f05206a82c15"
+        },
+        "key": "fiction",
+        "name": "Fiction"
+      },
+      {
+        "_id": {
+          "$oid": "5d8102af6e72f05206a82c14"
+        },
+        "key": "fantasy",
+        "name": "Fantasy"
+      },
+      {
+        "_id": {
+          "$oid": "5d8102af6e72f05206a82c13"
+        },
+        "key": "science",
+        "name": "Science"
+      },
+      {
+        "_id": {
+          "$oid": "5d8102af6e72f05206a82c12"
+        },
+        "key": "philosophy",
+        "name": "Philosophy"
+      }
+    ],
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "name": "The \"September TBR\" club",
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d8102af6e72f05206a82c10"
+          },
+          "source": "google",
+          "sourceId": "ZrNzAwAAQBAJ",
+          "readingState": "notStarted",
+          "title": "The Three-Body Problem",
+          "author": "Cixin Liu",
+          "isbn": "9781466853447",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1415664000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=ZrNzAwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568737512031"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568737512031"
+            }
+          }
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d8102af6e72f05206a82c11"
+          },
+          "source": "google",
+          "sourceId": "8XJ5Z4V28dQC",
+          "readingState": "current",
+          "title": "A Prayer for Owen Meany",
+          "author": "John Irving",
+          "isbn": "9780552776790",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1283299200000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=8XJ5Z4V28dQC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568737512032"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568737512032"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "ownerDiscordId": "585146933983707152",
+    "ownerId": "5d23814fc3baa16d5bb98152",
+    "readingSpeed": "moderate",
+    "schedules": [],
+    "unlisted": false,
+    "vibe": "chill",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568737512032"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568909900362"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d811b185165685e2b74adf6"
+    },
+    "bio": "Come join me as we read books from the 'Books I won't read ' shelf created by currty!",
+    "botSettings": {
+      "intros": true
+    },
+    "channelId": "623574591448547339",
+    "channelSource": "discord",
+    "genres": [
+      {
+        "_id": {
+          "$oid": "5d72d9139f1ac10024e71a98"
+        },
+        "key": "biography",
+        "name": "Biography"
+      },
+      {
+        "_id": {
+          "$oid": "5d72d9139f1ac10024e71a97"
+        },
+        "key": "business",
+        "name": "Business"
+      },
+      {
+        "_id": {
+          "$oid": "5d72d9139f1ac10024e71a96"
+        },
+        "key": "cookbooks",
+        "name": "Cookbooks"
+      }
+    ],
+    "maxMembers": {
+      "$numberInt": "-1"
+    },
+    "name": "The 'Books I won't read ' club",
+    "newShelf": {
+      "notStarted": [
+        {
+          "genres": [
+            "Performing Arts"
+          ],
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a94"
+          },
+          "source": "google",
+          "sourceId": "PB57P_dOF7EC",
+          "readingState": "notStarted",
+          "title": "Finding the Force of the Star Wars Franchise",
+          "author": "Matthew Kapell, John Shelton Lawrence",
+          "isbn": "0820463337",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1136073600000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=PB57P_dOF7EC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568742168111"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568742168111"
+            }
+          }
+        }
+      ],
+      "current": [
+        {
+          "genres": [
+            "Juvenile Nonfiction"
+          ],
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a95"
+          },
+          "source": "google",
+          "sourceId": "WV8pZj_oNBwC",
+          "readingState": "current",
+          "title": "Harry Potter Power",
+          "author": "Julie-Anne Sykley",
+          "isbn": "9781921479311",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1262304000000"
+            }
+          },
+          "coverImageURL": "https://books.google.com/books/content?id=WV8pZj_oNBwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "createdAt": {
+            "$date": {
+              "$numberLong": "1568742168111"
+            }
+          },
+          "updatedAt": {
+            "$date": {
+              "$numberLong": "1568742168111"
+            }
+          }
+        }
+      ],
+      "read": []
+    },
+    "ownerDiscordId": "508330023472857100",
+    "ownerId": "5d3f253f0f7e9047cb38cc10",
+    "readingSpeed": "moderate",
+    "schedules": [],
+    "unlisted": false,
+    "vibe": "chill",
+    "shelf": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568742168111"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568742168111"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
+]

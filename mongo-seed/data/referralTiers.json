@@ -1,0 +1,70 @@
+[
+  {
+    "_id": {
+      "$oid": "5d3f164880b16779fe3094b6"
+    },
+    "tiers": [
+      {
+        "tierNumber": {
+          "$numberInt": "1"
+        },
+        "referralCount": {
+          "$numberInt": "3"
+        },
+        "title": "Wanderer",
+        "badgeKey": "ref1",
+        "discordRole": "605424217026199573",
+        "profileBgSets": [
+          "nature"
+        ]
+      },
+      {
+        "tierNumber": {
+          "$numberInt": "2"
+        },
+        "referralCount": {
+          "$numberInt": "5"
+        },
+        "title": "Traveller",
+        "badgeKey": "ref2",
+        "discordRole": "605424678198312980"
+      },
+      {
+        "tierNumber": {
+          "$numberInt": "3"
+        },
+        "referralCount": {
+          "$numberInt": "10"
+        },
+        "title": "Explorer",
+        "badgeKey": "ref3",
+        "discordRole": "605424863267782697",
+        "profileBgSets": [
+          "quote"
+        ]
+      },
+      {
+        "tierNumber": {
+          "$numberInt": "4"
+        },
+        "referralCount": {
+          "$numberInt": "20"
+        },
+        "title": "Adventurer",
+        "badgeKey": "ref4",
+        "discordRole": "605424952656658432"
+      },
+      {
+        "tierNumber": {
+          "$numberInt": "5"
+        },
+        "referralCount": {
+          "$numberInt": "30"
+        },
+        "title": "Trailblazer",
+        "badgeKey": "ref5",
+        "discordRole": "605425124207755264"
+      }
+    ]
+  }
+]
