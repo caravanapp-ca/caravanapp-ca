@@ -78,5 +78,7 @@ export type FilterMongooseDocKeys<Base> = Omit<
   | '__v'
   | 'createdAt'
   | 'updatedAt'
+  | 'overwrite'
+  | '$locals'
   | '_id'
 >;
