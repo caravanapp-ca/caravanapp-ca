@@ -305,13 +305,13 @@ router.put(
       return;
     }
     userShelf.notStarted.forEach(
-      b =>
-        //@ts-ignore
-        (b.genres = b.genres || []) && (b._id = undefined)
+      b => (b.genres = b.genres || []) && (b._id = undefined)
     );
     userShelf.read.forEach(
       b =>
         (b.genres = b.genres || []) &&
+        // TODO: Fix typing for onboarding
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         //@ts-ignore
         (b._id = b._id ? new mongoose.Types.ObjectId(b._id) : undefined)
     );

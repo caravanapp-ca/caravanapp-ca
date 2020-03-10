@@ -78,6 +78,20 @@ router.put('/:id', isAuthenticated, async (req, res) => {
       content: postContent,
     };
     try {
+      const existingPost = await PostModel.findById(postId);
+      if (!existingPost) {
+        console.warn(
+          `User ${userId} attempted to edit post ${postId} but the post was not found.`
+        );
+        return res.status(404).send(`Unable to find post ${postId}`);
+      }
+      if (existingPost.authorId !== userId) {
+        console.warn(
+          `User ${userId} attempted to edit post ${postId} but was unauthorized.`
+        );
+        return res.status(401).send('Unauthorized to modify this resource.');
+      }
+      // TODO: Introduce validation against the PostContent.
       const editPostResult: PostDoc = await PostModel.findByIdAndUpdate(
         postId,
         postToUpload,
@@ -341,7 +355,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
       }
     })
     .filter(p => p !== null);
-  if ((search && search.length) > 0) {
+  if (search && search.length > 0) {
     let fuseSearchKey: string;
     let fuseOptions = {};
     switch (postSearchField) {

@@ -18,14 +18,11 @@ import {
   ActiveFilter,
   Club,
   ClubShelf,
-  CurrBookAction,
   FilterAutoMongoKeys,
   GroupVibe,
   ReadingSpeed,
-  ReadingState,
   SameKeysAs,
   Services,
-  ShelfEntry,
   User,
 } from '@caravanapp/types';
 
@@ -95,9 +92,13 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
 }
 
 router.get('/user/recommendations', async (req, res) => {
-  const { userId, pageSize, blockedClubIds } = req.query;
-  if (!userId) {
-    res.status(400).send('Require a userId');
+  const userId: unknown = req.query.userId;
+  const pageSize: unknown = req.query.pageSize;
+  const blockedClubIds: unknown = req.query.blockedClubIds;
+  if (typeof pageSize !== 'string' || isNaN(parseInt(pageSize))) {
+    res
+      .status(400)
+      .send('pageSize must be a string representation of a number.');
     return;
   }
   if (typeof userId !== 'string') {
@@ -117,9 +118,10 @@ router.get('/user/recommendations', async (req, res) => {
         minRecommendations
       )
     : defaultRecommendations;
-  const blockedClubIdsArr: string[] = blockedClubIds
-    ? blockedClubIds.split(',')
-    : [];
+  const blockedClubIdsArr: string[] =
+    blockedClubIds && typeof blockedClubIds === 'string'
+      ? blockedClubIds.split(',')
+      : [];
   const recommendedClubs = await getUserClubRecommendations(
     userId,
     limitToUse,
@@ -815,8 +817,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     createReferralAction(userId, 'createClub');
 
     const result: Services.CreateClubResult = {
-      //@ts-ignore
-      club: newClub,
+      club: newClub.toObject(),
       discord: newChannel,
     };
 
@@ -962,6 +963,15 @@ router.put(
     };
     let result: ClubDoc;
     try {
+      const currentClub = await ClubModel.findById(clubId);
+      if (!currentClub) {
+        return res.status(400).send(`No club with ID: ${clubId}`);
+      }
+      if (currentClub.ownerId !== newClub.ownerId) {
+        return res
+          .status(401)
+          .send('You do not have permission to modify this resource.');
+      }
       result = await ClubModel.findByIdAndUpdate(clubId, updateObj, {
         new: true,
       });
@@ -1028,144 +1038,6 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
       .send("You don't have permission to delete this channel.");
   }
 });
-
-// TODO: This route is to be deprecated once every club is moved to the new shelf format
-// Update a club's currently read book
-router.put(
-  '/:id/updatebook',
-  isAuthenticated,
-  check('newEntry').isBoolean(),
-  check('prevBookId').isString(),
-  check('currBookAction').isString(),
-  check('wantToRead').isArray(),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorArr = errors.array();
-      return res.status(422).json({ errors: errorArr });
-    }
-    const clubId = req.params.id as string;
-    const {
-      newBook,
-      newEntry,
-      prevBookId,
-      currBookAction,
-      wantToRead,
-    } = req.body;
-    const wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
-    const shelfEntry = shelfEntryWithHttpsBookUrl(newBook);
-    let resultNew;
-    if (currBookAction !== 'current') {
-      if (prevBookId) {
-        switch (currBookAction as CurrBookAction) {
-          case 'delete':
-            await ClubModel.updateOne(
-              { _id: clubId },
-              { $pull: { shelf: { _id: prevBookId } } }
-            );
-            break;
-          case 'notStarted':
-          case 'read':
-            const prevCondition = {
-              _id: clubId,
-              'shelf._id': prevBookId,
-            };
-            const prevUpdate = {
-              'shelf.$.readingState': currBookAction,
-              'shelf.$.updatedAt': new Date(),
-            };
-            try {
-              await ClubModel.findOneAndUpdate(prevCondition, prevUpdate, {
-                new: true,
-              });
-            } catch (err) {
-              return res.status(400).send(err);
-            }
-            break;
-          default:
-            return res
-              .status(400)
-              .send('Invalid value passed for currBookAction!');
-        }
-      }
-      let newCondition, newUpdate;
-      const newReadingState: ReadingState = 'current';
-      if (!newEntry) {
-        newCondition = {
-          _id: clubId,
-          'shelf._id': shelfEntry._id,
-        };
-        newUpdate = {
-          $set: {
-            'shelf.$.readingState': newReadingState,
-            'shelf.$.updatedAt': new Date(),
-          },
-        };
-      } else {
-        newCondition = {
-          _id: clubId,
-        };
-        newUpdate = {
-          $addToSet: {
-            shelf: {
-              ...shelfEntry,
-              readingState: newReadingState,
-              publishedDate: shelfEntry.publishedDate
-                ? new Date(shelfEntry.publishedDate)
-                : undefined,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          },
-        };
-      }
-      try {
-        resultNew = await ClubModel.findOneAndUpdate(newCondition, newUpdate, {
-          new: true,
-        });
-      } catch (err) {
-        return res.status(400).send(err);
-      }
-    }
-    const wtrReadingState: ReadingState = 'notStarted';
-    const updateObject = wantToReadArr.map(b => {
-      return {
-        ...b,
-        readingState: wtrReadingState,
-        publishedDate: b.publishedDate ? new Date(b.publishedDate) : undefined,
-        updatedAt: new Date(),
-      };
-    });
-    const wtrCondition = {
-      _id: clubId,
-    };
-    const wtrUpdate = {
-      $push: { shelf: { $each: updateObject } },
-    };
-    let resultWTR;
-    try {
-      await ClubModel.update(
-        { _id: clubId },
-        {
-          $pull: {
-            shelf: { readingState: 'notStarted', _id: { $ne: prevBookId } },
-          },
-        }
-      );
-      resultWTR = await ClubModel.findOneAndUpdate(wtrCondition, wtrUpdate, {
-        new: true,
-      });
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-    if (resultWTR) {
-      return res.status(200).send({ resultWTR });
-    } else if (resultNew) {
-      return res.status(200).send({ resultNew });
-    }
-    return res.sendStatus(400);
-  }
-);
 
 router.put('/:id/shelf', isAuthenticated, async (req, res) => {
   const errors = validationResult(req);

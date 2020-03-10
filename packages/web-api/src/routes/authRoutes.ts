@@ -37,8 +37,8 @@ export function destroySession(req: Request, res: Response) {
 }
 
 router.get('/discord/login', (req, res) => {
-  const { state } = req.query;
-  if (!state) {
+  const state: unknown = req.query.state;
+  if (typeof state !== 'string') {
     res.status(400).send('OAuth2 state required.');
     return;
   }
@@ -46,8 +46,8 @@ router.get('/discord/login', (req, res) => {
 });
 
 router.get('/discord/validatePermissions', async (req, res) => {
-  const userId: string | undefined = req.session.userId;
-  if (!userId) {
+  const userId: unknown = req.session.userId;
+  if (typeof userId !== 'string') {
     return res
       .status(400)
       .send('Require a logged in user to complete this request.');

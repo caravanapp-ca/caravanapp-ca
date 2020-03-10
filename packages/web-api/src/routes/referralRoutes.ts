@@ -28,7 +28,7 @@ const router = express.Router();
 router.get('/count/:userId', async (req, res) => {
   const { userId } = req.params;
   const referralDoc = await getReferralDoc(userId);
-  const referralCount = referralDoc ? referralDoc.referralCount : 0;
+  const referralCount = referralDoc?.referralCount ?? 0;
   return res.status(200).send({ referralCount });
 });
 
@@ -42,29 +42,23 @@ router.post(
       return res.status(422).json({ errors: errorArr });
     }
     const { referrerId } = req.params;
-    const referralDestinationIdStr = req.body.referralDestinationId;
+    const referralDestinationIdStr: unknown = req.body.referralDestinationId;
     if (
-      referralDestinationIdStr &&
-      typeof referralDestinationIdStr !== 'string'
+      referralDestinationIdStr != null &&
+      (typeof referralDestinationIdStr !== 'string' ||
+        !Types.ObjectId.isValid(referralDestinationIdStr))
     ) {
-      res.status(400).send('referralDestinationId must be a string');
-    }
-    if (
-      referralDestinationIdStr &&
-      !Types.ObjectId.isValid(referralDestinationIdStr)
-    ) {
-      res
+      return res
         .status(400)
-        .send(
-          `referralDestinationId ${referralDestinationIdStr} is not a valid Object ID.`
-        );
+        .send('referralDestinationId must be a valid Object ID.');
     }
+    const referralDestinationId: Types.ObjectId =
+      referralDestinationIdStr && typeof referralDestinationIdStr === 'string'
+        ? new Types.ObjectId(referralDestinationIdStr)
+        : null;
     // Ugly way of forcing to null, consider cleaning up
     let referralDestination: ReferralDestination = req.body.referralDestination
       ? req.body.referralDestination
-      : null;
-    const referralDestinationId: Types.ObjectId = referralDestinationIdStr
-      ? new Types.ObjectId(referralDestinationIdStr)
       : null;
     referralDestination =
       referralDestination == null ||
