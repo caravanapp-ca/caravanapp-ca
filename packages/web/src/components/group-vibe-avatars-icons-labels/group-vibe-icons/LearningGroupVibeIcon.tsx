@@ -1,7 +1,8 @@
 import React from 'react';
-import SchoolIcon from '@material-ui/icons/School';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+
+import { SvgIconProps } from '@material-ui/core';
+import { School } from '@material-ui/icons';
 
 export default function LearningGroupVibeIcon(props: SvgIconProps) {
-  return <SchoolIcon {...props} />;
+  return <School {...props} />;
 }

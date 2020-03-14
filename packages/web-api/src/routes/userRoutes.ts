@@ -1,27 +1,28 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { Omit } from 'utility-types';
+import Fuse from 'fuse.js';
 import mongoose from 'mongoose';
+
+import { UserDoc, UserModel } from '@caravanapp/mongo';
 import {
-  User,
-  ReadingSpeed,
   FilterAutoMongoKeys,
-  UserQA,
-  Services,
+  ReadingSpeed,
   SameKeysAs,
-} from '@caravan/buddy-reading-types';
-import { UserDoc, UserModel } from '@caravan/buddy-reading-mongo';
+  Services,
+  User,
+  UserQA,
+} from '@caravanapp/types';
+
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
-import {
-  userSlugExists,
-  getMe,
-  getUser,
-  mutateUserDiscordContent,
-} from '../services/user';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
 import { createReferralAction } from '../services/referral';
-import Fuse from 'fuse.js';
+import {
+  getMe,
+  getUser,
+  mutateUserDiscordContent,
+  userSlugExists,
+} from '../services/user';
 
 const router = express.Router();
 
@@ -88,7 +89,7 @@ router.get('/', async (req, res) => {
   }
   if (isSearching) {
     let fuseSearchKey: string;
-    let fuseOptions: Fuse.FuseOptions<Services.GetUsers['users']> = {};
+    let fuseOptions = {};
     switch (userSearchField) {
       case 'bookTitle':
         fuseSearchKey = 'shelf.notStarted.title';
@@ -100,8 +101,6 @@ router.get('/', async (req, res) => {
           location: 0,
           distance: 100,
           maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -115,8 +114,6 @@ router.get('/', async (req, res) => {
           location: 0,
           distance: 100,
           maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -125,8 +122,6 @@ router.get('/', async (req, res) => {
         fuseSearchKey = 'urlSlug';
         fuseOptions = {
           caseSensitive: false,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -143,7 +138,7 @@ router.get('/', async (req, res) => {
   if (isSearching && users.length > limit) {
     users = users.slice(0, limit);
   }
-  let mutatedUsers: Services.GetUsers['users'] = users.map(userDocument => {
+  const mutatedUsers: Services.GetUsers['users'] = users.map(userDocument => {
     mutateUserDiscordContent(userDocument);
     const user: Omit<User, 'createdAt' | 'updatedAt'> & {
       createdAt: string;
@@ -310,13 +305,13 @@ router.put(
       return;
     }
     userShelf.notStarted.forEach(
-      b =>
-        //@ts-ignore
-        (b.genres = b.genres || []) && (b._id = undefined)
+      b => (b.genres = b.genres || []) && (b._id = undefined)
     );
     userShelf.read.forEach(
       b =>
         (b.genres = b.genres || []) &&
+        // TODO: Fix typing for onboarding
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         //@ts-ignore
         (b._id = b._id ? new mongoose.Types.ObjectId(b._id) : undefined)
     );

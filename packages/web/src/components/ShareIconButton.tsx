@@ -1,12 +1,19 @@
-import { makeStyles, Menu, MenuItem, Link } from '@material-ui/core';
-import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import ShareIcon from '@material-ui/icons/Share';
 import copyToClipboard from 'copy-to-clipboard';
-import { User } from '@caravan/buddy-reading-types';
-import { washedTheme } from '../theme';
+import React from 'react';
+
+import { User } from '@caravanapp/types';
+import {
+  IconButton,
+  Link,
+  makeStyles,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from '@material-ui/core';
+import { Share as ShareIcon } from '@material-ui/icons';
+
 import { getReferralLink } from '../common/referral';
+import { washedTheme } from '../theme';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {
@@ -90,9 +97,7 @@ export default function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href={
             user
-              ? `http://www.reddit.com/submit?url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
-                  user._id
-                }%26utm_source%3Drd&title=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan%21`
+              ? `http://www.reddit.com/submit?url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${user._id}%26utm_source%3Drd&title=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan%21`
               : `http://www.reddit.com/submit?url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Drd&title=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan%21`
           }
           target={'_blank'}
@@ -103,9 +108,7 @@ export default function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href={
             user
-              ? `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
-                  user._id
-                }%26utm_source%3Dfb%2F&amp;src=sdkpreparse`
+              ? `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${user._id}%26utm_source%3Dfb%2F&amp;src=sdkpreparse`
               : 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dfb%2F&amp;src=sdkpreparse'
           }
           target={'_blank'}
@@ -116,11 +119,7 @@ export default function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href={
             user
-              ? `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
-                  user._id
-                }%26utm_source%3Dtw&text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
-                  user._id
-                }%26utm_source%3Dtw`
+              ? `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${user._id}%26utm_source%3Dtw&text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${user._id}%26utm_source%3Dtw`
               : `https://twitter.com/intent/tweet/?original_referer=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dtw&text=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with%3F%20Check%20out%20Caravan&url=https%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dtw`
           }
           target={'_blank'}
@@ -131,9 +130,7 @@ export default function ShareIconButton(props: ShareIconButtonProps) {
         <Link
           href={
             user
-              ? `mailto:?subject=Come%20read%20with%20me%20on%20this%20cool%20new%20site%20for%20online%20book%20clubs&body=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with,%20from%20all%20around%20the%20world%3F%20Check%20out%20Caravan%20%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${
-                  user._id
-                }%26utm_source%3Dem`
+              ? `mailto:?subject=Come%20read%20with%20me%20on%20this%20cool%20new%20site%20for%20online%20book%20clubs&body=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with,%20from%20all%20around%20the%20world%3F%20Check%20out%20Caravan%20%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%3Fref%3D${user._id}%26utm_source%3Dem`
               : 'mailto:?subject=Come%20read%20with%20me%20on%20this%20cool%20new%20site%20for%20online%20book%20clubs&body=Looking%20to%20read%20more%3F%20Want%20to%20find%20people%20to%20talk%20about%20your%20favourite%20books%20with,%20from%20all%20around%20the%20world%3F%20Check%20out%20Caravan%20%0D%0Ahttps%3A%2F%2Fcaravanapp.ca%2Fclubs%3Futm_source%3Dem'
           }
           target={'_blank'}

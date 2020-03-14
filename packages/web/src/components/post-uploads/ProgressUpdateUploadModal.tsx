@@ -1,25 +1,27 @@
 import React from 'react';
+import { TransitionProps } from 'react-transition-group/Transition';
+
 import {
   FilterAutoMongoKeys,
-  ShelfEntry,
-  ProgressUpdateType,
   PostContent,
-} from '@caravan/buddy-reading-types';
+  ProgressUpdateType,
+  ShelfEntry,
+} from '@caravanapp/types';
 import {
-  Dialog,
-  makeStyles,
   AppBar,
+  Button,
+  Container,
+  Dialog,
+  DialogProps,
+  makeStyles,
+  Slide,
+  TextField,
   Toolbar,
   Typography,
-  Slide,
-  Container,
-  TextField,
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import { TransitionProps } from 'react-transition-group/Transition';
-import BookSearch from '../../views/books/BookSearch';
+
 import { uploadPost } from '../../services/post';
-import { DialogProps } from '@material-ui/core/Dialog';
+import BookSearch from '../../views/books/BookSearch';
 import ProgressUpdateSlider from './ProgressUpdateSlider';
 
 const useStyles = makeStyles(theme => ({

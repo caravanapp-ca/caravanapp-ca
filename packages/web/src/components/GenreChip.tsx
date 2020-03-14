@@ -1,14 +1,16 @@
+import clsx from 'clsx';
 import React from 'react';
+
 import {
-  makeStyles,
-  createStyles,
-  Typography,
   Button,
+  createStyles,
+  makeStyles,
+  MuiThemeProvider,
+  Typography,
   useTheme,
 } from '@material-ui/core';
-import clsx from 'clsx';
+
 import { washedTheme } from '../theme';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme =>
   createStyles({

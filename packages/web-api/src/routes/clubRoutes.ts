@@ -3,58 +3,51 @@ import {
   ChannelData,
   Guild,
   GuildChannel,
-  TextChannel,
-  VoiceChannel,
   GuildMember,
   PermissionResolvable,
+  TextChannel,
+  VoiceChannel,
 } from 'discord.js';
 import express from 'express';
-import { check, validationResult, oneOf } from 'express-validator';
+import { check, oneOf, validationResult } from 'express-validator';
 import Fuse from 'fuse.js';
-import { Omit } from 'utility-types';
+import { Types } from 'mongoose';
+
+import { ClubDoc, ClubModel, UserDoc, UserModel } from '@caravanapp/mongo';
 import {
-  Club,
-  FilterAutoMongoKeys,
-  ReadingState,
-  Services,
-  ShelfEntry,
-  User,
-  CurrBookAction,
-  ReadingSpeed,
-  GroupVibe,
   ActiveFilter,
+  Club,
   ClubShelf,
+  FilterAutoMongoKeys,
+  GroupVibe,
+  ReadingSpeed,
   SameKeysAs,
-} from '@caravan/buddy-reading-types';
+  Services,
+  User,
+} from '@caravanapp/types';
+
 import {
-  ClubDoc,
-  ClubModel,
-  UserDoc,
-  UserModel,
-} from '@caravan/buddy-reading-mongo';
-import { isAuthenticated } from '../middleware/auth';
-import {
-  shelfEntryWithHttpsBookUrl,
-  getClubUrl,
-  getDefaultClubTopic,
-  getUserClubRecommendations,
-  getUserChannels,
-  getCountableMembersInChannel,
-  getMemberCount,
-  getClub,
-  getClubRecommendationFromReferral,
-  getChannelMembers,
-  modifyClubMembership,
-} from '../services/club';
-import { ReadingDiscordBot } from '../services/discord';
-import { getUser, getUsername } from '../services/user';
-import { createReferralAction, getReferralDoc } from '../services/referral';
-import {
-  VALID_READING_STATES,
   MAX_SHELF_SIZE,
   UNLIMITED_CLUB_MEMBERS_VALUE,
+  VALID_READING_STATES,
 } from '../common/globalConstantsAPI';
-import { Types } from 'mongoose';
+import { isAuthenticated } from '../middleware/auth';
+import {
+  getChannelMembers,
+  getClub,
+  getClubRecommendationFromReferral,
+  getClubUrl,
+  getCountableMembersInChannel,
+  getDefaultClubTopic,
+  getMemberCount,
+  getUserChannels,
+  getUserClubRecommendations,
+  modifyClubMembership,
+  shelfEntryWithHttpsBookUrl,
+} from '../services/club';
+import { ReadingDiscordBot } from '../services/discord';
+import { createReferralAction, getReferralDoc } from '../services/referral';
+import { getUser, getUsername } from '../services/user';
 
 const router = express.Router();
 
@@ -99,9 +92,13 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
 }
 
 router.get('/user/recommendations', async (req, res) => {
-  const { userId, pageSize, blockedClubIds } = req.query;
-  if (!userId) {
-    res.status(400).send('Require a userId');
+  const userId: unknown = req.query.userId;
+  const pageSize: unknown = req.query.pageSize;
+  const blockedClubIds: unknown = req.query.blockedClubIds;
+  if (typeof pageSize !== 'string' || isNaN(parseInt(pageSize))) {
+    res
+      .status(400)
+      .send('pageSize must be a string representation of a number.');
     return;
   }
   if (typeof userId !== 'string') {
@@ -121,9 +118,10 @@ router.get('/user/recommendations', async (req, res) => {
         minRecommendations
       )
     : defaultRecommendations;
-  const blockedClubIdsArr: string[] = blockedClubIds
-    ? blockedClubIds.split(',')
-    : [];
+  const blockedClubIdsArr: string[] =
+    blockedClubIds && typeof blockedClubIds === 'string'
+      ? blockedClubIds.split(',')
+      : [];
   const recommendedClubs = await getUserClubRecommendations(
     userId,
     limitToUse,
@@ -315,9 +313,7 @@ router.get('/', async (req, res) => {
     })
     .filter(c => c !== null);
   if (isSearching) {
-    const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
-      // TODO: Typescript doesn't like the use of keys here.
-      // @ts-ignore
+    const fuseOptions = {
       keys: [
         { name: 'newShelf.current.title', weight: 3 / 9 },
         { name: 'name', weight: 2 / 9 },
@@ -428,7 +424,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   if (!clubDocs) {
     return res.status(404).send(`No clubs exist for user ${userId}`);
   }
-  let filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
+  const filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
     clubDocs.map(async clubDoc => {
       const discordChannel: GuildChannel | null = guild.channels.get(
         clubDoc.channelId
@@ -473,9 +469,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
     c => c != null
   );
   if (search && search.length > 0) {
-    const fuseOptions: Fuse.FuseOptions<Services.GetClubs['clubs']> = {
-      // TODO: Typescript doesn't like the use of keys here.
-      // @ts-ignore
+    const fuseOptions = {
       keys: ['name', 'shelf.title', 'shelf.author'],
     };
     const fuse = new Fuse(filteredClubsWithMembers, fuseOptions);
@@ -823,8 +817,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     createReferralAction(userId, 'createClub');
 
     const result: Services.CreateClubResult = {
-      //@ts-ignore
-      club: newClub,
+      club: newClub.toObject(),
       discord: newChannel,
     };
 
@@ -970,6 +963,15 @@ router.put(
     };
     let result: ClubDoc;
     try {
+      const currentClub = await ClubModel.findById(clubId);
+      if (!currentClub) {
+        return res.status(400).send(`No club with ID: ${clubId}`);
+      }
+      if (currentClub.ownerId !== newClub.ownerId) {
+        return res
+          .status(401)
+          .send('You do not have permission to modify this resource.');
+      }
       result = await ClubModel.findByIdAndUpdate(clubId, updateObj, {
         new: true,
       });
@@ -1036,144 +1038,6 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
       .send("You don't have permission to delete this channel.");
   }
 });
-
-// TODO: This route is to be deprecated once every club is moved to the new shelf format
-// Update a club's currently read book
-router.put(
-  '/:id/updatebook',
-  isAuthenticated,
-  check('newEntry').isBoolean(),
-  check('prevBookId').isString(),
-  check('currBookAction').isString(),
-  check('wantToRead').isArray(),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorArr = errors.array();
-      return res.status(422).json({ errors: errorArr });
-    }
-    const clubId = req.params.id as string;
-    const {
-      newBook,
-      newEntry,
-      prevBookId,
-      currBookAction,
-      wantToRead,
-    } = req.body;
-    let wantToReadArr = wantToRead as FilterAutoMongoKeys<ShelfEntry>[];
-    const shelfEntry = shelfEntryWithHttpsBookUrl(newBook);
-    let resultNew;
-    if (currBookAction !== 'current') {
-      if (prevBookId) {
-        switch (currBookAction as CurrBookAction) {
-          case 'delete':
-            await ClubModel.updateOne(
-              { _id: clubId },
-              { $pull: { shelf: { _id: prevBookId } } }
-            );
-            break;
-          case 'notStarted':
-          case 'read':
-            const prevCondition = {
-              _id: clubId,
-              'shelf._id': prevBookId,
-            };
-            const prevUpdate = {
-              'shelf.$.readingState': currBookAction,
-              'shelf.$.updatedAt': new Date(),
-            };
-            try {
-              await ClubModel.findOneAndUpdate(prevCondition, prevUpdate, {
-                new: true,
-              });
-            } catch (err) {
-              return res.status(400).send(err);
-            }
-            break;
-          default:
-            return res
-              .status(400)
-              .send('Invalid value passed for currBookAction!');
-        }
-      }
-      let newCondition, newUpdate;
-      const newReadingState: ReadingState = 'current';
-      if (!newEntry) {
-        newCondition = {
-          _id: clubId,
-          'shelf._id': shelfEntry._id,
-        };
-        newUpdate = {
-          $set: {
-            'shelf.$.readingState': newReadingState,
-            'shelf.$.updatedAt': new Date(),
-          },
-        };
-      } else {
-        newCondition = {
-          _id: clubId,
-        };
-        newUpdate = {
-          $addToSet: {
-            shelf: {
-              ...shelfEntry,
-              readingState: newReadingState,
-              publishedDate: shelfEntry.publishedDate
-                ? new Date(shelfEntry.publishedDate)
-                : undefined,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          },
-        };
-      }
-      try {
-        resultNew = await ClubModel.findOneAndUpdate(newCondition, newUpdate, {
-          new: true,
-        });
-      } catch (err) {
-        return res.status(400).send(err);
-      }
-    }
-    const wtrReadingState: ReadingState = 'notStarted';
-    const updateObject = wantToReadArr.map(b => {
-      return {
-        ...b,
-        readingState: wtrReadingState,
-        publishedDate: b.publishedDate ? new Date(b.publishedDate) : undefined,
-        updatedAt: new Date(),
-      };
-    });
-    const wtrCondition = {
-      _id: clubId,
-    };
-    const wtrUpdate = {
-      $push: { shelf: { $each: updateObject } },
-    };
-    let resultWTR;
-    try {
-      await ClubModel.update(
-        { _id: clubId },
-        {
-          $pull: {
-            shelf: { readingState: 'notStarted', _id: { $ne: prevBookId } },
-          },
-        }
-      );
-      resultWTR = await ClubModel.findOneAndUpdate(wtrCondition, wtrUpdate, {
-        new: true,
-      });
-    } catch (err) {
-      return res.status(400).send(err);
-    }
-    if (resultWTR) {
-      return res.status(200).send({ resultWTR });
-    } else if (resultNew) {
-      return res.status(200).send({ resultNew });
-    }
-    return res.sendStatus(400);
-  }
-);
 
 router.put('/:id/shelf', isAuthenticated, async (req, res) => {
   const errors = validationResult(req);

@@ -1,9 +1,9 @@
 import {
-  ReadingState,
-  EmailSettings,
-  UnlimitedClubMembersValue,
   ClubRecommendationKey,
-} from '@caravan/buddy-reading-types';
+  EmailSettings,
+  ReadingState,
+  UnlimitedClubMembersValue,
+} from '@caravanapp/types';
 
 // This function returns the channel ID for #general-chat
 // TODO: This breaks if we have multiple Discord servers.

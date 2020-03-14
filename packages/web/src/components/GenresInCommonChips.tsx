@@ -1,6 +1,8 @@
 import React from 'react';
-import { makeStyles, createStyles, Theme, Chip } from '@material-ui/core';
-import HeartIcon from '@material-ui/icons/Favorite';
+
+import { Chip, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { Favorite } from '@material-ui/icons';
+
 import hexToRgb from '../common/hexToRGB';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +42,7 @@ export default function GenresInCommonChips(props: GenresInCommonChipsProps) {
     <Chip
       label={name}
       key={name}
-      icon={common ? <HeartIcon /> : undefined}
+      icon={common ? <Favorite /> : undefined}
       classes={{
         root: classes.baseChip,
         icon: classes.chipIcon,

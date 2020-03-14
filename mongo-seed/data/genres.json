@@ -1,0 +1,258 @@
+[
+  {
+    "_id": {
+      "$oid": "5d13a4bd8de893b3319fbd7c"
+    },
+    "mainGenres": [
+      "art",
+      "biography",
+      "business",
+      "chickLit",
+      "childrens",
+      "christian",
+      "classics",
+      "comics",
+      "contemporary",
+      "cookbooks",
+      "crime",
+      "eBooks",
+      "fantasy",
+      "fiction",
+      "gayAndLesbian",
+      "graphicNovels",
+      "historicalFiction",
+      "history",
+      "horror",
+      "humorAndComedy",
+      "manga",
+      "memoir",
+      "music",
+      "mystery",
+      "nonFiction",
+      "paranormal",
+      "philosophy",
+      "poetry",
+      "psychology",
+      "religion",
+      "romance",
+      "science",
+      "selfHelp",
+      "suspense",
+      "spirituality",
+      "sports",
+      "thriller",
+      "travel",
+      "youngAdult"
+    ],
+    "genres": {
+      "art": {
+        "key": "art",
+        "name": "Art",
+        "subgenres": []
+      },
+      "biography": {
+        "key": "biography",
+        "name": "Biography",
+        "subgenres": []
+      },
+      "business": {
+        "key": "business",
+        "name": "Business",
+        "subgenres": []
+      },
+      "chickLit": {
+        "key": "chickLit",
+        "name": "Chick Lit",
+        "subgenres": []
+      },
+      "childrens": {
+        "key": "childrens",
+        "name": "Childrens",
+        "subgenres": []
+      },
+      "christian": {
+        "key": "christian",
+        "name": "Christian",
+        "subgenres": []
+      },
+      "classics": {
+        "key": "classics",
+        "name": "Classics",
+        "subgenres": []
+      },
+      "comics": {
+        "key": "comics",
+        "name": "Comics",
+        "subgenres": []
+      },
+      "contemporary": {
+        "key": "contemporary",
+        "name": "Contemporary",
+        "subgenres": []
+      },
+      "cookbooks": {
+        "key": "cookbooks",
+        "name": "Cookbooks",
+        "subgenres": []
+      },
+      "crime": {
+        "key": "crime",
+        "name": "Crime",
+        "subgenres": []
+      },
+      "eBooks": {
+        "key": "eBooks",
+        "name": "eBooks",
+        "subgenres": []
+      },
+      "fantasy": {
+        "key": "fantasy",
+        "name": "Fantasy",
+        "subgenres": []
+      },
+      "fiction": {
+        "key": "fiction",
+        "name": "Fiction",
+        "subgenres": []
+      },
+      "gayAndLesbian": {
+        "key": "gayAndLesbian",
+        "name": "Gay and Lesbian",
+        "subgenres": []
+      },
+      "graphicNovels": {
+        "key": "graphicNovels",
+        "name": "Graphic Novels",
+        "subgenres": []
+      },
+      "historicalFiction": {
+        "key": "historicalFiction",
+        "name": "Historical Fiction",
+        "subgenres": []
+      },
+      "history": {
+        "key": "history",
+        "name": "History",
+        "subgenres": []
+      },
+      "horror": {
+        "key": "horror",
+        "name": "Horror",
+        "subgenres": []
+      },
+      "humorAndComedy": {
+        "key": "humorAndComedy",
+        "name": "Humor and Comedy",
+        "subgenres": []
+      },
+      "manga": {
+        "key": "manga",
+        "name": "Manga",
+        "subgenres": []
+      },
+      "memoir": {
+        "key": "memoir",
+        "name": "Memoir",
+        "subgenres": []
+      },
+      "music": {
+        "key": "music",
+        "name": "Music",
+        "subgenres": []
+      },
+      "mystery": {
+        "key": "mystery",
+        "name": "Mystery",
+        "subgenres": []
+      },
+      "nonFiction": {
+        "key": "nonFiction",
+        "name": "Nonfiction",
+        "subgenres": []
+      },
+      "paranormal": {
+        "key": "paranormal",
+        "name": "Paranormal",
+        "subgenres": []
+      },
+      "philosophy": {
+        "key": "philosophy",
+        "name": "Philosophy",
+        "subgenres": []
+      },
+      "poetry": {
+        "key": "poetry",
+        "name": "Poetry",
+        "subgenres": []
+      },
+      "psychology": {
+        "key": "psychology",
+        "name": "Psychology",
+        "subgenres": []
+      },
+      "religion": {
+        "key": "religion",
+        "name": "Religion",
+        "subgenres": []
+      },
+      "romance": {
+        "key": "romance",
+        "name": "Romance",
+        "subgenres": []
+      },
+      "science": {
+        "key": "science",
+        "name": "Science",
+        "subgenres": []
+      },
+      "selfHelp": {
+        "key": "selfHelp",
+        "name": "Self Help",
+        "subgenres": []
+      },
+      "suspense": {
+        "key": "suspense",
+        "name": "Suspense",
+        "subgenres": []
+      },
+      "spirituality": {
+        "key": "spirituality",
+        "name": "Spirituality",
+        "subgenres": []
+      },
+      "sports": {
+        "key": "sports",
+        "name": "Sports",
+        "subgenres": []
+      },
+      "thriller": {
+        "key": "thriller",
+        "name": "Thriller",
+        "subgenres": []
+      },
+      "travel": {
+        "key": "travel",
+        "name": "Travel",
+        "subgenres": []
+      },
+      "youngAdult": {
+        "key": "youngAdult",
+        "name": "Young Adult",
+        "subgenres": []
+      }
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1561568446981"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1561568446981"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
+]

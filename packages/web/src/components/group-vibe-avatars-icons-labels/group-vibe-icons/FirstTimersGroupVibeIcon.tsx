@@ -1,7 +1,8 @@
 import React from 'react';
-import CakeIcon from '@material-ui/icons/Cake';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+
+import { SvgIconProps } from '@material-ui/core';
+import { Cake } from '@material-ui/icons';
 
 export default function FirstTimersGroupVibeIcon(props: SvgIconProps) {
-  return <CakeIcon {...props} />;
+  return <Cake {...props} />;
 }

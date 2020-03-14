@@ -22,5 +22,12 @@ steps:
     entrypoint: yarn
     args: ['build']
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'app.production.yaml']
+    args:
+      [
+        'app',
+        'deploy',
+        'app.production.yaml',
+        '--promote',
+        '--stop-previous-version',
+      ]
 timeout: '1600s'

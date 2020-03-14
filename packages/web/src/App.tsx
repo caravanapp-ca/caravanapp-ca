@@ -1,45 +1,46 @@
+import qs from 'query-string';
 import React, { useEffect, useState } from 'react';
+import ReactResizeDetector from 'react-resize-detector';
 import {
   BrowserRouter as Router,
-  Route,
   Redirect,
+  Route,
   Switch,
 } from 'react-router-dom';
-import ReactResizeDetector from 'react-resize-detector';
-import qs from 'query-string';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider } from '@material-ui/styles';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+
+import { ReferralDestination, User } from '@caravanapp/types';
 import DateFnsUtils from '@date-io/date-fns';
-import { User, ReferralDestination } from '@caravan/buddy-reading-types';
-import Footer from './components/Footer';
-import Club from './views/club/Club';
-import CreateClub from './views/club/CreateClub';
-import Home from './views/home/Home';
-import Onboarding from './views/onboarding/Onboarding';
-import Privacy from './views/privacy/Privacy';
-import UpdateBook from './views/club/UpdateBook';
-import UserView from './views/user/User';
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+
+import { getDiscordAuthUrl } from './common/auth';
+import { getClubIdFromPathname } from './common/club';
+import { deleteCookie, getCookie } from './common/cookies';
+import { GAListener } from './common/GAListener';
+import getUtmSourceValue from './common/getUtmSourceValue';
 import {
   clearStorageAuthState,
   KEY_DISCORD_OAUTH_STATE,
   KEY_USER,
 } from './common/localStorage';
-import { deleteCookie, getCookie } from './common/cookies';
-import { GAListener } from './common/GAListener';
-import { getClubIdFromPathname } from './common/club';
-import theme from './theme';
-import { getUser } from './services/user';
-import { handleReferral } from './services/referral';
-import About from './views/about/About';
-import getUtmSourceValue from './common/getUtmSourceValue';
-import { validateDiscordPermissions } from './services/auth';
-import { getDiscordAuthUrl } from './common/auth';
-import Settings from './views/settings/Settings';
-import RecommendedClubs from './views/recommend/RecommendedClubs';
+import Footer from './components/Footer';
 import CreateShelf from './components/post-uploads/CreateShelf';
+import { validateDiscordPermissions } from './services/auth';
+import { handleReferral } from './services/referral';
+import { getUser } from './services/user';
+import theme from './theme';
+import About from './views/about/About';
+import Club from './views/club/Club';
+import CreateClub from './views/club/CreateClub';
+import UpdateBook from './views/club/UpdateBook';
+import Home from './views/home/Home';
+import Onboarding from './views/onboarding/Onboarding';
 import EditShelf from './views/post/EditShelf';
 import Post from './views/post/Post';
+import Privacy from './views/privacy/Privacy';
+import RecommendedClubs from './views/recommend/RecommendedClubs';
+import Settings from './views/settings/Settings';
+import UserView from './views/user/User';
 
 const trackingId =
   process.env.NODE_ENV === 'production' ? 'UA-142888065-1' : undefined;

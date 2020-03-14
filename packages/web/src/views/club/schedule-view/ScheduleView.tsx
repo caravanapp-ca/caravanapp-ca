@@ -13,12 +13,8 @@ import {
   Tooltip,
   Button,
 } from '@material-ui/core';
-import {
-  usePickerState,
-  Calendar,
-  MaterialUiPickersDate,
-} from '@material-ui/pickers';
-import { makeStyles } from '@material-ui/styles';
+import { usePickerState, Calendar } from '@material-ui/pickers';
+import { makeStyles } from '@material-ui/core';
 import { DateRange, NotInterested } from '@material-ui/icons';
 import {
   addDays,
@@ -39,7 +35,7 @@ import {
   LoadableMemberStatus,
   Discussion,
   ClubScheduleEvent,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {
   MIN_SCHEDULE_DURATION_DAYS,
@@ -318,8 +314,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
   } = props.schedule;
 
   const renderDay = (
-    day: MaterialUiPickersDate,
-    _selectedDate: MaterialUiPickersDate,
+    day: Date | null,
+    _selectedDate: Date | null,
     dayInCurrentMonth: boolean
   ) => {
     // Shouldn't happen under any normal circumstances.

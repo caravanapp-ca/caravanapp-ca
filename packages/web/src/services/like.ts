@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { LikeAction } from '@caravan/buddy-reading-types';
+
+import { LikeAction } from '@caravanapp/types';
 
 const likeRoute = '/api/likes';
 

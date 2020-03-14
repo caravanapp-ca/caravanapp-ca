@@ -1,5 +1,5 @@
 import { REFERRAL_BADGE_KEYS } from './globalConstants';
-import { UserBadge } from '@caravan/buddy-reading-types';
+import { UserBadge } from '@caravanapp/types';
 
 export const getBadgeToDisplay = (badges: UserBadge[] | undefined) => {
   if (!badges || badges.length === 0) {

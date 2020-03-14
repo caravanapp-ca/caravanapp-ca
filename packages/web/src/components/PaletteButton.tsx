@@ -1,7 +1,7 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { Theme, createStyles } from '@material-ui/core';
-import { PaletteObject } from '@caravan/buddy-reading-types';
+
+import { PaletteObject } from '@caravanapp/types';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

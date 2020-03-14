@@ -1,0 +1,30 @@
+# Node
+node_modules
+.npmrc
+.eslintcache
+package-lock.json
+*.tsbuildinfo
+
+# App
+build
+coverage
+.nyc_output
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Editor
+*.code-workspace
+.idea/
+.vscode/
+
+# Misc
+.DS_Store
+*.log
+*.cache
+Thumbs.db
+
+*Dockerfile*
+*docker-compose*

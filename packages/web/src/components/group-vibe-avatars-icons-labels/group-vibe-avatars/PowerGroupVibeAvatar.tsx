@@ -1,8 +1,9 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import PowerGroupVibeIcon from '../group-vibe-icons/PowerGroupVibeIcon';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
+
+import { Avatar, createStyles, makeStyles, Theme } from '@material-ui/core';
+
 import { washedTheme } from '../../../theme';
+import PowerGroupVibeIcon from '../group-vibe-icons/PowerGroupVibeIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

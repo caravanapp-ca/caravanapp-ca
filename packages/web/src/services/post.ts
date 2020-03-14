@@ -1,10 +1,11 @@
 import axios from 'axios';
+
 import {
-  Services,
   PostContent,
-  PostUserInfo,
   PostSearchField,
-} from '@caravan/buddy-reading-types';
+  PostUserInfo,
+  Services,
+} from '@caravanapp/types';
 
 const postRoute = '/api/posts';
 

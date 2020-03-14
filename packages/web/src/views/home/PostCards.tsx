@@ -1,15 +1,14 @@
 import React from 'react';
 import LazyLoad from 'react-lazyload';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import DiscordLoginModal from '../../components/DiscordLoginModal';
+
 import {
-  User,
-  PostWithAuthorInfoAndLikes,
   PostUserInfo,
-} from '@caravan/buddy-reading-types';
+  PostWithAuthorInfoAndLikes,
+  User,
+} from '@caravanapp/types';
+import { Container, Grid, makeStyles, Typography } from '@material-ui/core';
+
+import DiscordLoginModal from '../../components/DiscordLoginModal';
 import PlaceholderCard from '../../components/PlaceholderCard';
 import ShelfPostCard from '../post/ShelfPostCard';
 

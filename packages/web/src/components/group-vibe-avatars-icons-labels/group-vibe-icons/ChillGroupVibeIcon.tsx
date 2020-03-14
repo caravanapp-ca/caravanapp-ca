@@ -1,7 +1,8 @@
 import React from 'react';
-import ToysIcon from '@material-ui/icons/Toys';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+
+import { SvgIconProps } from '@material-ui/core';
+import { Toys } from '@material-ui/icons';
 
 export default function ChillGroupVibeIcon(props: SvgIconProps) {
-  return <ToysIcon {...props} />;
+  return <Toys {...props} />;
 }

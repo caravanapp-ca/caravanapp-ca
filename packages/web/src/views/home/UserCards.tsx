@@ -1,26 +1,32 @@
 import React from 'react';
 import LazyLoad from 'react-lazyload';
-import { CircularProgress, Link } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import DiscordLoginModal from '../../components/DiscordLoginModal';
-import { User, UserWithInvitableClubs } from '@caravan/buddy-reading-types';
+
+import { User, UserWithInvitableClubs } from '@caravanapp/types';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CircularProgress,
+  Container,
+  Grid,
+  Link,
+  makeStyles,
+  MuiThemeProvider,
+  Typography,
+} from '@material-ui/core';
+
 import AdapterLink from '../../components/AdapterLink';
-import theme, { makeUserTheme, makeUserDarkTheme } from '../../theme';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
 import GenresInCommonChips from '../../components/GenresInCommonChips';
-import UserCardShelfList from '../../components/UserCardShelfList';
 import { InviteToClubMenu } from '../../components/InviteToClubMenu';
-import UserAvatar from '../user/UserAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
-import QuestionAnswer from '../../components/QuestionAnswer';
 import { OwnProfileCardActions } from '../../components/OwnProfileCardActions';
 import PlaceholderCard from '../../components/PlaceholderCard';
+import QuestionAnswer from '../../components/QuestionAnswer';
+import UserCardShelfList from '../../components/UserCardShelfList';
+import theme, { makeUserDarkTheme, makeUserTheme } from '../../theme';
+import UserAvatar from '../user/UserAvatar';
 
 const useStyles = makeStyles(theme => ({
   card: {

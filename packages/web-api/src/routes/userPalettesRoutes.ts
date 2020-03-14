@@ -1,4 +1,5 @@
 import express from 'express';
+
 import { getUserPalettes } from '../services/userPalettes';
 
 const router = express.Router();

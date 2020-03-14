@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Button,
   Dialog,
@@ -6,9 +7,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  MuiThemeProvider,
 } from '@material-ui/core';
+
 import { errorTheme } from '../theme';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 
 interface DeletePostDialogProps {
   open: boolean;

@@ -1,24 +1,26 @@
 import React, { useEffect } from 'react';
+
 import {
+  FilterAutoMongoKeys,
   GoogleBooks,
   ShelfEntry,
-  FilterAutoMongoKeys,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/types';
 import {
   Container,
-  Paper,
-  InputBase,
   IconButton,
+  InputBase,
+  makeStyles,
+  Paper,
   Popover,
   Typography,
   useTheme,
 } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import { makeStyles } from '@material-ui/core/styles';
-import { searchGoogleBooks } from '../../services/book';
-import BookList from '../club/shelf-view/BookList';
-import { getShelfFromGoogleBooks } from '../club/functions/ClubFunctions';
+import { Search as SearchIcon } from '@material-ui/icons';
+
 import googleLogo from '../../resources/google-logo.svg';
+import { searchGoogleBooks } from '../../services/book';
+import { getShelfFromGoogleBooks } from '../club/functions/ClubFunctions';
+import BookList from '../club/shelf-view/BookList';
 
 const useStyles = makeStyles(theme => ({
   root: {

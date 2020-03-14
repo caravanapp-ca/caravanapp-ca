@@ -1,7 +1,8 @@
 import React from 'react';
-import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+
+import { SvgIconProps } from '@material-ui/core';
+import { DirectionsWalk } from '@material-ui/icons';
 
 export default function SlowReadingSpeedIcon(props: SvgIconProps) {
-  return <DirectionsWalkIcon {...props} />;
+  return <DirectionsWalk {...props} />;
 }

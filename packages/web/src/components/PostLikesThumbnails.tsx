@@ -1,16 +1,17 @@
 import React from 'react';
+
+import { PostUserInfo } from '@caravanapp/types';
 import {
-  makeStyles,
-  Typography,
   Avatar,
-  Tooltip,
+  Link,
+  ListItem,
+  ListItemIcon,
+  makeStyles,
   Menu,
   MenuItem,
-  Link,
-  ListItemIcon,
-  ListItem,
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
-import { PostUserInfo } from '@caravan/buddy-reading-types';
 
 const useStyles = makeStyles(theme => ({
   likeThumbnails: {

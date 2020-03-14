@@ -1,20 +1,21 @@
-import {
-  Referral,
-  ReferralAction,
-  FilterAutoMongoKeys,
-  ReferralSource,
-  ReferralDestination,
-} from '@caravan/buddy-reading-types';
+import { Types } from 'mongoose';
+
 import {
   ReferralDoc,
   ReferralModel,
   ReferralTierModel,
-} from '@caravan/buddy-reading-mongo';
-import { Omit } from 'utility-types';
+} from '@caravanapp/mongo';
+import {
+  FilterAutoMongoKeys,
+  Referral,
+  ReferralAction,
+  ReferralDestination,
+  ReferralSource,
+} from '@caravanapp/types';
+
 import { giveUserBadge } from './badge';
 import { giveDiscordRole, sendNewTierDiscordMsg } from './discord';
 import { giveUserPalettes } from './userPalettes';
-import { Types } from 'mongoose';
 
 export const ALLOWED_UTM_SOURCES: { [key in ReferralSource]: boolean } = {
   fb: true,

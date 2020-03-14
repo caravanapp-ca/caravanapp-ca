@@ -1,0 +1,832 @@
+[
+  {
+    "_id": {
+      "$oid": "5d6aa85d0cd21c79ad0e9542"
+    },
+    "authorId": "5d23814fc3baa16d5bb98152",
+    "content": {
+      "postType": "shelf",
+      "shelf": [
+        {
+          "genres": [
+            "Health & Fitness"
+          ],
+          "_id": {
+            "$oid": "5d6aa85d0cd21c79ad0e9544"
+          },
+          "source": "google",
+          "sourceId": "P4xbcP19H0AC",
+          "readingState": "notStarted",
+          "title": "The Vitamin D Solution",
+          "author": "Michael F. Holick Ph.D., M.D.",
+          "isbn": "110122293X",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1270080000000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=P4xbcP19H0AC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [],
+          "_id": {
+            "$oid": "5d6aa85d0cd21c79ad0e9543"
+          },
+          "source": "google",
+          "sourceId": "ZyVcAAAAQAAJ",
+          "readingState": "notStarted",
+          "title": "A discovery of one sham more: design'd against three of his majesties justices of the peace for the county of Surrey. [An account of accusations made by J. Fitzgerald about the Popish plot]",
+          "author": "John Fitzgerald (of the order of St. Francis.)",
+          "isbn": "OXFORD:590954513",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "-9119865600000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=ZyVcAAAAQAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        }
+      ],
+      "title": "ddddd",
+      "genres": [
+        {
+          "_id": {
+            "$oid": "5d6aa85d0cd21c79ad0e9545"
+          },
+          "key": "eBooks",
+          "name": "eBooks"
+        },
+        {
+          "_id": {
+            "$oid": "5d823eadbb3e8c73b2646120"
+          },
+          "key": "business",
+          "name": "Business"
+        },
+        {
+          "_id": {
+            "$oid": "5d823eadbb3e8c73b264611f"
+          },
+          "key": "poetry",
+          "name": "Poetry"
+        },
+        {
+          "_id": {
+            "$oid": "5d823eadbb3e8c73b264611e"
+          },
+          "key": "psychology",
+          "name": "Psychology"
+        },
+        {
+          "_id": {
+            "$oid": "5d823eadbb3e8c73b264611d"
+          },
+          "key": "sports",
+          "name": "Sports"
+        },
+        {
+          "_id": {
+            "$oid": "5d823eadbb3e8c73b264611c"
+          },
+          "key": "thriller",
+          "name": "Thriller"
+        }
+      ],
+      "description": "xcv",
+      "interests": []
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567271005365"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568816813052"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d72adc8ee74acec5ed763e0"
+    },
+    "authorId": "5d3f253f0f7e9047cb38cc10",
+    "content": {
+      "postType": "shelf",
+      "shelf": [
+        {
+          "genres": [
+            "Literary Criticism"
+          ],
+          "_id": {
+            "$oid": "5d72adc8ee74acec5ed763e2"
+          },
+          "source": "google",
+          "sourceId": "9ikeAQAAIAAJ",
+          "readingState": "notStarted",
+          "title": "Selected Letters",
+          "author": "Wilfred Owen",
+          "isbn": "0192880896",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "883612800000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=9ikeAQAAIAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "_id": {
+            "$oid": "5d72adc8ee74acec5ed763e1"
+          },
+          "source": "google",
+          "sourceId": "Mi_Z2KMO1PwC",
+          "readingState": "notStarted",
+          "title": "Stranger With My Face",
+          "author": "Lois Duncan",
+          "isbn": "9780316175616",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1303171200000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=Mi_Z2KMO1PwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        }
+      ],
+      "title": "Duncan Owen",
+      "genres": [
+        {
+          "_id": {
+            "$oid": "5d72adc8ee74acec5ed763e3"
+          },
+          "key": "cookbooks",
+          "name": "Cookbooks"
+        }
+      ],
+      "description": "Duncan vs Owen :)",
+      "interests": []
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567796680617"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1567796680617"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d72d9139f1ac10024e71a93"
+    },
+    "authorId": "5d4c942c581e3a0024b47126",
+    "content": {
+      "postType": "shelf",
+      "shelf": [
+        {
+          "genres": [
+            "Juvenile Nonfiction"
+          ],
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a95"
+          },
+          "source": "google",
+          "sourceId": "WV8pZj_oNBwC",
+          "readingState": "notStarted",
+          "title": "Harry Potter Power",
+          "author": "Julie-Anne Sykley",
+          "isbn": "9781921479311",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1262304000000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=WV8pZj_oNBwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Performing Arts"
+          ],
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a94"
+          },
+          "source": "google",
+          "sourceId": "PB57P_dOF7EC",
+          "readingState": "notStarted",
+          "title": "Finding the Force of the Star Wars Franchise",
+          "author": "Matthew Kapell, John Shelton Lawrence",
+          "isbn": "0820463337",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1136073600000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=PB57P_dOF7EC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        }
+      ],
+      "title": "Books I won't read ",
+      "genres": [
+        {
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a98"
+          },
+          "key": "biography",
+          "name": "Biography"
+        },
+        {
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a97"
+          },
+          "key": "business",
+          "name": "Business"
+        },
+        {
+          "_id": {
+            "$oid": "5d72d9139f1ac10024e71a96"
+          },
+          "key": "cookbooks",
+          "name": "Cookbooks"
+        },
+        {
+          "_id": {
+            "$oid": "5d8513144ddbfd0025297a0c"
+          },
+          "key": "spirituality",
+          "name": "Spirituality"
+        }
+      ],
+      "description": "See title ",
+      "interests": []
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567807763546"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569002260310"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d769d93a9e3dc076ae039fa"
+    },
+    "authorId": "5d3f253f0f7e9047cb38cc10",
+    "content": {
+      "postType": "shelf",
+      "shelf": [
+        {
+          "genres": [
+            "Society of Friends"
+          ],
+          "_id": {
+            "$oid": "5d769d93a9e3dc076ae039fc"
+          },
+          "source": "google",
+          "sourceId": "_209AQAAMAAJ",
+          "readingState": "notStarted",
+          "title": "The Snake in the Grass, Or, Satan Transform'd Into an Angel of Light",
+          "author": "Charles Leslie",
+          "isbn": "UCD:31175035162612",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "-8614944000000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=_209AQAAMAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Computers"
+          ],
+          "_id": {
+            "$oid": "5d769d93a9e3dc076ae039fb"
+          },
+          "source": "google",
+          "sourceId": "MCIfAQAAIAAJ",
+          "readingState": "notStarted",
+          "title": "SNA and TCP/IP Enterprise Networking",
+          "author": "Daniel C. Lynch, James P. Gray, Edward Rabinovitch",
+          "isbn": "0131271687",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "883612800000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=MCIfAQAAIAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api"
+        }
+      ],
+      "title": "Snake",
+      "genres": [
+        {
+          "_id": {
+            "$oid": "5d769d93a9e3dc076ae039fe"
+          },
+          "key": "childrens",
+          "name": "Childrens"
+        },
+        {
+          "_id": {
+            "$oid": "5d769d93a9e3dc076ae039fd"
+          },
+          "key": "thriller",
+          "name": "Thriller"
+        }
+      ],
+      "description": "Snaker",
+      "interests": []
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568054675614"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568054675614"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d827dd2f913f10024fc5a51"
+    },
+    "authorId": "5d23814fc3baa16d5bb98152",
+    "content": {
+      "postType": "shelf",
+      "shelf": [
+        {
+          "genres": [
+            "Sports & Recreation"
+          ],
+          "_id": {
+            "$oid": "5d827dd2f913f10024fc5a53"
+          },
+          "source": "google",
+          "sourceId": "PtOSDCGeUwYC",
+          "readingState": "notStarted",
+          "title": "Going Long",
+          "author": "Editors of Runner's World, David Wiley",
+          "isbn": "9781605291529",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1269907200000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=PtOSDCGeUwYC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d827dd2f913f10024fc5a52"
+          },
+          "source": "google",
+          "sourceId": "AnlF7nIhtroC",
+          "readingState": "notStarted",
+          "title": "The Long Prospect: Text Classics",
+          "author": "Elizabeth Harrower",
+          "isbn": "9781921961762",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1351036800000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=AnlF7nIhtroC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        }
+      ],
+      "title": "REALLY LONG TITLEREALLY LONG TITLEREALLY LONG TITL",
+      "genres": [
+        {
+          "_id": {
+            "$oid": "5d827dd2f913f10024fc5a58"
+          },
+          "key": "memoir",
+          "name": "Memoir"
+        },
+        {
+          "_id": {
+            "$oid": "5d827dd2f913f10024fc5a57"
+          },
+          "key": "sports",
+          "name": "Sports"
+        },
+        {
+          "_id": {
+            "$oid": "5d827dd2f913f10024fc5a56"
+          },
+          "key": "humorAndComedy",
+          "name": "Humor and Comedy"
+        },
+        {
+          "_id": {
+            "$oid": "5d827dd2f913f10024fc5a55"
+          },
+          "key": "business",
+          "name": "Business"
+        },
+        {
+          "_id": {
+            "$oid": "5d827dd2f913f10024fc5a54"
+          },
+          "key": "horror",
+          "name": "Horror"
+        }
+      ],
+      "description": "REALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONREALLY LONG DESCRIPTIONR",
+      "interests": []
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568832978810"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568832978810"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d8518f7a7e5540025f180a6"
+    },
+    "authorId": "5d4c942c581e3a0024b47126",
+    "content": {
+      "postType": "shelf",
+      "shelf": [
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180b0"
+          },
+          "source": "google",
+          "sourceId": "_6MzFv1QbooC",
+          "readingState": "notStarted",
+          "title": "Shadow & Claw",
+          "author": "Gene Wolfe",
+          "isbn": "9781429966276",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "782179200000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=_6MzFv1QbooC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180af"
+          },
+          "source": "google",
+          "sourceId": "KuIMM_8WwkwC",
+          "readingState": "notStarted",
+          "title": "Lud-in-the-Mist",
+          "author": "Hope Mirrlees",
+          "isbn": "9781434487520",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1188604800000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=KuIMM_8WwkwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180ae"
+          },
+          "source": "google",
+          "sourceId": "WlGzBgAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Archer’s Goon",
+          "author": "Diana Wynne Jones",
+          "isbn": "9780008116705",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1433376000000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=WlGzBgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Charities"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180ad"
+          },
+          "source": "google",
+          "sourceId": "fIoBAAAAQAAJ",
+          "readingState": "notStarted",
+          "title": "London labour and the London poor",
+          "author": "Henry Mayhew",
+          "isbn": "OXFORD:600021019",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "-3439670400000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=fIoBAAAAQAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180ac"
+          },
+          "source": "google",
+          "sourceId": "i_-bdQjbAZ8C",
+          "readingState": "notStarted",
+          "title": "Jonathan Strange and Mr Norrell",
+          "author": "Susanna Clarke",
+          "isbn": "160819535X",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1275696000000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=i_-bdQjbAZ8C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180ab"
+          },
+          "source": "google",
+          "sourceId": "UTnop6nTpX0C",
+          "readingState": "notStarted",
+          "title": "Horns",
+          "author": "Joe Hill",
+          "isbn": "9780061969461",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1266278400000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=UTnop6nTpX0C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Comics & Graphic Novels"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180aa"
+          },
+          "source": "google",
+          "sourceId": "mPT2FGFP_aYC",
+          "readingState": "notStarted",
+          "title": "ALEC: The Years Have Pants (A Life-Size Omnibus)",
+          "author": "Eddie Campbell",
+          "isbn": "9781603091572",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1230768000000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=mPT2FGFP_aYC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Guardian and ward"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180a9"
+          },
+          "source": "google",
+          "sourceId": "KlsJAAAAQAAJ",
+          "readingState": "notStarted",
+          "title": "Bleak House",
+          "author": "Charles Dickens",
+          "isbn": "OXFORD:400292940",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "-3692131200000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=KlsJAAAAQAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Science fiction, American"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180a8"
+          },
+          "source": "google",
+          "sourceId": "7qtUPwAACAAJ",
+          "readingState": "notStarted",
+          "title": "Lord of Light",
+          "author": "Roger Zelazny",
+          "isbn": "0575094214",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1262304000000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=7qtUPwAACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api"
+        },
+        {
+          "genres": [
+            "Fiction"
+          ],
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180a7"
+          },
+          "source": "google",
+          "sourceId": "Tu71BgAAQBAJ",
+          "readingState": "notStarted",
+          "title": "The Man Who Was Thursday",
+          "author": "G. K. Chesterton",
+          "isbn": "9781603742498",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1393200000000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=Tu71BgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        }
+      ],
+      "title": "\"Neil Gaiman’s Favorite Works of Fiction\"",
+      "genres": [
+        {
+          "_id": {
+            "$oid": "5d8518f7a7e5540025f180b1"
+          },
+          "key": "fiction",
+          "name": "Fiction"
+        }
+      ],
+      "description": "NG is iconic, so I wanted to share the books he'd recommend everyone read :) I found the list here: https://radicalreads.com/neil-gaiman-favorite-books/",
+      "interests": []
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1569003767417"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569003767417"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d851a9ccd09e39c37c75d8c"
+    },
+    "authorId": "5d23814fc3baa16d5bb98152",
+    "content": {
+      "postType": "shelf",
+      "shelf": [
+        {
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d8e"
+          },
+          "source": "google",
+          "sourceId": "1ZN2i5dTydcC",
+          "readingState": "notStarted",
+          "title": "Lucky Fin! (Disney/Pixar Finding Nemo)",
+          "author": "Random House Disney",
+          "isbn": "9780736429214",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1344297600000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=1ZN2i5dTydcC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        },
+        {
+          "genres": [
+            "African American women cooks"
+          ],
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d8d"
+          },
+          "source": "google",
+          "sourceId": "QdGDBQAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Switchin in Da Kitchin with Mama ’Nem",
+          "author": "Ida Annette Minor Ward",
+          "isbn": "9781503510074",
+          "publishedDate": {
+            "$date": {
+              "$numberLong": "1415059200000"
+            }
+          },
+          "coverImageURL": "http://books.google.com/books/content?id=QdGDBQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+        }
+      ],
+      "title": "Nemo!!",
+      "genres": [
+        {
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d96"
+          },
+          "key": "humorAndComedy",
+          "name": "Humor and Comedy"
+        },
+        {
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d95"
+          },
+          "key": "horror",
+          "name": "Horror"
+        },
+        {
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d94"
+          },
+          "key": "history",
+          "name": "History"
+        },
+        {
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d93"
+          },
+          "key": "spirituality",
+          "name": "Spirituality"
+        },
+        {
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d92"
+          },
+          "key": "sports",
+          "name": "Sports"
+        },
+        {
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d91"
+          },
+          "key": "business",
+          "name": "Business"
+        },
+        {
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d90"
+          },
+          "key": "fantasy",
+          "name": "Fantasy"
+        },
+        {
+          "_id": {
+            "$oid": "5d851a9ccd09e39c37c75d8f"
+          },
+          "key": "historicalFiction",
+          "name": "Historical Fiction"
+        }
+      ],
+      "description": "Nemo :)",
+      "interests": []
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1569004188366"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569004188366"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
+]

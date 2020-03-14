@@ -1,19 +1,21 @@
 import express from 'express';
+
+import { LikesDoc, LikesModel } from '@caravanapp/mongo';
+
 import { isAuthenticated } from '../middleware/auth';
-import { LikesModel, LikesDoc } from '@caravan/buddy-reading-mongo';
 
 const router = express.Router();
 
 // Like post
 router.post('/:postId', isAuthenticated, async (req, res, next) => {
   const { postId } = req.params;
+  const { userId } = req.session;
+  const action: unknown = req.body.action;
   // TODO right now the Transactions code is commented out -- we need to convert our db to a 'replica set' in order
   // to use the Transactions feature
   //const session = await mongoose.startSession();
   //session.startTransaction();
   try {
-    const { userId } = req.session;
-    const { action } = req.body;
     let likeArrResult: LikesDoc | undefined;
     if (action === 'unlike') {
       likeArrResult = await LikesModel.findOneAndUpdate(
@@ -37,6 +39,8 @@ router.post('/:postId', isAuthenticated, async (req, res, next) => {
           { $inc: { numLikes: 1 } }
         );
       }
+    } else {
+      return res.status(400).send('Invalid action');
     }
     // const opts = { session, new: true };
     // const result = await LikesModel.findOneAndUpdate(
@@ -53,19 +57,6 @@ router.post('/:postId', isAuthenticated, async (req, res, next) => {
     //session.endSession();
     console.log('Failed to modify post likes', err);
     return next(err);
-  }
-});
-
-// Delete a likes doc by post id
-router.delete('/:postId', isAuthenticated, async (req, res) => {
-  const { postId } = req.params;
-  let likesDoc: LikesDoc;
-  try {
-    likesDoc = await LikesModel.findOneAndDelete({ postId });
-    return res.status(204).send(`Deleted likes doc ${likesDoc.id}`);
-  } catch (err) {
-    console.error(`User failed to delete likes doc ${likesDoc.id}`);
-    return res.status(500).send(err);
   }
 });
 

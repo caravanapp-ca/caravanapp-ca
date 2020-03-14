@@ -1,15 +1,17 @@
 import axios from 'axios';
+
 import {
-  ReadingSpeed,
-  User,
-  UserShelfEntry,
-  FilterAutoMongoKeys,
   ActiveFilter,
+  FilterAutoMongoKeys,
+  ReadingSpeed,
   Services,
+  User,
   UserSearchField,
-} from '@caravan/buddy-reading-types';
-import { clearStorageAuthState } from '../common/localStorage';
+  UserShelfEntry,
+} from '@caravanapp/types';
+
 import { clearCookieAuthState } from '../common/cookies';
+import { clearStorageAuthState } from '../common/localStorage';
 
 const userRoute = '/api/user';
 

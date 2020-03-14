@@ -1,17 +1,22 @@
 import React from 'react';
-import { ShelfEntry, FilterAutoMongoKeys } from '@caravan/buddy-reading-types';
-import { Fab } from '@material-ui/core';
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import ForwardIcon from '@material-ui/icons/ArrowForwardIos';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import purple from '@material-ui/core/colors/purple';
+
+import { FilterAutoMongoKeys, ShelfEntry } from '@caravanapp/types';
+import {
+  CircularProgress,
+  Container,
+  colors,
+  createMuiTheme,
+  Fab,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+import { ArrowForwardIos as ForwardIcon } from '@material-ui/icons';
+
 import BookSearch from '../books/BookSearch';
 
 const theme = createMuiTheme({
   palette: {
-    primary: purple,
+    primary: colors.purple,
     secondary: {
       main: '#7289da',
     },

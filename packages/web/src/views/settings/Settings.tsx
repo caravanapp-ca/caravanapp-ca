@@ -1,34 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/styles';
+import clsx from 'clsx';
+import React, { useEffect, useState } from 'react';
+import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
+
+import { EmailSettings, User, UserSettings } from '@caravanapp/types';
 import {
-  Theme,
-  createStyles,
-  Typography,
-  Container,
   Button,
+  Container,
+  createStyles,
   IconButton,
+  makeStyles,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
-import { Redirect, RouteComponentProps } from 'react-router';
-import {
-  User,
-  UserSettings,
-  EmailSettings,
-} from '@caravan/buddy-reading-types';
-import clsx from 'clsx';
-import { getMySettings, updateMySettings } from '../../services/userSettings';
-import UserEmailField from '../../components/UserEmailField';
-import Header from '../../components/Header';
-import HeaderTitle from '../../components/HeaderTitle';
-import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import CustomSnackbar, {
-  CustomSnackbarProps,
-} from '../../components/CustomSnackbar';
-import CheckboxSettingsEditor from '../../components/CheckboxSettingsEditor';
+
 import {
   DEFAULT_EMAIL_SETTINGS,
   EMAIL_SETTINGS_KEYS_DESCRIPTIONS,
 } from '../../common/globalConstants';
+import CheckboxSettingsEditor from '../../components/CheckboxSettingsEditor';
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import UserEmailField from '../../components/UserEmailField';
+import { getMySettings, updateMySettings } from '../../services/userSettings';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,12 +77,13 @@ export default function Settings(props: SettingsProps) {
     }
   );
   const classes = useStyles();
+  const history = useHistory();
 
   const backButtonAction = () => {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   };
 

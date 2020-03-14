@@ -1,5 +1,6 @@
 import React from 'react';
-import { TextField, makeStyles } from '@material-ui/core';
+
+import { makeStyles, TextField } from '@material-ui/core';
 
 interface QuestionAnswerProps {
   questionKey: string;

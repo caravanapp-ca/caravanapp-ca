@@ -1,15 +1,15 @@
-import { makeStyles, Link } from '@material-ui/core';
-import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 import copyToClipboard from 'copy-to-clipboard';
-import { User } from '@caravan/buddy-reading-types';
+import React from 'react';
+
+import { User } from '@caravanapp/types';
+import { IconButton, Link, makeStyles, Tooltip } from '@material-ui/core';
+
 import { getReferralLink } from '../common/referral';
-import fbSvg from '../resources/share-icons/fb--whiteonblack.svg';
-import twitterSvg from '../resources/share-icons/twitter--whiteonblack.svg';
-import emailSvg from '../resources/share-icons/email--whiteonblack.svg';
 import copySvg from '../resources/share-icons/copy--whiteonblack.svg';
+import emailSvg from '../resources/share-icons/email--whiteonblack.svg';
+import fbSvg from '../resources/share-icons/fb--whiteonblack.svg';
 import rdSvg from '../resources/share-icons/reddit--whiteonblack.svg';
+import twitterSvg from '../resources/share-icons/twitter--whiteonblack.svg';
 
 const useStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -90,9 +90,7 @@ export default function ClubShareButtons(props: ClubShareButtonsProps) {
         <Link
           href={
             user
-              ? `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Fref%3D${
-                  user._id
-                }%26utm_source%3Dfb%2F&amp;src=sdkpreparse`
+              ? `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Fref%3D${user._id}%26utm_source%3Dfb%2F&amp;src=sdkpreparse`
               : `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcaravanapp.ca%2Fclubs%2F${clubId}%3Futm_source%3Dfb%2F&amp;src=sdkpreparse`
           }
           target={'_blank'}

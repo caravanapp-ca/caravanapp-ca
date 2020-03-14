@@ -1,0 +1,245 @@
+[
+  {
+    "_id": {
+      "$oid": "5d4ae4c619ffcf8161a28352"
+    },
+    "userId": {
+      "$oid": "5d0eba832aa5960d37d1e079"
+    },
+    "email": "mxttcherry@gmail.com",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1565189318821"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565189318821"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "emailSettings": {
+      "recs": true,
+      "reminders": true,
+      "updates": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d4af01f7ee2e8cba6a8cf4f"
+    },
+    "userId": {
+      "$oid": "5d23814fc3baa16d5bb98152"
+    },
+    "email": "yusuf@caravanapp.ca",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1565192223251"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565192223251"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "emailSettings": {
+      "recs": true,
+      "reminders": true,
+      "updates": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d4c7a9c677ebb002314736c"
+    },
+    "userId": {
+      "$oid": "5d0d4517b1e63b975808755a"
+    },
+    "email": "quinnturnertech@gmail.com",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1565293212632"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565293212632"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "emailSettings": {
+      "recs": true,
+      "reminders": true,
+      "updates": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d4c8bbb8e815ae304d0856e"
+    },
+    "userId": {
+      "$oid": "5d1500c8c5758749c178683b"
+    },
+    "email": "quinn@caravanapp.ca",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1565297595329"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565297595329"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "emailSettings": {
+      "reminders": false,
+      "recs": false,
+      "updates": false
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d4c942c581e3a0024b47127"
+    },
+    "userId": {
+      "$oid": "5d4c942c581e3a0024b47126"
+    },
+    "email": "weidnercurtis@gmail.com",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1565299756655"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565299756655"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "emailSettings": {
+      "recs": true,
+      "reminders": true,
+      "updates": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d4ddb6f0e8bfaf30e54236f"
+    },
+    "userId": {
+      "$oid": "5d3f1dfaf7bfee4516f1ebd0"
+    },
+    "email": "mike.soulution@gmail.com",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1565383535549"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565383535549"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "emailSettings": {
+      "recs": false,
+      "reminders": true,
+      "updates": true
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d5c3d06c9872000240f0b00"
+    },
+    "emailSettings": {
+      "recs": true,
+      "reminders": true,
+      "updates": true
+    },
+    "userId": {
+      "$oid": "5d0eb02837cff574b9f3add6"
+    },
+    "email": "turnerquinn@outlook.com",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1566326022886"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1566326022886"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d70a23cd09318ccb12f41eb"
+    },
+    "emailSettings": {
+      "recs": true,
+      "reminders": true,
+      "updates": true
+    },
+    "userId": {
+      "$oid": "5d3f253f0f7e9047cb38cc10"
+    },
+    "email": "yusufkhaled@live.ca",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567662652491"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1567662652491"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d8bb82e8da4c80024a417d1"
+    },
+    "emailSettings": {
+      "recs": true,
+      "reminders": true,
+      "updates": true
+    },
+    "userId": {
+      "$oid": "5d8bb82e8da4c80024a417d0"
+    },
+    "email": "cheezy556@hotmail.com",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1569437742946"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569437742946"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
+]

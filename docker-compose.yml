@@ -1,0 +1,65 @@
+version: '3.7'
+services:
+  caravan-mongo:
+    container_name: caravan-mongo
+    image: mongo:4.0.10-xenial
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root # ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: hunter2 # ${MONGO_INITDB_ROOT_PASSWORD:-hunter2}
+      MONGO_INITDB_DATABASE: buddy_reading # ${MONGO_INITDB_DATABASE:-buddy_reading}
+      MONGO_NON_ROOT_USERNAME: reader # ${MONGO_NON_ROOT_USERNAME:-reader}
+      MONGO_NON_ROOT_PASSWORD: hunter2 # ${MONGO_NON_ROOT_PASSWORD:-hunter2}
+    volumes:
+      # 20190601 - fix for https://github.com/docker-library/mongo/issues/329#issuecomment-460858099
+      - ./mongo-seed/mongo-user.sh:/docker-entrypoint-initdb.d/mongo-user.sh:ro
+      - caravan_data_container:/data/db
+  caravan-mongo-seed:
+    container_name: caravan-mongo-seed
+    build:
+      context: .
+      dockerfile: ./mongo-seed.Dockerfile
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root # ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: hunter2 # ${MONGO_INITDB_ROOT_PASSWORD:-hunter2}
+      MONGO_INITDB_DATABASE: buddy_reading # ${MONGO_INITDB_DATABASE:-buddy_reading}
+      MONGO_NON_ROOT_USERNAME: reader # ${MONGO_NON_ROOT_USERNAME:-reader}
+      MONGO_NON_ROOT_PASSWORD: hunter2 # ${MONGO_NON_ROOT_PASSWORD:-hunter2}
+    depends_on:
+      - caravan-mongo
+  caravan-server:
+    container_name: caravan-server
+    build:
+      context: .
+      dockerfile: caravan-server.dev.Dockerfile
+    ports:
+      - '3001:3001'
+    env_file: packages/web-api/.env
+    volumes:
+      - ./packages/web-api/src:/usr/src/app/packages/web-api/src
+      - ./packages/mongo/src:/usr/src/app/packages/mongo/src
+      - ./packages/types/src:/usr/src/app/packages/types/src
+    #   - node_modules:/usr/src/app/node_modules
+    depends_on:
+      - caravan-mongo
+  caravan-web:
+    container_name: caravan-web
+    build:
+      context: .
+      dockerfile: caravan-web.dev.Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./packages/web:/usr/src/app/packages/web
+      - ./packages/types/src:/usr/src/app/packages/types/src
+    # - node_modules:/usr/src/app/node_modules
+    depends_on:
+      - caravan-server
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  caravan_data_container:
+  # node_modules:

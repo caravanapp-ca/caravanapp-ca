@@ -1,11 +1,14 @@
-import React from 'react';
-import Slider, { Settings } from 'react-slick';
-import { makeStyles, createStyles, Tooltip } from '@material-ui/core';
-import { ShelfEntry, FilterAutoMongoKeys } from '@caravan/buddy-reading-types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { theme } from '../../theme';
+
+import React from 'react';
 import ReactResizeDetector from 'react-resize-detector';
+import Slider, { Settings } from 'react-slick';
+
+import { FilterAutoMongoKeys, ShelfEntry } from '@caravanapp/types';
+import { createStyles, makeStyles, Tooltip } from '@material-ui/core';
+
+import { theme } from '../../theme';
 
 const bookCoverHeight = 72;
 const bookCoverWidth = 45;

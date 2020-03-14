@@ -1,6 +1,11 @@
 import React from 'react';
-import { makeStyles, createStyles, Typography } from '@material-ui/core';
-import Switch from '@material-ui/core/Switch';
+
+import {
+  createStyles,
+  makeStyles,
+  Switch,
+  Typography,
+} from '@material-ui/core';
 
 const useStyles = makeStyles(() =>
   createStyles({

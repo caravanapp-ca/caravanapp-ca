@@ -1,26 +1,25 @@
 import React, { useEffect } from 'react';
 import Truncate from 'react-truncate';
-import { CardActions } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+
+import { PostContent, PostUserInfo, ShelfPost, User } from '@caravanapp/types';
 import {
-  ShelfPost,
-  PostUserInfo,
-  PostContent,
-  User,
-} from '@caravan/buddy-reading-types';
-import theme from '../../theme';
-import ShelfPostCardShelfList from './ShelfPostCardShelfList';
-import PostHeader from './PostHeader';
-import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
-import PostActions from './PostActions';
-import GenresInCommonChips from '../../components/GenresInCommonChips';
-import { modifyPostLike } from '../../services/like';
-import DeletePostDialog from '../../components/DeletePostDialog';
-import { deletePost } from '../../services/post';
+  Card,
+  CardActions,
+  CardContent,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+
 import { CustomSnackbarProps } from '../../components/CustomSnackbar';
+import DeletePostDialog from '../../components/DeletePostDialog';
+import GenresInCommonChips from '../../components/GenresInCommonChips';
+import shelfIcon from '../../resources/post-icons/shelf_icon.svg';
+import { modifyPostLike } from '../../services/like';
+import { deletePost } from '../../services/post';
+import theme from '../../theme';
+import PostActions from './PostActions';
+import PostHeader from './PostHeader';
+import ShelfPostCardShelfList from './ShelfPostCardShelfList';
 
 const useStyles = makeStyles(theme => ({
   card: {

@@ -1,23 +1,25 @@
 import express from 'express';
 import Fuse from 'fuse.js';
 import mongoose from 'mongoose';
+
+import {
+  FilterMongooseDocKeys,
+  PostDoc,
+  PostModel,
+  UserDoc,
+} from '@caravanapp/mongo';
 import {
   Post,
   PostWithAuthorInfoAndLikes,
   SameKeysAs,
   Services,
-} from '@caravan/buddy-reading-types';
-import {
-  PostModel,
-  PostDoc,
-  UserDoc,
-  FilterMongooseDocKeys,
-} from '@caravan/buddy-reading-mongo';
+} from '@caravanapp/types';
+
 import { isAuthenticated } from '../middleware/auth';
 import {
-  getPostLikes,
   createLikesDoc,
   deleteLikesDocByPostId,
+  getPostLikes,
   getPostsLikes,
 } from '../services/like';
 import { createPostDoc, mapPostUserInfo } from '../services/post';
@@ -76,6 +78,20 @@ router.put('/:id', isAuthenticated, async (req, res) => {
       content: postContent,
     };
     try {
+      const existingPost = await PostModel.findById(postId);
+      if (!existingPost) {
+        console.warn(
+          `User ${userId} attempted to edit post ${postId} but the post was not found.`
+        );
+        return res.status(404).send(`Unable to find post ${postId}`);
+      }
+      if (existingPost.authorId !== userId) {
+        console.warn(
+          `User ${userId} attempted to edit post ${postId} but was unauthorized.`
+        );
+        return res.status(401).send('Unauthorized to modify this resource.');
+      }
+      // TODO: Introduce validation against the PostContent.
       const editPostResult: PostDoc = await PostModel.findByIdAndUpdate(
         postId,
         postToUpload,
@@ -237,7 +253,8 @@ router.get('/:postId/withAuthorAndLikesUserInfo', async (req, res, next) => {
           ? postDoc.updatedAt.toISOString()
           : postDoc.updatedAt,
     };
-    const postsLikesDoc = await getPostLikes(postId);
+    const postObjectId = new mongoose.Types.ObjectId(postId);
+    const postsLikesDoc = await getPostLikes(postObjectId);
 
     const [likeUserDocs, authorUserDoc] = await Promise.all([
       getUsersByUserIds(postsLikesDoc.likes.slice(0, 10)),
@@ -338,9 +355,9 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
       }
     })
     .filter(p => p !== null);
-  if ((search && search.length) > 0) {
+  if (search && search.length > 0) {
     let fuseSearchKey: string;
-    let fuseOptions: Fuse.FuseOptions<Services.GetPosts['posts']> = {};
+    let fuseOptions = {};
     switch (postSearchField) {
       case 'bookAuthor':
         fuseSearchKey = 'content.shelf.author';
@@ -352,16 +369,12 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
           location: 0,
           distance: 100,
           maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
       case 'postTitle':
         fuseSearchKey = 'content.title';
         fuseOptions = {
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -377,8 +390,6 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
           location: 0,
           distance: 100,
           maxPatternLength: 32,
-          // TODO: Typescript doesn't like the use of keys here.
-          // @ts-ignore
           keys: [fuseSearchKey],
         };
         break;
@@ -472,7 +483,7 @@ router.get('/:id', async (req, res, next) => {
       res.sendStatus(404);
       return;
     }
-    let filteredPost: Services.GetPostById = {
+    const filteredPost: Services.GetPostById = {
       ...postDoc.toObject(),
       createdAt:
         postDoc.createdAt instanceof Date

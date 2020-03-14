@@ -1,12 +1,8 @@
 import { DeepPartial } from 'utility-types';
-import {
-  FilterAutoMongoKeys,
-  UserSettings,
-} from '@caravan/buddy-reading-types';
-import {
-  UserSettingsDoc,
-  UserSettingsModel,
-} from '@caravan/buddy-reading-mongo';
+
+import { UserSettingsDoc, UserSettingsModel } from '@caravanapp/mongo';
+import { FilterAutoMongoKeys, UserSettings } from '@caravanapp/types';
+
 import { DEFAULT_EMAIL_SETTINGS } from '../common/globalConstantsAPI';
 
 export const getUserSettings = (userId: string) => {

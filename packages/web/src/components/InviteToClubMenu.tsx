@@ -1,24 +1,22 @@
 import React from 'react';
+
+import { ClubWithMemberIds, Services, User } from '@caravanapp/types';
 import {
+  Button,
   makeStyles,
   Menu,
   MenuItem,
-  Button,
-  Typography,
   Theme,
   Tooltip,
+  Typography,
 } from '@material-ui/core';
-import {
-  User,
-  Services,
-  ClubWithMemberIds,
-} from '@caravan/buddy-reading-types';
-import DiscordLoginModal from './DiscordLoginModal';
-import { washedTheme } from '../theme';
+
 import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../components/CustomSnackbar';
 import { inviteToClub } from '../services/club';
+import { washedTheme } from '../theme';
+import DiscordLoginModal from './DiscordLoginModal';
 
 const useStyles = makeStyles((theme: Theme) => ({
   headerAvatar: {

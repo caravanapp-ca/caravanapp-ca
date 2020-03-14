@@ -1,9 +1,9 @@
+import { UserPalettesModel } from '@caravanapp/mongo';
 import {
+  FilterAutoMongoKeys,
   PaletteSet,
   UserPalettes,
-  FilterAutoMongoKeys,
-} from '@caravan/buddy-reading-types';
-import { UserPalettesModel } from '@caravan/buddy-reading-mongo';
+} from '@caravanapp/types';
 
 export const getUserPalettes = async (userId: string) => {
   return UserPalettesModel.findOne({ userId });

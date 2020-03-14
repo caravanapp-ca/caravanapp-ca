@@ -1,6 +1,7 @@
 {
-  "name": "@caravan/buddy-reading",
+  "name": "@caravanapp/root",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "prebuild": "sh ./pre-deploy-cloud-functions.sh",
     "build": "lerna run build",
@@ -8,7 +9,7 @@
     "lint:fix": "lerna run lint:fix",
     "test": "lerna run test --stream",
     "start": "cd ./packages/web-api && npm start",
-    "create-env": "printenv > ./packages/web-api/.env && printenv | sed 's/=/: /g' > ./packages/cloud-functions/functions/.env.yaml",
+    "create-env": "printenv > ./packages/web-api/.env && printenv | sed 's/=/: /g' > ./cloud-functions/functions/.env.yaml",
     "deploy:production": "yarn build && yarn deploy-only:production",
     "deploy-no-promote:production": "yarn build && gcloud app deploy app.production.yaml --no-promote",
     "deploy:staging": "yarn build && yarn deploy-only:staging",
@@ -20,7 +21,6 @@
     "lerna": "^3.16.4"
   },
   "workspaces": [
-    "packages/*",
-    "packages/cloud-functions/functions"
+    "packages/*"
   ]
 }

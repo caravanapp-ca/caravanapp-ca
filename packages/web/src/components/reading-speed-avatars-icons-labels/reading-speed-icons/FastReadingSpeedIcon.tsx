@@ -1,7 +1,8 @@
 import React from 'react';
-import DirectionsDriveEtaIcon from '@material-ui/icons/DriveEta';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+
+import { SvgIconProps } from '@material-ui/core';
+import { DriveEta } from '@material-ui/icons';
 
 export default function FastReadingSpeedIcon(props: SvgIconProps) {
-  return <DirectionsDriveEtaIcon {...props} />;
+  return <DriveEta {...props} />;
 }

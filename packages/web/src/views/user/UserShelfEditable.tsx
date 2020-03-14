@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
+
 import {
-  UserShelfType,
+  FilterAutoMongoKeys,
   ShelfEntry,
   UserShelfEntry,
-  FilterAutoMongoKeys,
-} from '@caravan/buddy-reading-types';
+  UserShelfType,
+} from '@caravanapp/types';
 import {
   Button,
   Dialog,
@@ -12,11 +13,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  MuiThemeProvider,
 } from '@material-ui/core';
+
+import { errorTheme } from '../../theme';
 import BookSearch from '../books/BookSearch';
 import BookList from '../club/shelf-view/BookList';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { errorTheme } from '../../theme';
 
 interface UserShelfEditableProps {
   readingState: 'notStarted' | 'read';

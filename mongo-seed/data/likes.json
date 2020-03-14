@@ -1,0 +1,206 @@
+[
+  {
+    "_id": {
+      "$oid": "5d6aa85d0cd21c79ad0e9546"
+    },
+    "likes": [
+      {
+        "$oid": "5d23814fc3baa16d5bb98152"
+      }
+    ],
+    "numLikes": {
+      "$numberInt": "1"
+    },
+    "postId": {
+      "$oid": "5d6aa85d0cd21c79ad0e9542"
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567271005415"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569003190214"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d72adc8ee74acec5ed763e4"
+    },
+    "likes": [
+      {
+        "$oid": "5d4c942c581e3a0024b47126"
+      }
+    ],
+    "numLikes": {
+      "$numberInt": "1"
+    },
+    "postId": {
+      "$oid": "5d72adc8ee74acec5ed763e0"
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567796680667"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568998400259"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d72d9139f1ac10024e71a99"
+    },
+    "likes": [
+      {
+        "$oid": "5d4c942c581e3a0024b47126"
+      },
+      {
+        "$oid": "5d3f253f0f7e9047cb38cc10"
+      }
+    ],
+    "numLikes": {
+      "$numberInt": "2"
+    },
+    "postId": {
+      "$oid": "5d72d9139f1ac10024e71a93"
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1567807763556"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568998515539"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d769d93a9e3dc076ae039ff"
+    },
+    "likes": [
+      {
+        "$oid": "5d4c942c581e3a0024b47126"
+      },
+      {
+        "$oid": "5d1500c8c5758749c178683b"
+      },
+      {
+        "$oid": "5d23814fc3baa16d5bb98152"
+      }
+    ],
+    "numLikes": {
+      "$numberInt": "3"
+    },
+    "postId": {
+      "$oid": "5d769d93a9e3dc076ae039fa"
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568054675652"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569002161094"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d827dd2f913f10024fc5a59"
+    },
+    "likes": [
+      {
+        "$oid": "5d23814fc3baa16d5bb98152"
+      }
+    ],
+    "numLikes": {
+      "$numberInt": "1"
+    },
+    "postId": {
+      "$oid": "5d827dd2f913f10024fc5a51"
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1568832978889"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569002150281"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d8518f7a7e5540025f180b2"
+    },
+    "likes": [],
+    "numLikes": {
+      "$numberInt": "0"
+    },
+    "postId": {
+      "$oid": "5d8518f7a7e5540025f180a6"
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1569003767504"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569003767504"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d851a9ccd09e39c37c75d97"
+    },
+    "likes": [],
+    "numLikes": {
+      "$numberInt": "0"
+    },
+    "postId": {
+      "$oid": "5d851a9ccd09e39c37c75d8c"
+    },
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1569004188425"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569004188425"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
+]

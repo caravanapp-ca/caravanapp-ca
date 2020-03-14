@@ -2,14 +2,16 @@ import axios from 'axios';
 import btoa from 'btoa';
 import Discord, { TextChannel } from 'discord.js';
 import fetch from 'node-fetch';
-import { ReferralTier } from '@caravan/buddy-reading-types';
-import { UserDoc } from '@caravan/buddy-reading-mongo';
-import { getUser } from './user';
-import { getReferralTier } from './referral';
+
+import { UserDoc } from '@caravanapp/mongo';
+import { ReferralTier } from '@caravanapp/types';
+
 import {
   DISCORD_GEN_CHAT_ID,
   DISCORD_PERMISSIONS,
 } from '../common/globalConstantsAPI';
+import { getReferralTier } from './referral';
+import { getUser } from './user';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
 const DiscordPermissionsParam = DISCORD_PERMISSIONS.join('%20');

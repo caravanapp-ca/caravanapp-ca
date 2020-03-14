@@ -1,28 +1,29 @@
-import React from 'react';
 import copyToClipboard from 'copy-to-clipboard';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+
 import {
-  makeStyles,
+  FilterAutoMongoKeys,
+  PostUserInfo,
+  SelectedGenre,
+  ShelfEntry,
+} from '@caravanapp/types';
+import {
   Button,
+  IconButton,
+  Link,
+  makeStyles,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
-  Link,
-  Tooltip,
 } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LinkIcon from '@material-ui/icons/Link';
-import {
-  PostUserInfo,
-  FilterAutoMongoKeys,
-  ShelfEntry,
-  SelectedGenre,
-} from '@caravan/buddy-reading-types';
-import PostLikesThumbnails from '../../components/PostLikesThumbnails';
-import DiscordLoginModal from '../../components/DiscordLoginModal';
+import { Favorite as FavoriteIcon, Link as LinkIcon } from '@material-ui/icons';
+
 import { getReferralLink } from '../../common/referral';
 import AdapterLink from '../../components/AdapterLink';
+import DiscordLoginModal from '../../components/DiscordLoginModal';
+import PostLikesThumbnails from '../../components/PostLikesThumbnails';
 
 const useStyles = makeStyles(theme => ({
   bottomContainer: {

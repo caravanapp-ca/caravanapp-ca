@@ -1,9 +1,9 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import EndIcon from '../icons/EndIcon';
-import { makeStyles } from '@material-ui/styles';
-import { Theme, createStyles } from '@material-ui/core';
+
+import { Avatar, createStyles, makeStyles, Theme } from '@material-ui/core';
+
 import { washedTheme } from '../../../theme';
+import EndIcon from '../icons/EndIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

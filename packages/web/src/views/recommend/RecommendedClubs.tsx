@@ -1,35 +1,37 @@
-import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import queryString from 'query-string';
-import { makeStyles } from '@material-ui/styles';
+import React, { useEffect, useState } from 'react';
+import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
+
 import {
-  Theme,
-  createStyles,
-  Typography,
-  Container,
-  CircularProgress,
-  Button,
-  IconButton,
-} from '@material-ui/core';
-import { ArrowBackIos } from '@material-ui/icons';
-import {
-  User,
   ClubTransformedRecommended,
   ClubWithRecommendation,
-} from '@caravan/buddy-reading-types';
-import { RouteComponentProps, Redirect } from 'react-router';
+  User,
+} from '@caravanapp/types';
+import {
+  Button,
+  CircularProgress,
+  Container,
+  createStyles,
+  IconButton,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+import { ArrowBackIos } from '@material-ui/icons';
+
+import CustomSnackbar, {
+  CustomSnackbarProps,
+} from '../../components/CustomSnackbar';
 import Header from '../../components/Header';
 import HeaderTitle from '../../components/HeaderTitle';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
 import {
   getUserClubRecommendations,
   getUserReferralClub,
 } from '../../services/club';
-import ClubCards from '../home/ClubCards';
 import { transformClubRecommended } from '../club/functions/ClubFunctions';
-import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import CustomSnackbar, {
-  CustomSnackbarProps,
-} from '../../components/CustomSnackbar';
+import ClubCards from '../home/ClubCards';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,6 +72,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   const query = queryString.parse(props.location.search);
   const fromOnboarding = query.fromOnboarding === 'true';
   const classes = useStyles();
+  const history = useHistory();
   const [clubs, setClubs] = useState<ClubTransformedRecommended[]>([]);
   const [referralClub, setReferralClub] = useState<
     ClubTransformedRecommended | undefined
@@ -96,10 +99,10 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
   const loadMoreEnabled = clubs.length % pageSize === 0;
   const showAutoJoinedMsg = fromOnboarding && wasReferralMember === 'wasMember';
   const backButtonAction = () => {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   };
   const leftComponent = fromOnboarding ? (

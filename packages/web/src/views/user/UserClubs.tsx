@@ -1,7 +1,9 @@
 import React from 'react';
-import { User, ClubTransformed } from '@caravan/buddy-reading-types';
+
+import { ClubTransformed, User } from '@caravanapp/types';
+import { Container, makeStyles, Typography, useTheme } from '@material-ui/core';
+
 import ClubCards from '../home/ClubCards';
-import { Typography, useTheme, Container, makeStyles } from '@material-ui/core';
 
 interface UserClubsProps {
   clubsTransformed: ClubTransformed[];

@@ -1,10 +1,12 @@
 import { Document, model, Schema, Types } from 'mongoose';
+
 import {
   MongoTimestamps,
-  UserReferredAction,
   Referral,
   ReferredUser,
-} from '@caravan/buddy-reading-types';
+  UserReferredAction,
+} from '@caravanapp/types';
+
 import { MongooseSchema } from '../common/mongoose';
 
 export interface ReferralDoc

@@ -1,54 +1,58 @@
-import React, { useEffect, useCallback } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { useCallback, useEffect } from 'react';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
+
 import {
   ClubTransformed,
   EditableUserField,
+  PaletteObject,
   ProfileQuestion,
   ReadingState,
   Services,
   User,
+  UserPalettes,
   UserQA,
   UserShelfEntry,
-  UserPalettes,
-  PaletteObject,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/types';
 import {
+  CircularProgress,
   Container,
   createStyles,
+  IconButton,
   makeStyles,
+  MuiThemeProvider,
   Tab,
   Tabs,
   Theme,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import BackIcon from '@material-ui/icons/ArrowBackIos';
-import EditIcon from '@material-ui/icons/Create';
-import SaveIcon from '@material-ui/icons/Save';
-import { getUser, modifyUser } from '../../services/user';
-import Header from '../../components/Header';
-import HeaderTitle from '../../components/HeaderTitle';
+import {
+  ArrowBackIos as BackIcon,
+  Create as EditIcon,
+  Save as SaveIcon,
+} from '@material-ui/icons';
+
+import { GLOBAL_PALETTE_SETS } from '../../common/globalConstants';
+import { getSelectablePalettes } from '../../common/userPalettes';
+import validURL from '../../common/validURL';
 import CustomSnackbar, {
   CustomSnackbarProps,
 } from '../../components/CustomSnackbar';
-import UserAvatar from './UserAvatar';
-import UserBio from './UserBio';
-import UserShelf from './UserShelf';
-import UserNameplate from './UserNameplate';
-import UserClubs from './UserClubs';
-import { getClubsByIdNoMembers, getAllClubs } from '../../services/club';
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
+import { getAllClubs, getClubsByIdNoMembers } from '../../services/club';
 import { getAllGenres } from '../../services/genre';
 import { getAllProfileQuestions } from '../../services/profile';
 import { getReferralCount } from '../../services/referral';
-import { transformClub } from '../club/functions/ClubFunctions';
-import validURL from '../../common/validURL';
-import { makeUserTheme, makeUserDarkTheme, palettes } from '../../theme';
-import { GLOBAL_PALETTE_SETS } from '../../common/globalConstants';
+import { getUser, modifyUser } from '../../services/user';
 import { getUserPalettes } from '../../services/userPalettes';
-import { getSelectablePalettes } from '../../common/userPalettes';
+import { makeUserDarkTheme, makeUserTheme, palettes } from '../../theme';
+import { transformClub } from '../club/functions/ClubFunctions';
+import UserAvatar from './UserAvatar';
+import UserBio from './UserBio';
+import UserClubs from './UserClubs';
+import UserNameplate from './UserNameplate';
+import UserShelf from './UserShelf';
 
 interface MinMax {
   min: number;
@@ -137,6 +141,7 @@ const validationParams = {
 export default function UserView(props: UserViewProps) {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
 
   const { id: userId } = props.match.params;
   const [user, setUser] = React.useState<User | null>(null);
@@ -510,15 +515,15 @@ export default function UserView(props: UserViewProps) {
   // }
 
   function backButtonAction() {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   }
 
   const leftComponent = (
-    <MuiThemeProvider theme={userDarkTheme}>
+    <MuiThemeProvider theme={userDarkTheme || {}}>
       <IconButton
         edge="start"
         color={userDarkTheme ? 'primary' : 'inherit'}
@@ -531,7 +536,7 @@ export default function UserView(props: UserViewProps) {
   );
 
   const centerComponent = (
-    <MuiThemeProvider theme={userDarkTheme}>
+    <MuiThemeProvider theme={userDarkTheme || {}}>
       <div className={classes.centerComponent}>
         <UserAvatar user={user} style={{ marginRight: theme.spacing(1) }} />
         <HeaderTitle title={user.name || 'User Profile'} />
@@ -545,7 +550,7 @@ export default function UserView(props: UserViewProps) {
     } else {
       if (isEditing) {
         return (
-          <MuiThemeProvider theme={userDarkTheme}>
+          <MuiThemeProvider theme={userDarkTheme || {}}>
             <IconButton
               edge="start"
               color={userDarkTheme ? 'primary' : 'inherit'}
@@ -559,7 +564,7 @@ export default function UserView(props: UserViewProps) {
         );
       } else {
         return (
-          <MuiThemeProvider theme={userDarkTheme}>
+          <MuiThemeProvider theme={userDarkTheme || {}}>
             <IconButton
               edge="start"
               color={userDarkTheme ? 'primary' : 'inherit'}
@@ -595,7 +600,7 @@ export default function UserView(props: UserViewProps) {
   }
 
   return (
-    <MuiThemeProvider theme={userTheme}>
+    <MuiThemeProvider theme={userTheme || {}}>
       <Header
         leftComponent={leftComponent}
         centerComponent={scrolled > 64 ? centerComponent : undefined}
@@ -646,7 +651,7 @@ export default function UserView(props: UserViewProps) {
           />
         </div>
       </div>
-      <MuiThemeProvider theme={userDarkTheme}>
+      <MuiThemeProvider theme={userDarkTheme || {}}>
         <Tabs
           value={tabValue}
           onChange={handleTabChange}

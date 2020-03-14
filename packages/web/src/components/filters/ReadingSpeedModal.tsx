@@ -1,19 +1,21 @@
 import React from 'react';
-import { ReadingSpeed, FilterChip } from '@caravan/buddy-reading-types';
+
+import { FilterChip, ReadingSpeed } from '@caravanapp/types';
 import {
+  Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  makeStyles,
   Radio,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+
+import ListElementAvatar from '../ListElementAvatar';
 import {
   readingSpeedIcons,
   readingSpeedLabels,
 } from '../reading-speed-avatars-icons-labels';
-import ListElementAvatar from '../ListElementAvatar';
 
 const useStyles = makeStyles(() => ({
   dialogStyle: {

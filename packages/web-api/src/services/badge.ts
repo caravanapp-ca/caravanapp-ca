@@ -1,6 +1,6 @@
-import { UserBadge } from '@caravan/buddy-reading-types';
-import { UserModel } from '@caravan/buddy-reading-mongo';
-import { Omit } from 'utility-types';
+import { UserModel } from '@caravanapp/mongo';
+import { UserBadge } from '@caravanapp/types';
+
 import { BadgeDocInstance } from '../badges/BadgeInstance';
 
 export const getBadges = () => {

@@ -1,10 +1,7 @@
-import {
-  createMuiTheme,
-  responsiveFontSizes,
-  Theme,
-} from '@material-ui/core/styles';
-import { PaletteObject } from '@caravan/buddy-reading-types';
+import { PaletteObject } from '@caravanapp/types';
+import { createMuiTheme, responsiveFontSizes, Theme } from '@material-ui/core';
 import { TypeText } from '@material-ui/core/styles/createPalette';
+
 const montserrat = require('typeface-montserrat');
 
 const darkText: TypeText = {
@@ -17,7 +14,7 @@ const lightText: TypeText = {
   primary: 'rgba(255, 255, 255, 1)',
   secondary: 'rgba(255, 255, 255, 0.75)',
   disabled: 'rgba(255, 255, 255, 0.56)',
-  hint: 'rrgba(255, 255, 255, 0.56)',
+  hint: 'rgba(255, 255, 255, 0.56)',
 };
 
 export const themeObj = {

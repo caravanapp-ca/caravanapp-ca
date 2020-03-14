@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
-import {
-  FilterMongooseDocKeys,
-  LikesModel,
-  LikesDoc,
-} from '@caravan/buddy-reading-mongo';
+
+import { FilterMongooseDocKeys, LikesDoc, LikesModel } from '@caravanapp/mongo';
 
 export const getPostLikes = async (postId: mongoose.Types.ObjectId) => {
   const likesDoc = await LikesModel.findOne({ postId: postId });

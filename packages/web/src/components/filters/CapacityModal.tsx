@@ -1,16 +1,18 @@
 import React from 'react';
-import { Capacity, FilterChip } from '@caravan/buddy-reading-types';
+
+import { Capacity, FilterChip } from '@caravanapp/types';
 import {
+  Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
   ListItem,
   ListItemText,
+  makeStyles,
   Radio,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+
 import theme from '../../theme';
 import { capacityLabels } from '../capacity-labels';
 

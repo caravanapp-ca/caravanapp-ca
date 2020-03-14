@@ -1,0 +1,1447 @@
+[
+  {
+    "_id": {
+      "$oid": "5d0d4517b1e63b975808755a"
+    },
+    "isBot": false,
+    "discordId": "277845895066812417",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1561150743313"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564867745462"
+      }
+    },
+    "__v": {
+      "$numberInt": "1"
+    },
+    "urlSlug": "qt",
+    "questions": [],
+    "readingSpeed": "moderate",
+    "selectedGenres": [
+      {
+        "key": "biography",
+        "name": "Biography"
+      },
+      {
+        "key": "business",
+        "name": "Business"
+      },
+      {
+        "key": "crime",
+        "name": "Crime"
+      },
+      {
+        "key": "history",
+        "name": "History"
+      },
+      {
+        "key": "horror",
+        "name": "Horror"
+      },
+      {
+        "key": "mystery",
+        "name": "Mystery"
+      },
+      {
+        "key": "nonFiction",
+        "name": "Nonfiction"
+      },
+      {
+        "key": "science",
+        "name": "Science"
+      },
+      {
+        "key": "sports",
+        "name": "Sports"
+      }
+    ],
+    "shelf": {
+      "notStarted": [],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "name": "qt",
+    "bio": "I like to read books",
+    "website": "https://caravanapp.ca",
+    "palette": {
+      "key": "#3f51b5",
+      "textColor": "white",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1564867745462"
+        }
+      },
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1564867745462"
+        }
+      }
+    },
+    "photoUrl": "https://cdn.discordapp.com/avatars/277845895066812417/307323f025ed4295dff4c292e2ceb000.png?size=2048",
+    "badges": []
+  },
+  {
+    "_id": {
+      "$oid": "5d0eb02837cff574b9f3add6"
+    },
+    "bio": "Check out my Wattpad",
+    "website": "wattpad.com/user/quinn",
+    "name": "Quinn",
+    "readingSpeed": "moderate",
+    "age": {
+      "$numberInt": "23"
+    },
+    "gender": "male",
+    "location": "Toronto, Canada",
+    "isBot": false,
+    "discordId": "592060099023994880",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1561243689007"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1562359972286"
+      }
+    },
+    "urlSlug": "quinn",
+    "selectedGenres": [
+      {
+        "key": "business",
+        "name": "Business"
+      },
+      {
+        "key": "classics",
+        "name": "Classics"
+      },
+      {
+        "key": "history",
+        "name": "History"
+      }
+    ],
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q2",
+        "title": "If I could relive one scene from a book",
+        "answer": "Test",
+        "sort": {
+          "$numberInt": "0"
+        }
+      }
+    ],
+    "shelf": {
+      "notStarted": [],
+      "read": []
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "goodreadsUrl": null,
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "palette": null
+  },
+  {
+    "_id": {
+      "$oid": "5d0eba832aa5960d37d1e079"
+    },
+    "isBot": false,
+    "discordId": "539202678258008074",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1561246339554"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568762051735"
+      }
+    },
+    "__v": {
+      "$numberInt": "1"
+    },
+    "urlSlug": "frescocherry",
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q3",
+        "answer": "f",
+        "sort": {
+          "$numberInt": "1"
+        },
+        "title": "If I could live in one fictional setting"
+      }
+    ],
+    "readingSpeed": "moderate",
+    "selectedGenres": [
+      {
+        "key": "art",
+        "name": "Art"
+      },
+      {
+        "key": "biography",
+        "name": "Biography"
+      },
+      {
+        "key": "business",
+        "name": "Business"
+      }
+    ],
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "p7W8xAdPzNwC",
+          "readingState": "notStarted",
+          "title": "Passing the Test",
+          "genres": [
+            "Achievement tests"
+          ],
+          "author": "Marita Moll",
+          "isbn": "9780886273347",
+          "publishedDate": "2004",
+          "coverImageURL": "http://books.google.com/books/content?id=p7W8xAdPzNwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "Hfeq6TgL1iQC",
+          "readingState": "notStarted",
+          "title": "Category-Specific Names Test",
+          "genres": [
+            "Psychology"
+          ],
+          "author": "Pat McKenna",
+          "isbn": "086377458X",
+          "publishedDate": "1998-02-11",
+          "coverImageURL": "http://books.google.com/books/content?id=Hfeq6TgL1iQC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "a-BJAgAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Test Scoring",
+          "genres": [
+            "Education"
+          ],
+          "author": "David Thissen, Howard Wainer",
+          "isbn": "9781135651374",
+          "publishedDate": "2001-05-01",
+          "coverImageURL": "http://books.google.com/books/content?id=a-BJAgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "0"
+    },
+    "name": "FrescoCherry",
+    "bio": "Yo what's up? My name is FrescoCherry.",
+    "website": "www.google.ca",
+    "palette": null,
+    "photoUrl": "https://cdn.discordapp.com/avatars/539202678258008074/c01b0bd5b805448b543aed55c57655aa.png?size=2048",
+    "badges": [
+      {
+        "_id": {
+          "$oid": "5d5ac251440d7e5ed9214cb4"
+        },
+        "key": "ref1",
+        "awardedOn": {
+          "$date": {
+            "$numberLong": "1566229073298"
+          }
+        },
+        "name": "Wanderer (3 referrals)",
+        "description": "Earned by referring 3 friends to Caravan who joined a club."
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "5d1500c8c5758749c178683b"
+    },
+    "isBot": false,
+    "discordId": "592761757764812801",
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1561657544253"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1566831922237"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "urlSlug": "caravan-admin",
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q23",
+        "answer": "f",
+        "sort": {
+          "$numberInt": "0"
+        },
+        "title": "If I'm not reading, I'm"
+      },
+      {
+        "userVisible": true,
+        "id": "q22",
+        "answer": "f",
+        "sort": {
+          "$numberInt": "1"
+        },
+        "title": "The most beautifully written book I've ever read"
+      },
+      {
+        "userVisible": true,
+        "id": "q25",
+        "answer": "f",
+        "sort": {
+          "$numberInt": "2"
+        },
+        "title": "General life philosophy"
+      }
+    ],
+    "readingSpeed": "moderate",
+    "selectedGenres": [
+      {
+        "key": "fantasy",
+        "name": "Fantasy"
+      },
+      {
+        "key": "fiction",
+        "name": "Fiction"
+      },
+      {
+        "key": "historicalFiction",
+        "name": "Historical Fiction"
+      },
+      {
+        "key": "philosophy",
+        "name": "Philosophy"
+      },
+      {
+        "key": "psychology",
+        "name": "Psychology"
+      }
+    ],
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "n7AHAAAAQAAJ",
+          "readingState": "notStarted",
+          "title": "'A reasonable faith', by three 'Friends' [F. Frith, W.E. Turner and W. Pollard] refuted",
+          "genres": [],
+          "author": "George Holden Braithwaite",
+          "isbn": "OXFORD:590111250",
+          "publishedDate": "1885",
+          "coverImageURL": "http://books.google.com/books/content?id=n7AHAAAAQAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "Yk9Z4dq7FBQC",
+          "readingState": "notStarted",
+          "title": "A is for Autism, F is for Friend",
+          "genres": [
+            "Education"
+          ],
+          "author": "Joanna L. Keating-Velasco",
+          "isbn": "1931282439",
+          "publishedDate": "2007",
+          "coverImageURL": "http://books.google.com/books/content?id=Yk9Z4dq7FBQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "palette": {
+      "id": "col-cbl",
+      "set": "colour",
+      "key": "#5c6bc0",
+      "textColor": "white",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1566831922237"
+        }
+      },
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1566831922237"
+        }
+      }
+    },
+    "badges": [],
+    "name": "caravan-admin"
+  },
+  {
+    "_id": {
+      "$oid": "5d23814fc3baa16d5bb98152"
+    },
+    "readingSpeed": "moderate",
+    "isBot": false,
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "5yvqBQAAQBAJ",
+          "readingState": "notStarted",
+          "title": "City on Fire",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "Garth Risk Hallberg",
+          "isbn": "9780385682756",
+          "publishedDate": "2015-10-13",
+          "coverImageURL": "http://books.google.com/books/content?id=5yvqBQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "lKt5laoj1coC",
+          "readingState": "notStarted",
+          "title": "The Mote in God's Eye",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "Larry Niven, Jerry Pournelle",
+          "isbn": "9780671741921",
+          "publishedDate": "1991-03-01",
+          "coverImageURL": "http://books.google.com/books/content?id=lKt5laoj1coC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null,
+          "amazonLink": "http://bit.ly/2Y8Fr6w"
+        },
+        {
+          "source": "google",
+          "sourceId": "nuzCP7fWPHEC",
+          "readingState": "notStarted",
+          "title": "Forward the Foundation",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "Isaac Asimov",
+          "isbn": "9780553900965",
+          "publishedDate": "2012-02-22",
+          "coverImageURL": "http://books.google.com/books/content?id=nuzCP7fWPHEC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "RyEEAAAAQAAJ",
+          "readingState": "notStarted",
+          "title": "The Count of Monte-Cristo",
+          "genres": [
+            "France"
+          ],
+          "author": "Alexandre Dumas",
+          "isbn": "OXFORD:590318835",
+          "publishedDate": "1846",
+          "coverImageURL": "http://books.google.com/books/content?id=RyEEAAAAQAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "3vExWrUnJB0C",
+          "readingState": "notStarted",
+          "title": "Do Androids Dream of Electric Sheep?",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "Philip K. Dick",
+          "isbn": "9780345404473",
+          "publishedDate": "1996",
+          "coverImageURL": "http://books.google.com/books/content?id=3vExWrUnJB0C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "I8mxughWAOEC",
+          "readingState": "notStarted",
+          "title": "The Lord of the Rings",
+          "genres": [
+            "Performing Arts"
+          ],
+          "author": "Ernest Mathijs",
+          "isbn": "1904764827",
+          "publishedDate": "2006",
+          "coverImageURL": "http://books.google.com/books/content?id=I8mxughWAOEC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "r9x-OXdzpPcC",
+          "readingState": "notStarted",
+          "title": "The Lean Startup",
+          "genres": [
+            "Business & Economics"
+          ],
+          "author": "Eric Ries",
+          "isbn": "9780307887894",
+          "publishedDate": "2011",
+          "coverImageURL": "http://books.google.com/books/content?id=r9x-OXdzpPcC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "TZWHNzyi9Z8C",
+          "readingState": "notStarted",
+          "title": "The Lion, the Witch and the Wardrobe",
+          "genres": [
+            "Drama"
+          ],
+          "author": "C.S Lewis, Adrian Mitchell",
+          "isbn": "9781849435499",
+          "publishedDate": "2012-05-28",
+          "coverImageURL": "http://books.google.com/books/content?id=TZWHNzyi9Z8C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "vNkOAQAAMAAJ",
+          "readingState": "notStarted",
+          "title": "Sandkings",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "George R. R. Martin",
+          "isbn": "UOM:49015000617416",
+          "publishedDate": "1986-02",
+          "coverImageURL": "http://books.google.com/books/content?id=vNkOAQAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "p1MULH7JsTQC",
+          "readingState": "notStarted",
+          "title": "Dune",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "Frank Herbert",
+          "isbn": "9781101658055",
+          "publishedDate": "2003-08-26",
+          "coverImageURL": "http://books.google.com/books/content?id=p1MULH7JsTQC&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+          "_id": null,
+          "amazonLink": "http://www.amazon.com/gp/product/0441172717/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0441172717&linkCode=as2&tag=caravanclubs-20&linkId=727a3fe16c1123ee6476012943357797"
+        },
+        {
+          "source": "google",
+          "sourceId": "OS5_VGMdkI8C",
+          "readingState": "notStarted",
+          "title": "Fresco",
+          "genres": [
+            "Poetry"
+          ],
+          "author": "Luljeta Lleshanaku, Peter Constantine",
+          "isbn": "0811215113",
+          "publishedDate": "2002",
+          "coverImageURL": "http://books.google.com/books/content?id=OS5_VGMdkI8C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "ShykzsaFVScC",
+          "readingState": "notStarted",
+          "title": "Being The Solution",
+          "genres": [
+            "Self-Help"
+          ],
+          "author": "D. Rutherford",
+          "isbn": "0967054028",
+          "publishedDate": "2002-02",
+          "coverImageURL": "http://books.google.com/books/content?id=ShykzsaFVScC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "wwzIBAAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Physical Computation and Cognitive Science",
+          "genres": [
+            "Computers"
+          ],
+          "author": "Nir Fresco",
+          "isbn": "9783642413759",
+          "publishedDate": "2013-10-12",
+          "coverImageURL": "http://books.google.com/books/content?id=wwzIBAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "yicDl0rgpNQC",
+          "readingState": "notStarted",
+          "title": "The Cadet Life of Prince Harry",
+          "genres": [
+            "Biography & Autobiography"
+          ],
+          "author": "Vasile Michael",
+          "isbn": "9781434353924",
+          "publishedDate": "2008",
+          "coverImageURL": "http://books.google.com/books/content?id=yicDl0rgpNQC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "dujx_t8lRAIC",
+          "readingState": "notStarted",
+          "title": "Harry Smith",
+          "genres": [
+            "Art"
+          ],
+          "author": "Andrew Perchuk, Rani Singh",
+          "isbn": "9780892367351",
+          "publishedDate": "2010-01-01",
+          "coverImageURL": "http://books.google.com/books/content?id=dujx_t8lRAIC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "abVrDwAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Blood of an Exile",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "Brian Naslund",
+          "isbn": "9781250309624",
+          "publishedDate": "2019-08-06",
+          "coverImageURL": "http://books.google.com/books/content?id=abVrDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "Xd2x9oHy1XgC",
+          "readingState": "notStarted",
+          "title": "Blood Prophecy",
+          "genres": [
+            "Juvenile Fiction"
+          ],
+          "author": "Alyxandra Harvey",
+          "isbn": "9781408836705",
+          "publishedDate": "2013-01-03",
+          "coverImageURL": "http://books.google.com/books/content?id=Xd2x9oHy1XgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "821BaGHuUXIC",
+          "readingState": "notStarted",
+          "title": "Blood Magic",
+          "genres": [
+            "Young Adult Fiction"
+          ],
+          "author": "Tessa Gratton",
+          "isbn": "0375897682",
+          "publishedDate": "2011-05-24",
+          "coverImageURL": "http://books.google.com/books/content?id=821BaGHuUXIC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "-5fOAAAAMAAJ",
+          "readingState": "notStarted",
+          "title": "What Shall be the Prime Meridian for the World?",
+          "genres": [
+            "Prime Meridian"
+          ],
+          "author": "Unknown author",
+          "isbn": "UOM:39015019895203",
+          "publishedDate": "1884",
+          "coverImageURL": "http://books.google.com/books/content?id=-5fOAAAAMAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "iHieZXboaSgC",
+          "readingState": "notStarted",
+          "title": "The Association for Meridian Energy Therapies Yearbook 2003",
+          "genres": [],
+          "author": "Silvia Hartmann",
+          "isbn": "9781873483527",
+          "publishedDate": "2003-03-01",
+          "coverImageURL": "http://books.google.com/books/content?id=iHieZXboaSgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "URg5fUbtsHwC",
+          "readingState": "notStarted",
+          "title": "Outnumbered",
+          "genres": [
+            "History"
+          ],
+          "author": "Cormac O'Brien",
+          "isbn": "9781616738433",
+          "publishedDate": "2010-05-01",
+          "coverImageURL": "http://books.google.com/books/content?id=URg5fUbtsHwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "4L6DMIFmxMIC",
+          "readingState": "notStarted",
+          "title": "S a n g F r o i d",
+          "genres": [
+            "Biography & Autobiography"
+          ],
+          "author": "Claude Feninger",
+          "isbn": "9781450046374",
+          "publishedDate": "2006-09-29",
+          "coverImageURL": "http://books.google.com/books/content?id=4L6DMIFmxMIC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "discordId": "585146933983707152",
+    "urlSlug": "yusufk",
+    "selectedGenres": [
+      {
+        "key": "fantasy",
+        "name": "Fantasy"
+      },
+      {
+        "key": "fiction",
+        "name": "Fiction"
+      },
+      {
+        "key": "historicalFiction",
+        "name": "Historical Fiction"
+      },
+      {
+        "key": "philosophy",
+        "name": "Philosophy"
+      },
+      {
+        "key": "psychology",
+        "name": "Psychology"
+      }
+    ],
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q2",
+        "answer": "The end haha hh nice!",
+        "sort": {
+          "$numberInt": "1"
+        },
+        "title": "If I could relive one scene from a book"
+      },
+      {
+        "userVisible": true,
+        "id": "q6",
+        "answer": "Myself :) Haha",
+        "sort": {
+          "$numberInt": "2"
+        },
+        "title": "Favourite fictional book character of all time"
+      },
+      {
+        "userVisible": true,
+        "id": "q3",
+        "title": "If I could live in one fictional setting",
+        "answer": "Westeros bud :)",
+        "sort": {
+          "$numberInt": "0"
+        }
+      }
+    ],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1562607951910"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1568745302486"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "name": "Yusuf",
+    "bio": "Caravan founder. Aiming to help connect readers in a meaningful way.",
+    "palette": {
+      "id": "col-lgr",
+      "set": "colour",
+      "key": "#8bc34a",
+      "textColor": "primary",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1568745302486"
+        }
+      },
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1568745302486"
+        }
+      }
+    },
+    "website": "caravanapp.ca",
+    "photoUrl": "https://cdn.discordapp.com/avatars/585146933983707152/d93b7c78bec9b88107a61cafbb3c5e5c.png?size=2048",
+    "badges": []
+  },
+  {
+    "_id": {
+      "$oid": "5d323bcec7d4610891e9fe87"
+    },
+    "readingSpeed": "moderate",
+    "isBot": false,
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "yIh6CwAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Mike",
+          "genres": [
+            "Biography & Autobiography"
+          ],
+          "author": "Rt. Hon. Lester B. Pearson",
+          "isbn": "9781442668669",
+          "publishedDate": "2016-01-28",
+          "coverImageURL": "http://books.google.com/books/content?id=yIh6CwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "htKHmFbT1nkC",
+          "readingState": "notStarted",
+          "title": "Bar Starr Ranch Murder Mystery Party Kit for Boys and Girls",
+          "genres": [
+            "Computers"
+          ],
+          "author": "SimpliFun Studios",
+          "isbn": "9781932839326",
+          "publishedDate": "2004-01-01",
+          "coverImageURL": "http://books.google.com/books/content?id=htKHmFbT1nkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "6zujAwAAQBAJ",
+          "readingState": "notStarted",
+          "title": "disclaimer: this is not the story of \"dull-bot and his irritable vowel syndrome\"",
+          "genres": [],
+          "author": "David Shane Shelton",
+          "isbn": "9781105623394",
+          "coverImageURL": "http://books.google.com/books/content?id=6zujAwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "0"
+    },
+    "palette": null,
+    "discordId": "585170495549472778",
+    "urlSlug": "mikestarr",
+    "selectedGenres": [
+      {
+        "key": "memoir",
+        "name": "Memoir"
+      }
+    ],
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q3",
+        "answer": "Westeros",
+        "sort": {
+          "$numberInt": "1"
+        },
+        "title": "If I could live in one fictional setting"
+      },
+      {
+        "userVisible": true,
+        "id": "q6",
+        "answer": "Katniss <3",
+        "sort": {
+          "$numberInt": "2"
+        },
+        "title": "Favourite fictional book character of all time"
+      }
+    ],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1563573198752"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1563573245020"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d3f1dfaf7bfee4516f1ebd0"
+    },
+    "readingSpeed": "moderate",
+    "isBot": false,
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "hB8sAQAAMAAJ",
+          "readingState": "notStarted",
+          "title": "Hamburg",
+          "genres": [
+            "Hamburg (Germany)"
+          ],
+          "author": "Matthew Jefferies",
+          "isbn": "IND:30000127034837",
+          "publishedDate": "2011",
+          "coverImageURL": "http://books.google.com/books/content?id=hB8sAQAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "mVmCH3YZOcQC",
+          "readingState": "notStarted",
+          "title": "Arsenal on the Double",
+          "genres": [
+            "Sports & Recreation"
+          ],
+          "author": "Bernard Azulay",
+          "isbn": "9781780577715",
+          "publishedDate": "2012-12-07",
+          "coverImageURL": "http://books.google.com/books/content?id=mVmCH3YZOcQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "Mqc_AAAAcAAJ",
+          "readingState": "notStarted",
+          "title": "Napoli Sollevata 1648",
+          "genres": [],
+          "author": "Diego Amatore",
+          "isbn": "BSB:BSB10051411",
+          "publishedDate": "1650",
+          "coverImageURL": "http://books.google.com/books/content?id=Mqc_AAAAcAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "_2KKDQAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Blood Meridian, Or, The Evening Redness in the West",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "Cormac McCarthy",
+          "isbn": "9780679728757",
+          "publishedDate": "1992",
+          "coverImageURL": "http://books.google.com/books/content?id=_2KKDQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "palette": {
+      "id": "nat-out",
+      "set": "nature",
+      "key": "#3C3E67",
+      "textColor": "white",
+      "bgImage": "https://storage.googleapis.com/buddy-reading-storage-pub/profile-backgrounds/nat-out.svg",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1564783439498"
+        }
+      },
+      "createdAt": {
+        "$date": {
+          "$numberLong": "1564783439498"
+        }
+      }
+    },
+    "discordId": "604326415630073876",
+    "urlSlug": "thesoulution",
+    "selectedGenres": [
+      {
+        "key": "spirituality",
+        "name": "Spirituality"
+      }
+    ],
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q4",
+        "answer": "Rome!",
+        "sort": {
+          "$numberInt": "2"
+        },
+        "title": "I love reading  books from this time period"
+      }
+    ],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564417530347"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564783439498"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "badges": [],
+    "name": "TheSoulution",
+    "photoUrl": "https://cdn.discordapp.com/avatars/604326415630073876/7c1e7ef30489091e5c8c615bec5e32f0.png?size=2048"
+  },
+  {
+    "_id": {
+      "$oid": "5d3f253f0f7e9047cb38cc10"
+    },
+    "readingSpeed": "slow",
+    "isBot": false,
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "2Y4r7ATNpa4C",
+          "readingState": "notStarted",
+          "title": "The Joker",
+          "genres": [
+            "Literary Criticism"
+          ],
+          "author": "Matthew Manning, Daniel Wallace",
+          "isbn": "9780789322470",
+          "publishedDate": "2011",
+          "coverImageURL": "http://books.google.com/books/content?id=2Y4r7ATNpa4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "gQMt6y-AF-oC",
+          "readingState": "notStarted",
+          "title": "Hamburger for One",
+          "genres": [
+            "Fiction"
+          ],
+          "author": "Ron Underwood",
+          "isbn": "9781450281430",
+          "publishedDate": "2011-01-03",
+          "coverImageURL": "http://books.google.com/books/content?id=gQMt6y-AF-oC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "ZmbI0-CHDwsC",
+          "readingState": "notStarted",
+          "title": "Burger Parties",
+          "genres": [
+            "Cooking"
+          ],
+          "author": "James McNair, Jeffrey Starr",
+          "isbn": "9780307813428",
+          "publishedDate": "2012-07-11",
+          "coverImageURL": "http://books.google.com/books/content?id=ZmbI0-CHDwsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "palette": null,
+    "discordId": "508330023472857100",
+    "urlSlug": "freeman-cortez",
+    "selectedGenres": [
+      {
+        "key": "art",
+        "name": "Art"
+      },
+      {
+        "key": "biography",
+        "name": "Biography"
+      },
+      {
+        "key": "business",
+        "name": "Business"
+      },
+      {
+        "key": "spirituality",
+        "name": "Spirituality"
+      }
+    ],
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q3",
+        "answer": "Westeros bud",
+        "sort": {
+          "$numberInt": "1"
+        },
+        "title": "If I could live in one fictional setting"
+      }
+    ],
+    "badges": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564419391948"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564435044112"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    },
+    "name": "freeman-cortez",
+    "photoUrl": "https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png"
+  },
+  {
+    "_id": {
+      "$oid": "5d435b07479805acfaafd345"
+    },
+    "readingSpeed": "moderate",
+    "isBot": false,
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "n7AHAAAAQAAJ",
+          "readingState": "notStarted",
+          "title": "'A reasonable faith', by three 'Friends' [F. Frith, W.E. Turner and W. Pollard] refuted",
+          "genres": [],
+          "author": "George Holden Braithwaite",
+          "isbn": "OXFORD:590111250",
+          "publishedDate": "1885",
+          "coverImageURL": "http://books.google.com/books/content?id=n7AHAAAAQAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "n7AHAAAAQAAJ",
+          "readingState": "notStarted",
+          "title": "'A reasonable faith', by three 'Friends' [F. Frith, W.E. Turner and W. Pollard] refuted",
+          "genres": [],
+          "author": "George Holden Braithwaite",
+          "isbn": "OXFORD:590111250",
+          "publishedDate": "1885",
+          "coverImageURL": "http://books.google.com/books/content?id=n7AHAAAAQAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "4L6DMIFmxMIC",
+          "readingState": "notStarted",
+          "title": "S a n g F r o i d",
+          "genres": [
+            "Biography & Autobiography"
+          ],
+          "author": "Claude Feninger",
+          "isbn": "9781450046374",
+          "publishedDate": "2006-09-29",
+          "coverImageURL": "http://books.google.com/books/content?id=4L6DMIFmxMIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "palette": null,
+    "discordId": "606579080120238157",
+    "urlSlug": "yhtester",
+    "selectedGenres": [
+      {
+        "key": "thriller",
+        "name": "Thriller"
+      }
+    ],
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q3",
+        "answer": "F",
+        "sort": {
+          "$numberInt": "1"
+        },
+        "title": "If I could live in one fictional setting"
+      },
+      {
+        "userVisible": true,
+        "id": "q4",
+        "answer": "F",
+        "sort": {
+          "$numberInt": "2"
+        },
+        "title": "I love reading  books from this time period"
+      }
+    ],
+    "badges": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1564695303873"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1564695340038"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d4c942c581e3a0024b47126"
+    },
+    "readingSpeed": "slow",
+    "isBot": false,
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "ThAaBwAAQBAJ",
+          "readingState": "notStarted",
+          "title": "Harry Potter’s World Wide Influence",
+          "genres": [
+            "Literary Criticism"
+          ],
+          "author": "Diana Patterson",
+          "isbn": "9781443816281",
+          "publishedDate": "2009-10-02",
+          "coverImageURL": "http://books.google.com/books/content?id=ThAaBwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "WV8pZj_oNBwC",
+          "readingState": "notStarted",
+          "title": "Harry Potter Power",
+          "genres": [
+            "Juvenile Nonfiction"
+          ],
+          "author": "Julie-Anne Sykley",
+          "isbn": "9781921479311",
+          "publishedDate": "2010",
+          "coverImageURL": "http://books.google.com/books/content?id=WV8pZj_oNBwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "WV8pZj_oNBwC",
+          "readingState": "notStarted",
+          "title": "Harry Potter Power",
+          "genres": [
+            "Juvenile Nonfiction"
+          ],
+          "author": "Julie-Anne Sykley",
+          "isbn": "9781921479311",
+          "publishedDate": "2010",
+          "coverImageURL": "http://books.google.com/books/content?id=WV8pZj_oNBwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "palette": null,
+    "discordId": "582965977193512972",
+    "urlSlug": "currty",
+    "selectedGenres": [
+      {
+        "key": "cookbooks",
+        "name": "Cookbooks"
+      },
+      {
+        "key": "gayAndLesbian",
+        "name": "Gay and Lesbian"
+      },
+      {
+        "key": "graphicNovels",
+        "name": "Graphic Novels"
+      },
+      {
+        "key": "horror",
+        "name": "Horror"
+      },
+      {
+        "key": "music",
+        "name": "Music"
+      }
+    ],
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q2",
+        "answer": "sljdh",
+        "sort": {
+          "$numberInt": "0"
+        },
+        "title": "If I could relive one scene from a book"
+      },
+      {
+        "userVisible": true,
+        "id": "q6",
+        "answer": "asd",
+        "sort": {
+          "$numberInt": "2"
+        },
+        "title": "Favourite fictional book character of all time"
+      }
+    ],
+    "badges": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1565299756643"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1565299880797"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "5d8bb82e8da4c80024a417d0"
+    },
+    "readingSpeed": "moderate",
+    "isBot": false,
+    "shelf": {
+      "notStarted": [
+        {
+          "source": "google",
+          "sourceId": "8SVsv_nEUvsC",
+          "readingState": "notStarted",
+          "title": "After School Club",
+          "genres": [
+            "Children's stories"
+          ],
+          "author": "Helena Pielichaty",
+          "isbn": "0192752499",
+          "publishedDate": "2003",
+          "coverImageURL": "http://books.google.com/books/content?id=8SVsv_nEUvsC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "HDbNQKmJsEUC",
+          "readingState": "notStarted",
+          "title": "Referral and Termination Issues for Counsellors",
+          "genres": [
+            "Psychology"
+          ],
+          "author": "Anne Leigh",
+          "isbn": "9780857025999",
+          "publishedDate": "1998-06-10",
+          "coverImageURL": "http://books.google.com/books/content?id=HDbNQKmJsEUC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        },
+        {
+          "source": "google",
+          "sourceId": "GYYj7izWl_gC",
+          "readingState": "notStarted",
+          "title": "Join Us for English 1 Teacher's Book",
+          "genres": [
+            "Foreign Language Study"
+          ],
+          "author": "Gunter Gerngross, Herbert Puchta, Paola Tite",
+          "isbn": "0521679176",
+          "publishedDate": "2006-04-27",
+          "coverImageURL": "http://books.google.com/books/content?id=GYYj7izWl_gC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "_id": null
+        }
+      ],
+      "read": []
+    },
+    "onboardingVersion": {
+      "$numberInt": "1"
+    },
+    "palette": null,
+    "discordId": "626491358072406037",
+    "urlSlug": "matttest",
+    "selectedGenres": [
+      {
+        "key": "art",
+        "name": "Art"
+      },
+      {
+        "key": "business",
+        "name": "Business"
+      },
+      {
+        "key": "chickLit",
+        "name": "Chick Lit"
+      }
+    ],
+    "questions": [
+      {
+        "userVisible": true,
+        "id": "q2",
+        "answer": "Please be in the club",
+        "sort": {
+          "$numberInt": "1"
+        },
+        "title": "If I could relive one scene from a book"
+      },
+      {
+        "userVisible": true,
+        "id": "q3",
+        "answer": "Please be in the club",
+        "sort": {
+          "$numberInt": "2"
+        },
+        "title": "If I could live in one fictional setting"
+      }
+    ],
+    "badges": [],
+    "createdAt": {
+      "$date": {
+        "$numberLong": "1569437742929"
+      }
+    },
+    "updatedAt": {
+      "$date": {
+        "$numberLong": "1569437788400"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
+]

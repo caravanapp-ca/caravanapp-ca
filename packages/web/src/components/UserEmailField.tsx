@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/styles';
+
 import {
-  Theme,
-  createStyles,
-  TextField,
-  IconButton,
-  Popover,
-  Typography,
   Container,
+  createStyles,
+  IconButton,
+  makeStyles,
+  Popover,
+  TextField,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { HelpOutline } from '@material-ui/icons';
+
 import { MAX_EMAIL_LENGTH } from '../common/globalConstants';
 import { validEmail } from '../common/validEmail';
 

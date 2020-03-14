@@ -1,8 +1,15 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { Theme, createStyles, Typography, Box } from '@material-ui/core';
-import { successTheme } from '../../../theme';
 import clsx from 'clsx';
+import React from 'react';
+
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+
+import { successTheme } from '../../../theme';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

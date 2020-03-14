@@ -1,27 +1,35 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import {
-  User,
-  ShelfEntry,
-  Services,
-  FilterAutoMongoKeys,
-  ReadingState,
-} from '@caravan/buddy-reading-types';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { IconButton, Typography, Button, Container } from '@material-ui/core';
-import { ArrowBackIos } from '@material-ui/icons';
-import Header from '../../components/Header';
-import BookList from './shelf-view/BookList';
-import BookSearch from '../books/BookSearch';
-import { getClub, updateShelf } from '../../services/club';
-import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
-import HeaderTitle from '../../components/HeaderTitle';
 import {
   DragDropContext,
+  DragStart,
   DropResult,
   ResponderProvided,
-  DragStart,
 } from 'react-beautiful-dnd';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
+
+import {
+  FilterAutoMongoKeys,
+  ReadingState,
+  Services,
+  ShelfEntry,
+  User,
+} from '@caravanapp/types';
+import {
+  Button,
+  Container,
+  IconButton,
+  makeStyles,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
+import { ArrowBackIos } from '@material-ui/icons';
+
+import Header from '../../components/Header';
+import HeaderTitle from '../../components/HeaderTitle';
+import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import { getClub, updateShelf } from '../../services/club';
+import BookSearch from '../books/BookSearch';
+import BookList from './shelf-view/BookList';
 
 interface UpdateBookRouteParams {
   id: string;
@@ -81,6 +89,7 @@ const isValidCurrentShelf = (
 export default function UpdateBook(props: UpdateBookProps) {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
   const clubId = props.match.params.id;
   const user = props.user;
 
@@ -139,7 +148,7 @@ export default function UpdateBook(props: UpdateBookProps) {
     const res = await updateShelf(clubId, sortedShelf);
     if (res.status === 200) {
       // TODO: show snack bar on next page
-      props.history.goBack();
+      history.goBack();
     } else {
       // TODO: need to do error handling here based on error code
       return;
@@ -147,10 +156,10 @@ export default function UpdateBook(props: UpdateBookProps) {
   }
 
   function backButtonAction() {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   }
 

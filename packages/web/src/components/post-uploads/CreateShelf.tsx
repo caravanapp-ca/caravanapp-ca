@@ -1,30 +1,32 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
+
 import {
-  Services,
   FilterAutoMongoKeys,
-  ShelfEntry,
-  SelectedGenre,
   PostContent,
   PostUserInfo,
+  SelectedGenre,
+  Services,
+  ShelfEntry,
   User,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/types';
 import {
-  makeStyles,
-  Typography,
-  Container,
-  TextField,
+  Button,
   CircularProgress,
+  Container,
+  makeStyles,
+  TextField,
+  Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import GenreChip from '../GenreChip';
+
+import { getAllGenres } from '../../services/genre';
+import { getFeedViewerUserInfo, uploadPost } from '../../services/post';
+import theme from '../../theme';
 import BookSearch from '../../views/books/BookSearch';
-import { uploadPost, getFeedViewerUserInfo } from '../../services/post';
+import GenreChip from '../GenreChip';
 import Header from '../Header';
 import HeaderTitle from '../HeaderTitle';
-import { getAllGenres } from '../../services/genre';
-import theme from '../../theme';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -58,6 +60,7 @@ interface CreateShelfProps extends RouteComponentProps {
 export default function CreateShelf(props: CreateShelfProps) {
   const classes = useStyles();
   const { user } = props;
+  const history = useHistory();
 
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
@@ -110,9 +113,9 @@ export default function CreateShelf(props: CreateShelfProps) {
 
   useEffect(() => {
     if (createdShelf) {
-      props.history.goBack();
+      history.goBack();
     }
-  }, [createdShelf, props.history]);
+  }, [createdShelf, history]);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[]
@@ -125,7 +128,7 @@ export default function CreateShelf(props: CreateShelfProps) {
     setShelf([]);
     setShelfTitle('');
     setShelfDescription('');
-    props.history.goBack();
+    history.goBack();
   }
 
   async function postShelf() {

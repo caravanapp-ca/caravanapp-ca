@@ -1,16 +1,22 @@
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { makeStyles, Menu, MenuItem } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
-import { User } from '@caravan/buddy-reading-types';
-import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
-import { washedTheme } from '../theme';
-import { logout } from '../services/user';
-import DiscordLoginModal from './DiscordLoginModal';
+import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
+
+import { User } from '@caravanapp/types';
+import {
+  Avatar,
+  IconButton,
+  makeStyles,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from '@material-ui/core';
+import { ArrowDropDown } from '@material-ui/icons';
+
 import { DISCORD_GUILD_LINK } from '../common/globalConstants';
+import { logout } from '../services/user';
+import { washedTheme } from '../theme';
+import DiscordLoginModal from './DiscordLoginModal';
+import GenericGroupMemberIcon from './misc-avatars-icons-labels/icons/GenericGroupMemberIcon';
 
 const useStyles = makeStyles(theme => ({
   headerAvatar: {
@@ -32,6 +38,7 @@ interface HeaderRightProps extends RouteComponentProps<{}> {
 
 function ProfileHeaderIcon(props: HeaderRightProps) {
   const classes = useStyles();
+  const history = useHistory();
   const headerProfileAnchorRef = React.useRef<HTMLDivElement>(null);
   const { user } = props;
 
@@ -61,13 +68,13 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
 
   function navigateToYourProfile() {
     if (user) {
-      props.history.push(`/user/${user.urlSlug}`);
+      history.push(`/user/${user.urlSlug}`);
     }
   }
 
   function navigateToSettings() {
     if (user) {
-      props.history.push(`/settings`);
+      history.push(`/settings`);
     }
   }
 
@@ -76,7 +83,7 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
   }
 
   function handleLogout() {
-    props.history.replace({ state: {} });
+    history.replace({ state: {} });
     logout();
   }
 

@@ -1,25 +1,27 @@
-import React, { SyntheticEvent } from 'react';
 import clsx from 'clsx';
+import React, { SyntheticEvent } from 'react';
+
 import {
-  makeStyles,
-  Theme,
-  SnackbarContent,
+  colors,
   IconButton,
+  makeStyles,
+  SnackbarContent,
+  Theme,
 } from '@material-ui/core';
-import { green, amber } from '@material-ui/core/colors';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import ErrorIcon from '@material-ui/icons/Error';
-import InfoIcon from '@material-ui/icons/Info';
-import CloseIcon from '@material-ui/icons/Close';
-import WarningIcon from '@material-ui/icons/Warning';
+import {
+  CheckCircle as CheckCircleIcon,
+  Close,
+  Error as ErrorIcon,
+  Info,
+  Warning,
+} from '@material-ui/icons';
 
 export const variantIcon = {
   success: CheckCircleIcon,
-  warning: WarningIcon,
+  warning: Warning,
   error: ErrorIcon,
-  info: InfoIcon,
+  info: Info,
 };
-
 interface MySnackBarContentWrapperProps {
   variant: keyof typeof variantIcon;
   handleClose: (event?: SyntheticEvent, reason?: string) => void;
@@ -28,7 +30,7 @@ interface MySnackBarContentWrapperProps {
 
 const useStyles1 = makeStyles((theme: Theme) => ({
   success: {
-    backgroundColor: green[600],
+    backgroundColor: colors.green[600],
   },
   error: {
     backgroundColor: theme.palette.error.dark,
@@ -37,7 +39,7 @@ const useStyles1 = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   warning: {
-    backgroundColor: amber[700],
+    backgroundColor: colors.amber[700],
   },
   icon: {
     fontSize: 20,
@@ -76,7 +78,7 @@ export default function MySnackbarContentWrapper(
           color="inherit"
           onClick={handleClose}
         >
-          <CloseIcon className={classes.icon} />
+          <Close className={classes.icon} />
         </IconButton>,
       ]}
       {...other}

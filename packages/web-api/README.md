@@ -1,4 +1,4 @@
-# @caravan/reading-buddy-web-api
+# @caravanapp/reading-buddy-web-api
 
 ## Requirements
 

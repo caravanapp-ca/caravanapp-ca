@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { UserSettings } from '@caravan/buddy-reading-types';
+
+import { UserSettings } from '@caravanapp/types';
+
 const userSettingsRoute = '/api/userSettings';
 
 export const getMySettings = async () => {
@@ -9,7 +11,7 @@ export const getMySettings = async () => {
 
 export const updateMySettings = async (settings: UserSettings) => {
   const res = await axios.put<UserSettings>(`${userSettingsRoute}/@me`, {
-    settings
+    settings,
   });
   return res;
-}
+};

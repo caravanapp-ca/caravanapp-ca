@@ -1,18 +1,20 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { makeStyles } from '@material-ui/styles';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
+
+import { User } from '@caravanapp/types';
 import {
-  Theme,
-  createStyles,
-  Typography,
   Container,
+  createStyles,
   IconButton,
+  makeStyles,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { ArrowBackIos } from '@material-ui/icons';
-import { User } from '@caravan/buddy-reading-types';
+
 import Header from '../../components/Header';
-import textLogo from '../../resources/text-logo.svg';
 import ProfileHeaderIcon from '../../components/ProfileHeaderIcon';
+import textLogo from '../../resources/text-logo.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,12 +69,13 @@ const body = [
 export default function About(props: AboutProps) {
   const { user } = props;
   const classes = useStyles();
+  const history = useHistory();
 
   const handleBack = () => {
-    if (props.history.length > 2) {
-      props.history.goBack();
+    if (history.length > 2) {
+      history.goBack();
     } else {
-      props.history.replace('/');
+      history.replace('/');
     }
   };
 

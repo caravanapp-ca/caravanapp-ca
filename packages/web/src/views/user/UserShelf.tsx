@@ -1,11 +1,10 @@
-import React from 'react';
-import {
-  User,
-  UserShelf as UserShelfInterface,
-} from '@caravan/buddy-reading-types';
-import { Typography, makeStyles, useTheme, Container } from '@material-ui/core';
-import BookList from '../club/shelf-view/BookList';
 import clsx from 'clsx';
+import React from 'react';
+
+import { User, UserShelf as UserShelfInterface } from '@caravanapp/types';
+import { Container, makeStyles, Typography, useTheme } from '@material-ui/core';
+
+import BookList from '../club/shelf-view/BookList';
 import UserShelfEditable from './UserShelfEditable';
 
 const useStyles = makeStyles(theme => ({

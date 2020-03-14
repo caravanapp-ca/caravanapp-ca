@@ -1,8 +1,9 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import ChillGroupVibeIcon from '../group-vibe-icons/ChillGroupVibeIcon';
+
+import { Avatar, createStyles, makeStyles, Theme } from '@material-ui/core';
+
 import { washedTheme } from '../../../theme';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
+import ChillGroupVibeIcon from '../group-vibe-icons/ChillGroupVibeIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

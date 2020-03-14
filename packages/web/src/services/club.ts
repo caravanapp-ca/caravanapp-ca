@@ -1,14 +1,16 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+
 import {
-  Services,
-  ShelfEntry,
+  ActiveFilter,
+  ClubWithRecommendation,
+  ClubWUninitSchedules,
   FilterAutoMongoKeys,
   ReadingState,
-  ActiveFilter,
-  ClubWUninitSchedules,
+  Services,
+  ShelfEntry,
   User,
-  ClubWithRecommendation,
-} from '@caravan/buddy-reading-types';
+} from '@caravanapp/types';
+
 import {
   getRandomInviteMessage,
   getRandomInviteMessageFromShelf,
