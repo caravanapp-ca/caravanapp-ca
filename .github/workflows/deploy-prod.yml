@@ -23,7 +23,7 @@ env:
 jobs:
   # This workflow contains a single job called "build"
   setup-build-deploy:
-    name: Setup, Build, and Deploy to PROD
+    name: Setup, Build, and Deploy to prod
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -46,8 +46,9 @@ jobs:
         with:
           cmd: build # will run `yarn build` command
 
-      # Deploy the Docker image to the Google App Engine Standard
+      # Deploy the code to the Google App Engine Standard
       - name: Deploy
         run: |
+          yarn create-env
           gcloud config set core/project $GCLOUD_PROJECT
           gcloud app deploy app.production.yaml --promote
