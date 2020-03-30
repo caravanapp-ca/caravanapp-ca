@@ -46,7 +46,7 @@ jobs:
         with:
           cmd: build # will run `yarn build` command
 
-      # Deploy the Docker image to the Google App Engine Standard
+      # Deploy the code to the Google App Engine Standard
       - name: Deploy
         run: |
           yarn create-env
