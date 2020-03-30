@@ -58,21 +58,21 @@ You should then be logged in. If you're still not logged in, try refreshing and 
 
 _To be completed upon request._
 
-## Contributing
+## 🙌 Contributing
 
 Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting a Pull Request to the project.
 
-## Community support
+## 🤓 Community Support
 
 For general help using or developing Caravan Clubs, you can use one of these channels to ask a question:
 
 - [GitHub](https://github.com/caravanapp-ca/caravanapp-ca)
 - [Sign up to Caravan Clubs by joining the Discord](https://discordapp.com/oauth2/authorize?client_id=592781980026798120&redirect_uri=https%3A%2F%2Fcaravanapp.ca%2Fapi%2Fauth%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify%20guilds.join%20gdm.join&state=WzE2NiwyMjAsODAsMTEzLDgyLDE5OCwzNywyNTJd) and chat there.
 
-## Security
+## 🚓 Security
 
 If you have found a security issue, please refer to the [security guidelines](SECURITY.md).
 
-## License
+## 📓 License
 
 [MIT License](LICENSE.md) Copyright (c) 2020 [Caravan Clubs](https://caravanapp.ca)
