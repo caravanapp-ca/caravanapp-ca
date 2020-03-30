@@ -16,6 +16,7 @@ env:
   DISCORD_GUILD_ID: '589194387968491530'
   DISCORD_REDIRECT: 'https://buddyreading-staging-env.appspot.com/api/auth/discord/callback'
   GAE_ENV: 'staging'
+  GCLOUD_PROJECT: ${{ secrets.STAGING_GCLOUD_PROJECT }}
   GITHUB_SHA: ${{ github.sha }}
   MONGO_DB: ${{ secrets.STAGING_MONGO_DB }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -48,4 +49,5 @@ jobs:
       # Deploy the Docker image to the Google App Engine Standard
       - name: Deploy
         run: |
+          gcloud config set core/project $GCLOUD_PROJECT
           gcloud app deploy app.staging.yaml --promote --stop-previous-version
