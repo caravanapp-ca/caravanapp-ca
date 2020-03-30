@@ -17,8 +17,6 @@ env:
   DISCORD_REDIRECT: 'https://buddyreading-staging-env.appspot.com/api/auth/discord/callback'
   GAE_ENV: 'staging'
   GITHUB_SHA: ${{ github.sha }}
-  GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.STAGING_GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-  GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.STAGING_GOOGLE_SERVICE_ACCOUNT_KEY }}
   MONGO_DB: ${{ secrets.STAGING_MONGO_DB }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -37,8 +35,8 @@ jobs:
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
           version: '270.0.0'
-          service_account_email: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-          service_account_key: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          service_account_email: ${{ secrets.STAGING_GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          service_account_key: ${{ secrets.STAGING_GOOGLE_SERVICE_ACCOUNT_KEY }}
 
       - uses: borales/actions-yarn@v2.0.0
         with:
