@@ -19,7 +19,7 @@
     "deploy-only:staging": "gcloud app deploy app.staging.yaml"
   },
   "dependencies": {
-    "cross-env": "7.0.1",
+    "cross-env": "^7.0.2",
     "lerna": "^3.16.4"
   },
   "workspaces": [
