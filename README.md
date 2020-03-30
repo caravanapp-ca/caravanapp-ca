@@ -38,7 +38,7 @@ Using [Docker](https://www.docker.com/products/docker-desktop) with `docker-comp
 docker-compose up
 ```
 
-Visit [`http://localhost:3000`](http://localhost:3000) and voilà, you're done! Check known issues
+Visit [`http://localhost:3000`](http://localhost:3000) and voilà, you're done!
 
 Underneath the hood, Docker will spin up three servers:
 
