@@ -6,11 +6,11 @@ services:
     ports:
       - '27017:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root # ${MONGO_INITDB_ROOT_USERNAME:-root}
-      MONGO_INITDB_ROOT_PASSWORD: hunter2 # ${MONGO_INITDB_ROOT_PASSWORD:-hunter2}
-      MONGO_INITDB_DATABASE: buddy_reading # ${MONGO_INITDB_DATABASE:-buddy_reading}
-      MONGO_NON_ROOT_USERNAME: reader # ${MONGO_NON_ROOT_USERNAME:-reader}
-      MONGO_NON_ROOT_PASSWORD: hunter2 # ${MONGO_NON_ROOT_PASSWORD:-hunter2}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-hunter2}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-buddy_reading}
+      MONGO_NON_ROOT_USERNAME: ${MONGO_NON_ROOT_USERNAME:-reader}
+      MONGO_NON_ROOT_PASSWORD: ${MONGO_NON_ROOT_PASSWORD:-hunter2}
     volumes:
       # 20190601 - fix for https://github.com/docker-library/mongo/issues/329#issuecomment-460858099
       - ./mongo-seed/mongo-user.sh:/docker-entrypoint-initdb.d/mongo-user.sh:ro
@@ -21,11 +21,11 @@ services:
       context: .
       dockerfile: ./mongo-seed.Dockerfile
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root # ${MONGO_INITDB_ROOT_USERNAME:-root}
-      MONGO_INITDB_ROOT_PASSWORD: hunter2 # ${MONGO_INITDB_ROOT_PASSWORD:-hunter2}
-      MONGO_INITDB_DATABASE: buddy_reading # ${MONGO_INITDB_DATABASE:-buddy_reading}
-      MONGO_NON_ROOT_USERNAME: reader # ${MONGO_NON_ROOT_USERNAME:-reader}
-      MONGO_NON_ROOT_PASSWORD: hunter2 # ${MONGO_NON_ROOT_PASSWORD:-hunter2}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-hunter2}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-buddy_reading}
+      MONGO_NON_ROOT_USERNAME: ${MONGO_NON_ROOT_USERNAME:-reader}
+      MONGO_NON_ROOT_PASSWORD: ${MONGO_NON_ROOT_PASSWORD:-hunter2}
     depends_on:
       - caravan-mongo
   caravan-server:
