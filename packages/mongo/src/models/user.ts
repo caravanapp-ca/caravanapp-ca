@@ -39,7 +39,7 @@ const userShelfEntryDefinition: MongooseSchema<UserShelfEntry> = {
     required: true,
     index: true,
     validate: {
-      validator: function(v: BookSource) {
+      validator: function (v: BookSource) {
         return ALLOWED_BOOK_SOURCES[v] === true;
       },
     },

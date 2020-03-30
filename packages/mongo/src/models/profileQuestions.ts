@@ -16,7 +16,9 @@ export interface ProfileQuestionsDoc
   questions: (ProfileQuestion & { visible: boolean })[];
 }
 
-const profileQuestionSchemaDefinition: MongooseSchema<ProfileQuestionsDoc['questions'][0]> = {
+const profileQuestionSchemaDefinition: MongooseSchema<
+  ProfileQuestionsDoc['questions'][0]
+> = {
   id: { type: String, required: true },
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
