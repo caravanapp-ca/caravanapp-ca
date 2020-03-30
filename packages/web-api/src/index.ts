@@ -1,4 +1,6 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
