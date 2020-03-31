@@ -26,7 +26,12 @@ jobs:
     name: Setup, Build, and Deploy to prod
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
+
+    # discord.js requires Node >= 12
+    strategy:
+      matrix:
+        node-version: [12.x]
+
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
@@ -39,12 +44,11 @@ jobs:
           service_account_email: ${{ secrets.PROD_GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           service_account_key: ${{ secrets.PROD_GOOGLE_SERVICE_ACCOUNT_KEY }}
 
-      - uses: borales/actions-yarn@v2.0.0
+      - uses: actions/setup-node@v1
         with:
-          cmd: install # will run `yarn install` command
-      - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: build # will run `yarn build` command
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install
+      - run: yarn build
 
       # Deploy the code to the Google App Engine Standard
       - name: Deploy
