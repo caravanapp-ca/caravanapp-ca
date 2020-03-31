@@ -22,29 +22,60 @@ Open the project as a VSCode Workspace: `File -> Open Workspace... -> Select car
 
 Windows, MacOS, and Linux are supported (though the core team uses Mac).
 
-There are two approaches for local development, Docker or a manual installation. The Docker approach is strongly recommended due to isolation from your host environment and ease of configuration. If you are using Docker, that's all you need for development.
+The current approach to development involves using Docker with `docker-compose` to host a MongoDB 4.x server.
+Then, use your host machine to run both the Node.js Express app server and the React website.
 
-If you are installing all of the software manually:
-
+- Docker >= 18.06.0 (support for `docker-compose v3.7`)
 - Yarn >= v1 (support for Workspaces)
-- NodeJS >= 12.x (10.x is required for the `cloud-functions` sub-project, so we suggest to use [NVM](https://github.com/nvm-sh/nvm) if you're working with `cloud-functions`)
-- MongoDB >= 4.x
+- Node.js >= 12.x (10.x is required for the `cloud-functions` sub-project, so we suggest to use [NVM](https://github.com/nvm-sh/nvm) if you're working with `cloud-functions`)
 
-### ⏳ Installation (docker-compose)
+### ⏳ Installation
 
-Using [Docker](https://www.docker.com/products/docker-desktop) with `docker-compose` is the recommended approach for local development.
+#### MongoDB with Docker
+
+Open the terminal relative to the root of the project and run:
 
 ```bash
 docker-compose up
 ```
 
-Visit [`http://localhost:3000`](http://localhost:3000) and voilà, you're done!
+#### Node.js Express app server
 
-Underneath the hood, Docker will spin up three servers:
+There's three ways to run the app server (in order of personal preference):
 
-- MongoDB v4 with seed data
-- [`create-react-app`](https://create-react-app.dev) development server with hot reloading for website development
-- [`Express`](https://expressjs.com) Node.js web framework with hot reloading for the app server
+_With breakpoint support_
+
+Open the terminal relative to the root of the project and run:
+
+```bash
+cd packages/web-api
+yarn dev:watch
+```
+
+_Without breakpoint support_
+
+Open the terminal relative to the root of the project and run:
+
+```bash
+cd packages/web-api
+yarn dev
+```
+
+_Using docker-compose_
+
+If you prefer to run the Express server in Docker you can un-commenting out the appropriate section in `docker-compose.yml`.
+This option is not recommended if you do development on the host machine.
+
+#### Caravan Website
+
+Open the terminal relative to the root of the project and run:
+
+```bash
+cd packages/web
+yarn start
+```
+
+Visit the website at [`http://localhost:3000`](http://localhost:3000) and voilà, you're done!
 
 #### ❗️ Logging in while in development
 
@@ -53,10 +84,6 @@ Upon authenticating with Discord, you will be taken to `http://localhost:3001/?s
 You must manually change the port from `3001` to `3000` in your browser,
 i.e.: `http://localhost:3000/?state=SomeRandomSecretToken=`.
 You should then be logged in. If you're still not logged in, try refreshing and logging in again.
-
-### Installation (manual)
-
-_To be completed upon request._
 
 ## 🙌 Contributing
 

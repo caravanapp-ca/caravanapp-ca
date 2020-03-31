@@ -28,34 +28,35 @@ services:
       MONGO_NON_ROOT_PASSWORD: ${MONGO_NON_ROOT_PASSWORD:-hunter2}
     depends_on:
       - caravan-mongo
-  caravan-server:
-    container_name: caravan-server
-    build:
-      context: .
-      dockerfile: caravan-server.dev.Dockerfile
-    ports:
-      - '3001:3001'
-    env_file: packages/web-api/.env
-    volumes:
-      - ./packages/web-api/src:/usr/src/app/packages/web-api/src
-      - ./packages/mongo/src:/usr/src/app/packages/mongo/src
-      - ./packages/types/src:/usr/src/app/packages/types/src
-    #   - node_modules:/usr/src/app/node_modules
-    depends_on:
-      - caravan-mongo
-  caravan-web:
-    container_name: caravan-web
-    build:
-      context: .
-      dockerfile: caravan-web.dev.Dockerfile
-    ports:
-      - '3000:3000'
-    volumes:
-      - ./packages/web:/usr/src/app/packages/web
-      - ./packages/types/src:/usr/src/app/packages/types/src
-    # - node_modules:/usr/src/app/node_modules
-    depends_on:
-      - caravan-server
+  # caravan-server:
+  #   container_name: caravan-server
+  #   build:
+  #     context: .
+  #     dockerfile: caravan-server.dev.Dockerfile
+  #   ports:
+  #     - '3001:3001'
+  #   env_file: packages/web-api/.env
+  #   volumes:
+  #     - ./packages/web-api/src:/usr/src/app/packages/web-api/src
+  #     - ./packages/mongo/src:/usr/src/app/packages/mongo/src
+  #     - ./packages/types/src:/usr/src/app/packages/types/src
+  #     # - node_modules:/usr/src/app/node_modules
+  #   depends_on:
+  #     - caravan-mongo
+  # caravan-web:
+  #   container_name: caravan-web
+  #   build:
+  #     context: .
+  #     dockerfile: caravan-web.dev.Dockerfile
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - ./packages/web/public:/usr/src/app/packages/web/public
+  #     - ./packages/web/src:/usr/src/app/packages/web/src
+  #     - ./packages/types/src:/usr/src/app/packages/types/src
+  #     # - node_modules:/usr/src/app/node_modules
+  #   depends_on:
+  #     - caravan-server
 networks:
   default:
     driver: bridge

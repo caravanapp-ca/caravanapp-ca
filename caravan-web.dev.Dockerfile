@@ -1,5 +1,5 @@
 # Build with: `docker build -f ./caravan-web.Dockerfile -t "caravan-web" .`
-# Run with: `docker run -d -p 80:80 -p 27017:27017 --name caravan-web caravan-web:latest`
+# Run with: `docker run -d -p 3000:3000--name caravan-web caravan-web:latest`
 FROM node:12-alpine as caravan-web-base
 
 # All node-based packages have the node user "disabled" by default. We will want to run
