@@ -1,5 +1,4 @@
 import React from 'react';
-import LazyLoad from 'react-lazyload';
 
 import {
   PostUserInfo,
@@ -9,7 +8,6 @@ import {
 import { Container, Grid, makeStyles, Typography } from '@material-ui/core';
 
 import DiscordLoginModal from '../../components/DiscordLoginModal';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import ShelfPostCard from '../post/ShelfPostCard';
 
 const useStyles = makeStyles(theme => ({
@@ -103,11 +101,6 @@ interface PostCardProps {
   onSharePost: () => void;
 }
 
-// Make this approximately the height of a standard UserCard
-const placeholderCardHeight = 424;
-// The number of cards above and below the current to load
-const lazyloadOffset = 8;
-
 export default function PostCards(props: PostCardProps) {
   const classes = useStyles();
   const {
@@ -164,20 +157,9 @@ export default function PostCards(props: PostCardProps) {
             }
 
             return (
-              <LazyLoad
-                unmountIfInvisible={true}
-                offset={placeholderCardHeight * lazyloadOffset}
-                placeholder={
-                  <Grid item key={post._id} xs={12} sm={12}>
-                    <PlaceholderCard height={placeholderCardHeight} />
-                  </Grid>
-                }
-                key={post._id}
-              >
-                <Grid item key={post._id} xs={12} sm={12}>
-                  {postCard}
-                </Grid>
-              </LazyLoad>
+              <Grid item key={post._id} xs={12} sm={12}>
+                {postCard}
+              </Grid>
             );
           })}
         </Grid>

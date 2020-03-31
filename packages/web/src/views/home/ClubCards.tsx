@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import { addDays, differenceInHours, format, isAfter } from 'date-fns';
 import React, { useEffect } from 'react';
-import LazyLoad from 'react-lazyload';
 import ReactResizeDetector from 'react-resize-detector';
 import Truncate from 'react-truncate';
 
@@ -31,7 +30,6 @@ import {
 import EndAvatar from '../../components/misc-avatars-icons-labels/avatars/EndAvatar';
 import GenericGroupMemberAvatar from '../../components/misc-avatars-icons-labels/avatars/GenericGroupMemberAvatar';
 import StartAvatar from '../../components/misc-avatars-icons-labels/avatars/StartAvatar';
-import PlaceholderCard from '../../components/PlaceholderCard';
 import { modifyMyClubMembership } from '../../services/club';
 import theme, { successTheme, washedTheme, whiteTheme } from '../../theme';
 
@@ -213,11 +211,6 @@ interface ClubCardsProps {
   isLoggedIn?: boolean;
 }
 
-// Make this approximately the height of a standard ClubCard
-const placeholderCardHeight = 525;
-// The number of cards above and below the current to load
-const lazyloadOffset = 8;
-
 export default function ClubCards(props: ClubCardsProps) {
   const classes = useStyles();
   const {
@@ -371,254 +364,238 @@ export default function ClubCards(props: ClubCardsProps) {
             groupVibeLabel = groupVibeLabels(club.vibe);
           }
           return (
-            <LazyLoad
-              key={club._id}
-              unmountIfInvisible={true}
-              offset={placeholderCardHeight * lazyloadOffset}
-              placeholder={
-                <Grid item key={club._id} xs={12} sm={6}>
-                  <PlaceholderCard height={placeholderCardHeight} />
-                </Grid>
-              }
-            >
-              <Grid item key={club._id} xs={12} sm={6}>
-                <Card className={classes.card}>
-                  <div className={classes.clubImageContainer}>
-                    {currentlyReading && (
-                      <>
-                        <img
-                          src={currentlyReading.coverImageURL}
-                          alt={currentlyReading.title}
-                          className={classes.clubImage}
-                        />
-                        <div className={classes.clubImageShade} />
-                        {recommendation && (
-                          <div
-                            className={classes.recommendationCaptionContainer}
+            <Grid item key={club._id} xs={12} sm={6}>
+              <Card className={classes.card}>
+                <div className={classes.clubImageContainer}>
+                  {currentlyReading && (
+                    <>
+                      <img
+                        src={currentlyReading.coverImageURL}
+                        alt={currentlyReading.title}
+                        className={classes.clubImage}
+                      />
+                      <div className={classes.clubImageShade} />
+                      {recommendation && (
+                        <div className={classes.recommendationCaptionContainer}>
+                          <MuiThemeProvider theme={whiteTheme}>
+                            <Info height={24} color="primary" />
+                          </MuiThemeProvider>
+                          <Typography
+                            variant="body2"
+                            className={classes.recommendationCaptionText}
                           >
-                            <MuiThemeProvider theme={whiteTheme}>
-                              <Info height={24} color="primary" />
-                            </MuiThemeProvider>
+                            {recommendation.description}
+                          </Typography>
+                        </div>
+                      )}
+                      <div className={classes.imageTextContainer}>
+                        <Typography
+                          variant="h5"
+                          className={classes.imageTitleText}
+                        >
+                          <Truncate lines={2} trimWhitespace={true}>
+                            {currentlyReading.title}
+                          </Truncate>
+                        </Typography>
+                        <Typography className={classes.imageText}>
+                          {`${currentlyReading.author}${
+                            year ? `, ${year}` : ''
+                          }`}
+                        </Typography>
+                        <Typography className={classes.imageText}>
+                          <Truncate lines={1} trimWhitespace={true}>
+                            {currentlyReading.genres.join(', ')}
+                          </Truncate>
+                        </Typography>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <CardContent className={classes.cardContent}>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h2"
+                    className={classes.clubTitle}
+                  >
+                    <Truncate lines={2} trimWhitespace={true}>
+                      {club.name}
+                    </Truncate>
+                  </Typography>
+                  <Typography color="textSecondary">
+                    <Truncate lines={3} trimWhitespace={true}>
+                      {club.bio}
+                    </Truncate>
+                  </Typography>
+                  <div className={classes.clubAttributesContainer}>
+                    <div className={classes.clubAttributesSubcontainer}>
+                      {/* Member Count */}
+                      <div
+                        className={clsx(
+                          classes.clubAttributesCell,
+                          classes.topCell
+                        )}
+                      >
+                        <div className={classes.attributeElement}>
+                          <GenericGroupMemberAvatar />
+                          <Typography
+                            variant="body2"
+                            className={classes.attributeLabel}
+                          >
+                            {`${club.memberCount} ${
+                              club.maxMembers === UNLIMITED_CLUB_MEMBERS_VALUE
+                                ? ``
+                                : `(Max ${club.maxMembers})`
+                            }`}
+                          </Typography>
+                        </div>
+                      </div>
+                      {/* Club Vibe */}
+                      <div
+                        className={clsx(
+                          classes.clubAttributesCell,
+                          classes.bottomCell
+                        )}
+                      >
+                        {groupVibeAvatar && groupVibeLabel && (
+                          <div className={classes.attributeElement}>
+                            {groupVibeAvatar}
                             <Typography
                               variant="body2"
-                              className={classes.recommendationCaptionText}
+                              className={classes.attributeLabel}
                             >
-                              {recommendation.description}
+                              {groupVibeLabel}
                             </Typography>
                           </div>
                         )}
-                        <div className={classes.imageTextContainer}>
+                      </div>
+                    </div>
+                    <div className={classes.clubAttributesSubcontainer}>
+                      {/* Start Date */}
+                      <div
+                        className={clsx(
+                          classes.clubAttributesCell,
+                          classes.topCell
+                        )}
+                      >
+                        <div className={classes.attributeElement}>
+                          <StartAvatar />
                           <Typography
-                            variant="h5"
-                            className={classes.imageTitleText}
+                            variant="body2"
+                            className={classes.attributeLabel}
                           >
-                            <Truncate lines={2} trimWhitespace={true}>
-                              {currentlyReading.title}
-                            </Truncate>
+                            {startMsg}
                           </Typography>
-                          <Typography className={classes.imageText}>
-                            {`${currentlyReading.author}${
-                              year ? `, ${year}` : ''
-                            }`}
-                          </Typography>
-                          <Typography className={classes.imageText}>
-                            <Truncate lines={1} trimWhitespace={true}>
-                              {currentlyReading.genres.join(', ')}
-                            </Truncate>
-                          </Typography>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <CardContent className={classes.cardContent}>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="h2"
-                      className={classes.clubTitle}
-                    >
-                      <Truncate lines={2} trimWhitespace={true}>
-                        {club.name}
-                      </Truncate>
-                    </Typography>
-                    <Typography color="textSecondary">
-                      <Truncate lines={3} trimWhitespace={true}>
-                        {club.bio}
-                      </Truncate>
-                    </Typography>
-                    <div className={classes.clubAttributesContainer}>
-                      <div className={classes.clubAttributesSubcontainer}>
-                        {/* Member Count */}
-                        <div
-                          className={clsx(
-                            classes.clubAttributesCell,
-                            classes.topCell
-                          )}
-                        >
-                          <div className={classes.attributeElement}>
-                            <GenericGroupMemberAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {`${club.memberCount} ${
-                                club.maxMembers === UNLIMITED_CLUB_MEMBERS_VALUE
-                                  ? ``
-                                  : `(Max ${club.maxMembers})`
-                              }`}
-                            </Typography>
-                          </div>
-                        </div>
-                        {/* Club Vibe */}
-                        <div
-                          className={clsx(
-                            classes.clubAttributesCell,
-                            classes.bottomCell
-                          )}
-                        >
-                          {groupVibeAvatar && groupVibeLabel && (
-                            <div className={classes.attributeElement}>
-                              {groupVibeAvatar}
-                              <Typography
-                                variant="body2"
-                                className={classes.attributeLabel}
-                              >
-                                {groupVibeLabel}
-                              </Typography>
-                            </div>
-                          )}
                         </div>
                       </div>
-                      <div className={classes.clubAttributesSubcontainer}>
-                        {/* Start Date */}
-                        <div
-                          className={clsx(
-                            classes.clubAttributesCell,
-                            classes.topCell
-                          )}
+                      {/* Progress */}
+                      <div className={classes.clubAttributesProgress}>
+                        <MuiThemeProvider
+                          theme={progress >= 1 ? successTheme : theme}
                         >
-                          <div className={classes.attributeElement}>
-                            <StartAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {startMsg}
-                            </Typography>
-                          </div>
-                        </div>
-                        {/* Progress */}
-                        <div className={classes.clubAttributesProgress}>
-                          <MuiThemeProvider
-                            theme={progress >= 1 ? successTheme : theme}
+                          <Typography variant="caption" color="primary">
+                            {`${Math.round(progress * 100)}% complete`}
+                          </Typography>
+                        </MuiThemeProvider>
+                      </div>
+                      {/* End Date */}
+                      <div
+                        className={clsx(
+                          classes.clubAttributesCell,
+                          classes.bottomCell
+                        )}
+                      >
+                        <div className={classes.attributeElement}>
+                          <EndAvatar />
+                          <Typography
+                            variant="body2"
+                            className={classes.attributeLabel}
                           >
-                            <Typography variant="caption" color="primary">
-                              {`${Math.round(progress * 100)}% complete`}
-                            </Typography>
-                          </MuiThemeProvider>
-                        </div>
-                        {/* End Date */}
-                        <div
-                          className={clsx(
-                            classes.clubAttributesCell,
-                            classes.bottomCell
-                          )}
-                        >
-                          <div className={classes.attributeElement}>
-                            <EndAvatar />
-                            <Typography
-                              variant="body2"
-                              className={classes.attributeLabel}
-                            >
-                              {endMsg}
-                            </Typography>
-                          </div>
+                            {endMsg}
+                          </Typography>
                         </div>
                       </div>
                     </div>
-                  </CardContent>
-                  <CardActions className={classes.cardActions}>
-                    <div className={classes.creationInfoContainer}>
+                  </div>
+                </CardContent>
+                <CardActions className={classes.cardActions}>
+                  <div className={classes.creationInfoContainer}>
+                    <Typography variant="caption" color="textSecondary">
+                      <Truncate
+                        lines={1}
+                        trimWhitespace={true}
+                        width={creationInfoContainerWidth}
+                      >
+                        {`Created on ${format(new Date(club.createdAt), 'PP')}`}
+                      </Truncate>
+                    </Typography>
+                    {club && club.ownerName && club.ownerName.length > 0 && (
                       <Typography variant="caption" color="textSecondary">
                         <Truncate
                           lines={1}
                           trimWhitespace={true}
                           width={creationInfoContainerWidth}
                         >
-                          {`Created on ${format(
-                            new Date(club.createdAt),
-                            'PP'
-                          )}`}
+                          {`by ${club.ownerName}`}
                         </Truncate>
                       </Typography>
-                      {club && club.ownerName && club.ownerName.length > 0 && (
-                        <Typography variant="caption" color="textSecondary">
-                          <Truncate
-                            lines={1}
-                            trimWhitespace={true}
-                            width={creationInfoContainerWidth}
-                          >
-                            {`by ${club.ownerName}`}
-                          </Truncate>
-                        </Typography>
-                      )}
-                      <ReactResizeDetector
-                        handleWidth
-                        onResize={(w, h) => setCreationInfoContainerWidth(w)}
-                      />
-                    </div>
-                    {(!quickJoin || !isLoggedIn) && (
-                      <Button
-                        className={classes.button}
-                        color="primary"
-                        variant="contained"
-                        href={`/clubs/${club._id}`}
-                      >
-                        <Typography variant="button">VIEW CLUB</Typography>
-                      </Button>
                     )}
-                    {quickJoin && isLoggedIn && (
-                      <MuiThemeProvider theme={isMember ? successTheme : theme}>
-                        <div className={classes.actionButtonsContainer}>
+                    <ReactResizeDetector
+                      handleWidth
+                      onResize={(w, h) => setCreationInfoContainerWidth(w)}
+                    />
+                  </div>
+                  {(!quickJoin || !isLoggedIn) && (
+                    <Button
+                      className={classes.button}
+                      color="primary"
+                      variant="contained"
+                      href={`/clubs/${club._id}`}
+                    >
+                      <Typography variant="button">VIEW CLUB</Typography>
+                    </Button>
+                  )}
+                  {quickJoin && isLoggedIn && (
+                    <MuiThemeProvider theme={isMember ? successTheme : theme}>
+                      <div className={classes.actionButtonsContainer}>
+                        <Button
+                          style={{ marginRight: 8 }}
+                          color="primary"
+                          href={`/clubs/${club._id}`}
+                          target="_blank"
+                        >
+                          <Typography variant="button">VIEW CLUB</Typography>
+                        </Button>
+                        <div className={classes.buttonWrapper}>
                           <Button
                             style={{ marginRight: 8 }}
                             color="primary"
-                            href={`/clubs/${club._id}`}
-                            target="_blank"
+                            variant="contained"
+                            onClick={() =>
+                              onChangeMembership(club, index, !isMember)
+                            }
+                            disabled={isChangingMembership}
                           >
-                            <Typography variant="button">VIEW CLUB</Typography>
-                          </Button>
-                          <div className={classes.buttonWrapper}>
-                            <Button
-                              style={{ marginRight: 8 }}
-                              color="primary"
-                              variant="contained"
-                              onClick={() =>
-                                onChangeMembership(club, index, !isMember)
-                              }
-                              disabled={isChangingMembership}
+                            <Typography
+                              className={classes.joinButtonText}
+                              variant="button"
                             >
-                              <Typography
-                                className={classes.joinButtonText}
-                                variant="button"
-                              >
-                                {isMember ? 'JOINED' : 'JOIN'}
-                              </Typography>
-                            </Button>
-                            {isChangingMembership && (
-                              <CircularProgress
-                                size={joinProgressIndicatorSize}
-                                className={classes.joinProgressIndicator}
-                              />
-                            )}
-                          </div>
+                              {isMember ? 'JOINED' : 'JOIN'}
+                            </Typography>
+                          </Button>
+                          {isChangingMembership && (
+                            <CircularProgress
+                              size={joinProgressIndicatorSize}
+                              className={classes.joinProgressIndicator}
+                            />
+                          )}
                         </div>
-                      </MuiThemeProvider>
-                    )}
-                  </CardActions>
-                </Card>
-              </Grid>
-            </LazyLoad>
+                      </div>
+                    </MuiThemeProvider>
+                  )}
+                </CardActions>
+              </Card>
+            </Grid>
           );
         })}
       </Grid>
