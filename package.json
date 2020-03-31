@@ -9,7 +9,7 @@
     "lint:fix": "lerna run lint:fix",
     "test": "lerna run test --stream",
     "test:ci": "cross-env CI=true lerna run test --parallel",
-    "start:server": "cd ./packages/web-api && npm start",
+    "start": "cd ./packages/web-api && npm start",
     "create-env": "printenv > ./packages/web-api/.env && printenv | sed 's/=/: /g' > ./cloud-functions/functions/.env.yaml",
     "deploy:production": "yarn build && yarn deploy-only:production",
     "deploy-no-promote:production": "yarn build && gcloud app deploy app.production.yaml --no-promote",
