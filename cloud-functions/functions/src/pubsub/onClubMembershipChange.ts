@@ -32,13 +32,13 @@ export const onJoinClub = async (
     return undefined;
   }
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
+  const guild = client.guilds.cache.first();
   if (!guild) {
     throw new Error(`[eventId: ${eventId}] - Could not find guild`);
   }
   const randomQuestion =
     questions[Math.floor(Math.random() * questions.length)];
-  const channel = guild.channels.get(channelId);
+  const channel = guild.channels.cache.get(channelId);
   if (!channel) {
     throw new Error(
       `[eventId: ${eventId}] - Could not find discord channel: ${channelId}`

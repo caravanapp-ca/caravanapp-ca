@@ -44,7 +44,7 @@ router.post(
       return;
     }
     const client = ReadingDiscordBot.getInstance();
-    const channel = client.channels.find(
+    const channel = client.channels.cache.find(
       c => c.id === channelId
     ) as TextChannel;
 
@@ -66,7 +66,7 @@ router.post(
     const { messageContent } = req.body;
     const { userToInviteDiscordId } = req.params;
     const client = ReadingDiscordBot.getInstance();
-    const member = await client.fetchUser(userToInviteDiscordId);
+    const member = await client.users.fetch(userToInviteDiscordId);
     const result = await member.send(messageContent);
     console.log(`Sent discord bot message ${result.toString()}`);
     res.status(200).send(`Sent: ${result.toString()}`);

@@ -124,7 +124,7 @@ router.get('/discord/callback', async (req, res) => {
   let { access_token: accessToken } = tokenResponseData;
   const discordUserData = await ReadingDiscordBot.getMe(accessToken);
   const discordClient = ReadingDiscordBot.getInstance();
-  const guild = discordClient.guilds.first();
+  const guild = discordClient.guilds.cache.first();
 
   let userDoc = await getUserByDiscordId(discordUserData.id);
   if (userDoc) {

@@ -52,7 +52,7 @@ export const getUserChannels = (
   discordId: string,
   inChannels: boolean
 ) => {
-  const channels = guild.channels.filter(c => {
+  const channels = guild.channels.cache.filter(c => {
     if (c.type === 'text' || c.type === 'voice') {
       const inThisChannel = !!(c as TextChannel).members.get(discordId);
       return inChannels === inThisChannel;
@@ -64,7 +64,8 @@ export const getUserChannels = (
 };
 
 const isInChannel = (member: GuildMember, club: ClubDoc) =>
-  (member.highestRole.name !== 'Admin' || club.ownerDiscordId === member.id) &&
+  (member.roles.highest.name !== 'Admin' ||
+    club.ownerDiscordId === member.id) &&
   !member.user.bot;
 
 export const getCountableMembersInChannel = (
@@ -91,7 +92,7 @@ export const transformSingleToGetClub = async (
   cDoc: ClubDoc,
   guild: Guild
 ): Promise<Services.GetClubs['clubs'][0] | null> => {
-  const discordChannel = guild.channels.get(cDoc.channelId);
+  const discordChannel = guild.channels.cache.get(cDoc.channelId);
   if (!discordChannel) {
     console.error(`No discord channel found for club ${cDoc.id}`);
     return null;
@@ -102,7 +103,7 @@ export const transformSingleToGetClub = async (
     console.error(`Unable to find user doc for user ${cDoc.ownerId}`);
     return null;
   }
-  const ownerMember = guild.members.get(cDoc.ownerDiscordId);
+  const ownerMember = guild.members.cache.get(cDoc.ownerDiscordId);
   if (!ownerMember) {
     console.error(`Unable to find guild member for user ${cDoc.ownerId}`);
     return null;
@@ -178,7 +179,7 @@ export const getUserClubRecommendations = async (
     ],
   };
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
+  const guild = client.guilds.cache.first();
   const { discordId } = user;
   const channels = getUserChannels(guild, discordId, true);
   const channelIds = channels.map(c => c.id);
@@ -401,7 +402,7 @@ export const getUserClubRecommendations = async (
 };
 
 export const isInClub = (user: UserDoc, club: ClubDoc, guild: Guild) => {
-  const discordChannel: GuildChannel | undefined = guild.channels.get(
+  const discordChannel: GuildChannel | undefined = guild.channels.cache.get(
     club.channelId
   );
   if (!discordChannel) {
@@ -418,7 +419,7 @@ export const getClubRecommendationFromReferral = async (
   clubDoc: ClubDoc
 ): Promise<ClubWithRecommendation> => {
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
+  const guild = client.guilds.cache.first();
   const { referredById: referrerUserId } = referralDoc;
   const referrerUserDoc = await getUser(referrerUserId);
   const recommendationKey: ClubRecommendationKey = 'referral';
@@ -442,7 +443,7 @@ export const getClubRecommendationFromReferral = async (
 };
 
 export const getChannelMembers = async (guild: Guild, club: ClubDoc) => {
-  const discordChannel = guild.channels.get(club.channelId);
+  const discordChannel = guild.channels.cache.get(club.channelId);
   if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
     return;
   }
@@ -471,8 +472,8 @@ export const getChannelMembers = async (guild: Guild, club: ClubDoc) => {
           discordId: mem.id,
           photoUrl:
             user.photoUrl ||
-            mem.user.avatarURL ||
-            mem.user.displayAvatarURL ||
+            mem.user.avatarURL() ||
+            mem.user.displayAvatarURL() ||
             mem.user.defaultAvatarURL,
         };
         return result;
@@ -503,17 +504,15 @@ export const modifyClubMembership = async (
   }
   const isOwner = club.ownerId === userId;
   const discordClient = ReadingDiscordBot.getInstance();
-  const guild = discordClient.guilds.first();
-  const channel: GuildChannel = guild.channels.get(club.channelId);
+  const guild = discordClient.guilds.cache.first();
+  const channel: GuildChannel = guild.channels.cache.get(club.channelId);
   if (!channel) {
     return {
       status: 400,
       data: `Channel was deleted, clubId: ${club.id}`,
     };
   }
-  const memberInChannel = (channel as VoiceChannel | TextChannel).members.get(
-    userDiscordId
-  );
+  const memberInChannel = channel.members.get(userDiscordId);
   if (isMember) {
     // Trying to add to members
     const { size } = getCountableMembersInChannel(channel, club);
@@ -532,21 +531,16 @@ export const modifyClubMembership = async (
         data: `There are already ${size}/${club.maxMembers} people in the club.`,
       };
     } else {
-      const permissions = (channel as
-        | VoiceChannel
-        | TextChannel).memberPermissions(memberInChannel);
-      if (permissions && permissions.hasPermission('READ_MESSAGES')) {
+      const permissions = channel.permissionsFor(memberInChannel);
+      if (permissions && permissions.has('VIEW_CHANNEL')) {
         return { status: 401, data: 'You already have access to the channel!' };
       }
-      await (channel as VoiceChannel | TextChannel).overwritePermissions(
-        userDiscordId,
-        {
-          READ_MESSAGES: true,
-          SEND_MESSAGES: true,
-          SEND_TTS_MESSAGES: true,
-          MANAGE_MESSAGES: isOwner,
-        }
-      );
+      await channel.updateOverwrite(userDiscordId, {
+        VIEW_CHANNEL: true,
+        SEND_MESSAGES: true,
+        SEND_TTS_MESSAGES: true,
+        MANAGE_MESSAGES: isOwner,
+      });
       createReferralAction(userId, 'joinClub');
       const pubsub = pubsubClient.getInstance();
       const topic: PubSub.Topic = 'club-membership';
@@ -571,15 +565,12 @@ export const modifyClubMembership = async (
         data: "You're already not a member of the club!",
       };
     }
-    await (channel as VoiceChannel | TextChannel).overwritePermissions(
-      userDiscordId,
-      {
-        READ_MESSAGES: false,
-        SEND_MESSAGES: false,
-        SEND_TTS_MESSAGES: false,
-        MANAGE_MESSAGES: false,
-      }
-    );
+    await channel.updateOverwrite(userDiscordId, {
+      VIEW_CHANNEL: false,
+      SEND_MESSAGES: false,
+      SEND_TTS_MESSAGES: false,
+      MANAGE_MESSAGES: false,
+    });
     const pubsub = pubsubClient.getInstance();
     const topic: PubSub.Topic = 'club-membership';
     const message: PubSub.Message.ClubMembershipChange = {
@@ -591,7 +582,7 @@ export const modifyClubMembership = async (
     pubsub.topic(topic).publish(buffer);
   }
   // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
-  await guild.fetchMembers();
+  await guild.members.fetch();
   const members = await getChannelMembers(guild, club);
   return {
     status: 200,
@@ -604,7 +595,7 @@ export const transformToGetClubs = async (
   clubDocs: ClubDoc[]
 ): Promise<Services.GetClubs['clubs']> => {
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
+  const guild = client.guilds.cache.first();
   const mutatedClubsPromises = clubDocs.map(cDoc =>
     transformSingleToGetClub(cDoc, guild)
   );

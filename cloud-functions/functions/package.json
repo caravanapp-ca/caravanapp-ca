@@ -20,27 +20,27 @@
   "license": "MIT",
   "main": "dist/index.js",
   "dependencies": {
-    "@google-cloud/firestore": "^2.2.6",
-    "@google-cloud/pubsub": "^0.30.3",
-    "@sendgrid/mail": "^6.5.4",
+    "@google-cloud/firestore": "^3.7.2",
+    "@google-cloud/pubsub": "^1.7.0",
+    "@sendgrid/mail": "^6.5.5",
     "@types/yaml": "^1.2.0",
     "btoa": "^1.2.1",
     "discord.js": "^11.5.1",
     "mongoose": "^5.9.4",
-    "yaml": "^1.8.2"
+    "yaml": "^1.8.3"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^1.4.0",
+    "@google-cloud/functions-framework": "^1.5.0",
     "@types/requestretry": "^1.12.6",
+    "@types/ws": "^7.2.3",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
+    "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^2.0.2",
     "requestretry": "^4.1.0",
-    "typescript": "^3.8.3",
-    "utility-types": "^3.10.0"
+    "typescript": "^3.8.3"
   },
   "private": true
 }
