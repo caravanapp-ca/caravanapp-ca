@@ -1,8 +1,8 @@
 import {
   ChannelCreationOverwrites,
-  ChannelData,
   Guild,
   GuildChannel,
+  GuildCreateChannelOptions,
   GuildMember,
   PermissionResolvable,
   TextChannel,
@@ -81,7 +81,7 @@ async function getClubOwnerMap(guild: Guild, clubDocs: ClubDoc[]) {
   const foundUserIds: string[] = [];
   clubDocs.forEach(c => {
     if (!foundUsers.has(c.ownerId)) {
-      const ownerMember = guild.members.get(c.ownerDiscordId);
+      const ownerMember = guild.members.cache.get(c.ownerDiscordId);
       foundUsers.set(c.ownerId, { userDoc: null, member: ownerMember });
       foundUserIds.push(c.ownerId);
     }
@@ -215,7 +215,7 @@ router.get('/', async (req, res) => {
     }
   }
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
+  const guild = client.guilds.cache.first();
   if (user) {
     const { discordId } = user;
     const channels = getUserChannels(guild, discordId, userInChannelBoolean);
@@ -261,7 +261,7 @@ router.get('/', async (req, res) => {
       if (!isSearching && validClubCount === limit) {
         return null;
       }
-      const discordChannel: GuildChannel | null = guild.channels.get(
+      const discordChannel: GuildChannel | null = guild.channels.cache.get(
         clubDoc.channelId
       );
       // If there's no Discord channel for this club, filter it out
@@ -394,7 +394,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
     }
   }
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
+  const guild = client.guilds.cache.first();
   const { discordId } = user;
   const channels = getUserChannels(guild, discordId, userInChannelBoolean);
   const channelIds = channels.map(c => c.id);
@@ -408,9 +408,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
       (search && search.length > 0) ||
       (filterObj && filterObj.capacity.length > 0)
     ) {
-      clubDocs = await ClubModel.find(query)
-        .sort({ createdAt: -1 })
-        .exec();
+      clubDocs = await ClubModel.find(query).sort({ createdAt: -1 }).exec();
     } else {
       clubDocs = await ClubModel.find(query)
         .limit(limit)
@@ -426,7 +424,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   }
   const filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
     clubDocs.map(async clubDoc => {
-      const discordChannel: GuildChannel | null = guild.channels.get(
+      const discordChannel: GuildChannel | null = guild.channels.cache.get(
         clubDoc.channelId
       );
       // If there's no Discord channel for this club, filter it out
@@ -442,7 +440,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
         return null;
       }
       // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
-      await guild.fetchMembers();
+      await guild.members.fetch();
       const guildMembers = await getChannelMembers(guild, clubDoc);
       if (filterObj && filterObj.capacity.length > 0) {
         const capacityKeys = filterObj.capacity.map(c => c.key);
@@ -506,9 +504,9 @@ router.get('/:id', async (req, res, next) => {
     }
     if (clubDoc.channelSource === 'discord') {
       const client = ReadingDiscordBot.getInstance();
-      const guild = client.guilds.first();
+      const guild = client.guilds.cache.first();
       // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
-      await guild.fetchMembers();
+      await guild.members.fetch();
       const guildMembers = await getChannelMembers(guild, clubDoc);
       const clubWithDiscord: Services.GetClubById = {
         ...clubDoc.toObject(),
@@ -555,9 +553,9 @@ router.get('/members/:id', async (req, res) => {
     }
     if (clubDoc.channelSource === 'discord') {
       const client = ReadingDiscordBot.getInstance();
-      const guild = client.guilds.first();
+      const guild = client.guilds.cache.first();
       // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
-      await guild.fetchMembers();
+      await guild.members.fetch();
       const guildMembers = await getChannelMembers(guild, clubDoc);
       return res.status(200).send(guildMembers);
     } else {
@@ -602,14 +600,14 @@ router.post(
         return;
       }
       const client = ReadingDiscordBot.getInstance();
-      const guild = client.guilds.first();
+      const guild = client.guilds.cache.first();
       const guildMembersPromises: Promise<{
         club: ClubDoc;
         guildMembers: User[];
       }>[] = [];
       let guildErr: Error | null = null;
       // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
-      await guild.fetchMembers();
+      await guild.members.fetch();
       clubs.forEach(c => {
         if (c.channelSource === 'discord') {
           guildMembersPromises.push(
@@ -674,14 +672,14 @@ router.post(
       return res.status(400).send('Failed to save club data');
     }
     const client = ReadingDiscordBot.getInstance();
-    const guild = client.guilds.first();
+    const guild = client.guilds.cache.first();
 
     // Create a map of users found in the guild and attach the user doc
     const foundUsers = await getClubOwnerMap(guild, clubs);
 
     const filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
       .map(clubDoc => {
-        const discordChannel: GuildChannel | null = guild.channels.get(
+        const discordChannel: GuildChannel | null = guild.channels.cache.get(
           clubDoc.channelId
         );
         if (!discordChannel) {
@@ -738,7 +736,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
   try {
     const { userId } = req.session;
     const discordClient = ReadingDiscordBot.getInstance();
-    const guild = discordClient.guilds.first();
+    const guild = discordClient.guilds.cache.first();
 
     const body: CreateClubBody = req.body;
     const invitedUsers = body.invitedUsers || [];
@@ -749,7 +747,6 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       const allowed: PermissionResolvable = [
         'VIEW_CHANNEL',
         'SEND_MESSAGES',
-        'READ_MESSAGES',
         'SEND_TTS_MESSAGES',
       ];
       if (user === req.user.discordId) {
@@ -764,21 +761,18 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 
     // Make all channels unlisted (might have to handle Genre channels differently in the future)
     channelCreationOverwrites.push({
-      id: guild.defaultRole.id,
+      id: guild.roles.everyone.id,
       deny: ['VIEW_CHANNEL'],
     });
 
-    const newChannel: ChannelData = {
+    const newChannel: GuildCreateChannelOptions & { type?: 'text' } = {
       type: 'text',
-      name: body.name,
       nsfw: body.nsfw || false,
       permissionOverwrites: channelCreationOverwrites,
       topic: body.bio,
     };
-    const channel = (await guild.createChannel(
-      newChannel.name,
-      newChannel
-    )) as TextChannel;
+
+    const channel = await guild.channels.create(body.name, newChannel);
 
     const validShelf = getValidShelfFromNewShelf(
       body.newShelf || {
@@ -818,7 +812,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 
     const result: Services.CreateClubResult = {
       club: newClub.toObject(),
-      discord: newChannel,
+      discord: { ...newChannel, name: body.name },
     };
 
     return res.status(201).send(result);
@@ -1003,8 +997,8 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
   }
 
   const discordClient = ReadingDiscordBot.getInstance();
-  const guild = discordClient.guilds.first();
-  const channel: GuildChannel = guild.channels.get(clubDoc.channelId);
+  const guild = discordClient.guilds.cache.first();
+  const channel: GuildChannel = guild.channels.cache.get(clubDoc.channelId);
   if (!channel) {
     return res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
   }

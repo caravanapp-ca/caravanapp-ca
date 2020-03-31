@@ -18,15 +18,15 @@ export const mutateUserDiscordContent = (userDoc: UserDoc, guild?: Guild) => {
   let g = guild;
   if (!g) {
     const client = ReadingDiscordBot.getInstance();
-    g = client.guilds.first();
+    g = client.guilds.cache.first();
   }
-  const guildMember = g.members.get(userDoc.discordId);
+  const guildMember = g.members.cache.get(userDoc.discordId);
   if (guildMember) {
     const { user } = guildMember;
     userDoc.name = userDoc.name || guildMember.displayName;
     userDoc.discordUsername = guildMember.displayName;
     userDoc.photoUrl =
-      userDoc.photoUrl || user.avatarURL || user.defaultAvatarURL;
+      userDoc.photoUrl || user.avatarURL() || user.defaultAvatarURL;
   }
 };
 
@@ -80,7 +80,7 @@ export const getUsersByUserIds = async (userIds: mongoose.Types.ObjectId[]) => {
     getBadges(),
   ]);
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
+  const guild = client.guilds.cache.first();
   userDocs.forEach(userDoc => {
     mutateUserDiscordContent(userDoc, guild);
     if (userDoc && userDoc.badges && userDoc.badges.length > 0) {

@@ -40,8 +40,9 @@ const DiscordOAuth2Url = (state: string, host: string) => {
 };
 const GetDiscordTokenCallbackUri = (code: string, host: string) => {
   const redirectUri = getDiscordRedirectUri(host);
-  return `${DiscordApiUrl}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri ||
-    DiscordRedirectUri}`;
+  return `${DiscordApiUrl}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${
+    redirectUri || DiscordRedirectUri
+  }`;
 };
 const GetDiscordTokenRefreshCallbackUri = (refreshToken: string) =>
   `${DiscordApiUrl}/oauth2/token?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissionsParam}`;
@@ -80,8 +81,8 @@ const ReadingDiscordBot = (() => {
     const discordClient = new Discord.Client();
     discordClient.login(DiscordBotSecret);
     discordClient.on('ready', () => {
-      discordClient.guilds.forEach(guild => {
-        guild.fetchMembers();
+      discordClient.guilds.cache.forEach(guild => {
+        guild.members.fetch();
       });
     });
     return discordClient;
@@ -135,14 +136,14 @@ export const giveDiscordRole = async (userId: string, role: string) => {
     return;
   }
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
-  const guildMember = guild.members.get(userDoc.discordId);
+  const guild = client.guilds.cache.first();
+  const guildMember = guild.members.cache.get(userDoc.discordId);
   if (!guildMember) {
     console.error(`Did not find user ${userId} in the Discord guild`);
     return;
   }
   console.log(`Giving user ${userId} Discord role ${role}`);
-  return guildMember.addRole(role);
+  return guildMember.roles.add(role);
 };
 
 export const sendNewTierDiscordMsg = async (
@@ -164,9 +165,9 @@ export const sendNewTierDiscordMsg = async (
     }
   }
   const client = ReadingDiscordBot.getInstance();
-  const guild = client.guilds.first();
+  const guild = client.guilds.cache.first();
   const genChatId = DISCORD_GEN_CHAT_ID();
-  const genChannel = guild.channels.get(genChatId) as TextChannel;
+  const genChannel = guild.channels.cache.get(genChatId) as TextChannel;
   if (!genChannel) {
     console.log('Did not find #general-chat at channel id ${genChatId}');
     throw new Error(`Did not find #general-chat at channel id ${genChatId}`);
