@@ -32,12 +32,12 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.4.0",
     "@types/requestretry": "^1.12.6",
-    "@typescript-eslint/eslint-plugin": "^2.22.0",
-    "@typescript-eslint/parser": "^2.22.0",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.2",
     "requestretry": "^4.1.0",
     "typescript": "^3.8.3",
     "utility-types": "^3.10.0"

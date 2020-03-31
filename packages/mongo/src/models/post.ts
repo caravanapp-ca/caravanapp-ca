@@ -32,7 +32,7 @@ const shelfPostSchemaDefinition: MongooseSchema<ShelfPost> = {
     type: String,
     required: true,
     validate: {
-      validator: function(v: string) {
+      validator: function (v: string) {
         return v === 'shelf';
       },
     },
@@ -53,7 +53,7 @@ const progressUpdatePostSchemaDefinition: MongooseSchema<ProgressUpdatePost> = {
     type: String,
     required: true,
     validate: {
-      validator: function(v: string) {
+      validator: function (v: string) {
         return v === 'progressUpdate';
       },
     },
@@ -79,7 +79,7 @@ const wantToReadAboutSchemaDefinition: MongooseSchema<WantToReadAboutPost> = {
     type: String,
     required: true,
     validate: {
-      validator: function(v: string) {
+      validator: function (v: string) {
         return v === 'wantToReadAbout';
       },
     },
