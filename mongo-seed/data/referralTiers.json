@@ -14,9 +14,7 @@
         "title": "Wanderer",
         "badgeKey": "ref1",
         "discordRole": "605424217026199573",
-        "profileBgSets": [
-          "nature"
-        ]
+        "profileBgSets": ["nature"]
       },
       {
         "tierNumber": {
@@ -39,9 +37,7 @@
         "title": "Explorer",
         "badgeKey": "ref3",
         "discordRole": "605424863267782697",
-        "profileBgSets": [
-          "quote"
-        ]
+        "profileBgSets": ["quote"]
       },
       {
         "tierNumber": {

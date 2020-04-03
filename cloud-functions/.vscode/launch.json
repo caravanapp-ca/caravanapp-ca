@@ -10,12 +10,8 @@
       "cwd": "${workspaceFolder}/functions",
       "name": "Launch via NPM",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run-script",
-        "dev"
-      ],
+      "runtimeArgs": ["run-script", "dev"],
       "port": 9229
     }
-
   ]
 }

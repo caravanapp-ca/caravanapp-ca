@@ -8,9 +8,7 @@
       "postType": "shelf",
       "shelf": [
         {
-          "genres": [
-            "Health & Fitness"
-          ],
+          "genres": ["Health & Fitness"],
           "_id": {
             "$oid": "5d6aa85d0cd21c79ad0e9544"
           },
@@ -117,9 +115,7 @@
       "postType": "shelf",
       "shelf": [
         {
-          "genres": [
-            "Literary Criticism"
-          ],
+          "genres": ["Literary Criticism"],
           "_id": {
             "$oid": "5d72adc8ee74acec5ed763e2"
           },
@@ -137,9 +133,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=9ikeAQAAIAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api"
         },
         {
-          "genres": [
-            "Juvenile Fiction"
-          ],
+          "genres": ["Juvenile Fiction"],
           "_id": {
             "$oid": "5d72adc8ee74acec5ed763e1"
           },
@@ -193,9 +187,7 @@
       "postType": "shelf",
       "shelf": [
         {
-          "genres": [
-            "Juvenile Nonfiction"
-          ],
+          "genres": ["Juvenile Nonfiction"],
           "_id": {
             "$oid": "5d72d9139f1ac10024e71a95"
           },
@@ -213,9 +205,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=WV8pZj_oNBwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Performing Arts"
-          ],
+          "genres": ["Performing Arts"],
           "_id": {
             "$oid": "5d72d9139f1ac10024e71a94"
           },
@@ -290,9 +280,7 @@
       "postType": "shelf",
       "shelf": [
         {
-          "genres": [
-            "Society of Friends"
-          ],
+          "genres": ["Society of Friends"],
           "_id": {
             "$oid": "5d769d93a9e3dc076ae039fc"
           },
@@ -310,9 +298,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=_209AQAAMAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Computers"
-          ],
+          "genres": ["Computers"],
           "_id": {
             "$oid": "5d769d93a9e3dc076ae039fb"
           },
@@ -373,9 +359,7 @@
       "postType": "shelf",
       "shelf": [
         {
-          "genres": [
-            "Sports & Recreation"
-          ],
+          "genres": ["Sports & Recreation"],
           "_id": {
             "$oid": "5d827dd2f913f10024fc5a53"
           },
@@ -393,9 +377,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=PtOSDCGeUwYC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "_id": {
             "$oid": "5d827dd2f913f10024fc5a52"
           },
@@ -477,9 +459,7 @@
       "postType": "shelf",
       "shelf": [
         {
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180b0"
           },
@@ -497,9 +477,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=_6MzFv1QbooC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180af"
           },
@@ -517,9 +495,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=KuIMM_8WwkwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Juvenile Fiction"
-          ],
+          "genres": ["Juvenile Fiction"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180ae"
           },
@@ -537,9 +513,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=WlGzBgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Charities"
-          ],
+          "genres": ["Charities"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180ad"
           },
@@ -557,9 +531,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=fIoBAAAAQAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180ac"
           },
@@ -577,9 +549,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=i_-bdQjbAZ8C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180ab"
           },
@@ -597,9 +567,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=UTnop6nTpX0C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Comics & Graphic Novels"
-          ],
+          "genres": ["Comics & Graphic Novels"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180aa"
           },
@@ -617,9 +585,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=mPT2FGFP_aYC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Guardian and ward"
-          ],
+          "genres": ["Guardian and ward"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180a9"
           },
@@ -637,9 +603,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=KlsJAAAAQAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "Science fiction, American"
-          ],
+          "genres": ["Science fiction, American"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180a8"
           },
@@ -657,9 +621,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=7qtUPwAACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api"
         },
         {
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "_id": {
             "$oid": "5d8518f7a7e5540025f180a7"
           },
@@ -713,9 +675,7 @@
       "postType": "shelf",
       "shelf": [
         {
-          "genres": [
-            "Juvenile Fiction"
-          ],
+          "genres": ["Juvenile Fiction"],
           "_id": {
             "$oid": "5d851a9ccd09e39c37c75d8e"
           },
@@ -733,9 +693,7 @@
           "coverImageURL": "http://books.google.com/books/content?id=1ZN2i5dTydcC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
         },
         {
-          "genres": [
-            "African American women cooks"
-          ],
+          "genres": ["African American women cooks"],
           "_id": {
             "$oid": "5d851a9ccd09e39c37c75d8d"
           },

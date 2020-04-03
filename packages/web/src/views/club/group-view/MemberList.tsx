@@ -49,9 +49,7 @@ export default function MemberList(props: MemberListProps) {
                     alt={m.name || m.discordUsername}
                     src={shrinkDiscordPhotoSize(m.photoUrl, 64)}
                   />
-                ) : (
-                  undefined
-                )
+                ) : undefined
               }
               primaryText={m.name || m.discordUsername}
               badge={badge}
@@ -60,9 +58,7 @@ export default function MemberList(props: MemberListProps) {
                   <IconButton edge="end" aria-label="Star" disabled={true}>
                     <StarIcon />
                   </IconButton>
-                ) : (
-                  undefined
-                )
+                ) : undefined
               }
             />
           </Grid>

@@ -218,35 +218,18 @@ router.put(
   check(['goodreadsUrl', 'website', 'photoUrl', 'smallPhotoUrl'])
     .isURL()
     .optional({ checkFalsy: true }),
-  check('name')
-    .isString()
-    .isLength({ min: 2, max: 30 })
-    .optional(),
+  check('name').isString().isLength({ min: 2, max: 30 }).optional(),
   check(
     'readingSpeed',
     `Reading speed must be one of ${READING_SPEEDS.join(',')}`
   ).isIn(READING_SPEEDS),
-  check('age', 'Must be a valid age')
-    .isInt({ min: 13, max: 150 })
-    .optional(),
-  check('gender')
-    .isString()
-    .isLength({ min: 1, max: 50 })
-    .optional(),
-  check('location')
-    .isString()
-    .isLength({ max: 300 })
-    .optional(),
-  check('selectedGenres')
-    .isArray()
-    .optional(),
-  check('shelf')
-    .exists()
-    .optional(),
+  check('age', 'Must be a valid age').isInt({ min: 13, max: 150 }).optional(),
+  check('gender').isString().isLength({ min: 1, max: 50 }).optional(),
+  check('location').isString().isLength({ max: 300 }).optional(),
+  check('selectedGenres').isArray().optional(),
+  check('shelf').exists().optional(),
   check('questions').isArray(),
-  check('onboardingVersion')
-    .isNumeric()
-    .optional(),
+  check('onboardingVersion').isNumeric().optional(),
   async (req, res) => {
     ['goodreadsUrl', 'website', 'photoUrl', 'smallPhotoUrl'].forEach(
       x => (req.body[x] = x == null || x == '' ? undefined : req.body[x])

@@ -3,13 +3,7 @@
     "_id": {
       "$oid": "5d3b1f7680b16779fe2f4a07"
     },
-    "badgeKeys": [
-      "ref1",
-      "ref2",
-      "ref3",
-      "ref4",
-      "ref5"
-    ],
+    "badgeKeys": ["ref1", "ref2", "ref3", "ref4", "ref5"],
     "badges": {
       "ref1": {
         "key": "ref1",
