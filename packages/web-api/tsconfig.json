@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./types", "./node_modules/@types", "../../node_modules/@types"],
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types",
+      "../../node_modules/@types"
+    ],
     "types": ["jest", "node"],
     "lib": ["es2019"],
     "module": "commonjs",

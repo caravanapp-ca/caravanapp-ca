@@ -852,8 +852,9 @@ export default function ScheduleView(props: ScheduleViewProps) {
                     // error={}
                     helperText={
                       discussionLabelsFocused[index]
-                        ? `${discussionLabelMax -
-                            d.label.length} chars remaining`
+                        ? `${
+                            discussionLabelMax - d.label.length
+                          } chars remaining`
                         : ' '
                     }
                     className={classes.textField}

@@ -3,4 +3,4 @@ export function isValidObjectId(str: string) {
     return false;
   }
   return str.match(/^[a-f\d]{24}$/i);
-};
+}

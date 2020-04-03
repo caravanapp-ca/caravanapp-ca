@@ -1,8 +1,4 @@
-import {
-  UserPalettes,
-  PaletteObject,
-  PaletteSet,
-} from '@caravanapp/types';
+import { UserPalettes, PaletteObject, PaletteSet } from '@caravanapp/types';
 
 export const getSelectablePalettes = (
   palettes: PaletteObject[],

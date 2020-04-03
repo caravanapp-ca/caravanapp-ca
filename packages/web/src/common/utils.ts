@@ -22,10 +22,10 @@ export function debounce<F extends Procedure>(
 ): F {
   let timeoutId: NodeJS.Timeout | undefined;
 
-  return function(this: any, ...args: any[]) {
+  return function (this: any, ...args: any[]) {
     const context = this;
 
-    const doLater = function() {
+    const doLater = function () {
       timeoutId = undefined;
       if (!options.isImmediate) {
         func.apply(context, args);

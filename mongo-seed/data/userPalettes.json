@@ -3,9 +3,7 @@
     "_id": {
       "$oid": "5d5ac533586ff95ff35d326b"
     },
-    "hasSets": [
-      "nature"
-    ],
+    "hasSets": ["nature"],
     "hasIndividuals": [],
     "userId": "5d0eba832aa5960d37d1e079",
     "createdAt": {

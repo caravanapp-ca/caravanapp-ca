@@ -7,9 +7,7 @@ const router = express.Router();
 
 router.get('/genres', async (req, res, next) => {
   try {
-    const genreDoc = await GenreModel.findOne()
-      .sort({ createdAt: -1 })
-      .exec();
+    const genreDoc = await GenreModel.findOne().sort({ createdAt: -1 }).exec();
     if (!genreDoc) {
       res.status(500).send('No genres found, oops!');
       return;

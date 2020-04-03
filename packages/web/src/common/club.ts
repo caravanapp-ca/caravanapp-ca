@@ -1,4 +1,4 @@
-import { isValidObjectId } from "./validObjectId";
+import { isValidObjectId } from './validObjectId';
 
 export const getClubIdFromPathname = (url: string): string => {
   const urlSplit = url.split('/');

@@ -105,9 +105,7 @@ export default function RecommendedClubs(props: RecommendedClubsProps) {
       history.replace('/');
     }
   };
-  const leftComponent = fromOnboarding ? (
-    undefined
-  ) : (
+  const leftComponent = fromOnboarding ? undefined : (
     <IconButton
       edge="start"
       color="inherit"

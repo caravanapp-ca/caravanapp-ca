@@ -203,9 +203,7 @@
           "sourceId": "p7W8xAdPzNwC",
           "readingState": "notStarted",
           "title": "Passing the Test",
-          "genres": [
-            "Achievement tests"
-          ],
+          "genres": ["Achievement tests"],
           "author": "Marita Moll",
           "isbn": "9780886273347",
           "publishedDate": "2004",
@@ -217,9 +215,7 @@
           "sourceId": "Hfeq6TgL1iQC",
           "readingState": "notStarted",
           "title": "Category-Specific Names Test",
-          "genres": [
-            "Psychology"
-          ],
+          "genres": ["Psychology"],
           "author": "Pat McKenna",
           "isbn": "086377458X",
           "publishedDate": "1998-02-11",
@@ -231,9 +227,7 @@
           "sourceId": "a-BJAgAAQBAJ",
           "readingState": "notStarted",
           "title": "Test Scoring",
-          "genres": [
-            "Education"
-          ],
+          "genres": ["Education"],
           "author": "David Thissen, Howard Wainer",
           "isbn": "9781135651374",
           "publishedDate": "2001-05-01",
@@ -358,9 +352,7 @@
           "sourceId": "Yk9Z4dq7FBQC",
           "readingState": "notStarted",
           "title": "A is for Autism, F is for Friend",
-          "genres": [
-            "Education"
-          ],
+          "genres": ["Education"],
           "author": "Joanna L. Keating-Velasco",
           "isbn": "1931282439",
           "publishedDate": "2007",
@@ -405,9 +397,7 @@
           "sourceId": "5yvqBQAAQBAJ",
           "readingState": "notStarted",
           "title": "City on Fire",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "Garth Risk Hallberg",
           "isbn": "9780385682756",
           "publishedDate": "2015-10-13",
@@ -419,9 +409,7 @@
           "sourceId": "lKt5laoj1coC",
           "readingState": "notStarted",
           "title": "The Mote in God's Eye",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "Larry Niven, Jerry Pournelle",
           "isbn": "9780671741921",
           "publishedDate": "1991-03-01",
@@ -434,9 +422,7 @@
           "sourceId": "nuzCP7fWPHEC",
           "readingState": "notStarted",
           "title": "Forward the Foundation",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "Isaac Asimov",
           "isbn": "9780553900965",
           "publishedDate": "2012-02-22",
@@ -448,9 +434,7 @@
           "sourceId": "RyEEAAAAQAAJ",
           "readingState": "notStarted",
           "title": "The Count of Monte-Cristo",
-          "genres": [
-            "France"
-          ],
+          "genres": ["France"],
           "author": "Alexandre Dumas",
           "isbn": "OXFORD:590318835",
           "publishedDate": "1846",
@@ -462,9 +446,7 @@
           "sourceId": "3vExWrUnJB0C",
           "readingState": "notStarted",
           "title": "Do Androids Dream of Electric Sheep?",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "Philip K. Dick",
           "isbn": "9780345404473",
           "publishedDate": "1996",
@@ -476,9 +458,7 @@
           "sourceId": "I8mxughWAOEC",
           "readingState": "notStarted",
           "title": "The Lord of the Rings",
-          "genres": [
-            "Performing Arts"
-          ],
+          "genres": ["Performing Arts"],
           "author": "Ernest Mathijs",
           "isbn": "1904764827",
           "publishedDate": "2006",
@@ -490,9 +470,7 @@
           "sourceId": "r9x-OXdzpPcC",
           "readingState": "notStarted",
           "title": "The Lean Startup",
-          "genres": [
-            "Business & Economics"
-          ],
+          "genres": ["Business & Economics"],
           "author": "Eric Ries",
           "isbn": "9780307887894",
           "publishedDate": "2011",
@@ -504,9 +482,7 @@
           "sourceId": "TZWHNzyi9Z8C",
           "readingState": "notStarted",
           "title": "The Lion, the Witch and the Wardrobe",
-          "genres": [
-            "Drama"
-          ],
+          "genres": ["Drama"],
           "author": "C.S Lewis, Adrian Mitchell",
           "isbn": "9781849435499",
           "publishedDate": "2012-05-28",
@@ -518,9 +494,7 @@
           "sourceId": "vNkOAQAAMAAJ",
           "readingState": "notStarted",
           "title": "Sandkings",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "George R. R. Martin",
           "isbn": "UOM:49015000617416",
           "publishedDate": "1986-02",
@@ -532,9 +506,7 @@
           "sourceId": "p1MULH7JsTQC",
           "readingState": "notStarted",
           "title": "Dune",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "Frank Herbert",
           "isbn": "9781101658055",
           "publishedDate": "2003-08-26",
@@ -547,9 +519,7 @@
           "sourceId": "OS5_VGMdkI8C",
           "readingState": "notStarted",
           "title": "Fresco",
-          "genres": [
-            "Poetry"
-          ],
+          "genres": ["Poetry"],
           "author": "Luljeta Lleshanaku, Peter Constantine",
           "isbn": "0811215113",
           "publishedDate": "2002",
@@ -561,9 +531,7 @@
           "sourceId": "ShykzsaFVScC",
           "readingState": "notStarted",
           "title": "Being The Solution",
-          "genres": [
-            "Self-Help"
-          ],
+          "genres": ["Self-Help"],
           "author": "D. Rutherford",
           "isbn": "0967054028",
           "publishedDate": "2002-02",
@@ -575,9 +543,7 @@
           "sourceId": "wwzIBAAAQBAJ",
           "readingState": "notStarted",
           "title": "Physical Computation and Cognitive Science",
-          "genres": [
-            "Computers"
-          ],
+          "genres": ["Computers"],
           "author": "Nir Fresco",
           "isbn": "9783642413759",
           "publishedDate": "2013-10-12",
@@ -589,9 +555,7 @@
           "sourceId": "yicDl0rgpNQC",
           "readingState": "notStarted",
           "title": "The Cadet Life of Prince Harry",
-          "genres": [
-            "Biography & Autobiography"
-          ],
+          "genres": ["Biography & Autobiography"],
           "author": "Vasile Michael",
           "isbn": "9781434353924",
           "publishedDate": "2008",
@@ -603,9 +567,7 @@
           "sourceId": "dujx_t8lRAIC",
           "readingState": "notStarted",
           "title": "Harry Smith",
-          "genres": [
-            "Art"
-          ],
+          "genres": ["Art"],
           "author": "Andrew Perchuk, Rani Singh",
           "isbn": "9780892367351",
           "publishedDate": "2010-01-01",
@@ -617,9 +579,7 @@
           "sourceId": "abVrDwAAQBAJ",
           "readingState": "notStarted",
           "title": "Blood of an Exile",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "Brian Naslund",
           "isbn": "9781250309624",
           "publishedDate": "2019-08-06",
@@ -631,9 +591,7 @@
           "sourceId": "Xd2x9oHy1XgC",
           "readingState": "notStarted",
           "title": "Blood Prophecy",
-          "genres": [
-            "Juvenile Fiction"
-          ],
+          "genres": ["Juvenile Fiction"],
           "author": "Alyxandra Harvey",
           "isbn": "9781408836705",
           "publishedDate": "2013-01-03",
@@ -645,9 +603,7 @@
           "sourceId": "821BaGHuUXIC",
           "readingState": "notStarted",
           "title": "Blood Magic",
-          "genres": [
-            "Young Adult Fiction"
-          ],
+          "genres": ["Young Adult Fiction"],
           "author": "Tessa Gratton",
           "isbn": "0375897682",
           "publishedDate": "2011-05-24",
@@ -659,9 +615,7 @@
           "sourceId": "-5fOAAAAMAAJ",
           "readingState": "notStarted",
           "title": "What Shall be the Prime Meridian for the World?",
-          "genres": [
-            "Prime Meridian"
-          ],
+          "genres": ["Prime Meridian"],
           "author": "Unknown author",
           "isbn": "UOM:39015019895203",
           "publishedDate": "1884",
@@ -685,9 +639,7 @@
           "sourceId": "URg5fUbtsHwC",
           "readingState": "notStarted",
           "title": "Outnumbered",
-          "genres": [
-            "History"
-          ],
+          "genres": ["History"],
           "author": "Cormac O'Brien",
           "isbn": "9781616738433",
           "publishedDate": "2010-05-01",
@@ -699,9 +651,7 @@
           "sourceId": "4L6DMIFmxMIC",
           "readingState": "notStarted",
           "title": "S a n g F r o i d",
-          "genres": [
-            "Biography & Autobiography"
-          ],
+          "genres": ["Biography & Autobiography"],
           "author": "Claude Feninger",
           "isbn": "9781450046374",
           "publishedDate": "2006-09-29",
@@ -815,9 +765,7 @@
           "sourceId": "yIh6CwAAQBAJ",
           "readingState": "notStarted",
           "title": "Mike",
-          "genres": [
-            "Biography & Autobiography"
-          ],
+          "genres": ["Biography & Autobiography"],
           "author": "Rt. Hon. Lester B. Pearson",
           "isbn": "9781442668669",
           "publishedDate": "2016-01-28",
@@ -829,9 +777,7 @@
           "sourceId": "htKHmFbT1nkC",
           "readingState": "notStarted",
           "title": "Bar Starr Ranch Murder Mystery Party Kit for Boys and Girls",
-          "genres": [
-            "Computers"
-          ],
+          "genres": ["Computers"],
           "author": "SimpliFun Studios",
           "isbn": "9781932839326",
           "publishedDate": "2004-01-01",
@@ -911,9 +857,7 @@
           "sourceId": "hB8sAQAAMAAJ",
           "readingState": "notStarted",
           "title": "Hamburg",
-          "genres": [
-            "Hamburg (Germany)"
-          ],
+          "genres": ["Hamburg (Germany)"],
           "author": "Matthew Jefferies",
           "isbn": "IND:30000127034837",
           "publishedDate": "2011",
@@ -925,9 +869,7 @@
           "sourceId": "mVmCH3YZOcQC",
           "readingState": "notStarted",
           "title": "Arsenal on the Double",
-          "genres": [
-            "Sports & Recreation"
-          ],
+          "genres": ["Sports & Recreation"],
           "author": "Bernard Azulay",
           "isbn": "9781780577715",
           "publishedDate": "2012-12-07",
@@ -951,9 +893,7 @@
           "sourceId": "_2KKDQAAQBAJ",
           "readingState": "notStarted",
           "title": "Blood Meridian, Or, The Evening Redness in the West",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "Cormac McCarthy",
           "isbn": "9780679728757",
           "publishedDate": "1992",
@@ -1032,9 +972,7 @@
           "sourceId": "2Y4r7ATNpa4C",
           "readingState": "notStarted",
           "title": "The Joker",
-          "genres": [
-            "Literary Criticism"
-          ],
+          "genres": ["Literary Criticism"],
           "author": "Matthew Manning, Daniel Wallace",
           "isbn": "9780789322470",
           "publishedDate": "2011",
@@ -1046,9 +984,7 @@
           "sourceId": "gQMt6y-AF-oC",
           "readingState": "notStarted",
           "title": "Hamburger for One",
-          "genres": [
-            "Fiction"
-          ],
+          "genres": ["Fiction"],
           "author": "Ron Underwood",
           "isbn": "9781450281430",
           "publishedDate": "2011-01-03",
@@ -1060,9 +996,7 @@
           "sourceId": "ZmbI0-CHDwsC",
           "readingState": "notStarted",
           "title": "Burger Parties",
-          "genres": [
-            "Cooking"
-          ],
+          "genres": ["Cooking"],
           "author": "James McNair, Jeffrey Starr",
           "isbn": "9780307813428",
           "publishedDate": "2012-07-11",
@@ -1161,9 +1095,7 @@
           "sourceId": "4L6DMIFmxMIC",
           "readingState": "notStarted",
           "title": "S a n g F r o i d",
-          "genres": [
-            "Biography & Autobiography"
-          ],
+          "genres": ["Biography & Autobiography"],
           "author": "Claude Feninger",
           "isbn": "9781450046374",
           "publishedDate": "2006-09-29",
@@ -1233,9 +1165,7 @@
           "sourceId": "ThAaBwAAQBAJ",
           "readingState": "notStarted",
           "title": "Harry Potter’s World Wide Influence",
-          "genres": [
-            "Literary Criticism"
-          ],
+          "genres": ["Literary Criticism"],
           "author": "Diana Patterson",
           "isbn": "9781443816281",
           "publishedDate": "2009-10-02",
@@ -1247,9 +1177,7 @@
           "sourceId": "WV8pZj_oNBwC",
           "readingState": "notStarted",
           "title": "Harry Potter Power",
-          "genres": [
-            "Juvenile Nonfiction"
-          ],
+          "genres": ["Juvenile Nonfiction"],
           "author": "Julie-Anne Sykley",
           "isbn": "9781921479311",
           "publishedDate": "2010",
@@ -1261,9 +1189,7 @@
           "sourceId": "WV8pZj_oNBwC",
           "readingState": "notStarted",
           "title": "Harry Potter Power",
-          "genres": [
-            "Juvenile Nonfiction"
-          ],
+          "genres": ["Juvenile Nonfiction"],
           "author": "Julie-Anne Sykley",
           "isbn": "9781921479311",
           "publishedDate": "2010",
@@ -1349,9 +1275,7 @@
           "sourceId": "8SVsv_nEUvsC",
           "readingState": "notStarted",
           "title": "After School Club",
-          "genres": [
-            "Children's stories"
-          ],
+          "genres": ["Children's stories"],
           "author": "Helena Pielichaty",
           "isbn": "0192752499",
           "publishedDate": "2003",
@@ -1363,9 +1287,7 @@
           "sourceId": "HDbNQKmJsEUC",
           "readingState": "notStarted",
           "title": "Referral and Termination Issues for Counsellors",
-          "genres": [
-            "Psychology"
-          ],
+          "genres": ["Psychology"],
           "author": "Anne Leigh",
           "isbn": "9780857025999",
           "publishedDate": "1998-06-10",
@@ -1377,9 +1299,7 @@
           "sourceId": "GYYj7izWl_gC",
           "readingState": "notStarted",
           "title": "Join Us for English 1 Teacher's Book",
-          "genres": [
-            "Foreign Language Study"
-          ],
+          "genres": ["Foreign Language Study"],
           "author": "Gunter Gerngross, Herbert Puchta, Paola Tite",
           "isbn": "0521679176",
           "publishedDate": "2006-04-27",

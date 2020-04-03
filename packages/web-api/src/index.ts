@@ -41,7 +41,7 @@ import { ReadingDiscordBot } from './services/discord';
   app.use(helmet());
   app.enable('trust proxy');
   if (process.env.NODE_ENV === 'production') {
-    app.use(function(req, res, next) {
+    app.use(function (req, res, next) {
       const isHttps = req.secure;
       let host = req.header('host');
       const isWww = !!host.match(/^www\..*/i);

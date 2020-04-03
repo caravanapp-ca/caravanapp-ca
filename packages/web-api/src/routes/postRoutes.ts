@@ -58,8 +58,9 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     return res.status(201).send(result);
   } catch (err) {
     console.error(
-      `Failed to upload post { user: ${userId}, postId: ${postDoc &&
-        postDoc._id} }`,
+      `Failed to upload post { user: ${userId}, postId: ${
+        postDoc && postDoc._id
+      } }`,
       err
     );
     return next(err);
@@ -313,9 +314,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
   let posts: PostDoc[];
   try {
     if (search && search.length > 0) {
-      posts = await PostModel.find(query)
-        .sort({ createdAt: -1 })
-        .exec();
+      posts = await PostModel.find(query).sort({ createdAt: -1 }).exec();
     } else {
       posts = await PostModel.find(query)
         .limit(limit)
