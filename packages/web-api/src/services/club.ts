@@ -29,6 +29,7 @@ import {
 } from '@caravanapp/types';
 
 import { getClubRecommendationDescription } from '../common/club';
+import { DEFAULT_AVATAR_OPTIONS } from '../common/discordbot';
 import {
   CLUB_RECOMMENDATION_KEYS,
   MAX_CLUB_AGE_RECOMMENDATION_DAYS,
@@ -472,8 +473,8 @@ export const getChannelMembers = async (guild: Guild, club: ClubDoc) => {
           discordId: mem.id,
           photoUrl:
             user.photoUrl ||
-            mem.user.avatarURL() ||
-            mem.user.displayAvatarURL() ||
+            mem.user.avatarURL(DEFAULT_AVATAR_OPTIONS) ||
+            mem.user.displayAvatarURL(DEFAULT_AVATAR_OPTIONS) ||
             mem.user.defaultAvatarURL,
         };
         return result;

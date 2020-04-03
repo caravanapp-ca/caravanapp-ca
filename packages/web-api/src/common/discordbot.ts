@@ -1,3 +1,5 @@
+import { ImageURLOptions } from 'discord.js';
+
 export type BotPermission = 'admin' | 'sendMessage';
 
 export const BotPermissions: { [key in BotPermission]: BotPermission } = {
@@ -15,3 +17,8 @@ export function hasScope(userPermissions: string, permission: BotPermission) {
   const permissions = userPermissions.split(' ');
   return permissions.some(p => p === permission || p === 'admin');
 }
+
+export const DEFAULT_AVATAR_OPTIONS: ImageURLOptions = {
+  format: 'png',
+  size: 32,
+};

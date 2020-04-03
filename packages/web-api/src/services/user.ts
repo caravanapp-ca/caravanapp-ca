@@ -8,6 +8,7 @@ import {
   UserModel,
 } from '@caravanapp/mongo';
 
+import { DEFAULT_AVATAR_OPTIONS } from '../common/discordbot';
 import { getBadges } from './badge';
 import { ReadingDiscordBot } from './discord';
 
@@ -26,7 +27,9 @@ export const mutateUserDiscordContent = (userDoc: UserDoc, guild?: Guild) => {
     userDoc.name = userDoc.name || guildMember.displayName;
     userDoc.discordUsername = guildMember.displayName;
     userDoc.photoUrl =
-      userDoc.photoUrl || user.avatarURL() || user.defaultAvatarURL;
+      userDoc.photoUrl ||
+      user.avatarURL(DEFAULT_AVATAR_OPTIONS) ||
+      user.defaultAvatarURL;
   }
 };
 
