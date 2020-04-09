@@ -13,6 +13,7 @@ import {
   UserQA,
 } from '@caravanapp/types';
 
+import { parseIntWithZeroDefault } from '../common/functions';
 import { isAuthenticatedButNotNecessarilyOnboarded } from '../middleware/auth';
 import { getGenreDoc } from '../services/genre';
 import { getProfileQuestions } from '../services/profileQuestions';
@@ -61,12 +62,12 @@ router.get('/', async (req, res) => {
     query._id = { $lt: after };
   }
   // Only get users who have finished onboarding
-  if (onboardVersion && (onboardVersion === '0' || onboardVersion === '1')) {
+  if (onboardVersion === '0' || onboardVersion === '1') {
     const onboardingVersionInt = parseInt(onboardVersion);
     query.onboardingVersion = onboardingVersionInt;
   }
   // Calculate number of documents to skip
-  const size = Number.parseInt(pageSize || 0);
+  const size = parseIntWithZeroDefault(pageSize);
   const limit = Math.min(Math.max(size, 10), 50);
   let users: UserDoc[];
   try {
@@ -87,7 +88,7 @@ router.get('/', async (req, res) => {
     res.sendStatus(404);
     return;
   }
-  if (isSearching) {
+  if (isSearching && typeof search === 'string') {
     let fuseSearchKey: string;
     let fuseOptions = {};
     switch (userSearchField) {

@@ -1,12 +1,10 @@
-import { DeepPartial } from 'utility-types';
-
 import { UserSettingsDoc, UserSettingsModel } from '@caravanapp/mongo';
 import { FilterAutoMongoKeys, UserSettings } from '@caravanapp/types';
 
 import { DEFAULT_EMAIL_SETTINGS } from '../common/globalConstantsAPI';
 
 export const getUserSettings = (userId: string) => {
-  const userSettingsQuery: DeepPartial<UserSettingsDoc> = {
+  const userSettingsQuery: Partial<UserSettingsDoc> = {
     userId,
   };
   return UserSettingsModel.findOne(userSettingsQuery);

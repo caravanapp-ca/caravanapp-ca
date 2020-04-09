@@ -1,6 +1,6 @@
 import express from 'express';
 import Fuse from 'fuse.js';
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 
 import {
   FilterMongooseDocKeys,
@@ -15,6 +15,7 @@ import {
   Services,
 } from '@caravanapp/types';
 
+import { parseIntWithZeroDefault } from '../common/functions';
 import { isAuthenticated } from '../middleware/auth';
 import {
   createLikesDoc,
@@ -182,7 +183,7 @@ router.get('/', async (req, res) => {
     query._id = { $lt: after };
   }
   // Calculate number of documents to skip
-  const size = Number.parseInt(pageSize || 0);
+  const size = parseIntWithZeroDefault(pageSize);
   const limit = Math.min(Math.max(size, 10), 50);
   let posts: PostDoc[];
   try {
@@ -309,7 +310,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     query._id = { $lt: after };
   }
   // Calculate number of documents to skip
-  const size = Number.parseInt(pageSize || 0);
+  const size = parseIntWithZeroDefault(pageSize);
   const limit = Math.min(Math.max(size, 10), 50);
   let posts: PostDoc[];
   try {
@@ -354,7 +355,7 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
       }
     })
     .filter(p => p !== null);
-  if (search && search.length > 0) {
+  if (search && typeof search === 'string' && search.length > 0) {
     let fuseSearchKey: string;
     let fuseOptions = {};
     switch (postSearchField) {
@@ -396,8 +397,15 @@ router.get('/withAuthorAndLikesUserInfo', async (req, res) => {
     const fuse = new Fuse(filteredPosts, fuseOptions);
     filteredPosts = fuse.search(search);
   }
-  if (after) {
-    const afterIndex = filteredPosts.findIndex(c => c._id === after);
+  if (
+    // If there's a search, you need to do an after filter manually
+    typeof search === 'string' &&
+    search.length >= 1 &&
+    typeof after === 'string' &&
+    mongoose.Types.ObjectId.isValid(after)
+  ) {
+    const afterAsMongoId = new mongoose.Types.ObjectId(after);
+    const afterIndex = filteredPosts.findIndex(c => c._id === afterAsMongoId);
     if (afterIndex >= 0) {
       filteredPosts = filteredPosts.slice(afterIndex + 1);
     }

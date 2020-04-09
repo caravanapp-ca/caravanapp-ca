@@ -107,6 +107,12 @@ router.get('/discord/callback', async (req, res) => {
     return;
   }
   let successfulAuthentication = true;
+  if (typeof code !== 'string') {
+    res.redirect(
+      `/?error=Code_Not_String&error_description=Code_Must_Be_String`
+    );
+    return;
+  }
   let tokenResponseData = await ReadingDiscordBot.getToken(
     code,
     req.headers.host
