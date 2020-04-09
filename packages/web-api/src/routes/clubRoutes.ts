@@ -26,6 +26,7 @@ import {
   User,
 } from '@caravanapp/types';
 
+import { parseIntWithZeroDefault } from '../common/functions';
 import {
   MAX_SHELF_SIZE,
   UNLIMITED_CLUB_MEMBERS_VALUE,
@@ -187,7 +188,7 @@ router.get('/', async (req, res) => {
   const currUserId = req.session.userId;
   const [currUser, user] = await Promise.all([
     currUserId ? await getUser(currUserId) : undefined,
-    userId ? await getUser(userId) : undefined,
+    userId && typeof userId === 'string' ? await getUser(userId) : undefined,
   ]);
   const query: SameKeysAs<Partial<Club>> = {};
   const sort: SameKeysAs<Partial<Club>> = {
@@ -198,7 +199,7 @@ router.get('/', async (req, res) => {
   }
   let userInChannelBoolean = true;
   let filterObj: ActiveFilter;
-  if (activeFilter) {
+  if (activeFilter && typeof activeFilter === 'string') {
     filterObj = JSON.parse(activeFilter);
     if (filterObj.speed.length > 0) {
       query.readingSpeed = { $eq: filterObj.speed[0].key };
@@ -223,7 +224,7 @@ router.get('/', async (req, res) => {
     query.channelId = { $in: channelIds };
   }
   // Calculate number of documents to skip
-  const size = Number.parseInt(pageSize || 0);
+  const size = parseIntWithZeroDefault(pageSize);
   const limit = Math.min(Math.max(size, 1), 50);
   let clubDocs: ClubDoc[];
   try {
@@ -312,7 +313,7 @@ router.get('/', async (req, res) => {
       return obj;
     })
     .filter(c => c !== null);
-  if (isSearching) {
+  if (isSearching && typeof search === 'string') {
     const fuseOptions = {
       keys: [
         { name: 'newShelf.current.title', weight: 3 / 9 },
@@ -377,7 +378,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   }
   let filterObj: ActiveFilter;
   let userInChannelBoolean = true;
-  if (activeFilter) {
+  if (activeFilter && typeof activeFilter === 'string') {
     filterObj = JSON.parse(activeFilter);
     if (filterObj.speed.length > 0) {
       query.readingSpeed = { $eq: filterObj.speed[0].key };
@@ -400,7 +401,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   const channelIds = channels.map(c => c.id);
   query.channelId = { $in: channelIds };
   // Calculate number of results to return
-  const size = Number.parseInt(pageSize || 0);
+  const size = parseIntWithZeroDefault(pageSize);
   const limit = Math.min(Math.max(size, 10), 50);
   let clubDocs: ClubDoc[];
   try {
@@ -466,7 +467,7 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   let filteredClubsWithMembers: Services.GetClubById[] = filteredClubsWithMembersNulls.filter(
     c => c != null
   );
-  if (search && search.length > 0) {
+  if (search && typeof search === 'string' && search.length > 0) {
     const fuseOptions = {
       keys: ['name', 'shelf.title', 'shelf.author'],
     };

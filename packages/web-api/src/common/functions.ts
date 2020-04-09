@@ -24,3 +24,12 @@ export const getRandItemList = (
   itemsStr += `, and ${itemsToUse[itemsToUse.length - 1]}`;
   return itemsStr;
 };
+
+export const parseIntWithZeroDefault = (
+  val: unknown,
+  defaultNumAsStr = '0'
+) => {
+  return Number.parseInt(
+    val && typeof val === 'string' ? val : defaultNumAsStr
+  );
+};
