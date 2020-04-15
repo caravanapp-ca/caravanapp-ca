@@ -4,11 +4,11 @@
   "scripts": {
     "lint": "eslint \"./**/**.ts\"",
     "lint:fix": "eslint \"./**/**.ts\" --quiet --fix",
-    "prebuild": "cd ../../../ && npm run prebuild && cd ./packages/cloud-functions/functions",
+    "prebuild": "cd ../../ && npm run prebuild && cd ./cloud-functions/functions",
     "build": "tsc",
     "tsc": "tsc",
     "start": "functions-framework",
-    "deploy:prod:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --project=buddyreading --runtime nodejs10 --env-vars-file .env.production.yaml --trigger-topic club-membership",
+    "deploy:prod:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --project=caravan-prod --runtime nodejs10 --env-vars-file .env.production.yaml --trigger-topic club-membership",
     "deploy:staging:onClubMembershipChange": "gcloud functions deploy onClubMembershipChange --project=buddyreading-staging-env --runtime nodejs10 --env-vars-file .env.staging.yaml --trigger-topic club-membership",
     "deploy:prod:testSendGrid": "gcloud functions deploy testSendGrid --project=buddyreading --runtime nodejs10 --env-vars-file .env.production.yaml --trigger-http",
     "deploy:staging:testSendGrid": "gcloud functions deploy testSendGrid --project=buddyreading-staging-env --runtime nodejs10 --env-vars-file .env.staging.yaml --trigger-http",
