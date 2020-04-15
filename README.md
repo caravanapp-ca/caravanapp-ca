@@ -85,10 +85,6 @@ You must manually change the port from `3001` to `3000` in your browser,
 i.e.: `http://localhost:3000/?state=SomeRandomSecretToken=`.
 You should then be logged in. If you're still not logged in, try refreshing and logging in again.
 
-## 🙌 Contributing
-
-Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting a Pull Request to the project.
-
 ## 🤓 Community Support
 
 For general help using or developing Caravan Clubs, you can use one of these channels to ask a question:
