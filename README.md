@@ -3,7 +3,7 @@
     <img src="./packages/web/src/resources/text-logo.svg" width="318px" alt="Caravan Clubs logo" />
   </a>
 </p>
-<h3 align="center">Find your perfect reading buddies.</h3>
+<h3 align="center">Read great books. Meet cool people. Exchange big ideas.</h3>
 <p align="center">Start by browsing and joining existing clubs, or by creating your own club!</p>
 <br />
 
