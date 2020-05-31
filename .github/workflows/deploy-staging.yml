@@ -14,7 +14,7 @@ env:
   DISCORD_CLIENT_SECRET: ${{ secrets.STAGING_DISCORD_CLIENT_SECRET }}
   DISCORD_GUILD: 'buddy-reading-test'
   DISCORD_GUILD_ID: '589194387968491530'
-  DISCORD_REDIRECT: 'https://buddyreading-staging-env.appspot.com/api/auth/discord/callback'
+  DISCORD_REDIRECT: 'https://buddyreading-staging-env.uc.r.appspot.com/api/auth/discord/callback'
   GAE_ENV: 'staging'
   GCLOUD_PROJECT: ${{ secrets.STAGING_GCLOUD_PROJECT }}
   GITHUB_SHA: ${{ github.sha }}
