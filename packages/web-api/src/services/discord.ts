@@ -1,4 +1,3 @@
-import axios from 'axios';
 import btoa from 'btoa';
 import Discord, { TextChannel } from 'discord.js';
 import FormData from 'form-data';
@@ -92,10 +91,12 @@ const ReadingDiscordBot = (() => {
     },
 
     getMe: async (accessToken: string) => {
-      const userResponse = await axios.get(`${DiscordApiUrl}/users/@me`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      return userResponse.data as DiscordUserResponseData;
+      const data = await fetch(`${DiscordApiUrl}/users/@me`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }).then(res => res.json() as Promise<DiscordUserResponseData>);
+      return data;
     },
 
     getToken: async (code: string, host: string) => {
