@@ -1,7 +1,6 @@
 import axios from 'axios';
 import btoa from 'btoa';
 import Discord, { TextChannel } from 'discord.js';
-import fetch from 'node-fetch';
 
 import { UserDoc } from '@caravanapp/mongo';
 import { ReferralTier } from '@caravanapp/types';
@@ -15,6 +14,7 @@ import { getUser } from './user';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
 const DiscordPermissionsParam = DISCORD_PERMISSIONS.join('%20');
+const DiscordPermissionsSpaceDelimited = DISCORD_PERMISSIONS.join(' ');
 
 const DiscordApiUrl = 'https://discordapp.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;
@@ -38,14 +38,10 @@ const DiscordOAuth2Url = (state: string, host: string) => {
   const redirectUri = getDiscordRedirectUri(host);
   return `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${DiscordPermissionsParam}&state=${state}`;
 };
-const GetDiscordTokenCallbackUri = (code: string, host: string) => {
-  const redirectUri = getDiscordRedirectUri(host);
-  return `${DiscordApiUrl}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${
-    redirectUri || DiscordRedirectUri
-  }`;
-};
-const GetDiscordTokenRefreshCallbackUri = (refreshToken: string) =>
-  `${DiscordApiUrl}/oauth2/token?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissionsParam}`;
+const GetDiscordTokenCallbackUri = () => `${DiscordApiUrl}/v6/oauth2/token`;
+
+const GetDiscordTokenRefreshCallbackUri = () =>
+  `${DiscordApiUrl}/v6/oauth2/token`;
 
 interface DiscordUserResponseData {
   id: string;
@@ -104,25 +100,59 @@ const ReadingDiscordBot = (() => {
     },
 
     getToken: async (code: string, host: string) => {
-      const tokenUri = GetDiscordTokenCallbackUri(code, host);
-      const tokenResponse = await fetch(tokenUri, {
-        method: 'POST',
+      const tokenUri = GetDiscordTokenCallbackUri();
+      const redirectUri = getDiscordRedirectUri(host) || DiscordRedirectUri;
+      const body = {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        client_id: DiscordClientId,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        client_secret: DiscordClientSecret,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        grant_type: 'authorization_code',
+        code,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        redirect_uri: redirectUri,
+        scope: DiscordPermissionsSpaceDelimited,
+      };
+      const config = {
         headers: {
-          Authorization: `Basic ${DiscordBase64Credentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-      });
-      return (await tokenResponse.json()) as OAuth2TokenResponseData;
+      };
+      const tokenResponse = await axios.post<OAuth2TokenResponseData>(
+        tokenUri,
+        body,
+        config
+      );
+      return tokenResponse;
     },
 
     refreshAccessToken: async (refreshToken: string) => {
-      const refreshTokenUri = GetDiscordTokenRefreshCallbackUri(refreshToken);
-      const tokenResponse = await fetch(refreshTokenUri, {
-        method: 'POST',
+      const refreshTokenUri = GetDiscordTokenRefreshCallbackUri();
+      // ?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissionsParam}
+      const body = {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        client_id: DiscordClientId,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        client_secret: DiscordClientSecret,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        grant_type: 'refresh_token',
+        refreshToken,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        redirect_uri: DiscordRedirectUri,
+        scope: DiscordPermissionsSpaceDelimited,
+      };
+      const config = {
         headers: {
-          Authorization: `Basic ${DiscordBase64Credentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-      });
-      return (await tokenResponse.json()) as OAuth2TokenResponseData;
+      };
+      const tokenResponse = await axios.post<OAuth2TokenResponseData>(
+        refreshTokenUri,
+        body,
+        config
+      );
+      return tokenResponse;
     },
   };
 })();
