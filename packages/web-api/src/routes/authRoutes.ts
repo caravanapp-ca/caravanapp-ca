@@ -113,10 +113,9 @@ router.get('/discord/callback', async (req, res) => {
     );
     return;
   }
-  let tokenResponseData = await ReadingDiscordBot.getToken(
-    code,
-    req.headers.host
-  );
+  let tokenResponseData = (
+    await ReadingDiscordBot.getToken(code, req.headers.host)
+  ).data;
 
   if (tokenResponseData.error) {
     const encodedErrorMessage = encodeURIComponent(
@@ -266,9 +265,9 @@ router.get('/discord/callback', async (req, res) => {
           `Refreshing access token for user {id: ${userDoc.id}, discordId: ${userDoc.discordId}}`
         );
         // Update the response data and new token to be later saved
-        tokenResponseData = await ReadingDiscordBot.refreshAccessToken(
-          refreshToken
-        );
+        tokenResponseData = (
+          await ReadingDiscordBot.refreshAccessToken(refreshToken)
+        ).data;
         accessToken = tokenResponseData.access_token;
       }
 
