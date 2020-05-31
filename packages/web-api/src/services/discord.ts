@@ -1,6 +1,8 @@
 import axios from 'axios';
 import btoa from 'btoa';
 import Discord, { TextChannel } from 'discord.js';
+import FormData from 'form-data';
+import fetch from 'node-fetch';
 
 import { UserDoc } from '@caravanapp/mongo';
 import { ReferralTier } from '@caravanapp/types';
@@ -38,10 +40,7 @@ const DiscordOAuth2Url = (state: string, host: string) => {
   const redirectUri = getDiscordRedirectUri(host);
   return `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${DiscordPermissionsParam}&state=${state}`;
 };
-const GetDiscordTokenCallbackUri = () => `${DiscordApiUrl}/v6/oauth2/token`;
-
-const GetDiscordTokenRefreshCallbackUri = () =>
-  `${DiscordApiUrl}/v6/oauth2/token`;
+const DISCORD_TOKEN_URI = `${DiscordApiUrl}/oauth2/token`;
 
 interface DiscordUserResponseData {
   id: string;
@@ -100,59 +99,34 @@ const ReadingDiscordBot = (() => {
     },
 
     getToken: async (code: string, host: string) => {
-      const tokenUri = GetDiscordTokenCallbackUri();
       const redirectUri = getDiscordRedirectUri(host) || DiscordRedirectUri;
-      const body = {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        client_id: DiscordClientId,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        client_secret: DiscordClientSecret,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        grant_type: 'authorization_code',
-        code,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        redirect_uri: redirectUri,
-        scope: DiscordPermissionsSpaceDelimited,
-      };
-      const config = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      };
-      const tokenResponse = await axios.post<OAuth2TokenResponseData>(
-        tokenUri,
-        body,
-        config
-      );
-      return tokenResponse;
+      const data = new FormData();
+      data.append('client_id', DiscordClientId);
+      data.append('client_secret', DiscordClientSecret);
+      data.append('grant_type', 'authorization_code');
+      data.append('redirect_uri', redirectUri);
+      data.append('scope', DiscordPermissionsSpaceDelimited);
+      data.append('code', code);
+      const response = await fetch(DISCORD_TOKEN_URI, {
+        method: 'POST',
+        body: data,
+      }).then(res => res.json() as Promise<OAuth2TokenResponseData>);
+      return response;
     },
 
     refreshAccessToken: async (refreshToken: string) => {
-      const refreshTokenUri = GetDiscordTokenRefreshCallbackUri();
-      // ?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissionsParam}
-      const body = {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        client_id: DiscordClientId,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        client_secret: DiscordClientSecret,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        grant_type: 'refresh_token',
-        refreshToken,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        redirect_uri: DiscordRedirectUri,
-        scope: DiscordPermissionsSpaceDelimited,
-      };
-      const config = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      };
-      const tokenResponse = await axios.post<OAuth2TokenResponseData>(
-        refreshTokenUri,
-        body,
-        config
-      );
-      return tokenResponse;
+      const data = new FormData();
+      data.append('client_id', DiscordClientId);
+      data.append('client_secret', DiscordClientSecret);
+      data.append('grant_type', 'refresh_token');
+      data.append('refresh_token', refreshToken);
+      data.append('redirect_uri', DiscordRedirectUri);
+      data.append('scope', DiscordPermissionsSpaceDelimited);
+      const response = await fetch(DISCORD_TOKEN_URI, {
+        method: 'POST',
+        body: data,
+      }).then(res => res.json() as Promise<OAuth2TokenResponseData>);
+      return response;
     },
   };
 })();
@@ -264,7 +238,5 @@ export {
   DiscordClientSecret,
   DiscordOAuth2Url,
   DiscordUserResponseData,
-  GetDiscordTokenCallbackUri,
-  GetDiscordTokenRefreshCallbackUri,
   OAuth2TokenResponseData,
 };
