@@ -13,7 +13,7 @@ import {
 import { getReferralTier } from './referral';
 import { getUser } from './user';
 
-const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
+const DiscordRedirectUri = process.env.DISCORD_REDIRECT;
 const DiscordPermissionsParam = DISCORD_PERMISSIONS.join('%20');
 const DiscordPermissionsSpaceDelimited = DISCORD_PERMISSIONS.join(' ');
 
@@ -32,7 +32,7 @@ const getDiscordRedirectUri = (host: string) => {
   }
   // In staging environments and local environments, meh.
   const prefix = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  return encodeURIComponent(`${prefix}://${host}/api/auth/discord/callback`);
+  return `${prefix}://${host}/api/auth/discord/callback`;
 };
 
 const DiscordOAuth2Url = (state: string, host: string) => {
