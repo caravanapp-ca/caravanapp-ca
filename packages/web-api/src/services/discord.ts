@@ -1,6 +1,6 @@
-import axios from 'axios';
 import btoa from 'btoa';
 import Discord, { TextChannel } from 'discord.js';
+import FormData from 'form-data';
 import fetch from 'node-fetch';
 
 import { UserDoc } from '@caravanapp/mongo';
@@ -15,6 +15,7 @@ import { getUser } from './user';
 
 const DiscordRedirectUri = encodeURIComponent(process.env.DISCORD_REDIRECT);
 const DiscordPermissionsParam = DISCORD_PERMISSIONS.join('%20');
+const DiscordPermissionsSpaceDelimited = DISCORD_PERMISSIONS.join(' ');
 
 const DiscordApiUrl = 'https://discordapp.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;
@@ -38,14 +39,7 @@ const DiscordOAuth2Url = (state: string, host: string) => {
   const redirectUri = getDiscordRedirectUri(host);
   return `${DiscordApiUrl}/oauth2/authorize?client_id=${DiscordClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${DiscordPermissionsParam}&state=${state}`;
 };
-const GetDiscordTokenCallbackUri = (code: string, host: string) => {
-  const redirectUri = getDiscordRedirectUri(host);
-  return `${DiscordApiUrl}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${
-    redirectUri || DiscordRedirectUri
-  }`;
-};
-const GetDiscordTokenRefreshCallbackUri = (refreshToken: string) =>
-  `${DiscordApiUrl}/oauth2/token?client_id=${DiscordClientId}&client_secret=${DiscordClientSecret}&grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${DiscordRedirectUri}&scope=${DiscordPermissionsParam}`;
+const DISCORD_TOKEN_URI = `${DiscordApiUrl}/oauth2/token`;
 
 interface DiscordUserResponseData {
   id: string;
@@ -97,32 +91,43 @@ const ReadingDiscordBot = (() => {
     },
 
     getMe: async (accessToken: string) => {
-      const userResponse = await axios.get(`${DiscordApiUrl}/users/@me`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      return userResponse.data as DiscordUserResponseData;
+      const data = await fetch(`${DiscordApiUrl}/users/@me`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }).then(res => res.json() as Promise<DiscordUserResponseData>);
+      return data;
     },
 
     getToken: async (code: string, host: string) => {
-      const tokenUri = GetDiscordTokenCallbackUri(code, host);
-      const tokenResponse = await fetch(tokenUri, {
+      const redirectUri = getDiscordRedirectUri(host) || DiscordRedirectUri;
+      const data = new FormData();
+      data.append('client_id', DiscordClientId);
+      data.append('client_secret', DiscordClientSecret);
+      data.append('grant_type', 'authorization_code');
+      data.append('redirect_uri', redirectUri);
+      data.append('scope', DiscordPermissionsSpaceDelimited);
+      data.append('code', code);
+      const response = await fetch(DISCORD_TOKEN_URI, {
         method: 'POST',
-        headers: {
-          Authorization: `Basic ${DiscordBase64Credentials}`,
-        },
-      });
-      return (await tokenResponse.json()) as OAuth2TokenResponseData;
+        body: data,
+      }).then(res => res.json() as Promise<OAuth2TokenResponseData>);
+      return response;
     },
 
     refreshAccessToken: async (refreshToken: string) => {
-      const refreshTokenUri = GetDiscordTokenRefreshCallbackUri(refreshToken);
-      const tokenResponse = await fetch(refreshTokenUri, {
+      const data = new FormData();
+      data.append('client_id', DiscordClientId);
+      data.append('client_secret', DiscordClientSecret);
+      data.append('grant_type', 'refresh_token');
+      data.append('refresh_token', refreshToken);
+      data.append('redirect_uri', DiscordRedirectUri);
+      data.append('scope', DiscordPermissionsSpaceDelimited);
+      const response = await fetch(DISCORD_TOKEN_URI, {
         method: 'POST',
-        headers: {
-          Authorization: `Basic ${DiscordBase64Credentials}`,
-        },
-      });
-      return (await tokenResponse.json()) as OAuth2TokenResponseData;
+        body: data,
+      }).then(res => res.json() as Promise<OAuth2TokenResponseData>);
+      return response;
     },
   };
 })();
@@ -234,7 +239,5 @@ export {
   DiscordClientSecret,
   DiscordOAuth2Url,
   DiscordUserResponseData,
-  GetDiscordTokenCallbackUri,
-  GetDiscordTokenRefreshCallbackUri,
   OAuth2TokenResponseData,
 };
