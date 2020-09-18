@@ -268,7 +268,14 @@ export function App(props: AppProps) {
                 <Route
                   exact
                   path="/privacy"
-                  render={props => forceOnboard(user, userLoaded, <Privacy />)}
+                  render={
+                    props =>
+                    forceOnboard(
+                      user,
+                      userLoaded,
+                      <Privacy {...props} user={user} />
+                    )
+                  }
                 />
                 <Route
                   exact
