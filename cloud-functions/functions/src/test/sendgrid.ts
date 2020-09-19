@@ -1,4 +1,4 @@
-import { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
+import type { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
 import sgMail from '@sendgrid/mail';
 
 import { loadLocalEnv } from './loadenv';
