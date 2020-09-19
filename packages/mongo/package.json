@@ -24,10 +24,10 @@
   "homepage": "https://github.com/caravanapp-ca/caravanapp-ca#readme",
   "dependencies": {
     "@caravanapp/types": "1.0.0",
-    "mongoose": "^5.6.8"
+    "mongoose": "~5.9.4"
   },
   "devDependencies": {
-    "@types/mongoose": "^5.7.3",
+    "@types/mongoose": "5.7.9",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
     "eslint": "^6.8.0",
