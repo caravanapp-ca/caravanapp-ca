@@ -1,7 +1,9 @@
-import { Message, MessageOptions, Channel, TextChannel } from 'discord.js';
-import { Firestore } from '@caravanapp/types';
-import { shouldSendWithLease, markSent } from './idempotent';
+import { Channel, Message, MessageOptions, TextChannel } from 'discord.js';
+
+import type { Firestore } from '@caravanapp/types';
+
 import { firestore } from './db';
+import { markSent, shouldSendWithLease } from './idempotent';
 
 export const sendDiscordMessage = async (
   eventId: string,

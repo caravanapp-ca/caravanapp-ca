@@ -1,5 +1,6 @@
+import type { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
 import sgMail from '@sendgrid/mail';
-import { HttpFunction } from '@google-cloud/functions-framework';
+
 import { loadLocalEnv } from './loadenv';
 
 export const testSendGrid: HttpFunction = async (req, res) => {

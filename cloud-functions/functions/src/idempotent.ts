@@ -1,6 +1,7 @@
-import { DocumentReference, DocumentData } from '@google-cloud/firestore';
+import type { DocumentData, DocumentReference } from '@google-cloud/firestore';
+
+import { IdempotentSendData } from '../';
 import { firestore } from './db';
-import { IdempotentSendData } from '..';
 
 const leaseTime = 60 * 1000; // 60s
 

@@ -1,7 +1,8 @@
-import { GuildMember } from 'discord.js';
+import type { GuildMember } from 'discord.js';
+
+import { checkObjectIdIsValid } from '../workspace/mongo/common/mongoose';
 // These imports will only exist after building
 import { UserDoc, UserModel } from '../workspace/mongo/models/user';
-import { checkObjectIdIsValid } from '../workspace/mongo/common/mongoose';
 
 export const getUserProfileUrl = (urlSlug: string) =>
   `https://caravanapp.ca/user/${urlSlug}`;
