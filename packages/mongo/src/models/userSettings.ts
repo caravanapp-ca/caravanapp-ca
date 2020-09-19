@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from 'mongoose';
 
-import { EmailSettings, UserSettings } from '@caravanapp/types';
+import type { EmailSettings, UserSettings } from '@caravanapp/types';
 
 import { MongooseSchema } from '../common/mongoose';
 

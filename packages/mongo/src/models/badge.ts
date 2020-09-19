@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from 'mongoose';
 
-import { Badge, Badges } from '@caravanapp/types';
+import type { Badge, Badges } from '@caravanapp/types';
 
 import { MongooseSchema } from '../common/mongoose';
 

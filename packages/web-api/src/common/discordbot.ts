@@ -1,4 +1,4 @@
-import { ImageURLOptions } from 'discord.js';
+import type { ImageURLOptions } from 'discord.js';
 
 export type BotPermission = 'admin' | 'sendMessage';
 

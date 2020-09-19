@@ -1,4 +1,4 @@
-import {
+import type {
   ChannelCreationOverwrites,
   Guild,
   GuildChannel,
@@ -14,7 +14,7 @@ import Fuse from 'fuse.js';
 import { Types } from 'mongoose';
 
 import { ClubDoc, ClubModel, UserDoc, UserModel } from '@caravanapp/mongo';
-import {
+import type {
   ActiveFilter,
   Club,
   ClubShelf,
@@ -745,7 +745,7 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     invitedUsers.filter(u => u !== req.user.discordId);
     invitedUsers.push(req.user.discordId);
     const channelCreationOverwrites = invitedUsers.map(user => {
-      const allowed: PermissionResolvable = [
+      const allowed: PermissionResolvable[] = [
         'VIEW_CHANNEL',
         'SEND_MESSAGES',
         'SEND_TTS_MESSAGES',

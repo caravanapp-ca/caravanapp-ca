@@ -1,5 +1,5 @@
 import { UserPalettesModel } from '@caravanapp/mongo';
-import {
+import type {
   FilterAutoMongoKeys,
   PaletteSet,
   UserPalettes,

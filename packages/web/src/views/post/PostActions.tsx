@@ -2,7 +2,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
-import {
+import type {
   FilterAutoMongoKeys,
   PostUserInfo,
   SelectedGenre,

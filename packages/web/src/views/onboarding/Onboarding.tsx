@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import {
+import type {
   FilterAutoMongoKeys,
   ProfileQuestions,
   ReadingSpeed,

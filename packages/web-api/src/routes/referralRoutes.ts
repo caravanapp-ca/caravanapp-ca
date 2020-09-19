@@ -3,7 +3,7 @@ import { check, validationResult } from 'express-validator';
 import { Types } from 'mongoose';
 import { v4 as generateUuid } from 'uuid';
 
-import { ReferralDestination, ReferralSource } from '@caravanapp/types';
+import type { ReferralDestination, ReferralSource } from '@caravanapp/types';
 
 import {
   ALLOWED_REFERRAL_DESTINATIONS,

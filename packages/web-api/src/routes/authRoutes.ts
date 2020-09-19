@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import { DeepPartial } from 'utility-types';
+import { Types } from 'mongoose';
+import type { DeepPartial } from 'utility-types';
 
 import { SessionDoc, SessionModel, UserModel } from '@caravanapp/mongo';
-import {
+import type {
   FilterAutoMongoKeys,
   OAuth2Client,
   User,
@@ -52,7 +52,7 @@ router.get('/discord/validatePermissions', async (req, res) => {
       .status(400)
       .send('Require a logged in user to complete this request.');
   }
-  const userObjectId = new mongoose.Types.ObjectId(userId);
+  const userObjectId = new Types.ObjectId(userId);
   try {
     const sessionDoc = await getSessionFromUserId(userObjectId, 'discord');
     if (!sessionDoc) {
@@ -76,7 +76,7 @@ router.get('/discord/validatePermissions', async (req, res) => {
 function convertTokenResponseToModel(
   obj: OAuth2TokenResponseData,
   client: OAuth2Client,
-  userId: mongoose.Types.ObjectId
+  userId: Types.ObjectId
 ) {
   const model: DeepPartial<SessionDoc> = {
     accessToken: obj.access_token,

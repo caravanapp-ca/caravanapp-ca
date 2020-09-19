@@ -1,7 +1,7 @@
 import copyToClipboard from 'copy-to-clipboard';
 import React from 'react';
 
-import { User } from '@caravanapp/types';
+import type { User } from '@caravanapp/types';
 import { IconButton, Link, makeStyles, Tooltip } from '@material-ui/core';
 
 import { getReferralLink } from '../common/referral';

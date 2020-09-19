@@ -8,7 +8,7 @@ import {
   Switch,
 } from 'react-router-dom';
 
-import { ReferralDestination, User } from '@caravanapp/types';
+import type { ReferralDestination, User } from '@caravanapp/types';
 import DateFnsUtils from '@date-io/date-fns';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';

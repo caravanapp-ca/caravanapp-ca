@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { User } from '@caravanapp/types';
+import type { User } from '@caravanapp/types';
 import { Button, makeStyles, Typography } from '@material-ui/core';
 
 import marioIcon from '../resources/mario-icon.png';

@@ -43,8 +43,7 @@ export default function GenreFilterModal(props: GenreFilterModalProps) {
       <DialogTitle id="alert-dialog-title">Filter Clubs by Genre</DialogTitle>
       <DialogContent>
         <div>
-          {allGenres &&
-            allGenres.mainGenres.map((genreKey: string) => {
+          {allGenres?.mainGenres?.map((genreKey: string) => {
               const genreSelected = filteredGenres.some(
                 fg => fg.key === genreKey
               );

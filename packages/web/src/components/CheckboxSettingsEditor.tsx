@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SameKeysAs } from '@caravanapp/types';
+import type { SameKeysAs } from '@caravanapp/types';
 import {
   Button,
   Checkbox,

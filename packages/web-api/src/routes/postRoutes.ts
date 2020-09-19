@@ -8,7 +8,7 @@ import {
   PostModel,
   UserDoc,
 } from '@caravanapp/mongo';
-import {
+import type {
   Post,
   PostWithAuthorInfoAndLikes,
   SameKeysAs,

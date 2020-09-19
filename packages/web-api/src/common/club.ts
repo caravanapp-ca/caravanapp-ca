@@ -1,5 +1,5 @@
-import { UserDoc } from '@caravanapp/mongo';
-import { ClubRecommendationKey } from '@caravanapp/types';
+import type { UserDoc } from '@caravanapp/mongo';
+import type { ClubRecommendationKey } from '@caravanapp/types';
 
 import { getRandItemList } from './functions';
 

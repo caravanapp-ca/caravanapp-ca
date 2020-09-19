@@ -1,5 +1,5 @@
 import { UserModel } from '@caravanapp/mongo';
-import { UserBadge } from '@caravanapp/types';
+import type { UserBadge } from '@caravanapp/types';
 
 import { BadgeDocInstance } from '../badges/BadgeInstance';
 

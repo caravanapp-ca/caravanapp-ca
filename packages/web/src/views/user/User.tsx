@@ -416,8 +416,7 @@ export default function UserView(props: UserViewProps) {
         setQuestionsModified(false);
       }
       if (shelfModified) {
-        const userShelfNoCurrent = { ...userShelf };
-        delete userShelfNoCurrent.current;
+        const { current, ...userShelfNoCurrent } = { ...userShelf };
         userCopy = { ...userCopy, shelf: userShelfNoCurrent };
         setShelfModified(false);
       }

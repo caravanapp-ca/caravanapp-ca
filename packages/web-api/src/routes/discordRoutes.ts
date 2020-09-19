@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js';
+import type { TextChannel } from 'discord.js';
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 

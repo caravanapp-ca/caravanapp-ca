@@ -1,4 +1,4 @@
-import { PaletteObject } from '@caravanapp/types';
+import type { PaletteObject } from '@caravanapp/types';
 import { createMuiTheme, responsiveFontSizes, Theme } from '@material-ui/core';
 import { TypeText } from '@material-ui/core/styles/createPalette';
 

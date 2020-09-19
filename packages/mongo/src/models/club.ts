@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from 'mongoose';
 
-import {
+import type {
   BookSource,
   Club,
   ClubBotSettings,

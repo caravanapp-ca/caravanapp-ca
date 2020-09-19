@@ -7,7 +7,7 @@ import {
 } from 'react-beautiful-dnd';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 
-import {
+import type {
   FilterAutoMongoKeys,
   ReadingState,
   Services,

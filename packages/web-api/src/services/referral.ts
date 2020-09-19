@@ -1,11 +1,11 @@
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 
 import {
   ReferralDoc,
   ReferralModel,
   ReferralTierModel,
 } from '@caravanapp/mongo';
-import {
+import type {
   FilterAutoMongoKeys,
   Referral,
   ReferralAction,

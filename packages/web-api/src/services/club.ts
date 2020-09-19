@@ -1,6 +1,6 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { addDays } from 'date-fns';
-import {
+import type {
   Guild,
   GuildChannel,
   GuildMember,
@@ -17,7 +17,7 @@ import {
   UserDoc,
   UserModel,
 } from '@caravanapp/mongo';
-import {
+import type {
   Club,
   ClubRecommendation,
   ClubRecommendationKey,

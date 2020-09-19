@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { GenreModel } from '@caravanapp/mongo';
-import { Genres, Services } from '@caravanapp/types';
+import type { Genres, Services } from '@caravanapp/types';
 
 const router = express.Router();
 
