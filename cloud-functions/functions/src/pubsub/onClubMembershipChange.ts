@@ -1,11 +1,11 @@
-import { CloudFunctionsContext } from '@google-cloud/functions-framework';
+import type { CloudFunctionsContext } from '@google-cloud/functions-framework/build/src/functions';
 import type { PubSub as PubSubTypes } from '@caravanapp/types';
+import { EventData } from '../..';
+import { connect } from '../db';
 import { ReadingDiscordBot } from '../discord';
 import { sendDiscordMessage } from '../discordMessenger';
-import { getUser, getUserProfileUrl } from '../services/user';
 import { getClub } from '../services/club';
-import { connect } from '../db';
-import { EventData } from '../..';
+import { getUser, getUserProfileUrl } from '../services/user';
 
 export const onJoinClub = async (
   context: Required<CloudFunctionsContext>,

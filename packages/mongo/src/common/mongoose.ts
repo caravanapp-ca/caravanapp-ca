@@ -2,7 +2,7 @@ import { Schema, SchemaType, SchemaTypeOpts, Types } from 'mongoose';
 
 import type { FilterAutoMongoKeys } from '@caravanapp/types';
 
-export function checkObjectIdIsValid(id: string) {
+export function checkObjectIdIsValid(id: string): boolean {
   return (
     Types.ObjectId.isValid(id) && new Types.ObjectId(id).toHexString() === id
   );

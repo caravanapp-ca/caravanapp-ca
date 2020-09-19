@@ -1,5 +1,6 @@
-import { Firestore } from '@google-cloud/firestore';
 import mongoose, { ConnectionOptions } from 'mongoose';
+
+import { Firestore } from '@google-cloud/firestore';
 
 const firestore = new Firestore();
 

@@ -47,7 +47,7 @@ export const shelfSchemaDefinition: MongooseSchema<ShelfEntry> = {
     required: true,
     index: true,
     validate: {
-      validator: function (v: BookSource) {
+      validator: function (v: BookSource): boolean {
         return ALLOWED_BOOK_SOURCES[v] === true;
       },
     },

@@ -1,5 +1,5 @@
-import { shouldSendWithLease, markSent } from './idempotent';
 import { firestore } from './db';
+import { markSent, shouldSendWithLease } from './idempotent';
 
 export const sendEmail = async (eventId: string) => {
   const emailRef = firestore.collection('sentEmails').doc(eventId);
