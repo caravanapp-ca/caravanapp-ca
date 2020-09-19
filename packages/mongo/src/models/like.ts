@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from 'mongoose';
 
-import { Likes, MongoTimestamps } from '@caravanapp/types';
+import type { Likes, MongoTimestamps } from '@caravanapp/types';
 
 import { MongooseSchema } from '../common/mongoose';
 

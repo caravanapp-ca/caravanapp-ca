@@ -1,5 +1,5 @@
 import { UserSettingsDoc, UserSettingsModel } from '@caravanapp/mongo';
-import { FilterAutoMongoKeys, UserSettings } from '@caravanapp/types';
+import type { FilterAutoMongoKeys, UserSettings } from '@caravanapp/types';
 
 import { DEFAULT_EMAIL_SETTINGS } from '../common/globalConstantsAPI';
 

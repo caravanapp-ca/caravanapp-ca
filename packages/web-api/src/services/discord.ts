@@ -3,8 +3,8 @@ import Discord, { TextChannel } from 'discord.js';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 
-import { UserDoc } from '@caravanapp/mongo';
-import { ReferralTier } from '@caravanapp/types';
+import type { UserDoc } from '@caravanapp/mongo';
+import type { ReferralTier } from '@caravanapp/types';
 
 import {
   DISCORD_GEN_CHAT_ID,

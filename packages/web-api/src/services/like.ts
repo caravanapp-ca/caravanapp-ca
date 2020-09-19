@@ -1,20 +1,20 @@
-import mongoose from 'mongoose';
+import type { Types } from 'mongoose';
 
 import { FilterMongooseDocKeys, LikesDoc, LikesModel } from '@caravanapp/mongo';
 
-export const getPostLikes = async (postId: mongoose.Types.ObjectId) => {
+export const getPostLikes = async (postId: Types.ObjectId) => {
   const likesDoc = await LikesModel.findOne({ postId: postId });
   return likesDoc;
 };
 
-export const getPostsLikes = async (postIds: mongoose.Types.ObjectId[]) => {
+export const getPostsLikes = async (postIds: Types.ObjectId[]) => {
   const likesDocs = await LikesModel.find({
     postId: { $in: postIds },
   });
   return likesDocs;
 };
 
-export const createLikesDoc = async (postId: mongoose.Types.ObjectId) => {
+export const createLikesDoc = async (postId: Types.ObjectId) => {
   const likesObj: FilterMongooseDocKeys<LikesDoc> = {
     postId,
     likes: [],

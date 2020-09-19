@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { ProfileQuestionsDoc } from '@caravanapp/mongo';
-import { Services } from '@caravanapp/types';
+import type { ProfileQuestionsDoc } from '@caravanapp/mongo';
+import type { Services } from '@caravanapp/types';
 
 import { getProfileQuestions } from '../services/profileQuestions';
 

@@ -1,5 +1,5 @@
 import { PostDoc, PostModel, UserDoc } from '@caravanapp/mongo';
-import { PostUserInfo } from '@caravanapp/types';
+import type { PostUserInfo } from '@caravanapp/types';
 
 export function mapPostUserInfo(userDoc: UserDoc) {
   if (userDoc) {

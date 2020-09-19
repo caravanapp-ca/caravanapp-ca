@@ -4,7 +4,7 @@ import Fuse from 'fuse.js';
 import mongoose from 'mongoose';
 
 import { UserDoc, UserModel } from '@caravanapp/mongo';
-import {
+import type {
   FilterAutoMongoKeys,
   ReadingSpeed,
   SameKeysAs,

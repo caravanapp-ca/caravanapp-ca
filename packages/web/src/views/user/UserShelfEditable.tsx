@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import {
+import type {
   FilterAutoMongoKeys,
   ShelfEntry,
   UserShelfEntry,

@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from 'mongoose';
 
-import { Session } from '@caravanapp/types';
+import type { Session } from '@caravanapp/types';
 
 import { MongooseSchema } from '../common/mongoose';
 

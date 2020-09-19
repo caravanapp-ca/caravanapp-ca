@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import type { Types } from 'mongoose';
 
 import { SessionDoc, SessionModel } from '@caravanapp/mongo';
-import { OAuth2Client, SameKeysAs, Session } from '@caravanapp/types';
+import type { OAuth2Client, SameKeysAs, Session } from '@caravanapp/types';
 
 export const getSessionFromUserId = async (
-  userId: mongoose.Types.ObjectId,
+  userId: Types.ObjectId,
   client: OAuth2Client
 ) => {
   const sessionQuery: Partial<SessionDoc> = {

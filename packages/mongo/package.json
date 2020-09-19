@@ -24,17 +24,16 @@
   "homepage": "https://github.com/caravanapp-ca/caravanapp-ca#readme",
   "dependencies": {
     "@caravanapp/types": "1.0.0",
-    "mongoose": "^5.6.8",
-    "utility-types": "^3.10.0"
+    "mongoose": "^5.6.8"
   },
   "devDependencies": {
     "@types/mongoose": "^5.7.3",
-    "@typescript-eslint/eslint-plugin": "^2.27.0",
-    "@typescript-eslint/parser": "^2.27.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^2.0.4",
-    "typescript": "^3.8.3"
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2",
+    "typescript": "^4.0.2"
   }
 }

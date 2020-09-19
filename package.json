@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "cross-env": "^7.0.2",
-    "lerna": "^3.16.4"
+    "lerna": "^3.22.1"
   },
   "workspaces": [
     "packages/*"

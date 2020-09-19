@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ClubWithMemberIds, Services, User } from '@caravanapp/types';
+import type { ClubWithMemberIds, Services, User } from '@caravanapp/types';
 import {
   Button,
   makeStyles,

@@ -1,5 +1,5 @@
 import { getCurrReferralTier } from './referral';
-import { ReferralTiers } from '@caravanapp/types';
+import type { ReferralTiers } from '@caravanapp/types';
 
 const tiers: ReferralTiers = {
   tiers: [
@@ -9,6 +9,7 @@ const tiers: ReferralTiers = {
       title: 'Wanderer',
       badgeKey: 'ref1',
       discordRole: '605424217026199573',
+      profileBgSets: []
     },
     {
       tierNumber: 2,
@@ -16,6 +17,7 @@ const tiers: ReferralTiers = {
       title: 'Traveller',
       badgeKey: 'ref2',
       discordRole: '605424678198312980',
+      profileBgSets: [],
     },
     {
       tierNumber: 3,
@@ -23,6 +25,7 @@ const tiers: ReferralTiers = {
       title: 'Explorer',
       badgeKey: 'ref3',
       discordRole: '605424863267782697',
+      profileBgSets: [],
     },
     {
       tierNumber: 4,
@@ -30,6 +33,7 @@ const tiers: ReferralTiers = {
       title: 'Adventurer',
       badgeKey: 'ref4',
       discordRole: '605424952656658432',
+      profileBgSets: [],
     },
     {
       tierNumber: 5,
@@ -37,6 +41,7 @@ const tiers: ReferralTiers = {
       title: 'Trailblazer',
       badgeKey: 'ref5',
       discordRole: '605425124207755264',
+      profileBgSets: [],
     },
   ],
 };

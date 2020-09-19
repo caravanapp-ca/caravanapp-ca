@@ -1,4 +1,4 @@
-import {
+import type {
   ChannelCreationOverwrites,
   Guild,
   GuildChannel,
@@ -14,7 +14,7 @@ import Fuse from 'fuse.js';
 import { Types } from 'mongoose';
 
 import { ClubDoc, ClubModel, UserDoc, UserModel } from '@caravanapp/mongo';
-import {
+import type {
   ActiveFilter,
   Club,
   ClubShelf,

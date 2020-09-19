@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UserBadge } from '@caravanapp/types';
+import type { UserBadge } from '@caravanapp/types';
 import {
   createStyles,
   ListItem,

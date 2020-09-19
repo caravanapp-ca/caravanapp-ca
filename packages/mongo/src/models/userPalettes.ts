@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types } from 'mongoose';
 
-import { UserPalettes } from '@caravanapp/types';
+import type { UserPalettes } from '@caravanapp/types';
 
 import { MongooseSchema } from '../common/mongoose';
 

@@ -1,4 +1,4 @@
-import { ReferralTiers, ReferralTier } from '@caravanapp/types';
+import type { ReferralTiers, ReferralTier } from '@caravanapp/types';
 
 export const getReferralLink = (
   userId: string | undefined,

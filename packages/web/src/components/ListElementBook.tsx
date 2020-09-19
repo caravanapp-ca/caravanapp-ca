@@ -2,7 +2,7 @@ import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import Truncate from 'react-truncate';
 
-import { Services } from '@caravanapp/types';
+import type { Services } from '@caravanapp/types';
 import {
   Link,
   ListItem,

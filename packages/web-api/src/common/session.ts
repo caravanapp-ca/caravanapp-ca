@@ -1,4 +1,4 @@
-import { SessionDoc } from '@caravanapp/mongo';
+import type { SessionDoc } from '@caravanapp/mongo';
 
 import { DISCORD_PERMISSIONS } from '../common/globalConstantsAPI';
 

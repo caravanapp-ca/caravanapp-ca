@@ -1,6 +1,6 @@
 import { Schema, SchemaType, SchemaTypeOpts, Types } from 'mongoose';
 
-import { FilterAutoMongoKeys } from '@caravanapp/types';
+import type { FilterAutoMongoKeys } from '@caravanapp/types';
 
 export function checkObjectIdIsValid(id: string) {
   return (
