@@ -1,4 +1,4 @@
-import { GuildMember } from 'discord.js';
+import type { GuildMember } from 'discord.js';
 
 import { checkObjectIdIsValid } from '../workspace/mongo/common/mongoose';
 // These imports will only exist after building

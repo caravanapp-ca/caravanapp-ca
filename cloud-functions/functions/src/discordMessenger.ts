@@ -1,6 +1,6 @@
 import { Channel, Message, MessageOptions, TextChannel } from 'discord.js';
 
-import { Firestore } from '@caravanapp/types';
+import type { Firestore } from '@caravanapp/types';
 
 import { firestore } from './db';
 import { markSent, shouldSendWithLease } from './idempotent';

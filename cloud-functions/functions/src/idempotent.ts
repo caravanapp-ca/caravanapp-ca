@@ -1,4 +1,4 @@
-import { DocumentData, DocumentReference } from '@google-cloud/firestore';
+import type { DocumentData, DocumentReference } from '@google-cloud/firestore';
 
 import { IdempotentSendData } from '../';
 import { firestore } from './db';

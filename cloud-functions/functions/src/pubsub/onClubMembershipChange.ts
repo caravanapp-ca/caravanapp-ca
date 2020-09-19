@@ -1,6 +1,6 @@
 import type { CloudFunctionsContext } from '@google-cloud/functions-framework/build/src/functions';
 import type { PubSub as PubSubTypes } from '@caravanapp/types';
-import { EventData } from '../..';
+import type { EventData } from '../..';
 import { connect } from '../db';
 import { ReadingDiscordBot } from '../discord';
 import { sendDiscordMessage } from '../discordMessenger';
