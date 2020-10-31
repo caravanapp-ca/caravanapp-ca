@@ -118,10 +118,6 @@ export default function Footer(props: FooterProps) {
             About Us
           </Link>
         </div>
-        <Typography variant="caption" color="textSecondary" align="center">
-          Caravan is a participant in the Amazon Associates Program, meaning we
-          receive a small portion of purchases made through links on our site.
-        </Typography>
       </Container>
     </footer>
   );
