@@ -255,7 +255,6 @@ export default function UpdateBook(props: UpdateBookProps) {
                 id="current"
                 data={sortedShelf.current}
                 secondary="delete"
-                tertiary="buy"
                 onDelete={deleteHandler}
                 droppable
                 draggingElementId={draggingElementId}
@@ -272,7 +271,6 @@ export default function UpdateBook(props: UpdateBookProps) {
                 id="notStarted"
                 data={sortedShelf.notStarted}
                 secondary="delete"
-                tertiary="buy"
                 onDelete={deleteHandler}
                 droppable
                 draggingElementId={draggingElementId}
@@ -288,7 +286,6 @@ export default function UpdateBook(props: UpdateBookProps) {
                 id="read"
                 data={sortedShelf.read}
                 secondary="delete"
-                tertiary="buy"
                 onDelete={deleteHandler}
                 droppable
                 draggingElementId={draggingElementId}

@@ -41,7 +41,6 @@ interface BookListProps {
     | FilterAutoMongoKeys<UserShelfEntry>[];
   primary?: 'radio';
   secondary?: 'delete' | 'add';
-  tertiary?: 'buy';
   onClick?: any;
   onRadioPress?: (value: string) => void;
   radioValue?: string;
@@ -62,7 +61,6 @@ export default function BookList(props: BookListProps) {
     data,
     primary,
     secondary,
-    tertiary,
     onClick,
     onRadioPress,
     radioValue,
@@ -183,7 +181,6 @@ export default function BookList(props: BookListProps) {
                       secondaryText={b.author}
                       primary={primaryElement}
                       secondary={secondaryElement}
-                      tertiary={undefined}
                       onClick={onClick}
                       draggable={droppable}
                       isDragging={
@@ -245,7 +242,6 @@ export default function BookList(props: BookListProps) {
                 secondaryText={b.author}
                 primary={primaryElement}
                 secondary={secondaryElement}
-                tertiary={undefined}
                 onClick={onClick}
               />
             );
