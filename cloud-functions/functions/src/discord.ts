@@ -1,7 +1,7 @@
 import btoa from 'btoa';
 import { Client as DiscordClient } from 'discord.js';
 
-const DiscordApiUrl = 'https://discordapp.com/api';
+const DiscordApiUrl = 'https://discord.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;
 const DiscordClientId = process.env.DISCORD_CLIENT_ID;
 const DiscordClientSecret = process.env.DISCORD_CLIENT_SECRET;

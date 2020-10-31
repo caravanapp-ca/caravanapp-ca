@@ -34,11 +34,7 @@ export default function DownloadDiscordDialog(
           allow you to receive notifications for activity in your clubs. Use the
           link below to download Discord for mobile and/or desktop.
         </DialogContentText>
-        <Link
-          variant="h6"
-          href="https://discordapp.com/download"
-          target="_blank"
-        >
+        <Link variant="h6" href="https://discord.com/download" target="_blank">
           Download Discord
         </Link>
       </DialogContent>

@@ -140,7 +140,7 @@ const showLeaveClub = (memberStatus: LoadableMemberStatus) =>
 const getChatUrl = (club: Services.GetClubById, inApp: boolean) =>
   inApp
     ? `discord:/channels/${club.guildId}/${club.channelId}`
-    : `https://discordapp.com/channels/${club.guildId}/${club.channelId}`;
+    : `https://discord.com/channels/${club.guildId}/${club.channelId}`;
 const openChat = (club: Services.GetClubById, inApp: boolean) => {
   if (inApp) {
     window.location.href = getChatUrl(club, inApp);
