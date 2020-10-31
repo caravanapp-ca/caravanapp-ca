@@ -105,12 +105,6 @@ export default function Footer(props: FooterProps) {
           <Link href="https://discord.com/download" className={classes.link}>
             Download Discord
           </Link>
-          <Link
-            href="https://forms.gle/rzcHzCMgwMx7wxgRA"
-            className={classes.link}
-          >
-            Feedback
-          </Link>
           <Link href="/privacy" className={classes.link}>
             Privacy Policy
           </Link>
