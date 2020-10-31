@@ -90,7 +90,7 @@ You should then be logged in. If you're still not logged in, try refreshing and 
 For general help using or developing Caravan Clubs, you can use one of these channels to ask a question:
 
 - [GitHub](https://github.com/caravanapp-ca/caravanapp-ca)
-- [Sign up to Caravan Clubs by joining the Discord](https://discordapp.com/oauth2/authorize?client_id=592781980026798120&redirect_uri=https%3A%2F%2Fcaravanapp.ca%2Fapi%2Fauth%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify%20guilds.join%20gdm.join&state=WzE2NiwyMjAsODAsMTEzLDgyLDE5OCwzNywyNTJd) and chat there.
+- [Sign up to Caravan Clubs by joining the Discord](https://discord.com/oauth2/authorize?client_id=592781980026798120&redirect_uri=https%3A%2F%2Fcaravanapp.ca%2Fapi%2Fauth%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify%20guilds.join%20gdm.join&state=WzE2NiwyMjAsODAsMTEzLDgyLDE5OCwzNywyNTJd) and chat there.
 
 ## 🚓 Security
 

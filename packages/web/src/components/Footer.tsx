@@ -102,7 +102,7 @@ export default function Footer(props: FooterProps) {
       <Container maxWidth="sm" className={classes.footerContainer}>
         <MadeWithLove />
         <div className={classes.linksContainer}>
-          <Link href="https://discordapp.com/download" className={classes.link}>
+          <Link href="https://discord.com/download" className={classes.link}>
             Download Discord
           </Link>
           <Link

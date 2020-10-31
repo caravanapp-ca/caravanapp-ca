@@ -17,7 +17,7 @@ const DiscordRedirectUri = process.env.DISCORD_REDIRECT;
 const DiscordPermissionsParam = DISCORD_PERMISSIONS.join('%20');
 const DiscordPermissionsSpaceDelimited = DISCORD_PERMISSIONS.join(' ');
 
-const DiscordApiUrl = 'https://discordapp.com/api';
+const DiscordApiUrl = 'https://discord.com/api';
 const DiscordBotSecret = process.env.DISCORD_BOT_SECRET;
 const DiscordClientId = process.env.DISCORD_CLIENT_ID;
 const DiscordClientSecret = process.env.DISCORD_CLIENT_SECRET;
