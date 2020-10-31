@@ -77,7 +77,6 @@ export default function UserShelfEditable(props: UserShelfEditableProps) {
           id="previously-read-editable"
           data={shelf[readingState]}
           secondary="delete"
-          tertiary="buy"
           onDelete={openAlertDialog}
         />
       )}

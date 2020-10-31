@@ -21,8 +21,6 @@ import { Add as PlusIcon, Delete as DeleteIcon } from '@material-ui/icons';
 
 import ListElementBook from '../../../components/ListElementBook';
 
-//import AmazonBuyButton from '../../../components/AmazonBuyButton';
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
@@ -43,7 +41,6 @@ interface BookListProps {
     | FilterAutoMongoKeys<UserShelfEntry>[];
   primary?: 'radio';
   secondary?: 'delete' | 'add';
-  tertiary?: 'buy';
   onClick?: any;
   onRadioPress?: (value: string) => void;
   radioValue?: string;
@@ -64,7 +61,6 @@ export default function BookList(props: BookListProps) {
     data,
     primary,
     secondary,
-    tertiary,
     onClick,
     onRadioPress,
     radioValue,
@@ -137,15 +133,6 @@ export default function BookList(props: BookListProps) {
     }
   }
 
-  function buyButton(link: string | undefined): JSX.Element {
-    // if (link) {
-    //   return <AmazonBuyButton link={link} />;
-    // } else {
-    //   return <></>;
-    // }
-    return <></>;
-  }
-
   // If you're making changes to the render here you will need to replicate them in both the droppable and regular cases.
   // TODO: Make this cleaner.
   if (droppable) {
@@ -180,12 +167,6 @@ export default function BookList(props: BookListProps) {
                       secondaryElement = addIcon(b, index);
                       break;
                   }
-                  let tertiaryElement: JSX.Element | undefined;
-                  switch (tertiary) {
-                    case 'buy':
-                      tertiaryElement = buyButton(b.amazonLink);
-                      break;
-                  }
                   //Generate unique ID for each book to handle duplicates
                   const bookId = b.isbn + index.toString() + id;
                   return (
@@ -200,7 +181,6 @@ export default function BookList(props: BookListProps) {
                       secondaryText={b.author}
                       primary={primaryElement}
                       secondary={secondaryElement}
-                      tertiary={tertiaryElement}
                       onClick={onClick}
                       draggable={droppable}
                       isDragging={
@@ -248,12 +228,6 @@ export default function BookList(props: BookListProps) {
                 secondaryElement = addIcon(b, index);
                 break;
             }
-            let tertiaryElement: JSX.Element | undefined;
-            switch (tertiary) {
-              case 'buy':
-                tertiaryElement = buyButton(b.amazonLink);
-                break;
-            }
             //Generate unique ID for each book to handle duplicates
             const bookId = b.isbn + index.toString() + id;
             return (
@@ -268,7 +242,6 @@ export default function BookList(props: BookListProps) {
                 secondaryText={b.author}
                 primary={primaryElement}
                 secondary={secondaryElement}
-                tertiary={tertiaryElement}
                 onClick={onClick}
               />
             );

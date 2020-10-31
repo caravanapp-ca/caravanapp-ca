@@ -271,7 +271,6 @@ export default function BookSearch(props: BookSearchProps) {
             data={selectedBooks}
             primary={primary ? primary : undefined}
             secondary={secondary ? secondary : undefined}
-            tertiary="buy"
             onRadioPress={onChangeBookToRead}
             radioValue={radioValue ? radioValue : undefined}
             onDelete={onDeleteSelectedBook}

@@ -24,8 +24,6 @@ export interface ListElementBookProps {
   secondaryText?: string;
   primary?: JSX.Element;
   secondary?: JSX.Element;
-  tertiary?: JSX.Element;
-  tertiaryLink?: string;
   onClick?: any;
   draggable?: boolean;
   isDragging?: boolean;
@@ -68,7 +66,6 @@ export default function ListElementBook(props: ListElementBookProps) {
     secondaryText,
     primary,
     secondary,
-    tertiary,
     draggable,
     isDragging,
   } = props;
@@ -134,7 +131,6 @@ export default function ListElementBook(props: ListElementBookProps) {
                   </Typography>
                 </div>
               )}
-              {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
             </div>
             <div>
               {secondary && !isDragging && (
@@ -194,7 +190,6 @@ export default function ListElementBook(props: ListElementBookProps) {
               </Typography>
             </div>
           )}
-          {tertiary && <div className={classes.buyButton}>{tertiary}</div>}
         </div>
         {secondary && (
           <ListItemSecondaryAction>{secondary}</ListItemSecondaryAction>
