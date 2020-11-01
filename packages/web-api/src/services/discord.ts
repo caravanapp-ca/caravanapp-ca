@@ -1,5 +1,5 @@
 import btoa from 'btoa';
-import Discord, { Intents, TextChannel } from 'discord.js';
+import Discord, { TextChannel } from 'discord.js';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 
@@ -72,11 +72,7 @@ const ReadingDiscordBot = (() => {
   let instance: Discord.Client;
 
   function createInstance() {
-    const intents = new Intents(Intents.ALL);
-    intents.remove('GUILD_PRESENCES');
-    const discordClient: Discord.Client = new Discord.Client({
-      ws: { intents: intents },
-    });
+    const discordClient: Discord.Client = new Discord.Client();
 
     discordClient.login(DiscordBotSecret);
     discordClient.on('ready', () => {
