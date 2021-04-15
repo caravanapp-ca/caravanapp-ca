@@ -98,4 +98,4 @@ If you have found a security issue, please refer to the [security guidelines](SE
 
 ## 📓 License
 
-[MIT License](LICENSE.md) Copyright (c) 2020 [Caravan Clubs](https://caravanapp.ca)
+[MIT License](LICENSE.md) Copyright (c) 2020 [1aravan Clubs](https://caravanapp.ca)
