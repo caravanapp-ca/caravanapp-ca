@@ -1,5 +1,3 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
-
 import {
   ActiveFilter,
   ClubWithRecommendation,
@@ -10,15 +8,16 @@ import {
   ShelfEntry,
   User,
 } from '@caravanapp/types';
-
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import {
   getRandomInviteMessage,
   getRandomInviteMessageFromShelf,
 } from '../common/getRandomInviteMessage';
+import { API_ORIGIN } from './api';
 import { getUser } from './user';
 
-const clubRoute = '/api/club';
-const discordRoute = '/api/discord';
+const clubRoute = `${API_ORIGIN}/api/club`;
+const discordRoute = `${API_ORIGIN}/api/discord`;
 
 export async function getAllClubs(
   userId?: string,

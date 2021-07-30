@@ -1,10 +1,9 @@
-import axios from 'axios';
-
 import { ReferralDestination } from '@caravanapp/types';
-
+import axios from 'axios';
 import { setCookie } from '../common/cookies';
+import { API_ORIGIN } from './api';
 
-const referralRoute = '/api/referrals';
+const referralRoute = `${API_ORIGIN}/api/referrals`;
 
 export async function handleReferral(
   referrerId: string,

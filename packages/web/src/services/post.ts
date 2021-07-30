@@ -1,13 +1,13 @@
-import axios from 'axios';
-
 import {
   PostContent,
   PostSearchField,
   PostUserInfo,
   Services,
 } from '@caravanapp/types';
+import axios from 'axios';
+import { API_ORIGIN } from './api';
 
-const postRoute = '/api/posts';
+const postRoute = `${API_ORIGIN}/api/posts`;
 
 export async function uploadPost(postContent: PostContent) {
   const res = await axios.post<Services.UploadPostResult | null>(postRoute, {

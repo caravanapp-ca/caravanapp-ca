@@ -1,8 +1,8 @@
-import axios from 'axios';
-
 import { Services } from '@caravanapp/types';
+import axios from 'axios';
+import { API_ORIGIN } from './api';
 
-const readingPreferencesRoute = '/api/onboarding';
+const readingPreferencesRoute = `${API_ORIGIN}/api/onboarding`;
 
 interface SaveReadingPreferencesProps {
   genres: string[];

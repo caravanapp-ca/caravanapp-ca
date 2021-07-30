@@ -1,8 +1,8 @@
-import axios from 'axios';
-
 import { UserSettings } from '@caravanapp/types';
+import axios from 'axios';
+import { API_ORIGIN } from './api';
 
-const userSettingsRoute = '/api/userSettings';
+const userSettingsRoute = `${API_ORIGIN}/api/userSettings`;
 
 export const getMySettings = async () => {
   const res = await axios.get<UserSettings>(`${userSettingsRoute}/@me`);
