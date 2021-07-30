@@ -1,8 +1,8 @@
-import axios from 'axios';
-
 import { LikeAction } from '@caravanapp/types';
+import axios from 'axios';
+import { API_ORIGIN } from './api';
 
-const likeRoute = '/api/likes';
+const likeRoute = `${API_ORIGIN}/api/likes`;
 
 export async function getPostLikes(postId: string) {
   const res = await axios.get(`${likeRoute}/${postId}`);

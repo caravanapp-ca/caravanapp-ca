@@ -1,8 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
+import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import path from 'path';
@@ -39,6 +41,9 @@ import { ReadingDiscordBot } from './services/discord';
   console.log(`Running in ${env} environment`);
 
   app.use(helmet());
+  // TODO: more specific CORS
+  app.use(cors());
+
   app.enable('trust proxy');
   if (process.env.NODE_ENV === 'production') {
     app.use(function (req, res, next) {

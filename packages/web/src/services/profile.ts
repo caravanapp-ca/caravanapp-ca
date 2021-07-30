@@ -1,8 +1,8 @@
-import axios from 'axios';
-
 import { Services } from '@caravanapp/types';
+import axios from 'axios';
+import { API_ORIGIN } from './api';
 
-const questionPromptsRoute = '/api/profile/questions';
+const questionPromptsRoute = `${API_ORIGIN}/api/profile/questions`;
 
 export async function getAllProfileQuestions() {
   const res = await axios.get<Services.GetProfileQuestions>(

@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import {
   ActiveFilter,
   FilterAutoMongoKeys,
@@ -9,11 +7,12 @@ import {
   UserSearchField,
   UserShelfEntry,
 } from '@caravanapp/types';
-
+import axios from 'axios';
 import { clearCookieAuthState } from '../common/cookies';
 import { clearStorageAuthState } from '../common/localStorage';
+import { API_ORIGIN } from './api';
 
-const userRoute = '/api/user';
+const userRoute = `${API_ORIGIN}/api/user`;
 
 export async function getMe() {
   const res = await axios.get<User | null>(`${userRoute}/@me`);
