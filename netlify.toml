@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/*"
+  to = "https://caravan-node.herokuapp.com/:splat"
+  status = 301
+  force = false
