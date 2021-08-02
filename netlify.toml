@@ -1,5 +1,10 @@
+# [[redirects]]
+#   from = "/*"
+#   to = "https://caravan-node.herokuapp.com/:splat"
+#   status = 301
+#   force = false
+
 [[redirects]]
-  from = "/*"
+  from = "/api/*"
   to = "https://caravan-node.herokuapp.com/:splat"
-  status = 301
-  force = false
+  status = 200
