@@ -86,6 +86,11 @@ export function App(props: AppProps) {
   );
 
   useEffect(() => {
+    // TODO: Remove this redirect
+    if (window.location.hostname === 'caravanapp.ca') {
+      window.location.href = 'https://caravan-node.herokuapp.com/clubs';
+      return;
+    }
     const getUserAsync = async () => {
       setLoadedUser(false);
       const userId = getCookie('userId');
@@ -268,8 +273,7 @@ export function App(props: AppProps) {
                 <Route
                   exact
                   path="/privacy"
-                  render={
-                    props =>
+                  render={props =>
                     forceOnboard(
                       user,
                       userLoaded,
