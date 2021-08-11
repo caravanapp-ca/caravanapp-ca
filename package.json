@@ -4,19 +4,14 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "sh ./pre-deploy-cloud-functions.sh",
-    "build": "lerna run build",
+    "build": "lerna run build --scope @caravanapp/web-api --include-filtered-dependencies",
+    "build-all": "lerna run build",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",
     "test": "lerna run test --stream",
     "test:ci": "cross-env CI=true lerna run test --parallel",
     "start": "cd ./packages/web-api && npm start",
-    "create-env": "printenv > ./packages/web-api/.env && printenv | sed 's/=/: /g' > ./cloud-functions/functions/.env.yaml",
-    "deploy:production": "yarn build && yarn deploy-only:production",
-    "deploy-no-promote:production": "yarn build && gcloud app deploy app.production.yaml --no-promote",
-    "deploy:staging": "yarn build && yarn deploy-only:staging",
-    "deploy-only:production": "gcloud app deploy app.production.yaml",
-    "deploy-only-no-promote:production": "gcloud app deploy app.production.yaml --no-promote",
-    "deploy-only:staging": "gcloud app deploy app.staging.yaml"
+    "create-env": "printenv > ./packages/web-api/.env && printenv | sed 's/=/: /g' > ./cloud-functions/functions/.env.yaml"
   },
   "dependencies": {
     "cross-env": "^7.0.2",
