@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "sh ./pre-deploy-cloud-functions.sh",
-    "build": "lerna run build --scope @caravanapp/web-api --include-filtered-dependencies",
-    "build-all": "lerna run build",
+    "build": "lerna run build",
+    "build-api": "lerna run build --scope @caravanapp/web-api --include-filtered-dependencies",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",
     "test": "lerna run test --stream",
