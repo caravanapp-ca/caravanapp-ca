@@ -14,8 +14,8 @@
     "create-env": "printenv > ./packages/web-api/.env && printenv | sed 's/=/: /g' > ./cloud-functions/functions/.env.yaml"
   },
   "dependencies": {
-    "cross-env": "^7.0.2",
-    "lerna": "^3.22.1"
+    "cross-env": "^7.0.3",
+    "lerna": "^4.0.0"
   },
   "workspaces": [
     "packages/*"
