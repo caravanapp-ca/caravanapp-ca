@@ -244,12 +244,8 @@ router.get('/discord/callback', async (req, res) => {
     };
 
     if (currentSessionModel) {
-      const {
-        accessTokenExpiresAt,
-        client,
-        refreshToken,
-        scope,
-      } = currentSessionModel;
+      const { accessTokenExpiresAt, client, refreshToken, scope } =
+        currentSessionModel;
       if (client !== 'discord') {
         return res
           .status(401)

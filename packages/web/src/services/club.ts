@@ -68,7 +68,7 @@ export const getUserReferralClub = async (userId: string) => {
       }
     );
     return res;
-  } catch (err) {
+  } catch (err: any) {
     const errTyped: AxiosError = err;
     return errTyped.response;
   }
@@ -78,7 +78,7 @@ export const joinMyReferralClubs = async () => {
   try {
     const res = await axios.put<User[]>(`${clubRoute}/joinMyReferralClubs`);
     return res;
-  } catch (err) {
+  } catch (err: any) {
     const errTyped: AxiosError = err;
     return errTyped.response;
   }

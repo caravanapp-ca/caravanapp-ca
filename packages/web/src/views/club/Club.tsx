@@ -198,18 +198,14 @@ export default function ClubComponent(props: ClubProps) {
     ClubReadingSchedule | FilterAutoMongoKeys<ClubReadingSchedule> | null
   >(null);
   const [loadedClub, setLoadedClub] = React.useState<boolean>(false);
-  const [loginDialogVisible, setLoginDialogVisible] = React.useState<boolean>(
-    false
-  );
-  const [leaveDialogVisible, setLeaveDialogVisible] = React.useState<boolean>(
-    false
-  );
-  const [disbandDialogVisible, setDisbandDialogVisible] = React.useState<
-    boolean
-  >(false);
-  const [memberStatus, setMembershipStatus] = React.useState<
-    LoadableMemberStatus
-  >('loading');
+  const [loginDialogVisible, setLoginDialogVisible] =
+    React.useState<boolean>(false);
+  const [leaveDialogVisible, setLeaveDialogVisible] =
+    React.useState<boolean>(false);
+  const [disbandDialogVisible, setDisbandDialogVisible] =
+    React.useState<boolean>(false);
+  const [memberStatus, setMembershipStatus] =
+    React.useState<LoadableMemberStatus>('loading');
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
       autoHideDuration: 6000,
@@ -219,9 +215,8 @@ export default function ClubComponent(props: ClubProps) {
     }
   );
   const [isEditing, setIsEditing] = React.useState<boolean>(false);
-  const [madeScheduleChanges, setMadeScheduleChanges] = React.useState<boolean>(
-    true
-  );
+  const [madeScheduleChanges, setMadeScheduleChanges] =
+    React.useState<boolean>(true);
 
   const screenSmallerThanMd = useMediaQuery(theme.breakpoints.down('sm'));
 

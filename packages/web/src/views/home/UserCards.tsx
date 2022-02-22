@@ -117,12 +117,8 @@ interface UserCardProps {
 
 export default function UserCards(props: UserCardProps) {
   const classes = useStyles();
-  const {
-    usersWithInvitableClubs,
-    currUser,
-    showResultsCount,
-    resultsLoaded,
-  } = props;
+  const { usersWithInvitableClubs, currUser, showResultsCount, resultsLoaded } =
+    props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [visitProfileLoadingId] = React.useState('');

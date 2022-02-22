@@ -9,7 +9,7 @@ const tiers: ReferralTiers = {
       title: 'Wanderer',
       badgeKey: 'ref1',
       discordRole: '605424217026199573',
-      profileBgSets: []
+      profileBgSets: [],
     },
     {
       tierNumber: 2,

@@ -169,9 +169,8 @@ export default function UserView(props: UserViewProps) {
   const [userQuestionsWkspc, setUserQuestionsWkspc] = React.useState<UserQA[]>(
     []
   );
-  const [questionsModified, setQuestionsModified] = React.useState<boolean>(
-    false
-  );
+  const [questionsModified, setQuestionsModified] =
+    React.useState<boolean>(false);
   const [profileQuestions, setProfileQuestions] = React.useState<
     ProfileQuestion[] | null
   >(null);

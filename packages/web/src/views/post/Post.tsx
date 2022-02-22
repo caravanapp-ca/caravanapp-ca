@@ -86,23 +86,18 @@ export default function Post(props: PostProps) {
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
   );
-  const [
-    postAuthorUserInfo,
-    setPostAuthorUserInfo,
-  ] = React.useState<PostUserInfo | null>(null);
-  const [
-    feedViewerUserInfo,
-    setFeedViewerUserInfo,
-  ] = React.useState<PostUserInfo | null>(null);
+  const [postAuthorUserInfo, setPostAuthorUserInfo] =
+    React.useState<PostUserInfo | null>(null);
+  const [feedViewerUserInfo, setFeedViewerUserInfo] =
+    React.useState<PostUserInfo | null>(null);
   const [shelfGenres, setShelfGenres] = React.useState<SelectedGenre[]>([]);
   const [shelfTitle, setShelfTitle] = React.useState<string>('');
   const [postDate, setPostDate] = React.useState<string | Date | undefined>(
     undefined
   );
   const [shelfDescription, setShelfDescription] = React.useState<string>('');
-  const [shouldExecuteLike, setShouldExecuteLike] = React.useState<boolean>(
-    false
-  );
+  const [shouldExecuteLike, setShouldExecuteLike] =
+    React.useState<boolean>(false);
   const [loadedPost, setLoadedPost] = React.useState<boolean>(false);
 
   const [hasLiked, setHasLiked] = React.useState<boolean>(false);
@@ -111,9 +106,8 @@ export default function Post(props: PostProps) {
 
   const [postNumLikes, setPostNumLikes] = React.useState<number>(0);
 
-  const [deletePostDialogVisible, setDeletePostDialogVisible] = React.useState<
-    boolean
-  >(false);
+  const [deletePostDialogVisible, setDeletePostDialogVisible] =
+    React.useState<boolean>(false);
 
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
@@ -179,13 +173,8 @@ export default function Post(props: PostProps) {
           postTransformedRes.status < 300
         ) {
           const postTransformed = postTransformedRes.data;
-          const {
-            post,
-            authorInfo,
-            likes,
-            likeUserIds,
-            numLikes,
-          } = postTransformed;
+          const { post, authorInfo, likes, likeUserIds, numLikes } =
+            postTransformed;
           if (post && post.content && post.content.postType === 'shelf') {
             if (post.content.shelf) {
               setShelf(post.content.shelf);

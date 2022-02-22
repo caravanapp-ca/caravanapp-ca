@@ -36,8 +36,8 @@ import { ReadingDiscordBot } from './services/discord';
   ReadingDiscordBot.getInstance();
   pubsubClient.getInstance();
 
-  const port = process.env.PORT || 3001;
-  const env = process.env.NODE_ENV || 'development';
+  const port = process.env['PORT'] || 3001;
+  const env = process.env['NODE_ENV'] || 'development';
   console.log(`Running in ${env} environment`);
 
   app.use(helmet());
@@ -45,7 +45,7 @@ import { ReadingDiscordBot } from './services/discord';
   app.use(cors());
 
   app.enable('trust proxy');
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env['NODE_ENV'] === 'production') {
     app.use(function (req, res, next) {
       const isHttps = req.secure;
       let host = req.header('host');
@@ -74,7 +74,7 @@ import { ReadingDiscordBot } from './services/discord';
   app.use(
     cookieSession({
       name: 'session',
-      keys: [process.env.COOKIE_SESSION_KEY],
+      keys: [process.env['COOKIE_SESSION_KEY']],
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     })
   );

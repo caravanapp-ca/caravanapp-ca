@@ -44,27 +44,27 @@ export default function GenreFilterModal(props: GenreFilterModalProps) {
       <DialogContent>
         <div>
           {allGenres?.mainGenres?.map((genreKey: string) => {
-              const genreSelected = filteredGenres.some(
-                fg => fg.key === genreKey
-              );
-              return (
-                <GenreChip
-                  key={genreKey}
-                  genreKey={genreKey}
-                  name={allGenres.genres[genreKey].name}
-                  active={genreSelected}
-                  clickable={true}
-                  onClick={() =>
-                    onGenreSelected(
-                      genreKey,
-                      allGenres.genres[genreKey].name,
-                      !genreSelected
-                    )
-                  }
-                  small={screenSmallerThanSm}
-                />
-              );
-            })}
+            const genreSelected = filteredGenres.some(
+              fg => fg.key === genreKey
+            );
+            return (
+              <GenreChip
+                key={genreKey}
+                genreKey={genreKey}
+                name={allGenres.genres[genreKey].name}
+                active={genreSelected}
+                clickable={true}
+                onClick={() =>
+                  onGenreSelected(
+                    genreKey,
+                    allGenres.genres[genreKey].name,
+                    !genreSelected
+                  )
+                }
+                small={screenSmallerThanSm}
+              />
+            );
+          })}
         </div>
       </DialogContent>
       <DialogActions>

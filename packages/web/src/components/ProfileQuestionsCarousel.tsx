@@ -85,9 +85,8 @@ export default function ProfileQuestionsCarousel(
 ) {
   const classes = useStyles();
   const { questions } = props;
-  const [explanationVisible, setExplanationVisible] = React.useState<boolean>(
-    true
-  );
+  const [explanationVisible, setExplanationVisible] =
+    React.useState<boolean>(true);
 
   return (
     <main>

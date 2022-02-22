@@ -49,13 +49,8 @@ router.get('/@me', async (req, res, next) => {
 
 // Get all users route
 router.get('/', async (req, res) => {
-  const {
-    after,
-    pageSize,
-    onboardVersion,
-    search,
-    userSearchField,
-  } = req.query;
+  const { after, pageSize, onboardVersion, search, userSearchField } =
+    req.query;
   const isSearching = search && search.length > 0;
   const query: SameKeysAs<Partial<User>> = {};
   if (!isSearching && after) {
@@ -295,8 +290,8 @@ router.put(
       b =>
         (b.genres = b.genres || []) &&
         // TODO: Fix typing for onboarding
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        //@ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         (b._id = b._id ? new mongoose.Types.ObjectId(b._id) : undefined)
     );
     let userGenres: {

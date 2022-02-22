@@ -5,13 +5,7 @@ module.exports = {
     'jest/globals': true,
   },
   parser: '@typescript-eslint/parser',
-  plugins: ['jest'],
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jest/all',
-    'prettier/@typescript-eslint',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',
@@ -19,4 +13,14 @@ module.exports = {
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
   },
+  overrides: [
+    {
+      files: ['*.test.*'],
+      env: {
+        jest: true,
+      },
+      plugins: ['jest'],
+      extends: ['plugin:jest/recommended'],
+    },
+  ],
 };

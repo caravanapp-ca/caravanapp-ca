@@ -212,16 +212,12 @@ export default function ScheduleView(props: ScheduleViewProps) {
   const [discussionLabelsFocused, setDiscussionLabelsFocused] = React.useState<
     boolean[]
   >(schedule ? new Array(schedule.discussions.length).fill(false) : []);
-  const [customModeEnabled, setCustomModeEnabled] = React.useState<boolean>(
-    false
-  );
-  const [customEditField, setCustomEditField] = React.useState<
-    ClubScheduleEvent
-  >('startDate');
-  const [
-    currentlySelectedDate,
-    setCurrentlySelectedDate,
-  ] = React.useState<Date | null>(schedule ? schedule.startDate : null);
+  const [customModeEnabled, setCustomModeEnabled] =
+    React.useState<boolean>(false);
+  const [customEditField, setCustomEditField] =
+    React.useState<ClubScheduleEvent>('startDate');
+  const [currentlySelectedDate, setCurrentlySelectedDate] =
+    React.useState<Date | null>(schedule ? schedule.startDate : null);
 
   // Placed this here because I was getting the error:
   // React Hooks must be called in the exact same order in every component render.
@@ -306,12 +302,8 @@ export default function ScheduleView(props: ScheduleViewProps) {
     }
   }
 
-  const {
-    startDate,
-    duration,
-    discussionFrequency,
-    discussions,
-  } = props.schedule;
+  const { startDate, duration, discussionFrequency, discussions } =
+    props.schedule;
 
   const renderDay = (
     day: Date | null,

@@ -144,12 +144,10 @@ export default function CreateClub(props: CreateClubProps) {
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [limitGroupSize, setLimitGroupSize] = React.useState<boolean>(false);
   const [selectedGroupSize, setSelectedGroupSize] = React.useState<number>(4);
-  const [selectedGroupSpeed, setSelectedGroupSpeed] = React.useState<
-    ReadingSpeed
-  >('moderate');
-  const [selectedGroupVibe, setSelectedGroupVibe] = React.useState<GroupVibe>(
-    'chill'
-  );
+  const [selectedGroupSpeed, setSelectedGroupSpeed] =
+    React.useState<ReadingSpeed>('moderate');
+  const [selectedGroupVibe, setSelectedGroupVibe] =
+    React.useState<GroupVibe>('chill');
   const [selectedGroupName, setSelectedGroupName] = React.useState(
     location.state &&
       location.state.shelfName &&
@@ -165,13 +163,12 @@ export default function CreateClub(props: CreateClubProps) {
   const [selectedBooks, setSelectedBooks] = React.useState<
     FilterAutoMongoKeys<ShelfEntry>[]
   >(location.state && location.state.shelf ? location.state.shelf : []);
-  const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
-    ShelfEntry
-  > | null>(
-    location.state && location.state.shelf && location.state.shelf.length > 0
-      ? location.state.shelf[0]
-      : null
-  );
+  const [bookToRead, setBookToRead] =
+    React.useState<FilterAutoMongoKeys<ShelfEntry> | null>(
+      location.state && location.state.shelf && location.state.shelf.length > 0
+        ? location.state.shelf[0]
+        : null
+    );
   const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
     location.state && location.state.shelfGenres
       ? location.state.shelfGenres
@@ -180,13 +177,10 @@ export default function CreateClub(props: CreateClubProps) {
   const [unlistedClub, setUnlistedClub] = React.useState(false);
   const [sendInvites, setSendInvites] = React.useState(true);
   const [creatingClub, setCreatingClub] = React.useState(false);
-  const [
-    createdClub,
-    setCreatedClub,
-  ] = React.useState<Services.CreateClubResult | null>(null);
-  const [selectedBotSettings, setSelectedBotSettings] = React.useState<
-    ClubBotSettings
-  >(DEFAULT_CLUB_BOT_SETTINGS);
+  const [createdClub, setCreatedClub] =
+    React.useState<Services.CreateClubResult | null>(null);
+  const [selectedBotSettings, setSelectedBotSettings] =
+    React.useState<ClubBotSettings>(DEFAULT_CLUB_BOT_SETTINGS);
 
   function onSubmitSelectedBooks(
     selectedBooks: FilterAutoMongoKeys<ShelfEntry>[],

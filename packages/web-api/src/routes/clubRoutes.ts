@@ -423,50 +423,50 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   if (!clubDocs) {
     return res.status(404).send(`No clubs exist for user ${userId}`);
   }
-  const filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
-    clubDocs.map(async clubDoc => {
-      const discordChannel: GuildChannel | null = guild.channels.cache.get(
-        clubDoc.channelId
-      );
-      // If there's no Discord channel for this club, filter it out
-      if (!discordChannel) {
-        return null;
-      }
-      // If the club is unlisted and I'm not in the club
-      if (
-        clubDoc.unlisted &&
-        (!currentUser ||
-          !(discordChannel as TextChannel).members.get(currentUser.discordId))
-      ) {
-        return null;
-      }
-      // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
-      await guild.members.fetch();
-      const guildMembers = await getChannelMembers(guild, clubDoc);
-      if (filterObj && filterObj.capacity.length > 0) {
-        const capacityKeys = filterObj.capacity.map(c => c.key);
-        if (
-          capacityKeys.includes('spotsAvailable') &&
-          guildMembers.length >= clubDoc.maxMembers
-        ) {
+  const filteredClubsWithMembersNulls: (Services.GetClubById | null)[] =
+    await Promise.all(
+      clubDocs.map(async clubDoc => {
+        const discordChannel: GuildChannel | null = guild.channels.cache.get(
+          clubDoc.channelId
+        );
+        // If there's no Discord channel for this club, filter it out
+        if (!discordChannel) {
           return null;
-        } else if (
-          capacityKeys.includes('full') &&
-          guildMembers.length < clubDoc.maxMembers
+        }
+        // If the club is unlisted and I'm not in the club
+        if (
+          clubDoc.unlisted &&
+          (!currentUser ||
+            !(discordChannel as TextChannel).members.get(currentUser.discordId))
         ) {
           return null;
         }
-      }
-      return {
-        ...clubDoc.toObject(),
-        members: guildMembers,
-        guildId: guild.id,
-      };
-    })
-  );
-  let filteredClubsWithMembers: Services.GetClubById[] = filteredClubsWithMembersNulls.filter(
-    c => c != null
-  );
+        // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
+        await guild.members.fetch();
+        const guildMembers = await getChannelMembers(guild, clubDoc);
+        if (filterObj && filterObj.capacity.length > 0) {
+          const capacityKeys = filterObj.capacity.map(c => c.key);
+          if (
+            capacityKeys.includes('spotsAvailable') &&
+            guildMembers.length >= clubDoc.maxMembers
+          ) {
+            return null;
+          } else if (
+            capacityKeys.includes('full') &&
+            guildMembers.length < clubDoc.maxMembers
+          ) {
+            return null;
+          }
+        }
+        return {
+          ...clubDoc.toObject(),
+          members: guildMembers,
+          guildId: guild.id,
+        };
+      })
+    );
+  let filteredClubsWithMembers: Services.GetClubById[] =
+    filteredClubsWithMembersNulls.filter(c => c != null);
   if (search && typeof search === 'string' && search.length > 0) {
     const fuseOptions = {
       keys: ['name', 'shelf.title', 'shelf.author'],

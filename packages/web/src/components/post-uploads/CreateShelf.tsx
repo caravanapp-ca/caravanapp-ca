@@ -65,10 +65,8 @@ export default function CreateShelf(props: CreateShelfProps) {
   const [shelf, setShelf] = React.useState<FilterAutoMongoKeys<ShelfEntry>[]>(
     []
   );
-  const [
-    postAuthorUserInfo,
-    setPostAuthorUserInfo,
-  ] = React.useState<PostUserInfo | null>(null);
+  const [postAuthorUserInfo, setPostAuthorUserInfo] =
+    React.useState<PostUserInfo | null>(null);
   const [genres, setGenres] = React.useState<Services.GetGenres | null>(null);
   const [shelfGenres, setShelfGenres] = React.useState<SelectedGenre[]>([]);
   const [shelfTitle, setShelfTitle] = React.useState<string>('');
