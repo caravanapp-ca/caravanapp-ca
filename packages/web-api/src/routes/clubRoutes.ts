@@ -751,6 +751,8 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       return overwrites;
     });
 
+    if (!guild.roles.everyone) await guild.roles.fetch();
+
     // Make all channels unlisted (might have to handle Genre channels differently in the future)
     channelCreationOverwrites.push({
       id: guild.roles.everyone.id,
