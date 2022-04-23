@@ -44,7 +44,13 @@ import { ReadingDiscordBot } from './services/discord';
     helmet({
       contentSecurityPolicy: {
         directives: {
-          imgSrc: ["'self'", 'data:', 'https://cdn.discordapp.com/'],
+          connectSrc: ["'self'", ' https://www.google-analytics.com'],
+          imgSrc: [
+            "'self'",
+            'data:',
+            'https://cdn.discordapp.com/',
+            'https://www.facebook.com',
+          ],
           scriptSrc: [
             "'self'",
             'https://cdn.discordapp.com/',
