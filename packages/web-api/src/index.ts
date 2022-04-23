@@ -53,6 +53,9 @@ import { ReadingDiscordBot } from './services/discord';
           ],
         },
       },
+      crossOriginResourcePolicy: {
+        policy: 'cross-origin',
+      },
     })
   );
   // TODO: more specific CORS
