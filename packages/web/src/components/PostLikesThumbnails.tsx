@@ -84,6 +84,7 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
                 alt={l.name}
                 src={l.photoUrl}
                 className={classes.thumbnail}
+                imgProps={{ crossOrigin: 'anonymous' }}
               />
             </Tooltip>
           );
@@ -126,6 +127,7 @@ function PostLikesThumbnails(props: PostLikesThumbnailsProps) {
                   alt={l.name}
                   src={l.photoUrl}
                   className={classes.thumbnailAvatar}
+                  imgProps={{ crossOrigin: 'anonymous' }}
                 />
               </ListItemIcon>
             </Link>

@@ -48,6 +48,7 @@ export default function MemberList(props: MemberListProps) {
                   <Avatar
                     alt={m.name || m.discordUsername}
                     src={shrinkDiscordPhotoSize(m.photoUrl, 64)}
+                    imgProps={{ crossOrigin: 'anonymous' }}
                   />
                 ) : undefined
               }

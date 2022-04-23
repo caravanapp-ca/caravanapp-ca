@@ -29,5 +29,12 @@ export default function UserAvatar(props: UserAvatarProps) {
     ? shrinkDiscordPhotoSize(user.photoUrl, size)
     : undefined;
 
-  return <Avatar src={photoUrl} classes={avatarClass} style={style} />;
+  return (
+    <Avatar
+      src={photoUrl}
+      classes={avatarClass}
+      style={style}
+      imgProps={{ crossOrigin: 'anonymous' }}
+    />
+  );
 }
