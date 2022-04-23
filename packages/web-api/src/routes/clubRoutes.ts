@@ -1,18 +1,3 @@
-import type {
-  ChannelCreationOverwrites,
-  Guild,
-  GuildChannel,
-  GuildCreateChannelOptions,
-  GuildMember,
-  PermissionResolvable,
-  TextChannel,
-  VoiceChannel,
-} from 'discord.js';
-import express from 'express';
-import { check, oneOf, validationResult } from 'express-validator';
-import Fuse from 'fuse.js';
-import { Types } from 'mongoose';
-
 import { ClubDoc, ClubModel, UserDoc, UserModel } from '@caravanapp/mongo';
 import type {
   ActiveFilter,
@@ -25,7 +10,19 @@ import type {
   Services,
   User,
 } from '@caravanapp/types';
-
+import {
+  ChannelCreationOverwrites,
+  Guild,
+  GuildChannelCreateOptions,
+  GuildMember,
+  PermissionResolvable,
+  TextChannel,
+  VoiceChannel,
+} from 'discord.js';
+import express from 'express';
+import { check, oneOf, validationResult } from 'express-validator';
+import Fuse from 'fuse.js';
+import { Types } from 'mongoose';
 import { parseIntWithZeroDefault } from '../common/functions';
 import {
   MAX_SHELF_SIZE,
@@ -262,9 +259,7 @@ router.get('/', async (req, res) => {
       if (!isSearching && validClubCount === limit) {
         return null;
       }
-      const discordChannel: GuildChannel | null = guild.channels.cache.get(
-        clubDoc.channelId
-      );
+      const discordChannel = guild.channels.cache.get(clubDoc.channelId);
       // If there's no Discord channel for this club, filter it out
       if (!discordChannel) {
         return null;
@@ -423,50 +418,48 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   if (!clubDocs) {
     return res.status(404).send(`No clubs exist for user ${userId}`);
   }
-  const filteredClubsWithMembersNulls: (Services.GetClubById | null)[] = await Promise.all(
-    clubDocs.map(async clubDoc => {
-      const discordChannel: GuildChannel | null = guild.channels.cache.get(
-        clubDoc.channelId
-      );
-      // If there's no Discord channel for this club, filter it out
-      if (!discordChannel) {
-        return null;
-      }
-      // If the club is unlisted and I'm not in the club
-      if (
-        clubDoc.unlisted &&
-        (!currentUser ||
-          !(discordChannel as TextChannel).members.get(currentUser.discordId))
-      ) {
-        return null;
-      }
-      // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
-      await guild.members.fetch();
-      const guildMembers = await getChannelMembers(guild, clubDoc);
-      if (filterObj && filterObj.capacity.length > 0) {
-        const capacityKeys = filterObj.capacity.map(c => c.key);
-        if (
-          capacityKeys.includes('spotsAvailable') &&
-          guildMembers.length >= clubDoc.maxMembers
-        ) {
+  const filteredClubsWithMembersNulls: (Services.GetClubById | null)[] =
+    await Promise.all(
+      clubDocs.map(async clubDoc => {
+        const discordChannel = guild.channels.cache.get(clubDoc.channelId);
+        // If there's no Discord channel for this club, filter it out
+        if (!discordChannel) {
           return null;
-        } else if (
-          capacityKeys.includes('full') &&
-          guildMembers.length < clubDoc.maxMembers
+        }
+        // If the club is unlisted and I'm not in the club
+        if (
+          clubDoc.unlisted &&
+          (!currentUser ||
+            !(discordChannel as TextChannel).members.get(currentUser.discordId))
         ) {
           return null;
         }
-      }
-      return {
-        ...clubDoc.toObject(),
-        members: guildMembers,
-        guildId: guild.id,
-      };
-    })
-  );
-  let filteredClubsWithMembers: Services.GetClubById[] = filteredClubsWithMembersNulls.filter(
-    c => c != null
-  );
+        // Don't remove this line! This updates the Discord member objects internally, so we can access all users.
+        await guild.members.fetch();
+        const guildMembers = await getChannelMembers(guild, clubDoc);
+        if (filterObj && filterObj.capacity.length > 0) {
+          const capacityKeys = filterObj.capacity.map(c => c.key);
+          if (
+            capacityKeys.includes('spotsAvailable') &&
+            guildMembers.length >= clubDoc.maxMembers
+          ) {
+            return null;
+          } else if (
+            capacityKeys.includes('full') &&
+            guildMembers.length < clubDoc.maxMembers
+          ) {
+            return null;
+          }
+        }
+        return {
+          ...clubDoc.toObject(),
+          members: guildMembers,
+          guildId: guild.id,
+        };
+      })
+    );
+  let filteredClubsWithMembers: Services.GetClubById[] =
+    filteredClubsWithMembersNulls.filter(c => c != null);
   if (search && typeof search === 'string' && search.length > 0) {
     const fuseOptions = {
       keys: ['name', 'shelf.title', 'shelf.author'],
@@ -680,9 +673,7 @@ router.post(
 
     const filteredClubsWithMemberCounts: Services.GetClubs['clubs'] = clubs
       .map(clubDoc => {
-        const discordChannel: GuildChannel | null = guild.channels.cache.get(
-          clubDoc.channelId
-        );
+        const discordChannel = guild.channels.cache.get(clubDoc.channelId);
         if (!discordChannel) {
           return null;
         }
@@ -760,14 +751,16 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       return overwrites;
     });
 
+    if (!guild.roles.everyone) await guild.roles.fetch();
+
     // Make all channels unlisted (might have to handle Genre channels differently in the future)
     channelCreationOverwrites.push({
       id: guild.roles.everyone.id,
       deny: ['VIEW_CHANNEL'],
     });
 
-    const newChannel: GuildCreateChannelOptions & { type?: 'text' } = {
-      type: 'text',
+    const newChannel: GuildChannelCreateOptions = {
+      type: 'GUILD_TEXT',
       nsfw: body.nsfw || false,
       permissionOverwrites: channelCreationOverwrites,
       topic: body.bio,
@@ -807,6 +800,11 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       getClubUrl(newClub.id),
       club.bio || ''
     );
+    if (!channel.isText()) {
+      return res
+        .status(400)
+        .send("Can't create a club channel that isn't text");
+    }
     channel.setTopic(channelTopic);
 
     createReferralAction(userId, 'createClub');
@@ -999,7 +997,7 @@ router.delete('/:clubId', isAuthenticated, async (req, res) => {
 
   const discordClient = ReadingDiscordBot.getInstance();
   const guild = discordClient.guilds.cache.first();
-  const channel: GuildChannel = guild.channels.cache.get(clubDoc.channelId);
+  const channel = guild.channels.cache.get(clubDoc.channelId);
   if (!channel) {
     return res.status(400).send(`Channel was deleted, clubId: ${clubId}`);
   }

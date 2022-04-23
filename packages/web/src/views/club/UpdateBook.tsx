@@ -100,9 +100,9 @@ export default function UpdateBook(props: UpdateBookProps) {
   }>({ valid: true, errMessage: '' });
   const [, setClub] = React.useState<Services.GetClubById | null>(null);
   const [, setLoadedClub] = React.useState<boolean>(false);
-  const [sortedShelf, setSortedShelf] = React.useState<
-    { [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[] }
-  >({
+  const [sortedShelf, setSortedShelf] = React.useState<{
+    [key in ReadingState]: (ShelfEntry | FilterAutoMongoKeys<ShelfEntry>)[];
+  }>({
     current: [],
     notStarted: [],
     read: [],

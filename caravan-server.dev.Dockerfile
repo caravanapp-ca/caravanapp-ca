@@ -1,6 +1,6 @@
 # Build with: `docker build -f ./caravan-server.Dockerfile -t "caravan-server" .`
 # Run with: `docker run -d -p 3001:3001 -p 27017:27017 --name caravan-server caravan-server:latest`
-FROM node:12-alpine as caravan-server-base
+FROM node:16-alpine as caravan-server-base
 
 # All node-based packages have the node user "disabled" by default. We will want to run
 # our node process with that user instead of the root user (which has elevated privileges).

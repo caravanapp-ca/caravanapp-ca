@@ -244,12 +244,8 @@ router.get('/discord/callback', async (req, res) => {
     };
 
     if (currentSessionModel) {
-      const {
-        accessTokenExpiresAt,
-        client,
-        refreshToken,
-        scope,
-      } = currentSessionModel;
+      const { accessTokenExpiresAt, client, refreshToken, scope } =
+        currentSessionModel;
       if (client !== 'discord') {
         return res
           .status(401)
@@ -298,9 +294,7 @@ router.get('/discord/callback', async (req, res) => {
   }
 
   try {
-    await guild.addMember(discordUserData.id, {
-      accessToken,
-    });
+    await guild.members.add(discordUserData.id, { accessToken });
     console.log(
       `Added user {id: ${userDoc.id}, discordId: ${userDoc.discordId}} to guild ${guild.id}.`
     );

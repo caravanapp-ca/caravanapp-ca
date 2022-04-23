@@ -44,7 +44,7 @@ const mutateSingleUsersBadges = (ud: UserDoc, allBadges: BadgeDoc) => {
       return;
     }
     // TODO: Need to introduce the UserBadgeDoc definition instead of UserBadge.
-    const userBadgeDoc = (userBadge as unknown) as BadgeDoc;
+    const userBadgeDoc = userBadge as unknown as BadgeDoc;
     return {
       ...userBadgeDoc.toObject(),
       name: allBadges.badges[userBadge.key].name,

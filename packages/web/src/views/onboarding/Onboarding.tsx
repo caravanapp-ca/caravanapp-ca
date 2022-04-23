@@ -70,23 +70,18 @@ export default function Onboarding(props: OnboardingProps) {
 
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  const [selectedSpeed, setSelectedSpeed] = React.useState<ReadingSpeed>(
-    'moderate'
-  );
+  const [selectedSpeed, setSelectedSpeed] =
+    React.useState<ReadingSpeed>('moderate');
 
   const [selectedGenres, setSelectedGenres] = React.useState<SelectedGenre[]>(
     []
   );
 
-  const [
-    profileQuestions,
-    setProfileQuestions,
-  ] = React.useState<Services.GetProfileQuestions | null>(null);
+  const [profileQuestions, setProfileQuestions] =
+    React.useState<Services.GetProfileQuestions | null>(null);
 
-  const [
-    unansweredProfileQuestions,
-    setUnansweredProfileQuestions,
-  ] = React.useState<ProfileQuestions['questions']>([]);
+  const [unansweredProfileQuestions, setUnansweredProfileQuestions] =
+    React.useState<ProfileQuestions['questions']>([]);
 
   const [answers, setAnswers] = React.useState<UserQA[]>([]);
 
@@ -94,26 +89,21 @@ export default function Onboarding(props: OnboardingProps) {
     string | null
   >(null);
 
-  const [
-    questionBeingAnsweredText,
-    setQuestionBeingAnsweredText,
-  ] = React.useState<string | null>(null);
+  const [questionBeingAnsweredText, setQuestionBeingAnsweredText] =
+    React.useState<string | null>(null);
 
   const [selectedBooks, setSelectedBooks] = React.useState<
     FilterAutoMongoKeys<ShelfEntry>[]
   >([]);
 
-  const [submitState, setSubmitState] = React.useState<SubmissionState>(
-    'notSubmitted'
-  );
+  const [submitState, setSubmitState] =
+    React.useState<SubmissionState>('notSubmitted');
 
-  const [showDiscordDialog, setShowDiscordDialog] = React.useState<boolean>(
-    false
-  );
+  const [showDiscordDialog, setShowDiscordDialog] =
+    React.useState<boolean>(false);
 
-  const [hasSeenDiscordDialog, setHasSeenDiscordDialog] = React.useState<
-    boolean
-  >(false);
+  const [hasSeenDiscordDialog, setHasSeenDiscordDialog] =
+    React.useState<boolean>(false);
 
   useEffect(() => {
     const getProfileQuestions = async () => {

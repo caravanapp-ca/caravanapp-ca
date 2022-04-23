@@ -212,19 +212,14 @@ export default function Home(props: HomeProps) {
   >({
     status: 'loading',
   });
-  const [
-    feedViewerUserInfo,
-    setFeedViewerUserInfo,
-  ] = React.useState<PostUserInfo | null>(null);
-  const [loadingMoreUsers, setLoadingMoreUsers] = React.useState<boolean>(
-    false
-  );
-  const [loadingMoreClubs, setLoadingMoreClubs] = React.useState<boolean>(
-    false
-  );
-  const [loadingMorePosts, setLoadingMorePosts] = React.useState<boolean>(
-    false
-  );
+  const [feedViewerUserInfo, setFeedViewerUserInfo] =
+    React.useState<PostUserInfo | null>(null);
+  const [loadingMoreUsers, setLoadingMoreUsers] =
+    React.useState<boolean>(false);
+  const [loadingMoreClubs, setLoadingMoreClubs] =
+    React.useState<boolean>(false);
+  const [loadingMorePosts, setLoadingMorePosts] =
+    React.useState<boolean>(false);
   const [showWelcomeMessage, setShowWelcomeMessage] = React.useState(
     localStorage.getItem(KEY_HIDE_WELCOME_CLUBS) !== 'yes'
   );
@@ -266,20 +261,18 @@ export default function Home(props: HomeProps) {
   const [showSpeedFilter, setShowSpeedFilter] = React.useState(false);
   const [showCapacityFilter, setShowCapacityFilter] = React.useState(false);
   const [showMembershipFilter, setShowMembershipFilter] = React.useState(false);
-  const [stagingClubsFilter, setStagingClubsFilter] = React.useState<
-    ActiveFilter
-  >(
-    location.state && location.state.clubsFilter
-      ? location.state.clubsFilter
-      : defaultActiveFilter
-  );
-  const [activeClubsFilter, setActiveClubsFilter] = React.useState<
-    ActiveFilter
-  >(
-    location.state && location.state.clubsFilter
-      ? location.state.clubsFilter
-      : defaultActiveFilter
-  );
+  const [stagingClubsFilter, setStagingClubsFilter] =
+    React.useState<ActiveFilter>(
+      location.state && location.state.clubsFilter
+        ? location.state.clubsFilter
+        : defaultActiveFilter
+    );
+  const [activeClubsFilter, setActiveClubsFilter] =
+    React.useState<ActiveFilter>(
+      location.state && location.state.clubsFilter
+        ? location.state.clubsFilter
+        : defaultActiveFilter
+    );
   const clubGenreFiltersApplied = activeClubsFilter.genres.length > 0;
   const clubSpeedFiltersApplied = activeClubsFilter.speed.length > 0;
   const clubCapacityFiltersApplied = activeClubsFilter.capacity.length > 0;

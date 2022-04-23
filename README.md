@@ -27,7 +27,7 @@ Then, use your host machine to run both the Node.js Express app server and the R
 
 - Docker >= 18.06.0 (support for `docker-compose v3.7`)
 - Yarn >= v1 (support for Workspaces)
-- Node.js >= 12.x (10.x is required for the `cloud-functions` sub-project, so we suggest to use [NVM](https://github.com/nvm-sh/nvm) if you're working with `cloud-functions`)
+- Node.js >= 16.6 (12.x is required for the `cloud-functions` sub-project, so we suggest to use [NVM](https://github.com/nvm-sh/nvm) if you're working with `cloud-functions`)
 
 ### ⏳ Installation
 

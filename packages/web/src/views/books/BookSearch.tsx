@@ -86,10 +86,8 @@ export default function BookSearch(props: BookSearchProps) {
   const maxSelected = props.maxSelected || 1000;
 
   const [bookSearchQuery, setBookSearchQuery] = React.useState<string>('');
-  const [
-    searchResults,
-    setSearchResults,
-  ] = React.useState<GoogleBooks.Books | null>(null);
+  const [searchResults, setSearchResults] =
+    React.useState<GoogleBooks.Books | null>(null);
   const [showPopper, setShowPopper] = React.useState<boolean>(false);
   const [selectedBooks, setSelectedBooks] = React.useState<
     FilterAutoMongoKeys<ShelfEntry>[]
@@ -97,9 +95,8 @@ export default function BookSearch(props: BookSearchProps) {
   const [numSelected, setNumSelected] = React.useState<number>(
     (initialSelectedBooks && initialSelectedBooks.length) || 0
   );
-  const [bookToRead, setBookToRead] = React.useState<FilterAutoMongoKeys<
-    ShelfEntry
-  > | null>(null);
+  const [bookToRead, setBookToRead] =
+    React.useState<FilterAutoMongoKeys<ShelfEntry> | null>(null);
 
   useEffect(() => {
     if (!bookSearchQuery || bookSearchQuery.length === 0) {

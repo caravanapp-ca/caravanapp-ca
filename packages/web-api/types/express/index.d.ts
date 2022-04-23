@@ -1,8 +1,9 @@
 import type { UserDoc } from '@caravanapp/mongo';
-
-declare module 'express-serve-static-core' {
-  interface Request {
-    user?: UserDoc;
+declare global {
+  namespace Express {
+    interface Request {
+      user?: UserDoc;
+    }
   }
 }
 

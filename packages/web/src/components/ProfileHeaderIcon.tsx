@@ -43,10 +43,8 @@ function ProfileHeaderIcon(props: HeaderRightProps) {
   const { user } = props;
 
   const [loginModalShown, setLoginModalShown] = React.useState(false);
-  const [
-    headerProfileMenuIsOpen,
-    setHeaderProfileMenuOpenState,
-  ] = React.useState(false);
+  const [headerProfileMenuIsOpen, setHeaderProfileMenuOpenState] =
+    React.useState(false);
 
   function onCloseLoginModal() {
     setLoginModalShown(false);

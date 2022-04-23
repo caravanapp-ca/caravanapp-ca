@@ -58,13 +58,8 @@ interface ClubHeroProps {
 }
 
 export default function ClubHero(props: ClubHeroProps) {
-  const {
-    title,
-    author,
-    publishedDate,
-    genres,
-    coverImageURL,
-  } = props.currBook;
+  const { title, author, publishedDate, genres, coverImageURL } =
+    props.currBook;
   const { clubId, user, onCopyReferralLink } = props;
   const classes = useStyles();
 

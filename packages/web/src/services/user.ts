@@ -54,7 +54,7 @@ export async function isSlugAvailable(slug: string) {
     } else {
       return { available: false, err: null };
     }
-  } catch (err) {
+  } catch (err: any) {
     const { response } = err;
     if (response.status === 409) {
       return { available: false, err: null };

@@ -220,9 +220,8 @@ export default function ClubCards(props: ClubCardsProps) {
     quickJoin,
     isLoggedIn,
   } = props;
-  const [clubsTransformedState, setClubsTransformedState] = React.useState(
-    clubsTransformed
-  );
+  const [clubsTransformedState, setClubsTransformedState] =
+    React.useState(clubsTransformed);
   const [loginModalShown, setLoginModalShown] = React.useState(false);
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {
@@ -232,10 +231,8 @@ export default function ClubCards(props: ClubCardsProps) {
       variant: 'info',
     }
   );
-  const [
-    creationInfoContainerWidth,
-    setCreationInfoContainerWidth,
-  ] = React.useState<number>(128);
+  const [creationInfoContainerWidth, setCreationInfoContainerWidth] =
+    React.useState<number>(128);
 
   useEffect(() => {
     setClubsTransformedState(clubsTransformed);

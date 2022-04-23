@@ -1,14 +1,3 @@
-import type { AxiosResponse } from 'axios';
-import { addDays } from 'date-fns';
-import type {
-  Guild,
-  GuildChannel,
-  GuildMember,
-  TextChannel,
-  VoiceChannel,
-} from 'discord.js';
-import { Types } from 'mongoose';
-
 import {
   ClubDoc,
   ClubModel,
@@ -27,7 +16,15 @@ import type {
   ShelfEntry,
   User,
 } from '@caravanapp/types';
-
+import type { AxiosResponse } from 'axios';
+import { addDays } from 'date-fns';
+import type {
+  Guild,
+  GuildBasedChannel,
+  GuildMember,
+  TextChannel,
+} from 'discord.js';
+import { Types } from 'mongoose';
 import { getClubRecommendationDescription } from '../common/club';
 import { DEFAULT_AVATAR_OPTIONS } from '../common/discordbot';
 import {
@@ -54,7 +51,7 @@ export const getUserChannels = (
   inChannels: boolean
 ) => {
   const channels = guild.channels.cache.filter(c => {
-    if (c.type === 'text' || c.type === 'voice') {
+    if (c.type === 'GUILD_TEXT' || c.type === 'GUILD_VOICE') {
       const inThisChannel = !!(c as TextChannel).members.get(discordId);
       return inChannels === inThisChannel;
     } else {
@@ -70,19 +67,20 @@ const isInChannel = (member: GuildMember, club: ClubDoc) =>
   !member.user.bot;
 
 export const getCountableMembersInChannel = (
-  discordChannel: GuildChannel,
+  discordChannel: GuildBasedChannel,
   club: ClubDoc
-) =>
-  (discordChannel as TextChannel | VoiceChannel).members.filter(m =>
-    isInChannel(m, club)
-  );
+) => {
+  if ('members' in discordChannel && 'filter' in discordChannel.members) {
+    return discordChannel.members.filter(m => isInChannel(m, club));
+  }
+};
 
 // For speed purposes, we can guarantee that in prod environments there are always
 // 3 less members than what are shown due to bots and the admin. In testing,
 // quinn's account and matt's account are admins so we need to perform the full countable
 // members check. Well, we don't need to, but it's OK for now.
 export const getMemberCount = (
-  discordChannel: GuildChannel,
+  discordChannel: GuildBasedChannel,
   clubDoc: ClubDoc
 ) =>
   process.env.GAE_ENV === 'production'
@@ -403,9 +401,7 @@ export const getUserClubRecommendations = async (
 };
 
 export const isInClub = (user: UserDoc, club: ClubDoc, guild: Guild) => {
-  const discordChannel: GuildChannel | undefined = guild.channels.cache.get(
-    club.channelId
-  );
+  const discordChannel = guild.channels.cache.get(club.channelId);
   if (!discordChannel) {
     console.error(`Unable to find Discord channel for club ${club.id}`);
     return false;
@@ -445,13 +441,15 @@ export const getClubRecommendationFromReferral = async (
 
 export const getChannelMembers = async (guild: Guild, club: ClubDoc) => {
   const discordChannel = guild.channels.cache.get(club.channelId);
-  if (discordChannel.type !== 'text' && discordChannel.type !== 'voice') {
+  if (
+    discordChannel.type !== 'GUILD_TEXT' &&
+    discordChannel.type !== 'GUILD_VOICE'
+  ) {
     return;
   }
-  const guildMembers = getCountableMembersInChannel(
-    discordChannel,
-    club
-  ).array();
+  const guildMembers = [
+    ...getCountableMembersInChannel(discordChannel, club).values(),
+  ];
   const guildMemberDiscordIds = guildMembers.map(m => m.id);
   const [userDocs, badgeDoc] = await Promise.all([
     UserModel.find({
@@ -506,11 +504,17 @@ export const modifyClubMembership = async (
   const isOwner = club.ownerId === userId;
   const discordClient = ReadingDiscordBot.getInstance();
   const guild = discordClient.guilds.cache.first();
-  const channel: GuildChannel = guild.channels.cache.get(club.channelId);
+  const channel = guild.channels.cache.get(club.channelId);
   if (!channel) {
     return {
       status: 400,
       data: `Channel was deleted, clubId: ${club.id}`,
+    };
+  }
+  if (channel.isThread()) {
+    return {
+      status: 400,
+      data: `Cannot be a thread channel`,
     };
   }
   const memberInChannel = channel.members.get(userDiscordId);
@@ -536,7 +540,7 @@ export const modifyClubMembership = async (
       if (permissions && permissions.has('VIEW_CHANNEL')) {
         return { status: 401, data: 'You already have access to the channel!' };
       }
-      await channel.updateOverwrite(userDiscordId, {
+      await channel.permissionOverwrites.edit(userDiscordId, {
         VIEW_CHANNEL: true,
         SEND_MESSAGES: true,
         SEND_TTS_MESSAGES: true,
@@ -566,7 +570,7 @@ export const modifyClubMembership = async (
         data: "You're already not a member of the club!",
       };
     }
-    await channel.updateOverwrite(userDiscordId, {
+    await channel.permissionOverwrites.edit(userDiscordId, {
       VIEW_CHANNEL: false,
       SEND_MESSAGES: false,
       SEND_TTS_MESSAGES: false,

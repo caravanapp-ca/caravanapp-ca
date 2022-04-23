@@ -1,8 +1,7 @@
 import type { SessionDoc } from '@caravanapp/mongo';
-
 import { DISCORD_PERMISSIONS } from '../common/globalConstantsAPI';
 
 export const validateSessionPermissions = (session: SessionDoc) => {
-  const discordPermissions = DISCORD_PERMISSIONS.join(' ');
-  return session.scope === discordPermissions;
+  const scopes = new Set(session.scope.split(' '));
+  return DISCORD_PERMISSIONS.every(p => scopes.has(p));
 };

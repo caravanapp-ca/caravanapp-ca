@@ -116,25 +116,21 @@ export default function ShelfPostCard(props: ShelfPostCardProps) {
   } = props;
   const shelfPost = postContent as ShelfPost;
 
-  const [shouldExecuteLike, setShouldExecuteLike] = React.useState<boolean>(
-    false
-  );
+  const [shouldExecuteLike, setShouldExecuteLike] =
+    React.useState<boolean>(false);
 
   const [hasLiked, setHasLiked] = React.useState<boolean>(
     currUser ? likeUserIds.includes(currUser._id) : false
   );
 
-  const [modifiedLikes, setModifiedLikes] = React.useState<PostUserInfo[]>(
-    likes
-  );
+  const [modifiedLikes, setModifiedLikes] =
+    React.useState<PostUserInfo[]>(likes);
 
-  const [modifiedNumLikes, setModifiedNumLikes] = React.useState<number>(
-    numLikes
-  );
+  const [modifiedNumLikes, setModifiedNumLikes] =
+    React.useState<number>(numLikes);
 
-  const [deletePostDialogVisible, setDeletePostDialogVisible] = React.useState<
-    boolean
-  >(false);
+  const [deletePostDialogVisible, setDeletePostDialogVisible] =
+    React.useState<boolean>(false);
 
   const [snackbarProps, setSnackbarProps] = React.useState<CustomSnackbarProps>(
     {

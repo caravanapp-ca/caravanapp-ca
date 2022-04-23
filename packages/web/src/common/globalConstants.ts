@@ -76,9 +76,10 @@ export const DISCORD_GUILD_LINK =
 
 export const CARAVAN_BOT_NAME = 'caravan-clubs-bot';
 
-export const CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<ClubBotSettings> = {
-  intros: 'Introduce new members in chat when they join the club',
-};
+export const CLUB_BOT_SETTINGS_KEYS_DESCRIPTIONS: SameKeysAs<ClubBotSettings> =
+  {
+    intros: 'Introduce new members in chat when they join the club',
+  };
 
 export const DEFAULT_CLUB_BOT_SETTINGS: ClubBotSettings = {
   intros: true,
