@@ -180,6 +180,8 @@ export const getUserClubRecommendations = async (
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.cache.first();
   const { discordId } = user;
+  await guild.channels.fetch();
+  await guild.roles.fetch();
   const channels = getUserChannels(guild, discordId, true);
   const channelIds = channels.map(c => c.id);
   globalQuery.channelId = {

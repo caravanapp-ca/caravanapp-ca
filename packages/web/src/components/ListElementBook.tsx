@@ -91,7 +91,6 @@ export default function ListElementBook(props: ListElementBookProps) {
             {primary && <ListItemIcon>{primary}</ListItemIcon>}
             <img
               src={coverImage || require('../resources/generic-book-cover.jpg')}
-              crossOrigin="anonymous"
               alt={primaryText}
               className={classes.coverImage}
             />
@@ -151,7 +150,6 @@ export default function ListElementBook(props: ListElementBookProps) {
         {primary && <ListItemIcon>{primary}</ListItemIcon>}
         <img
           src={coverImage || require('../resources/generic-book-cover.jpg')}
-          crossOrigin="anonymous"
           alt={primaryText}
           className={classes.coverImage}
         />

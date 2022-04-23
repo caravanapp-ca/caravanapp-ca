@@ -90,7 +90,6 @@ function PostHeader(props: PostHeaderProps) {
             alt={postAuthorInfo.name}
             src={postAuthorInfo.photoUrl}
             className={classes.headerAvatar}
-            imgProps={{ crossOrigin: 'anonymous' }}
           />
         </Link>
       </div>
@@ -115,7 +114,6 @@ function PostHeader(props: PostHeaderProps) {
             src={postIcon}
             className={classes.postIconAvatar}
             style={{ backgroundColor: iconColor }}
-            imgProps={{ crossOrigin: 'anonymous' }}
           />
         )}
         {ownPost && (

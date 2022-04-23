@@ -216,6 +216,8 @@ router.get('/', async (req, res) => {
   const guild = client.guilds.cache.first();
   if (user) {
     const { discordId } = user;
+    await guild.channels.fetch();
+    await guild.roles.fetch();
     const channels = getUserChannels(guild, discordId, userInChannelBoolean);
     const channelIds = channels.map(c => c.id);
     query.channelId = { $in: channelIds };
@@ -392,6 +394,8 @@ router.get('/wMembers/user/:userId', async (req, res) => {
   const client = ReadingDiscordBot.getInstance();
   const guild = client.guilds.cache.first();
   const { discordId } = user;
+  await guild.channels.fetch();
+  await guild.roles.fetch();
   const channels = getUserChannels(guild, discordId, userInChannelBoolean);
   const channelIds = channels.map(c => c.id);
   query.channelId = { $in: channelIds };

@@ -619,7 +619,6 @@ export default function UserView(props: UserViewProps) {
         {user.palette && user.palette.bgImage && (
           <img
             src={user.palette.bgImage}
-            crossOrigin="anonymous"
             alt="background"
             className={classes.bgImage}
             style={

@@ -40,9 +40,9 @@ import { ReadingDiscordBot } from './services/discord';
   const env = process.env['NODE_ENV'] || 'development';
   console.log(`Running in ${env} environment`);
 
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
+  /**
+   * Attempt at helmet config:
+   * contentSecurityPolicy: {
         directives: {
           connectSrc: ["'self'", ' www.google-analytics.com'],
           imgSrc: [
@@ -63,8 +63,8 @@ import { ReadingDiscordBot } from './services/discord';
       crossOriginResourcePolicy: {
         policy: 'cross-origin',
       },
-    })
-  );
+   */
+  app.use(helmet());
   // TODO: more specific CORS
   app.use(cors());
 

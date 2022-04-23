@@ -47,7 +47,6 @@ export default function PaletteButton(props: PaletteButtonProps) {
           src={bgImage}
           alt={`${bgColour} palette`}
           className={classes.img}
-          crossOrigin="anonymous"
         />
       )}
     </div>

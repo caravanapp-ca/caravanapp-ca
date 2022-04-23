@@ -93,7 +93,6 @@ export default function SelectedBookCards(props: SelectedProps) {
                           book.volumeInfo.imageLinks.thumbnail) ||
                         'https://www.newel.com/img/inventory/no_image_available_300x300.jpg'
                       }
-                      crossOrigin="anonymous"
                       alt=""
                     />
                   </div>
