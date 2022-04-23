@@ -72,7 +72,9 @@ const ReadingDiscordBot = (() => {
   let instance: Discord.Client;
 
   function createInstance() {
-    const discordClient: Discord.Client = new Discord.Client();
+    const discordClient: Discord.Client = new Discord.Client({
+      intents: [],
+    });
 
     discordClient.login(DiscordBotSecret);
     discordClient.on('ready', () => {

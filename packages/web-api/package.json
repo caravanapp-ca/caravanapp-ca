@@ -29,6 +29,7 @@
   "homepage": "https://github.com/caravanapp-ca/caravanapp-ca#README",
   "dependencies": {
     "@caravanapp/mongo": "1.0.0",
+    "@discordjs/rest": "^0.3.0",
     "@google-cloud/pubsub": "^1.7.0",
     "axios": "^0.26.0",
     "body-parser": "^1.19.2",
@@ -38,7 +39,8 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "date-fns": "^2.11.1",
-    "discord.js": "^12.1.1",
+    "discord-api-types": "^0.27.2",
+    "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "express-validator": "^6.4.0",
@@ -46,7 +48,7 @@
     "fuse.js": "^3.4.5",
     "helmet": "^5.0.2",
     "mongoose": "~5.9.4",
-    "node-fetch": "^3.2.0",
+    "node-fetch": "^2.6.7",
     "slugify": "^1.4.0",
     "uuid": "^8.3.2"
   },

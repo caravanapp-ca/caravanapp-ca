@@ -48,7 +48,7 @@ router.post(
       c => c.id === channelId
     ) as TextChannel;
 
-    const result = await channel.send(req.body.content, req.body);
+    const result = await channel.send({ content: req.body.content });
     console.log(`Sent discord bot message ${result.toString()}`);
     res.status(200).send(`Sent: ${result.toString()}`);
   }
