@@ -40,7 +40,21 @@ import { ReadingDiscordBot } from './services/discord';
   const env = process.env['NODE_ENV'] || 'development';
   console.log(`Running in ${env} environment`);
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          imgSrc: ["'self'", 'data:', 'https://cdn.discordapp.com/'],
+          scriptSrc: [
+            "'self'",
+            'https://cdn.discordapp.com/',
+            'https://www.google-analytics.com/',
+            'https://connect.facebook.net/',
+          ],
+        },
+      },
+    })
+  );
   // TODO: more specific CORS
   app.use(cors());
 
