@@ -81,6 +81,7 @@ export default function UserCardShelfList(props: UserCardShelfListProps) {
                 src={book.coverImageURL}
                 alt={'Book cover'}
                 className={classes.bookCover}
+                crossOrigin="anonymous"
               />
             </Tooltip>
           </div>

@@ -68,6 +68,7 @@ export default function ShelfPostCardShelfList(
               <img
                 src={book.coverImageURL}
                 alt={'Book cover'}
+                crossOrigin="anonymous"
                 className={classes.bookCover}
               />
             </Tooltip>
