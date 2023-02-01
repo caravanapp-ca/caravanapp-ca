@@ -24,7 +24,7 @@
   "homepage": "https://github.com/caravanapp-ca/caravanapp-ca#readme",
   "dependencies": {
     "@caravanapp/types": "1.0.0",
-    "mongoose": "~5.9.4"
+    "mongoose": "~5.13.15"
   },
   "devDependencies": {
     "@types/mongoose": "5.7.9",
